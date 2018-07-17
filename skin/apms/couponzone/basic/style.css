@@ -1,0 +1,14 @@
+@charset "utf-8";
+
+#couponzone_wrap .item-head { border-left:6px solid #000; padding-left:15px; margin-bottom:20px; }
+#couponzone_wrap .item-head h2 { font-size:30px; letter-spacing:-1px; margin:0px; padding:0px; }
+#couponzone_wrap .item-head p { margin:8px 0px 0px; color:#888; }
+
+#couponzone_wrap .item-wrap { overflow:hidden; line-height:20px; }
+#couponzone_wrap .item-row { float:left; overflow:hidden; }
+#couponzone_wrap .item-list { overflow:hidden; border:1px solid #ddd; background:#fff; padding:10px; }
+#couponzone_wrap .item-none { margin:0px; padding:100px 0;text-align:center; color:#888; }
+#couponzone_wrap .item-img { margin:0px 0px 10px; }
+#couponzone_wrap .item-img img { width:100%; display:block; }
+#couponzone_wrap .item-content { overflow:hidden; padding:0px 10px 10px; }
+#couponzone_wrap .item-content strong { font-size:14px; letter-spacing:-1px; padding-right:1px; }

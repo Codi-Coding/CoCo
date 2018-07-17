@@ -1,0 +1,32 @@
+@charset "utf-8";
+
+.new-box { border:1px solid #ddd; background:#fafafa; padding:20px 15px 3px; margin-bottom:15px; }
+
+.list-board { }
+.list-board .chk { width:40px; }
+.list-board .num { width:60px; }
+.list-board .cate { width:100px; }
+.list-board .name { width:120px; }
+.list-board .date { width:100px; }
+.list-board .thumb { width:60px; }
+.list-board .icon { position:relative; width:46px; height:46px; display:table; margin:0px auto; }
+.list-board .icon a { display:table-cell; width:1%; vertical-align:middle; font-size:30px; color:#fff; }
+.list-board .icon .bg-light { background:#eee; }
+
+.list-board .board-list { list-style:none; padding:0px; margin:0px; }
+.list-board .board-list li { border-bottom:1px solid #ddd; display:table; width:100%; table-layout:fixed; }
+.list-board .board-list li:hover { color:#000; background-color:#F8F8F8; }
+.list-board .board-list li > div { display:table-cell; height:34px; line-height:22px; padding:6px 0px; text-align:center; color:#666; vertical-align:middle; }
+.list-board .board-list li .cate { padding-left:10px; text-align:left; }
+.list-board .board-list li .subj { padding-left:10px; text-align:left; }
+.list-board .board-list li .subj a { display:block; word-break:break-all; }
+.list-board .board-list li .name { text-align:left; padding-left:10px; font-weight:bold; }
+.list-board .board-list .subj-item { margin-right:-15px }
+.list-board .board-list .subj-item a { display:inline !important; color:#888 !important; }
+.list-board .board-list .subj-item > span { display:inline; margin-right:15px; font-weight:normal; color:#888; }
+.list-board .board-list .subj-item > span:last-child { margin-right:0px; }
+.list-board .board-list .subj-item .hide { display:none; }
+.list-board .none { padding:50px 0px; }
+@media all and (max-width:768px) {
+	.responsive .list-board .board-list .subj-item .hide { display:inline !important; }
+}

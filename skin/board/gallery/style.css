@@ -1,0 +1,133 @@
+@charset "utf-8";
+
+/* 카테고리 */
+.list-category { margin-bottom:20px; }
+.list-category .active a, .list-category .selected a { color:crimson; font-weight:bold !important; }
+
+/* 목록 */
+.list-item .label-tack { padding-left:10px; }
+.list-item strong { display:block; line-height:20px; margin:10px 5px 5px; text-align:center; }
+.list-item .list-img { position:relative; overflow:hidden; }
+.list-item .list-img img { width:100%; height:auto; }
+.list-item .list-details { padding:0 3%; }
+.list-item .list-details .member, .list-item .list-details .guest { color:#787878 !important; }
+
+/* Responsive */
+@media all and (max-width:767px) {
+	.responsive .list-row { width:50% !important }
+}
+@media all and (max-width:420px) {
+	.responsive .list-row { width:100% !important }
+}
+
+/* 아이콘 */
+.list-wrap .wr-icon { display:inline-block; padding:0px; margin:0px; overflow:hidden; vertical-align:middle; background-repeat: no-repeat; background-position: left top; }
+.list-wrap .wr-new { width:12px; height:12px; background-image: url('./img/icon_new.gif'); }
+.list-wrap .wr-secret { width:12px; height:12px; background-image: url('./img/icon_secret.gif'); }
+.list-wrap .wr-hot { width:12px; height:12px; background-image: url('./img/icon_hot.gif'); }
+
+/* 목록 공통 */
+.list-notice .wr-notice { display:inline-block; padding:0px; margin:0px; overflow:hidden; vertical-align:middle; background-repeat: no-repeat; background-position: left top; width:37px; height:19px; background-image: url('./img/icon_notice.gif'); }
+.list-wrap { width:100%; }
+.list-btn-box { margin-bottom: 15px; }
+.list-btn-box a span { margin-left: 4px; }
+.list-btn-box .sort a { color:crimson !important; font-weight:bold !important; }
+.list-btn-box .dropdown-menu { font-size: 12px; }
+.list-none { margin:0px 0px 15px; padding:80px 0px; }
+.list-page { margin-bottom:15px; }
+.list-page .pagination { margin:0; }
+
+/* 내용 공통 */
+.view-wrap { width:100%; overflow:hidden; }
+.view-wrap .img-photo i { background: rgb(245, 245, 245); padding: 16px; border-radius: 50%; width: 80px; height: 80px; text-align: center; color: rgb(143, 143, 143); font-size: 40px; display: inline-block; }
+.view-wrap .img-photo img { border-radius: 50%; width: 80px !important; height: 80px !important; display:inline-block; }
+.view-wrap .img-resize img { max-width:100%; height:auto; }
+.view-wrap h1 { font-size: 22px; font-weight:bold; margin:0px; line-height:50px; display:block; text-overflow:ellipsis; white-space:nowrap; word-wrap:normal; overflow:hidden; margin:0px; padding:0px 10px; color: rgb(59, 62, 67); letter-spacing:-1px; }
+.view-wrap h1 .photo { border-radius: 50%; width: 50px; height: 50px; margin-bottom:10px; margin-right:10px; }
+.view-wrap .no-attach { border-bottom:0px; }
+
+.view-btn { margin:0px 0px 30px; }
+.view-btn i { margin-right:2px; }
+
+.view-head { border-left:0px; border-right:0px; }
+.view-head .sp { display:inline-block; width:20px; text-align:center; font-size:11px; color:#888; }
+.view-head .list-group-item { padding:5px 15px; border-style:dotted; }
+.view-tag { margin:10px 0px; padding:0px; color:#888; }
+.view-tag a { color:#888; }
+.view-tag a:hover { color:crimson; }
+.view-cnt { margin-top:4px; }
+.view-img img { display:block; max-width:100%; margin:0 auto 15px; border:0; height:auto; }
+.view-content { padding:0px 15px 20px }
+.view-mobile .view-content { padding:0px 0px 20px; }
+.view-content img { width:auto; height:auto; max-width:100%; }
+.view-content p { padding:0; margin:0; line-height:22px; }
+.view-good-box { text-align:center; }
+.view-good-box span { margin:15px 6px; width:80px; height:80px; display:inline-block; }
+.view-good-box a { background: rgb(245, 245, 245); padding-top:14px; border-radius: 50%; width: 80px; height: 80px; text-align: center; color: rgb(51, 51, 51); font-size: 22px; line-height:26px; display: inline-block; }
+.view-good-box .view-good a:hover { background: rgb(223, 17, 25); color: rgb(255, 255, 255); }
+.view-good-box .view-nogood a:hover { background: rgb(0, 0, 0); color: rgb(255, 255, 255); }
+.view-author .auth-photo { width:160px; padding-right:15px; }
+.view-comment { color: rgb(51, 51, 51); font-family: "Roboto", sans-serif; margin: 0px 0px 10px; padding: 0px 0px 5px; text-transform: capitalize; overflow: hidden; font-size: 20px; font-weight: 500; border-bottom-color: rgb(51, 51, 51); border-bottom-width: 1px; border-bottom-style: solid; display: inline-block; position: relative; }
+
+#bo_v_sns {margin:4px 0 15px;padding:0;list-style:none;zoom:1}
+#bo_v_sns:after {display:block;visibility:hidden;clear:both;content:""}
+#bo_v_sns li {float:left;margin:0 5px 0 0}
+
+/* 댓글 */
+.comment-media { }
+.comment-media .photo i { background: rgb(245, 245, 245); padding: 15px; border-radius: 50%; width: 64px; height: 64px; text-align: center; color: rgb(143, 143, 143); font-size: 30px; display: inline-block; }
+.comment-media .photo img { border-radius: 50%; width: 64px !important; height: 64px !important; display:inline-block; }
+.view-mobile .comment-media .photo i { padding: 10px; width: 54px; height: 54px; }
+.view-mobile .comment-media .photo img { width: 54px !important; height: 54px !important; }
+
+.comment-media .media { border-top:1px solid #eee; margin:7px 0px; padding:7px 0px 0px; }
+.comment-media :first-child.media { border-top:0px; margin-top:0px; padding-top:0px; }
+.comment-media h5 { margin:2px 0px; line-height: 22px; }
+.comment-media .media .media-body { padding-left:0px; }
+.comment-media .media .media-info { margin-left:10px; }
+.comment-media .media .media-content {	margin-top:8px; }
+.comment-media .media .media-btn {	margin-left:4px; }
+.comment-media .cmt-good-btn { text-align:right; padding-right:1px; }
+.comment-media .cmt-good, .comment-media .cmt-nogood { display:inline-block; width:74px; height:20px; margin-top:10px; padding-right:10px; margin-right:-1px; font:bold 11px verdana; text-align:right; letter-spacing:-1px; line-height:19px; cursor:pointer; }
+.comment-media .cmt-good { background: url('./img/cmt_good.gif') no-repeat left center; color:#f4695b; }
+.comment-media .cmt-nogood { background: url('./img/cmt_nogood.gif') no-repeat left center; color:#888; }
+
+#bo_vc_opt ol {	margin:0;padding:0;list-style:none;zoom:1; }
+#bo_vc_opt ol:after { display:block;visibility:hidden;clear:both;content:""; }
+#bo_vc_opt ol li { float:left;margin:0; }
+#bo_vc_send_sns ul { margin:0;padding:0;list-style:none;zoom:1; }
+#bo_vc_send_sns ul:after { display:block;visibility:hidden;clear:both;content:""; }
+#bo_vc_send_sns ul li {	float:left;margin:0 0 0 20px; }
+#bo_vc_send_sns input {	margin:0 0 0 5px; }
+
+/* 쓰기 공통 */
+.write-wrap { width:100%; overflow:hidden; }
+.write-wrap h2 { padding:0px; margin:0px; font-size:14px; font-weight:bold; }
+.write-wrap label { font-weight:bold; }
+.write-wrap .write-content { height: 300px; }
+.write-wrap .write-file { border:0;box-shadow:none; }
+.write-wrap .write-btn { margin:15px 0px 25px; text-align:center; }
+.write-wrap .delete-file { margin:0px; padding:0px 10px; font-weight:normal; }
+.write-wrap .delete-file label { font-weight: normal; }
+.write-wrap .sp-label { font-weight:normal; margin-right:10px; }
+.write-wrap .sp-label input[type="checkbox"], .write-wrap .sp-label input[type="radio"] { margin-top:0px; }
+
+#autosave_pop div { text-align:right; }
+#autosave_pop button { margin:0; margin-left:10px; padding:0; border:0; background:transparent; color:#888; }
+#autosave_pop ul { margin:0; padding:0; padding-left:15px; list-style:disc; }
+#autosave_pop li { padding:2px 5px;  }
+#autosave_pop li:after { display:block; visibility:hidden; clear:both; content:""; }
+#autosave_pop a { display:block; float:left; }
+#autosave_pop span { display:block;; float:right; }
+
+/* 반응형 공통 */
+@media all and (max-width:460px) {
+	.responsive .list-btn { text-align:center; margin:0px auto; }
+	.responsive .pull-right.list-btn { float:none !important; margin-bottom:14px; }
+	.responsive .view-wrap h1 { text-overflow:clip; overflow:none; white-space:normal; line-height: 24px; font-size: 18px; margin-bottom:10px; }
+	.responsive .view-wrap h1 .photo { display:none; }
+	.responsive .view-btn i { margin-right:0px; }
+	.responsive .view-author .auth-photo { float:none; width:100%; padding-right:0px; }
+	.responsive .comment-btn { text-align:center; }
+	.responsive .comment-btn .pull-right { float:none !important; }
+}

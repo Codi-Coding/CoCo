@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+.faq-category .div-tab { margin-bottom:15px; }
+.faq-category .dropdown { margin-bottom:15px; }
+.faq-category .active a, .list-category .selected a { color:crimson; font-weight:bold !important; }
+.faq-box { border:1px solid #ddd; background:#fafafa; padding:20px 15px 3px; margin-bottom:15px; }
+.faq-img img, .faq-html img, .faq-content img { width:auto; max-width:100%; border:0; }
+.faq-content .panel-body p { padding:0; margin:0; }
+.faq-none { padding:50px 0; }

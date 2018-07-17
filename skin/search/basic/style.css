@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+.search-box { border:1px solid #ddd; background:#fafafa; padding:20px 15px 3px; margin-bottom:15px; }
+.sch_word { color:orangered; }
+.search-none { padding:80px 20px; }
+
+.search-media { padding-bottom:10px; }
+.search-media .photo i { border-radius:50%; background: rgb(245, 245, 245); padding: 15px; width: 64px; height: 64px; text-align: center; color: rgb(143, 143, 143); font-size: 30px; display: inline-block; }
+.search-media .photo img { border-radius:50%; width: 64px !important; height: 64px !important; display:inline-block; }
+.search-media .media { border-bottom:1px solid #eee; margin:0px; padding:12px; }
+.search-media :first-child.media { margin-top:0px; padding-top:0px; }
+.search-media :last-child.media { border-bottom:0px; }
+.search-media .media-heading { padding:0; margin:0px; line-height: 22px; }
+.search-media .media .media-body { padding-left:0px; }
+.search-media .media .media-info { line-height:20px; padding:4px 0px; }
+.search-media .media .media-info .sp { display:inline-block; width:20px; text-align:center; font-size:11px; color:#888; }
+.search-media .media .media-content {  }
+.search-media .media .media-content p { margin:0px; padding:0px; }
