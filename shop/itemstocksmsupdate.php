@@ -8,17 +8,17 @@ $sql = " select it_id, it_name, it_soldout, it_stock_sms
 $it = sql_fetch($sql);
 
 if(!$it['it_id'])
-    alert_close(_t('상품정보가 존재하지 않습니다.'));
+    alert_close('자료가 존재하지 않습니다.');
 
 if(!$it['it_soldout'] || !$it['it_stock_sms'])
-    alert_close(_t('재입고SMS 알림을 신청할 수 없는 상품입니다.'));
+    alert_close('재입고SMS 알림을 신청할 수 없는 자료입니다.');
 
 $ss_hp = hyphen_hp_number($ss_hp);
 if(!$ss_hp)
-    alert(_t('휴대폰번호를 입력해 주십시오.'));
+    alert('휴대폰번호를 입력해 주십시오.');
 
 if(!$agree)
-    alert(_t('개인정보처리방침안내에 동의해 주십시오.'));
+    alert('개인정보처리방침안내에 동의해 주십시오.');
 
 // 중복등록 체크
 $sql = " select count(*) as cnt
@@ -29,7 +29,7 @@ $sql = " select count(*) as cnt
 $row = sql_fetch($sql);
 
 if($row['cnt'])
-    alert_close(_t('해당 상품에 대하여 이전에 알림 요청을 등록한 내역이 있습니다.'));
+    alert_close('해당 자료에 대하여 이전에 알림 요청을 등록한 내역이 있습니다.');
 
 // 정보입력
 $sql = " insert into {$g5['g5_shop_item_stocksms_table']}
@@ -39,5 +39,5 @@ $sql = " insert into {$g5['g5_shop_item_stocksms_table']}
                 ss_datetime = '".G5_TIME_YMDHIS."' ";
 sql_query($sql);
 
-alert_close(_t('재입고SMS 알림 요청 등록이 완료됐습니다.'));
+alert_close('재입고SMS 알림 요청 등록이 완료됐습니다.');
 ?>

@@ -8,21 +8,26 @@ $w == u : 수정
 ==========================*/
 
 if($is_guest)
-    alert(_t('회원이시라면 로그인 후 이용해 보십시오.'), './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
+    alert('회원이시라면 로그인 후 이용해 보십시오.', './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
 
 $msg = array();
 
 // 1:1문의 설정값
 $qaconfig = get_qa_config();
 
+// 관리자 체크
+if (chk_multiple_admin($member['mb_id'], $qaconfig['as_admin'])) { 
+	$is_admin = 'super'; 
+}
+
 if(trim($qaconfig['qa_category'])) {
     if($w != 'a') {
         $category = explode('|', $qaconfig['qa_category']);
         if(!in_array($qa_category, $category))
-            alert(_t('분류를 올바르게 지정해 주십시오.'));
+            alert('분류를 올바르게 지정해 주십시오.');
     }
 } else {
-    alert(_t('1:1문의 설정에서 분류를 설정해 주십시오'));
+    alert('1:1문의 설정에서 분류를 설정해 주십시오');
 }
 
 // e-mail 체크
@@ -31,7 +36,7 @@ if(isset($_POST['qa_email']) && $_POST['qa_email'])
     $qa_email = get_email_address(trim($_POST['qa_email']));
 
 if($w != 'a' && $qaconfig['qa_req_email'] && !$qa_email)
-    $msg[] = _t('이메일을 입력하세요.');
+    $msg[] = '이메일을 입력하세요.';
 
 $qa_subject = '';
 if (isset($_POST['qa_subject'])) {
@@ -39,7 +44,7 @@ if (isset($_POST['qa_subject'])) {
     $qa_subject = preg_replace("#[\\\]+$#", "", $qa_subject);
 }
 if ($qa_subject == '') {
-    $msg[] = _t('제목을 입력하세요.');
+    $msg[] = '<strong>제목</strong>을 입력하세요.';
 }
 
 $qa_content = '';
@@ -48,7 +53,7 @@ if (isset($_POST['qa_content'])) {
     $qa_content = preg_replace("#[\\\]+$#", "", $qa_content);
 }
 if ($qa_content == '') {
-    $msg[] = _t('내용을 입력하세요.');
+    $msg[] = '<strong>내용</strong>을 입력하세요.';
 }
 
 if (!empty($msg)) {
@@ -61,14 +66,14 @@ if($qa_hp)
 
 // 090710
 if (substr_count($qa_content, '&#') > 50) {
-    alert(_t('내용에 올바르지 않은 코드가 다수 포함되어 있습니다.'));
+    alert('내용에 올바르지 않은 코드가 다수 포함되어 있습니다.');
     exit;
 }
 
 $upload_max_filesize = ini_get('upload_max_filesize');
 
 if (empty($_POST)) {
-    alert(_t("파일 또는 글내용의 크기가 서버에서 설정한 값을 넘어 오류가 발생하였습니다.")."\\npost_max_size=".ini_get('post_max_size')." , upload_max_filesize=".$upload_max_filesize."\\n"._t("게시판관리자 또는 서버관리자에게 문의 바랍니다."));
+    alert("파일 또는 글내용의 크기가 서버에서 설정한 값을 넘어 오류가 발생하였습니다.\\npost_max_size=".ini_get('post_max_size')." , upload_max_filesize=".$upload_max_filesize."\\n게시판관리자 또는 서버관리자에게 문의 바랍니다.");
 }
 
 for ($i=1; $i<=5; $i++) {
@@ -81,7 +86,7 @@ for ($i=1; $i<=5; $i++) {
 
 if($w == 'u' || $w == 'a' || $w == 'r') {
     if($w == 'a' && !$is_admin)
-        alert(_t('답변은 관리자만 등록할 수 있습니다.'));
+        alert('답변은 관리자만 등록할 수 있습니다.');
 
     $sql = " select * from {$g5['qa_content_table']} where qa_id = '$qa_id' ";
     if(!$is_admin) {
@@ -92,23 +97,23 @@ if($w == 'u' || $w == 'a' || $w == 'r') {
 
     if($w == 'u') {
         if(!$write['qa_id'])
-            alert(_t('게시글이 존재하지 않습니다.').'\\n'._t('삭제되었거나 자신의 글이 아닌 경우입니다.'));
+            alert('게시글이 존재하지 않습니다.\\n삭제되었거나 자신의 글이 아닌 경우입니다.');
 
         if(!$is_admin) {
             if($write['qa_type'] == 0 && $write['qa_status'] == 1)
-                alert(_t('답변이 등록된 문의글은 수정할 수 없습니다.'));
+                alert('답변이 등록된 문의글은 수정할 수 없습니다.');
 
             if($write['mb_id'] != $member['mb_id'])
-                alert(_t('게시글을 수정할 권한이 없습니다.').'\\n\\n'._t('올바른 방법으로 이용해 주십시오.'), G5_URL);
+                alert('게시글을 수정할 권한이 없습니다.\\n\\n올바른 방법으로 이용해 주십시오.', G5_URL);
         }
     }
 
     if($w == 'a') {
         if(!$write['qa_id'])
-            alert(_t('문의글이 존재하지 않아 답변글을 등록할 수 없습니다.'));
+            alert('문의글이 존재하지 않아 답변글을 등록할 수 없습니다.');
 
         if($write['qa_type'] == 1)
-            alert(_t('답변글에는 다시 답변을 등록할 수 없습니다.'));
+            alert('답변글에는 다시 답변을 등록할 수 없습니다.');
     }
 }
 
@@ -122,7 +127,7 @@ for ($i=1; $i<=$upload_count; $i++) {
 }
 
 if($file_count > 2)
-    alert(_t('첨부파일을 2개 이하로 업로드 해주십시오.'));
+    alert('첨부파일을 2개 이하로 업로드 해주십시오.');
 
 // 디렉토리가 없다면 생성합니다. (퍼미션도 변경하구요.)
 @mkdir(G5_DATA_PATH.'/qa', G5_DIR_PERMISSION);
@@ -156,11 +161,11 @@ for ($i=1; $i<=count($_FILES['bf_file']['name']); $i++) {
     // 서버에 설정된 값보다 큰파일을 업로드 한다면
     if ($filename) {
         if ($_FILES['bf_file']['error'][$i] == 1) {
-            $file_upload_msg .= '\"'.$filename.'\" '._t('파일의 용량이 서버에 설정').'('.$upload_max_filesize.')'._t('된 값보다 크므로 업로드 할 수 없습니다.').'\\n';
+            $file_upload_msg .= '\"'.$filename.'\" 파일의 용량이 서버에 설정('.$upload_max_filesize.')된 값보다 크므로 업로드 할 수 없습니다.\\n';
             continue;
         }
         else if ($_FILES['bf_file']['error'][$i] != 0) {
-            $file_upload_msg .= '\"'.$filename.'\" '._t('파일이 정상적으로 업로드 되지 않았습니다.').'\\n';
+            $file_upload_msg .= '\"'.$filename.'\" 파일이 정상적으로 업로드 되지 않았습니다.\\n';
             continue;
         }
     }
@@ -168,7 +173,7 @@ for ($i=1; $i<=count($_FILES['bf_file']['name']); $i++) {
     if (is_uploaded_file($tmp_file)) {
         // 관리자가 아니면서 설정한 업로드 사이즈보다 크다면 건너뜀
         if (!$is_admin && $filesize > $qaconfig['qa_upload_size']) {
-            $file_upload_msg .= '\"'.$filename.'\" '._t('파일의 용량').'('.number_format($filesize).' '._t('바이트').')'._t('이 게시판에 설정').'('.number_format($qaconfig['qa_upload_size']).' '._t('바이트').')'._t('된 값보다 크므로 업로드 하지 않습니다.').'\\n';
+            $file_upload_msg .= '\"'.$filename.'\" 파일의 용량('.number_format($filesize).' 바이트)이 게시판에 설정('.number_format($qaconfig['qa_upload_size']).' 바이트)된 값보다 크므로 업로드 하지 않습니다.\\n';
             continue;
         }
 
@@ -276,14 +281,32 @@ if($w == '' || $w == 'a' || $w == 'r') {
                         qa_related  = '$qa_related'
                     where qa_id = '$qa_id' ";
         sql_query($sql);
-    }
+
+		//알림
+		$qa_admin_list = ($qaconfig['as_admin']) ? $config['cf_admin'].','.$qaconfig['as_admin'] : $config['cf_admin'];
+		$qa_admin = explode(",", $qa_admin_list);
+		$qa_admin = array_unique($qa_admin);
+
+		for($i=0;$i < count($qa_admin);$i++) {
+
+			$admin_id = trim($qa_admin[$i]);
+
+			if(!$admin_id) continue;
+
+			// APMS : 내글반응 등록
+			apms_response('qa', 'qa', '', '', $qa_id, $qa_subject, $admin_id, $member['mb_id'], $member['mb_nick']);
+		}
+	}
 
     if($w == 'a') {
         $sql = " update {$g5['qa_content_table']}
                     set qa_status = '1'
                     where qa_id = '{$write['qa_parent']}' ";
         sql_query($sql);
-    }
+
+		// APMS : 내글반응 등록
+		apms_response('qa', 'qa', '', '', $write['qa_parent'], $write['qa_subject'], $write['mb_id'], '', '답변완료');
+	}
 } else if($w == 'u') {
     if(!$upload[1]['file'] && !$upload[1]['del_check']) {
         $upload[1]['file'] = $write['qa_file1'];
@@ -421,7 +444,7 @@ if($config['cf_sms_use'] == 'icode' && $qaconfig['qa_use_sms']) {
 if($w == 'a' && $write['qa_email_recv'] && trim($write['qa_email'])) {
     include_once(G5_LIB_PATH.'/mailer.lib.php');
 
-    $subject = $config['cf_title'].' '.$qaconfig['qa_title'].' '._t('답변 알림 메일');
+    $subject = $config['cf_title'].' '.$qaconfig['qa_title'].' 답변 알림 메일';
     $content = nl2br(conv_unescape_nl(stripslashes($qa_content)));
 
     mailer($config['cf_admin_email_name'], $config['cf_admin_email'], $write['qa_email'], $subject, $content, 1);
@@ -431,7 +454,7 @@ if($w == 'a' && $write['qa_email_recv'] && trim($write['qa_email'])) {
 if(($w == '' || $w == 'r') && trim($qaconfig['qa_admin_email'])) {
     include_once(G5_LIB_PATH.'/mailer.lib.php');
 
-    $subject = $config['cf_title'].' '.$qaconfig['qa_title'].' '._t('질문 알림 메일');
+    $subject = $config['cf_title'].' '.$qaconfig['qa_title'].' 질문 알림 메일';
     $content = nl2br(conv_unescape_nl(stripslashes($qa_content)));
 
     mailer($config['cf_admin_email_name'], $qa_email, $qaconfig['qa_admin_email'], $subject, $content, 1);

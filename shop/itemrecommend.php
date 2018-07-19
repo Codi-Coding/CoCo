@@ -1,74 +1,48 @@
 <?php
 include_once('./_common.php');
 
-if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH.'/itemrecommend.php');
+if(USE_G5_THEME && defined('G5_THEME_PATH')) {
+    require_once(G5_SHOP_PATH.'/yc/itemrecommend.php');
     return;
 }
 
 if (!$is_member)
-    alert_close(_t('회원만 메일을 발송할 수 있습니다.'));
+    alert_close('회원만 메일을 발송할 수 있습니다.');
 
 // 스팸을 발송할 수 없도록 세션에 아무값이나 저장하여 hidden 으로 넘겨서 다음 페이지에서 비교함
 $token = md5(uniqid(rand(), true));
 set_session("ss_token", $token);
 
-$sql = " select it_name from {$g5['g5_shop_item_table']} where it_id='$it_id' ";
+$sql = " select it_name, ca_id from {$g5['g5_shop_item_table']} where it_id='$it_id' ";
 $it = sql_fetch($sql);
 if (!$it['it_name'])
-    alert_close(_t("등록된 상품이 아닙니다."));
+    alert_close("자료가 없습니다.");
 
-$g5['title'] =  _t($it['it_name']).' - '._t('추천하기');
-include_once(G5_PATH.'/head.sub.php');
-?>
+$ca_id = ($ca_id) ? $ca_id : $it['ca_id'];
+if(!defined('THEMA_PATH')) {
+	$ca = sql_fetch(" select as_item_set, as_mobile_item_set from {$g5['g5_shop_category_table']} where ca_id = '{$ca_id}' ");
+	$at = apms_ca_thema($ca_id, $ca, 1);
+	include_once(G5_LIB_PATH.'/apms.thema.lib.php');
+	$item_skin = apms_itemview_skin($at['item'], $ca_id, $it['ca_id']);
 
-<!-- 상품 추천하기 시작 { -->
-<div id="sit_rec_new" class="new_win">
-    <h1 id="win_title"><?php echo $g5['title']; ?></h1>
+	$wset = array();
+	if($ca['as_'.MOBILE_.'item_set']) {
+		$wset = apms_unpack($ca['as_'.MOBILE_.'item_set']);
+	}
 
-    <form name="fitemrecommend" method="post" action="./itemrecommendmail.php" autocomplete="off" onsubmit="return fitemrecommend_check(this);">
-    <input type="hidden" name="token" value="<?php echo $token; ?>">
-    <input type="hidden" name="it_id" value="<?php echo $it_id; ?>">
+	// 데모
+	if($is_demo) {
+		@include ($demo_setup_file);
+	}
 
-    <div class="tbl_frm01 tbl_wrap">
-        <table>
-        <colgroup>
-            <col class="grid_3">
-            <col>
-        </colgroup>
-        <tbody>
-        <tr>
-            <th scope="row"><label for="to_email"><?php echo _t('추천받는 분'); ?><br>E-mail<strong class="sound_only"> <?php echo _t('필수'); ?></strong></label></th>
-            <td><input type="text" name="to_email" id="to_email" required class="frm_input required" size="51"></td>
-        </tr>
-        <tr>
-            <th scope="row"><label for="subject"><?php echo _t('제목'); ?><strong class="sound_only"> <?php echo _t('필수'); ?></strong></label></th>
-            <td><input type="text" name="subject" id="subject" required class="frm_input required" size="51"></td>
-        </tr>
-        <tr>
-            <th scope="row"><label for="content"><?php echo _t('내용'); ?><strong class="sound_only"> <?php echo _t('필수'); ?></strong></label></th>
-            <td><textarea name="content" id="content" required class="required"></textarea></td>
-        </tr>
-        </tbody>
-        </table>
-    </div>
-
-    <div class="win_btn">
-        <input type="submit" id="btn_submit" value="<?php echo _t('보내기'); ?>" class="btn_submit">
-        <a href="javascript:window.close();"><?php echo _t('창닫기'); ?></a>
-    </div>
-    </form>
-
-</div>
-
-<script>
-function fitemrecommend_check(f)
-{
-    return true;
+	$item_skin_path = G5_SKIN_PATH.'/apms/item/'.$item_skin;
+	$item_skin_url = G5_SKIN_URL.'/apms/item/'.$item_skin;
 }
-</script>
-<!-- } 상품 추천하기 끝 -->
 
-<?php
+$g5['title'] =  $it['it_name'].' - 추천하기';
+include_once(G5_PATH.'/head.sub.php');
+@include_once(THEMA_PATH.'/head.sub.php');
+include_once($item_skin_path.'/itemrecommend.skin.php');
+@include_once(THEMA_PATH.'/tail.sub.php');
 include_once(G5_PATH.'/tail.sub.php');
 ?>

@@ -16,8 +16,8 @@ add_stylesheet('<link rel="stylesheet" href="'.$new_skin_url.'/style.css">', 0);
         <option value="w">원글만
         <option value="c">코멘트만
     </select>
-    <input type="text" name="mb_id" value="<?php echo $mb_id ?>" id="mb_id" placeholder="검색어(필수)" required class="frm_input ">
-    <button type="submit" value="검색" class="btn_submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+    <input type="text" name="mb_id" value="<?php echo $mb_id ?>" id="mb_id" placeholder="검색어(필수)" required class="frm_input required">
+    <input type="submit" value="검색" class="btn_submit">
     </form>
     <script>
     function select_change()
@@ -31,9 +31,16 @@ add_stylesheet('<link rel="stylesheet" href="'.$new_skin_url.'/style.css">', 0);
 <!-- } 전체게시물 검색 끝 -->
 
 <!-- 전체게시물 목록 시작 { -->
-<div class="list_01" id="new_list">
-    <ul>
-
+<div class="tbl_head01 tbl_wrap">
+    <table id="new_tbl">
+    <thead>
+    <tr>
+        <th scope="col">게시판</th>
+        <th scope="col">제목</th>
+        <th scope="col">일시</th>
+    </tr>
+    </thead>
+    <tbody>
     <?php
     for ($i=0; $i<count($list); $i++)
     {
@@ -41,17 +48,18 @@ add_stylesheet('<link rel="stylesheet" href="'.$new_skin_url.'/style.css">', 0);
         $bo_subject = cut_str($list[$i]['bo_subject'], 20);
         $wr_subject = get_text(cut_str($list[$i]['wr_subject'], 80));
     ?>
-    <li>
-        <a href="<?php echo $list[$i]['href'] ?>" class="new_tit"><?php echo $list[$i]['comment'] ?><?php echo $wr_subject ?></a>
-        <a href="./board.php?bo_table=<?php echo $list[$i]['bo_table'] ?>" class="new_board"><i class="fa fa-list-alt" aria-hidden="true"></i> <?php echo $bo_subject ?></a>
-        <span class="new_date"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $list[$i]['datetime2'] ?></span>
-    </li>
+    <tr>
+        <td class="td_board"><a href="./board.php?bo_table=<?php echo $list[$i]['bo_table'] ?>"><?php echo $bo_subject ?></a></td>
+        <td><a href="<?php echo $list[$i]['href'] ?>"><?php echo $list[$i]['comment'] ?><?php echo $wr_subject ?></a></td>
+        <td class="td_date"><?php echo $list[$i]['datetime2'] ?></td>
+    </tr>
     <?php } ?>
 
     <?php if ($i == 0)
-        echo '<li class="empty_table">게시물이 없습니다.</li>';
+        echo '<tr><td colspan="3" class="empty_table">게시물이 없습니다.</td></tr>';
     ?>
-    </ul>
+    </tbody>
+    </table>
 </div>
 
 <?php echo $write_pages ?>

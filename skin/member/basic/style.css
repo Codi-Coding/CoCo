@@ -1,0 +1,104 @@
+@charset "utf-8";
+
+/* Sub Title */
+.sub-title { padding:10px 12px; border-top:4px solid #444; }
+.sub-title h4 { padding:0; margin:0; line-height:50px; font-size:18px; }
+.sub-title i { background: rgb(245, 245, 245); padding-top: 12px; border-radius: 50%; width: 50px; height: 50px; text-align: center; color: rgb(143, 143, 143); font-size: 25px; display: inline-block; }
+.sub-title img { border-radius: 50%; width: 50px !important; height: 50px !important; display:inline-block; }
+
+/* Follow */
+.follow-skin .bg-heading { background:#fafafa; }
+.follow-skin .col-follow .myinfo a { margin-right:15px; color:#888; font-size:11px; }
+.follow-skin .sp-follow { margin-bottom:0px; border-top:3px solid #444; }
+.follow-skin .img-photo i { background: rgb(245, 245, 245); padding: 16px; border-radius: 50%; width: 80px; height: 80px; text-align: center; color: rgb(143, 143, 143); font-size: 40px; display: inline-block; }
+.follow-skin .img-photo img { border-radius: 50%; width: 80px !important; height: 80px !important; display:inline-block; }
+@media all and (max-width:460px) {
+	.responsive .follow-skin .col-follow { display:block !important; width:100% !important;}
+}
+
+/* Formmail */
+.formmail-form { padding:20px; }
+.formmail-type label { margin-right:10px; }
+
+/* Memo */
+.memo-send-info { padding:8px 20px;background:#fafafa;border-bottom:1px solid #eee; }
+.memo-content { padding:20px; line-height:22px;border-bottom:1px solid #eee; margin-bottom:15px; }
+.memo-send-form { padding:20px; }
+
+/* Mypage */
+.mypage-skin .img-photo i { background: rgb(245, 245, 245); padding: 16px; border-radius: 50%; width: 80px; height: 80px; text-align: center; color: rgb(143, 143, 143); font-size: 40px; display: inline-block; }
+.mypage-skin .img-photo img { border-radius: 50%; width: 80px !important; height: 80px !important; display:inline-block; }
+.mypage-skin .img-resize img { max-width:100%; height:auto; }
+.mypage-skin .view-author .auth-photo { width:160px; padding-right:15px; }
+@media all and (max-width:460px) {
+	.responsive .mypage-skin .view-author .auth-photo { float:none; width:100%; padding-right:0px; }
+}
+
+/* MyPhoto */
+.myphoto { margin-bottom:15px; }
+.myphoto img { border-radius: 50%; display:inline-block; }
+.myphoto i { background: rgb(245, 245, 245); padding: 18px; border-radius: 50%; text-align: center; color: rgb(143, 143, 143); font-size: 40px; display: inline-block; }
+
+/* MyPost */
+.mypost-skin i.img-fa { width:40px; height:40px; padding:10px 0px 0px; font-size:20px; text-align:center; color:#aaa; }
+.mypost-skin .list-details { padding-top:4px; }
+.mypost-skin .list-none { padding:50px 0px; }
+
+.mypost-media { padding-bottom:10px; }
+.mypost-media .photo i { border-radius:50%; background: rgb(245, 245, 245); padding: 15px; width: 64px; height: 64px; text-align: center; color: rgb(143, 143, 143); font-size: 30px; display: inline-block; }
+.mypost-media .photo img { border-radius:50%; width: 64px !important; height: 64px !important; display:inline-block; }
+.mypost-media .media { border-bottom:1px solid #eee; margin:7px 0px; padding:0px 12px 7px; }
+.mypost-media :first-child.media { border-top:0px; margin-top:0px; padding-top:0px; }
+.mypost-media .media-heading { padding:0; margin:0px; line-height: 20px; }
+.mypost-media .media .media-body { padding-left:0px; }
+.mypost-media .media .media-content {  }
+.mypost-media .media .media-content p { margin:0px; padding:0px; }
+.mypost-media .media .media-resize { margin-top:10px; }
+.mypost-media .media .media-resize img { max-width:100%; height:auto; }
+.mypost-media .media.media-reply { border:0px; border-top:1px solid #eee; margin:10px 0px 0px; padding:10px 0px 0px; }
+
+/* Point */
+.point-skin th, .point-skin td { white-space:nowrap; }
+.point-skin td.po-content { white-space:normal; }
+
+/* Profile */
+.profile-skin .img-photo i { border-radius: 50%; background: rgb(245, 245, 245); padding: 16px; width: 80px; height: 80px; text-align: center; color: rgb(143, 143, 143); font-size: 40px; display: inline-block; }
+.profile-skin .img-photo img { border-radius: 50%; width: 80px !important; height: 80px !important; display:inline-block; }
+.profile-skin .img-resize img { max-width:100%; height:auto; }
+
+/* Register */
+.register-term { position: relative; height: 200px; margin:0px; overflow: auto; }
+#agree11, #agree21 { margin:0px; }
+
+/* Register Form */
+.register-form .text-gap { margin-bottom:4px; }
+.register-form .addr-line { margin-bottom:7px; }
+@media all and (max-width:767px) {
+	.responsive .register-form .cert-btn { margin-top:10px }
+}
+
+/* Response */
+.myresponse-skin .res-info { margin:0; padding:7px 12px; }
+.myresponse-skin .media { border-top:1px solid #eee; margin:6px 0px; padding:8px 12px 0px; }
+.myresponse-skin .myresponse-list .media:first-child { border-top:0px; margin-top:0px; padding-top:8px; }
+.myresponse-skin .media-heading { padding:0; margin:0; }
+.myresponse-skin .photo i { border-radius: 50%; background: rgb(238, 238, 238); padding: 8px; width: 40px; height: 40px; text-align: center; color: rgb(255, 255, 255); font-size: 25px; display: inline-block; }
+.myresponse-skin .photo img { border-radius: 50%; width: 40px !important; height: 40px !important; display:inline-block; }
+.myresponse-skin .media-info i { margin-left:10px; }
+.myresponse-skin .media-info i:first-child { margin-left:0px; }
+
+/* Scrap */
+.scrap-skin i.scrap-icon { background:#333; color:#fff; }
+.scrap-skin .scrap-head { margin:0px; padding: 10px 20px; line-height:22px; background:#333; color:#fff; font-size:16px; text-align:center; }
+.scrap-skin .scrap-form { padding: 10px 20px 20px; }
+
+/* Shopping */
+.shopping-skin i.img-fa { width:40px; height:40px; padding:10px 0px 0px; font-size:20px; text-align:center; color:#aaa; }
+.shopping-skin .list-none { padding:50px 0px; }
+
+/* Wishlist */
+.wishlist-skin i.img-fa { width:40px; height:40px; padding:10px 0px 0px; font-size:20px; text-align:center; color:#aaa; }
+
+/* Mypage */
+.mypage-tbl th { background:#333 !important; color:#fff !important; text-align:center !important; white-space:nowrap;  }
+.mypage-tbl td { text-align:center; white-space:nowrap; }

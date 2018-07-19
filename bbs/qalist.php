@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 if($is_guest)
-    alert(_t('회원이시라면 로그인 후 이용해 보십시오.'), './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
+    alert('회원이시라면 로그인 후 이용해 보십시오.', './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
 
 $qaconfig = get_qa_config();
 
@@ -18,7 +18,7 @@ if ($qaconfig['qa_category']) {
     $category_option .= '<li><a href="'.$category_href.'"';
     if ($sca=='')
         $category_option .= ' id="bo_cate_on"';
-    $category_option .= '>'._t('전체').'</a></li>';
+    $category_option .= '>전체</a></li>';
 
     $categories = explode('|', $qaconfig['qa_category']); // 구분자가 | 로 되어 있음
     for ($i=0; $i<count($categories); $i++) {
@@ -30,7 +30,7 @@ if ($qaconfig['qa_category']) {
             $category_option .= ' id="bo_cate_on"';
             $category_msg = '<span class="sound_only">열린 분류 </span>';
         }
-        $category_option .= '>'.$category_msg._t($category).'</a></li>';
+        $category_option .= '>'.$category_msg.$category.'</a></li>';
     }
 }
 
@@ -38,8 +38,13 @@ if(is_file($skin_file)) {
     $sql_common = " from {$g5['qa_content_table']} ";
     $sql_search = " where qa_type = '0' ";
 
-    if(!$is_admin)
+    if($is_admin) {
+		if($qmb) {
+	        $sql_search .= " and mb_id = '{$qmb}' ";
+		}
+	} else {
         $sql_search .= " and mb_id = '{$member['mb_id']}' ";
+	}
 
     if($sca) {
         if (preg_match("/[a-zA-Z]/", $sca))
@@ -94,19 +99,18 @@ if(is_file($skin_file)) {
         if(trim($row['qa_file1']) || trim($row['qa_file2']))
             $list[$i]['icon_file'] = '<img src="'.$qa_skin_url.'/img/icon_file.gif">';
 
-        $list[$i]['name'] = get_text($row['qa_name']);
-        // 사이드뷰 적용시
-        //$list[$i]['name'] = get_sideview($row['mb_id'], $row['qa_name']);
+		$list[$i]['name'] = apms_sideview($row['mb_id'], get_text($row['qa_name']), $row['email'], '', 'no');
         $list[$i]['date'] = substr($row['qa_datetime'], 2, 8);
-
         $list[$i]['num'] = $num - $i;
     }
 
     $is_checkbox = false;
-    $admin_href = '';
-    if($is_admin) {
-        $is_checkbox = true;
-        $admin_href = G5_ADMIN_URL.'/qa_config.php';
+	$admin_href = '';
+	$token = '';
+	if($is_admin) {
+		set_session('ss_qa_delete_token', $token = uniqid(time()));
+		$is_checkbox = true;
+		$admin_href = G5_ADMIN_URL.'/qa_config.php';
     }
 
     $list_href = G5_BBS_URL.'/qalist.php';
@@ -117,7 +121,7 @@ if(is_file($skin_file)) {
     $stx = get_text(stripslashes($stx));
     include_once($skin_file);
 } else {
-    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</div>';
+    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</div>';
 }
 
 include_once('./qatail.php');

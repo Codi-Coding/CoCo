@@ -1,19 +1,37 @@
 <?php
 include_once('./_common.php');
 
-if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/bbs'.'/search.ml.php')) { include_once $g5['locale_path'].'/include/ml/bbs'.'/search.ml.php'; return; }
+$tmp_gr_id = $gr_id;
 
-$g5['title'] = _t('전체검색 결과');
-include_once('./_head.php');
+if(!$sfl) $sfl = 'wr_subject||wr_content';
 
-/// 검색 결과 테이블 형태로 출력
-if($config[cf_search_skin] == 'g4_good_bbs_list') {
-    $search_skin_path = "$g5[path]/skin/search/$config[cf_search_skin]";
-    include("$search_skin_path/bbs/search.php");
-    exit;
+// Page ID
+$pid = ($pid) ? $pid : 'search';
+$at = apms_page_thema($pid);
+include_once(G5_LIB_PATH.'/apms.thema.lib.php');
+
+// 스킨 체크
+list($search_skin_path, $search_skin_url) = apms_skin_thema('search', $search_skin_path, $search_skin_url); 
+
+// 설정값 불러오기
+$is_search_sub = false;
+@include_once($search_skin_path.'/config.skin.php');
+
+$g5['title'] = '전체검색 결과';
+
+if($is_search_sub) {
+	include_once(G5_PATH.'/head.sub.php');
+	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
+} else {
+	include_once('./_head.php');
 }
-/// 검색 결과 테이블 형태로 출력 : 끝
 
+$skin_path = $search_skin_path;
+$skin_url = $search_skin_url;
+
+$gr_id = $tmp_gr_id;
+
+$bo_list = array();
 $search_table = Array();
 $table_index = 0;
 $write_pages = "";
@@ -32,7 +50,7 @@ if ($stx) {
 
     $g5_search['tables'] = Array();
     $g5_search['read_level'] = Array();
-    $sql = " select gr_id, bo_table, bo_read_level from {$g5['board_table']} where bo_use_search = 1 and bo_list_level <= '{$member['mb_level']}' ";
+	$sql = " select gr_id, bo_table, bo_read_level, as_grade, as_equal, as_min, as_max from {$g5['board_table']} where bo_use_search <> '0' and bo_use_search <= '{$member['mb_level']}' and bo_list_level <= '{$member['mb_level']}' ";
     if ($gr_id)
         $sql .= " and gr_id = '{$gr_id}' ";
     $onetable = isset($onetable) ? $onetable : "";
@@ -44,11 +62,20 @@ if ($stx) {
     {
         if ($is_admin != 'super')
         {
-            // 그룹접근 사용에 대한 검색 차단
-            $sql2 = " select gr_use_access, gr_admin from {$g5['group_table']} where gr_id = '{$row['gr_id']}' ";
+			// 메뉴접근에 따른 검색차단
+			if(apms_auth($row['as_grade'], $row['as_equal'], $row['as_min'], $row['as_max'], 1)) {
+				continue;
+			}
+		 
+			// 그룹접근 사용에 대한 검색 차단
+            $sql2 = " select gr_use_access, gr_admin, as_show, as_grade, as_equal, as_min, as_max from {$g5['group_table']} where gr_id = '{$row['gr_id']}' ";
             $row2 = sql_fetch($sql2);
             // 그룹접근을 사용한다면
-            if ($row2['gr_use_access']) {
+			if (!$row2['as_show']) {
+				continue;
+            } else if (apms_auth($row2['as_grade'], $row2['as_equal'], $row2['as_min'], $row2['as_max'], 1)) {
+				continue;
+			} else if ($row2['gr_use_access']) {
                 // 그룹관리자가 있으며 현재 회원이 그룹관리자라면 통과
                 if ($row2['gr_admin'] && $row2['gr_admin'] == $member['mb_id']) {
                     ;
@@ -58,7 +85,7 @@ if ($stx) {
                     if (!$row3['cnt'])
                         continue;
                 }
-            }
+			}
         }
         $g5_search['tables'][] = $row['bo_table'];
         $g5_search['read_level'][] = $row['bo_read_level'];
@@ -118,6 +145,7 @@ if ($stx) {
         $str .= ")";
 
         $op1 = " {$sop} ";
+
     }
     $str .= ")";
 
@@ -128,13 +156,18 @@ if ($stx) {
 
     $time1 = get_microtime();
 
+	$z = 0;
     $total_count = 0;
     for ($i=0; $i<count($g5_search['tables']); $i++) {
         $tmp_write_table   = $g5['write_prefix'] . $g5_search['tables'][$i];
 
-        $sql = " select wr_id from {$tmp_write_table} where {$sql_search} ";
-        $result = sql_query($sql, false);
-        $row['cnt'] = @sql_num_rows($result);
+        //$sql = " select wr_id from {$tmp_write_table} where {$sql_search} ";
+        //$result = sql_query($sql, false);
+        //$row['cnt'] = @sql_num_rows($result);
+
+        $sql = " select count(wr_id) as cnt from {$tmp_write_table} where {$sql_search} ";
+        $result = sql_fetch($sql, false);
+        $row['cnt'] = (int)$result['cnt'];
 
         $total_count += $row['cnt'];
         if ($row['cnt']) {
@@ -147,10 +180,17 @@ if ($stx) {
             $row2 = sql_fetch($sql2);
             $sch_class = "";
             $sch_all = "";
-            if ($onetable == $g5_search['tables'][$i]) $sch_class = "class=sch_on";
-            else $sch_all = "class=sch_on";
-            $str_board_list .= '<li><a href="'.$_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;onetable='.$g5_search['tables'][$i].'" '.$sch_class.'><strong>'.((G5_IS_MOBILE && $row2['bo_mobile_subject']) ? _t($row2['bo_mobile_subject']) : _t($row2['bo_subject'])).'</strong><span class="cnt_cmt">'.$row['cnt'].'</span></a></li>';
-        }
+            if ($onetable == $g5_search['tables'][$i]) {
+				$sch_class = "class=sch_on";
+            } else {
+				$sch_all = "class=sch_on";
+	            $bo_list[$z]['href'] = $_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;onetable='.$g5_search['tables'][$i];
+				$bo_list[$z]['name'] = (G5_IS_MOBILE && $row2['bo_mobile_subject']) ? $row2['bo_mobile_subject'] : $row2['bo_subject'];
+				$bo_list[$z]['cnt'] = $row['cnt'];
+				$z++;
+			}
+            $str_board_list .= '<li><a href="'.$_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;onetable='.$g5_search['tables'][$i].'" '.$sch_class.'><strong>'.((G5_IS_MOBILE && $row2['bo_mobile_subject']) ? $row2['bo_mobile_subject'] : $row2['bo_subject']).'</strong><span class="cnt_cmt">'.$row['cnt'].'</span></a></li>';
+		}
     }
 
     $rows = $srows;
@@ -192,32 +232,41 @@ if ($stx) {
                 $row['wr_subject'] = get_text($row2['wr_subject']);
             }
 
-            // 비밀글은 검색 불가
-            if (strstr($row['wr_option'].$row2['wr_option'], 'secret'))
-                $row['wr_content'] = '['._t('비밀글 입니다.').']';
-
-            $subject = get_text($row['wr_subject']);
+            $subject = apms_get_text($row['wr_subject']);
             if (strstr($sfl, 'wr_subject'))
                 $subject = search_font($stx, $subject);
 
-            if ($read_level[$idx] <= $member['mb_level'])
-            {
-                //$content = cut_str(get_text(strip_tags($row['wr_content'])), 300, "…");
-                $content = strip_tags($row['wr_content']);
-                $content = get_text($content, 1);
-                $content = strip_tags($content);
-                $content = str_replace('&nbsp;', '', $content);
-                $content = cut_str($content, 300, "…");
+            if ($read_level[$idx] <= $member['mb_level']) {
 
-                if (strstr($sfl, 'wr_content'))
-                    $content = search_font($stx, $content);
-            }
-            else
-                $content = '';
+				// 비밀글은 검색 불가
+				if (strstr($row['wr_option'].$row2['wr_option'], 'secret')) {
+					$content = '[비밀글 입니다.]';
+				} else {
+					// 확장 데이터
+					if($row['as_extend']) {
+						$wr_extend = apms_unpack($row['wr_content']);
+						$content = $wr_extend['content'];
+						unset($wr_extend);
+					} else {
+						$content = $row['wr_content'];
+					}
+				
+					//$content = cut_str(strip_tags($row['wr_content']), 300, "…");
+					$content = apms_cut_text($content, 300);
+					$content = str_replace('&nbsp;', ' ', $content);
 
+					if (strstr($sfl, 'wr_content'))
+						$content = search_font($stx, $content);
+				}
+			} else {
+                $content = '[열람권한이 없습니다.]';
+			}
+
+			$list[$idx][$i]['bo_table'] = $search_table[$idx];
             $list[$idx][$i]['subject'] = $subject;
             $list[$idx][$i]['content'] = $content;
-            $list[$idx][$i]['name'] = get_sideview($row['mb_id'], get_text(cut_str($row['wr_name'], $config['cf_cut_name'])), $row['wr_email'], $row['wr_homepage']);
+            $list[$idx][$i]['name'] = apms_sideview($row['mb_id'], get_text(cut_str($row['wr_name'], $config['cf_cut_name'])), $row['wr_email'], $row['wr_homepage'], $row['as_level']);
+            $list[$idx][$i]['date'] = strtotime($row['wr_datetime']);
 
             $k++;
             if ($k >= $rows)
@@ -232,19 +281,47 @@ if ($stx) {
     }
 
     $write_pages = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, $_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;srows='.$srows.'&amp;onetable='.$onetable.'&amp;page=');
+    $write_page_rows = (G5_IS_MOBILE) ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
+	$list_page = $_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;srows='.$srows.'&amp;onetable='.$onetable.'&amp;page=';
 }
 
-$group_select = '<label for="gr_id" class="sound_only">'._t('게시판 그룹선택').'</label><select name="gr_id" id="gr_id" class="select"><option value="">'._t('전체 분류');
-$sql = " select gr_id, gr_subject from {$g5['group_table']} order by gr_id ";
+$group_list = array();
+$group_option = '';
+$sql = " select gr_id, gr_subject, as_grade, as_equal, as_min, as_max from {$g5['group_table']} where as_show <> '0' order by gr_order, gr_id ";
 $result = sql_query($sql);
-for ($i=0; $row=sql_fetch_array($result); $i++)
-    $group_select .= "<option value=\"".$row['gr_id']."\"".get_selected($_GET['gr_id'], $row['gr_id']).">"._t($row['gr_subject'])."</option>";
+$j = 0;
+for ($i=0; $row=sql_fetch_array($result); $i++) {
+	if(apms_auth($row['as_grade'], $row['as_equal'], $row['as_min'], $row['as_max'], 1)) {
+		continue;
+	}
+
+	$group_option .= "<option value=\"".$row['gr_id']."\"".get_selected($_GET['gr_id'], $row['gr_id']).">".$row['gr_subject']."</option>";
+
+	$group_list[$j] = $row;
+	$j++;
+}
+
+$group_select = '<label for="gr_id" class="sound_only">게시판 그룹선택</label><select name="gr_id" id="gr_id" class="select"><option value="">전체 분류';
+$group_select .= $group_option;
 $group_select .= '</select>';
 
 if (!$sfl) $sfl = 'wr_subject';
 if (!$sop) $sop = 'or';
 
-include_once($search_skin_path.'/search.skin.php');
+// 스킨설정
+$wset = (G5_IS_MOBILE) ? apms_skin_set('search_mobile') : apms_skin_set('search');
 
-include_once('./_tail.php');
+$setup_href = '';
+if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
+	$setup_href = './skin.setup.php?skin=search&amp;ts='.urlencode(THEMA);
+}
+
+include_once($skin_path.'/search.skin.php');
+
+if($is_search_sub) {
+	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
+	include_once(G5_PATH.'/tail.sub.php');
+} else {
+	include_once('./_tail.php');
+}
 ?>

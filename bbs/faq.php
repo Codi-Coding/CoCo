@@ -3,7 +3,7 @@ include_once('./_common.php');
 
 //dbconfig파일에 $g5['faq_table'] , $g5['faq_master_table'] 배열변수가 있는지 체크
 if( !isset($g5['faq_table']) || !isset($g5['faq_master_table']) ){
-    die('<meta charset="utf-8">'._t('관리자 모드에서').' '._t('게시판관리').'->'._t('FAQ관리를 먼저 확인해 주세요.'));
+    die('<meta charset="utf-8">관리자 모드에서 게시판관리->FAQ관리를 먼저 확인해 주세요.');
 }
 
 // FAQ MASTER
@@ -13,7 +13,6 @@ $result = sql_query($sql);
 while ($row=sql_fetch_array($result))
 {
     $key = $row['fm_id'];
-    $row['fm_subject'] = _t($row['fm_subject']); /// 2018.03.14
     if (!$fm_id) $fm_id = $key;
     $faq_master_list[$key] = $row;
 }
@@ -24,13 +23,40 @@ if ($fm_id){
 
 $fm = $faq_master_list[$fm_id];
 if (!$fm['fm_id'])
-    alert(_t('등록된 내용이 없습니다.'));
+    alert('등록된 내용이 없습니다.');
 
-$g5['title'] = _t($fm['fm_subject']);
+// Page ID
+$pid = 'faq';
+$at = apms_page_thema($pid);
+include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 
-$skin_file = $faq_skin_path.'/list.skin.php';
+// 스킨 체크
+list($faq_skin_path, $faq_skin_url) = apms_skin_thema('faq', $faq_skin_path, $faq_skin_url); 
 
-include_once('./_head.php');
+// 설정값 불러오기
+$is_faq_sub = false;
+@include_once($faq_skin_path.'/config.skin.php');
+
+$g5['title'] = $fm['fm_subject'];
+
+if($is_faq_sub) {
+	include_once(G5_PATH.'/head.sub.php');
+	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
+} else {
+	include_once('./_head.php');
+}
+
+$skin_path = $faq_skin_path;
+$skin_url = $faq_skin_url;
+$skin_file = $skin_path.'/list.skin.php';
+
+// 스킨설정
+$wset = (G5_IS_MOBILE) ? apms_skin_set('faq_mobile') : apms_skin_set('faq');
+
+$setup_href = '';
+if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
+	$setup_href = './skin.setup.php?skin=faq&amp;ts='.urlencode(THEMA);
+}
 
 if(is_file($skin_file)) {
     $admin_href = '';
@@ -85,16 +111,27 @@ if(is_file($skin_file)) {
     $result = sql_query($sql);
     for ($i=0;$row=sql_fetch_array($result);$i++){
         $faq_list[] = $row;
-
         if($stx) {
             $faq_list[$i]['fa_subject'] = search_font($stx, conv_content($faq_list[$i]['fa_subject'], 1));
             $faq_list[$i]['fa_content'] = search_font($stx, conv_content($faq_list[$i]['fa_content'], 1));
         }
     }
-    include_once($skin_file);
+
+	$write_page_rows = $page_rows;
+	$list_page = $_SERVER['SCRIPT_NAME'].'?'.$qstr.'&amp;page=';
+
+	$faq_head_html = conv_content($fm['fm_head_html'], 1);
+	$faq_tail_html = conv_content($fm['fm_tail_html'], 1);
+
+	include_once($skin_file);
 } else {
-    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</p>';
+    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</p>';
 }
 
-include_once('./_tail.php');
+if($is_faq_sub) {
+	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
+	include_once(G5_PATH.'/tail.sub.php');
+} else {
+	include_once('./_tail.php');
+}
 ?>

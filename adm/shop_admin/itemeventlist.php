@@ -48,7 +48,7 @@ if (!$sort1) {
     $sort1 = "b.ev_id";
 }
 
-if (!$sort2 || $sort2 != "asc") {
+if (!$sort2) {
     $sort2 = "desc";
 }
 
@@ -72,8 +72,7 @@ if($ev_id) {
 ?>
 
 <div class="local_ov01 local_ov">
-    <?php echo $listall; ?>
-    <span class="btn_ov01"><span class="ov_txt">전체 이벤트</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>  
+    전체 이벤트 <?php echo $total_count; ?>건
 </div>
 
 <form name="flist" class="local_sch01 local_sch" autocomplete="off">
@@ -97,6 +96,7 @@ if($ev_id) {
 <form name="flist" class="local_sch01 local_sch" autocomplete="off">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
 <input type="hidden" name="ev_id" value="<?php echo $ev_id; ?>">
+<?php echo $listall; ?>
 
 <label for="sel_ca_id" class="sound_only">분류선택</label>
 <select name="sel_ca_id" id="sel_ca_id">
@@ -162,13 +162,16 @@ if($ev_id) {
     ?>
 
     <tr class="<?php echo $bg; ?>">
-        <td class="td_chk2">
+        <td class="td_chk">
             <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
             <label for="ev_chk_<?php echo $i; ?>" class="sound_only">이벤트 사용</label>
             <input type="checkbox" name="ev_chk[<?php echo $i; ?>]" value="1" id="ev_chk_<?php echo $i; ?>" <?php echo ($row['ev_id'] ? "checked" : ""); ?>>
         </td>
-        <td class="td_num"><a href="<?php echo $href; ?>"><?php echo $row['it_id']; ?></a></td>
-        <td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
+        <td class="td_code">
+			<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
+			<a href="<?php echo $href; ?>"><b><?php echo $row['it_id']; ?></b></a>
+		</td>
+        <td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
     </tr>
 
     <?php
@@ -192,8 +195,8 @@ if($ev_id) {
         <?php } ?>
     </p>
 </div>
-<div class="btn_fixed_top">
-    <input type="submit" value="일괄수정" class="btn_submit btn" accesskey="s">
+<div class="btn_confirm01 btn_confirm">
+    <input type="submit" value="일괄수정" class="btn_submit" accesskey="s">
 </div>
 
 </form>

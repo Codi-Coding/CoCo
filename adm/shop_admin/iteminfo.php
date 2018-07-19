@@ -2,9 +2,12 @@
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/iteminfo.lib.php');
 
+// APMS : 원본의 분류 및 전체적용 부분 삭제 - 2014.07.23
+
 if($it['it_id']) {
-    //$it_id = $it['it_id'];
     $gubun = $it['it_info_gubun'];
+} else if($it_gubun) {
+    $gubun = $it_gubun;
 } else {
     $it_id = trim($_POST['it_id']);
     $gubun = $_POST['gubun'] ? $_POST['gubun'] : 'wear';
@@ -35,7 +38,7 @@ if($it['it_id']) {
             $el_name    = $key;
             $el_title   = $value[0];
             $el_example = $value[1];
-            $el_value = '상품페이지 참고';
+            $el_value = '상세설명페이지 참고';
 
             if($gubun == $it['it_info_gubun'] && $info_value[$key])
                 $el_value = $info_value[$key];
@@ -46,16 +49,8 @@ if($it['it_id']) {
         <td>
             <input type="hidden" name="ii_article[]" value="<?php echo $el_name; ?>">
             <?php if ($el_example != "") echo help($el_example); ?>
-            <input type="text" name="ii_value[]" value="<?php echo $el_value; ?>" id="ii_article_<?php echo $el_name; ?>" required class="frm_input required" />
+            <input type="text" name="ii_value[]" value="<?php echo $el_value; ?>" id="ii_article_<?php echo $el_name; ?>" required class="frm_input required sl" />
         </td>
-        <?php if ($el_no == 0) { ?>
-        <td rowspan="<?php echo $el_length; ?>" class="td_grpset">
-            <input type="checkbox" name="chk_ca_it_info" value="1" id="chk_ca_it_info">
-            <label for="chk_ca_it_info">분류적용</label>
-            <input type="checkbox" name="chk_all_it_info" value="1" id="chk_all_it_info">
-            <label for="chk_all_it_info">전체적용</label>
-        </td>
-        <?php } $el_no++; ?>
     </tr>
     <?php
         }

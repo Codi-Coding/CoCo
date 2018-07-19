@@ -4,7 +4,7 @@ include_once('./_common.php');
 //print_r2($_POST); exit;
 
 if ($is_admin != 'super')
-    alert(_t("최고관리자만 접근이 가능합니다."));
+    alert("최고관리자만 접근이 가능합니다.");
 
 $board = array();
 $save_bo_table = array();
@@ -49,11 +49,24 @@ for($i=0;$i<count($_POST['chk_bn_id']);$i++)
                 // 업로드된 파일이 있다면 파일삭제
                 $sql2 = " select * from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '{$row['wr_id']}' ";
                 $result2 = sql_query($sql2);
-                while ($row2 = sql_fetch_array($result2))
-                    @unlink(G5_DATA_PATH.'/file/'.$bo_table.'/'.$row2['bf_file']);
+				while ($row2 = sql_fetch_array($result2)) {
+					// 파일삭제
+					@unlink(G5_DATA_PATH.'/file/'.$bo_table.'/'.$row2['bf_file']);
 
-                // 파일테이블 행 삭제
-                sql_query(" delete from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '{$row['wr_id']}' ");
+					// 썸네일삭제
+					if(preg_match("/\.({$config['cf_image_extension']})$/i", $row2['bf_file'])) {
+						delete_board_thumbnail($bo_table, $row2['bf_file']);
+					}
+				}
+
+				// 에디터 썸네일 삭제
+				delete_editor_thumbnail($row['wr_content']);
+
+				// 에디터 이미지 삭제
+				apms_editor_image($row['wr_content']);
+
+				// 파일테이블 행 삭제
+				sql_query(" delete from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '{$row['wr_id']}' ");
 
                 $count_write++;
             }
@@ -65,9 +78,12 @@ for($i=0;$i<count($_POST['chk_bn_id']);$i++)
 
                 $count_comment++;
             }
-        }
 
-        if ($pressed == _t('선택내용삭제')) {
+			// 신고글
+			sql_query(" delete from {$g5['apms_shingo']} where bo_table = '$bo_table' and wr_id = '{$row['wr_id']}' ", false);
+		}
+
+        if ($pressed == '선택내용삭제') {
             // 게시글 내용만 삭제
             sql_query(" update $write_table set wr_subject =  '".G5_TIME_YMDHIS." - 본인 요청으로 인한 삭제 (냉무) ☆', wr_content = '', wr_name='본인요청삭제☆' where wr_id = '{$write['wr_id']}' ");
         } else {
@@ -81,6 +97,22 @@ for($i=0;$i<count($_POST['chk_bn_id']);$i++)
         // 스크랩 삭제
         sql_query(" delete from {$g5['scrap_table']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ");
 
+		// 내글반응 삭제
+		sql_query(" delete from {$g5['apms_response']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
+
+		// 태그로그 삭제
+		sql_query(" delete from {$g5['apms_tag_log']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
+
+		// 이벤트 삭제
+		sql_query(" delete from {$g5['apms_event']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
+
+		// 설문 삭제
+		sql_query(" delete from {$g5['apms_poll']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
+
+		// 플레이목록
+		sql_query(" delete from {$g5['apms_playlist']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
+
+		/*
         // 공지사항 삭제
         $notice_array = explode(",", trim($board['bo_notice']));
         $bo_notice = "";
@@ -92,10 +124,11 @@ for($i=0;$i<count($_POST['chk_bn_id']);$i++)
             if($bo_notice)
                 $lf = ',';
         }
-        $bo_notice = trim($bo_notice);
-        sql_query(" update {$g5['board_table']} set bo_notice = '$bo_notice' where bo_table = '$bo_table' ");
+		*/
+	    $bo_notice = board_notice($board['bo_notice'], $write['wr_id']);
+	    sql_query(" update {$g5['board_table']} set bo_notice = '$bo_notice' where bo_table = '$bo_table' ");
 
-        if ($pressed == _t('선택삭제')) {
+        if ($pressed == '선택삭제') {
             // 글숫자 감소
             if ($count_write > 0 || $count_comment > 0) {
                 sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write - '$count_write', bo_count_comment = bo_count_comment - '$count_comment' where bo_table = '$bo_table' ");
@@ -135,7 +168,10 @@ for($i=0;$i<count($_POST['chk_bn_id']);$i++)
 
         // 새글 삭제
         sql_query(" delete from {$g5['board_new_table']} where bo_table = '$bo_table' and wr_id = '$comment_id' ");
-    }
+
+		// 신고글
+		sql_query(" delete from {$g5['apms_shingo']} where bo_table = '$bo_table' and wr_id = '$comment_id' ", false);
+	}
 }
 
 $save_bo_table = array_unique($save_bo_table);

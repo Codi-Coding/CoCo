@@ -1,0 +1,6 @@
+@charset "utf-8";
+
+.ui-datepicker { }
+.ui-datepicker select.ui-datepicker-month,
+.ui-datepicker select.ui-datepicker-year { color:#000; width: 70px;}
+.ui-datepicker-trigger { margin:0 0 -5px 2px; }

@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+.list-board { }
+.list-board .num { width:60px; }
+.list-board .name { width:120px; }
+
+.list-board .board-list { list-style:none; padding:0px; margin:0px; }
+.list-board .board-list li { border-bottom:1px solid #ddd; display:table; width:100%; table-layout:fixed; }
+.list-board .board-list li:hover { color:#000; background-color:#F8F8F8; }
+.list-board .board-list li > div { display:table-cell; height:34px; line-height:22px; padding:6px 0px; text-align:center; vertical-align:middle; }
+.list-board .board-list li .subj { padding-left:10px; text-align:left; }
+.list-board .board-list .name { text-align:left; padding-left:10px; } 
+.list-board .board-list .sv_member, 
+.list-board .board-list .member { font-weight:bold; }
+.list-board .none { padding:50px 0px; }

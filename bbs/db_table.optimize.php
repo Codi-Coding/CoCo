@@ -2,7 +2,7 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // 최고관리자일 때만 실행
-if($config['cf_admin'] != $member['mb_id'] || $is_admin != 'super')
+if($is_admin != 'super')
     return;
 
 // 실행일 비교
@@ -25,10 +25,10 @@ if($config['cf_popular_del'] > 0) {
     sql_query(" OPTIMIZE TABLE `{$g5['popular_table']}` ");
 }
 
-// 설정일이 지난 최근게시물 삭제
+// 설정일이 지난 최근게시물 삭제 - 
 if($config['cf_new_del'] > 0) {
-    $sql = " delete from {$g5['board_new_table']} where (TO_DAYS('".G5_TIME_YMDHIS."') - TO_DAYS(bn_datetime)) > '{$config['cf_new_del']}' ";
-    sql_query($sql);
+    $sql = " delete from {$g5['board_new_table']} where (TO_DAYS('".G5_TIME_YMDHIS."') - TO_DAYS(bn_datetime)) > '{$config['cf_new_del']}' and as_publish <> '1' ";
+    sql_query($sql, false);
     sql_query(" OPTIMIZE TABLE `{$g5['board_new_table']}` ");
 }
 
@@ -51,6 +51,11 @@ if($config['cf_leave_day'] > 0) {
         member_delete($row['mb_id']);
     }
 }
+
+// 내글반응삭제 - 180일
+$tmp_response_date = date("Y-m-d H:i:s", G5_SERVER_TIME - (180 * 86400));
+sql_query(" delete from {$g5['apms_response']} where regdate < '{$tmp_response_date}' ", false);
+sql_query(" OPTIMIZE TABLE `{$g5['apms_response']}` ", false);
 
 // 음성 캡챠 파일 삭제
 $captcha_mp3 = glob(G5_PATH.'/data/cache/kcaptcha-*.mp3');

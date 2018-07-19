@@ -1,7 +1,7 @@
 $(function() {
     $("button.coupon_download").on("click", function() {
         if(g5_is_member != "1") {
-            alert(g5_msg_use_after_login);
+            alert(aslang[37]); //회원 로그인 후 이용해 주십시오.
             return false;
         }
 
@@ -9,7 +9,7 @@ $(function() {
         var cz_id = $this.data("cid");
 
         if($this.hasClass("disabled")) {
-            alert(g5_msg_downloaded_coupon);
+            alert(aslang[38]); //이미 다운로드하신 쿠폰입니다.
             return false;
         }
 
@@ -30,7 +30,7 @@ $(function() {
                 }
 
                 $this.attr("disabled", false);
-                alert(g5_msg_coupon_published);
+                alert(aslang[39]); //쿠폰이 발급됐습니다.
             }
         });
     });

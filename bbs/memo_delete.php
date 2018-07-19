@@ -2,13 +2,13 @@
 include_once('./_common.php');
 
 if (!$is_member)
-    alert(_t('회원만 이용하실 수 있습니다.'));
+    alert('회원만 이용하실 수 있습니다.');
 
 $delete_token = get_session('ss_memo_delete_token');
 set_session('ss_memo_delete_token', '');
 
 if (!($token && $delete_token == $token))
-    alert(_t('토큰 에러로 삭제 불가합니다.'));
+    alert('토큰 에러로 삭제 불가합니다.');
 
 $me_id = (int)$_REQUEST['me_id'];
 
@@ -28,6 +28,10 @@ $sql = " delete from {$g5['memo_table']}
             where me_id = '{$me_id}'
             and (me_recv_mb_id = '{$member['mb_id']}' or me_send_mb_id = '{$member['mb_id']}') ";
 sql_query($sql);
+
+// 읽지 않은 쪽지체크
+$row = sql_fetch(" select count(*) as cnt from {$g5['memo_table']} where me_recv_mb_id = '{$member['mb_id']}' and me_read_datetime = '0000-00-00 00:00:00' ");
+sql_query(" update {$g5['member_table']} set as_memo = '{$row['cnt']}' where mb_id = '{$member['mb_id']}' ", false);
 
 goto_url('./memo.php?kind='.$kind);
 ?>

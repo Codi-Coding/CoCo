@@ -15,6 +15,7 @@ check_admin_token();
 @mkdir(G5_DATA_PATH."/event", G5_DIR_PERMISSION);
 @chmod(G5_DATA_PATH."/event", G5_DIR_PERMISSION);
 
+if ($ev_simg_del)  @unlink(G5_DATA_PATH."/event/{$ev_id}_s"); // APMS : 세로형 배너
 if ($ev_mimg_del)  @unlink(G5_DATA_PATH."/event/{$ev_id}_m");
 if ($ev_himg_del)  @unlink(G5_DATA_PATH."/event/{$ev_id}_h");
 if ($ev_timg_del)  @unlink(G5_DATA_PATH."/event/{$ev_id}_t");
@@ -29,10 +30,12 @@ $sql_common = " set ev_skin             = '$ev_skin',
                     ev_mobile_img_height= '$ev_mobile_img_height',
                     ev_mobile_list_mod  = '$ev_mobile_list_mod',
                     ev_mobile_list_row  = '$ev_mobile_list_row',
-                    ev_subject          = '$ev_subject',
+					ev_subject          = '$ev_subject',
                     ev_head_html        = '$ev_head_html',
                     ev_tail_html        = '$ev_tail_html',
                     ev_use              = '$ev_use',
+                    ev_type             = '$ev_type',
+                    ev_href             = '$ev_href',
                     ev_subject_strong   = '$ev_subject_strong'
                     ";
 
@@ -54,7 +57,8 @@ else if ($w == "u")
 }
 else if ($w == "d")
 {
-    @unlink(G5_DATA_PATH."/event/{$ev_id}_m");
+    @unlink(G5_DATA_PATH."/event/{$ev_id}_s"); // APMS : 세로형 배너
+	@unlink(G5_DATA_PATH."/event/{$ev_id}_m");
     @unlink(G5_DATA_PATH."/event/{$ev_id}_h");
     @unlink(G5_DATA_PATH."/event/{$ev_id}_t");
 
@@ -68,7 +72,8 @@ else if ($w == "d")
 
 if ($w == "" || $w == "u")
 {
-    if ($_FILES['ev_mimg']['name']) upload_file($_FILES['ev_mimg']['tmp_name'], $ev_id."_m", G5_DATA_PATH."/event");
+    if ($_FILES['ev_simg']['name']) upload_file($_FILES['ev_simg']['tmp_name'], $ev_id."_s", G5_DATA_PATH."/event"); // APMS : 세로형 배너
+	if ($_FILES['ev_mimg']['name']) upload_file($_FILES['ev_mimg']['tmp_name'], $ev_id."_m", G5_DATA_PATH."/event");
     if ($_FILES['ev_himg']['name']) upload_file($_FILES['ev_himg']['tmp_name'], $ev_id."_h", G5_DATA_PATH."/event");
     if ($_FILES['ev_timg']['name']) upload_file($_FILES['ev_timg']['tmp_name'], $ev_id."_t", G5_DATA_PATH."/event");
 

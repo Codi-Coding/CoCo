@@ -3,12 +3,14 @@ include_once('./_common.php');
 include_once(G5_EDITOR_LIB);
 
 if($is_guest)
-    alert(_t('회원이시라면 로그인 후 이용해 보십시오.'), './login.php?url='.urlencode(G5_BBS_URL.'/qaview.php?qa_id='.$qa_id));
+    alert('회원이시라면 로그인 후 이용해 보십시오.', './login.php?url='.urlencode(G5_BBS_URL.'/qaview.php?qa_id='.$qa_id));
 
 $qaconfig = get_qa_config();
 
 $g5['title'] = $qaconfig['qa_title'];
 include_once('./qahead.php');
+
+$is_checkbox = false;
 
 $skin_file = $qa_skin_path.'/view.skin.php';
 
@@ -21,17 +23,17 @@ if(is_file($skin_file)) {
     $view = sql_fetch($sql);
 
     if(!$view['qa_id'])
-        alert(_t('게시글이 존재하지 않습니다.').'\\n'._t('삭제되었거나 자신의 글이 아닌 경우입니다.'));
+        alert('게시글이 존재하지 않습니다.\\n삭제되었거나 자신의 글이 아닌 경우입니다.', G5_BBS_URL.'/qalist.php');
 
     $subject_len = G5_IS_MOBILE ? $qaconfig['qa_mobile_subject_len'] : $qaconfig['qa_subject_len'];
 
     $view['category'] = get_text($view['qa_category']);
     $view['subject'] = conv_subject($view['qa_subject'], $subject_len, '…');
-    $view['content'] = conv_content($view['qa_content'], $view['qa_html']);
-    $view['name'] = get_text($view['qa_name']);
+    $view['content'] = apms_content(conv_content($view['qa_content'], $view['qa_html']));
     $view['datetime'] = $view['qa_datetime'];
     $view['email'] = get_text(get_email_address($view['qa_email']));
     $view['hp'] = $view['qa_hp'];
+	$view['name'] = apms_sideview($view['mb_id'], get_text($view['qa_name']), $view['email'], '', 'no');
 
     if (trim($stx))
     $view['subject'] = search_font($stx, $view['subject']);
@@ -124,6 +126,8 @@ if(is_file($skin_file)) {
                       and qa_parent = '{$view['qa_id']}' ";
         $answer = sql_fetch($sql);
 
+	    $answer['content'] = apms_content(conv_content($answer['qa_content'], $answer['qa_html']));
+
         if($is_admin) {
             $answer_update_href = G5_BBS_URL.'/qawrite.php?w=u&amp;qa_id='.$answer['qa_id'].$qstr;
             $answer_delete_href = G5_BBS_URL.'/qadelete.php?qa_id='.$answer['qa_id'].$qstr;
@@ -169,7 +173,7 @@ if(is_file($skin_file)) {
 
     include_once($skin_file);
 } else {
-    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</div>';
+    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</div>';
 }
 
 include_once('./qatail.php');

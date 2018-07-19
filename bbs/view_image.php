@@ -1,17 +1,23 @@
 <?php
 include_once('./_common.php');
 
-$g5['title'] = _t('이미지 크게보기');
+$g5['title'] = '이미지 크게보기';
 include_once(G5_PATH.'/head.sub.php');
 
 $filename = $_GET['fn'];
-$bo_table = $_GET['bo_table'];
+$bo_table = (isset($_GET['bo_table']) && $_GET['bo_table']) ? $_GET['bo_table'] : '';
 
-if(strpos($filename, 'data/editor')) {
+if(strpos($filename, 'data/item')) {
+    $editor_file = strstr($filename, 'item');
+    $filepath = G5_DATA_PATH.'/'.$editor_file;
+} else if(strpos($filename, 'data/editor')) {
     $editor_file = strstr($filename, 'editor');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
 } else if(strpos($filename, 'data/qa')) {
     $editor_file = strstr($filename, 'qa');
+    $filepath = G5_DATA_PATH.'/'.$editor_file;
+} else if(strpos($filename, 'data/file')) {
+    $editor_file = strstr($filename, 'file');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
 } else {
     $editor_file = '';
@@ -21,7 +27,7 @@ if(strpos($filename, 'data/editor')) {
 if(is_file($filepath)) {
     $size = @getimagesize($filepath);
     if(empty($size))
-        alert_close(_t('이미지 파일이 아닙니다.'));
+        alert_close('이미지 파일이 아닙니다.');
 
     $width = $size[0];
     $height = $size[1];
@@ -33,7 +39,7 @@ if(is_file($filepath)) {
 
     $img = '<img src="'.$fileurl.'" alt="" width="'.$width.'" height="'.$height.'" class="draggable" style="position:relative;top:0;left:0;cursor:move;">';
 } else {
-    alert_close(_t('파일이 존재하지 않습니다.'));
+    alert_close('파일이 존재하지 않습니다.');
 }
 ?>
 

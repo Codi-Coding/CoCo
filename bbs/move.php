@@ -2,17 +2,17 @@
 include_once('./_common.php');
 
 if ($sw == 'move')
-    $act = _t('이동');
+    $act = '이동';
 else if ($sw == 'copy')
-    $act = _t('복사');
+    $act = '복사';
 else
-    alert(_t('sw 값이 제대로 넘어오지 않았습니다.'));
+    alert('sw 값이 제대로 넘어오지 않았습니다.');
 
 // 게시판 관리자 이상 복사, 이동 가능
 if ($is_admin != 'board' && $is_admin != 'group' && $is_admin != 'super')
-    alert_close(_t("게시판 관리자 이상 접근이 가능합니다."));
+    alert_close("게시판 관리자 이상 접근이 가능합니다.");
 
-$g5['title'] = _t('게시물').' ' . $act;
+$g5['title'] = '게시물 ' . $act;
 include_once(G5_PATH.'/head.sub.php');
 
 $wr_id_list = '';
@@ -30,9 +30,9 @@ else {
 // 원본 게시판을 선택 할 수 있도록 함.
 $sql = " select * from {$g5['board_table']} a, {$g5['group_table']} b where a.gr_id = b.gr_id ";
 if ($is_admin == 'group')
-    $sql .= " and b.gr_admin = '{$member['mb_id']}' ";
+    $sql .= " and find_in_set('{$member['mb_id']}', b.gr_admin) ";
 else if ($is_admin == 'board')
-    $sql .= " and a.bo_admin = '{$member['mb_id']}' ";
+    $sql .= " and find_in_set('{$member['mb_id']}', a.bo_admin) ";
 $sql .= " order by a.gr_id, a.bo_order, a.bo_table ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
@@ -43,6 +43,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
 <div id="copymove" class="new_win">
     <h1 id="win_title"><?php echo $g5['title'] ?></h1>
+
     <form name="fboardmoveall" method="post" action="./move_update.php" onsubmit="return fboardmoveall_submit(this);">
     <input type="hidden" name="sw" value="<?php echo $sw ?>">
     <input type="hidden" name="bo_table" value="<?php echo $bo_table ?>">
@@ -58,14 +59,15 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
     <div class="tbl_head01 tbl_wrap">
         <table>
-        <caption><?php echo $act ?><?php echo _t('할 게시판을 한개 이상 선택하여 주십시오.'); ?></caption>
+        <caption><?php echo $act ?>할 게시판을 한개 이상 선택하여 주십시오.</caption>
         <thead>
         <tr>
             <th scope="col">
-                <label for="chkall" class="sound_only"><?php echo _t('현재 페이지 게시판 전체'); ?></label>
+                <label for="chkall" class="sound_only">현재 페이지 게시판 전체</label>
                 <input type="checkbox" id="chkall" onclick="if (this.checked) all_checked(true); else all_checked(false);">
             </th>
-            <th scope="col"><?php echo _t('게시판'); ?></th>
+            <th scope="col">게시판</th>
+            <th scope="col"><input type="text" value="" id="ca_name" name="ca_name" class="frm_input" placeholder="분류지정"></th>
         </tr>
         </thead>
         <tbody>
@@ -73,7 +75,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
             $atc_mark = '';
             $atc_bg = '';
             if ($list[$i]['bo_table'] == $bo_table) { // 게시물이 현재 속해 있는 게시판이라면
-                $atc_mark = '<span class="copymove_current">'._t('현재').'<span class="sound_only">'._t('게시판').'</span></span>';
+                $atc_mark = '<span class="copymove_current">현재<span class="sound_only">게시판</span></span>';
                 $atc_bg = 'copymove_currentbg';
             }
         ?>
@@ -82,7 +84,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                 <label for="chk<?php echo $i ?>" class="sound_only"><?php echo $list[$i]['bo_table'] ?></label>
                 <input type="checkbox" value="<?php echo $list[$i]['bo_table'] ?>" id="chk<?php echo $i ?>" name="chk_bo_table[]">
             </td>
-            <td>
+            <td colspan="2">
                 <label for="chk<?php echo $i ?>">
                     <?php
                     echo $list[$i]['gr_subject'] . ' &gt; ';
@@ -107,7 +109,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
 <script>
 $(function() {
-    $(".win_btn").append("<button type=\"button\" class=\"btn_cancel btn_close\"><?php echo _t('창닫기'); ?></button>");
+    $(".win_btn").append("<button type=\"button\" class=\"btn_cancel\">창닫기</button>");
 
     $(".win_btn button").click(function() {
         window.close();
@@ -144,7 +146,7 @@ function fboardmoveall_submit(f)
     }
 
     if (!check) {
-        alert('<?php echo _t('게시물을'); ?>'.' '+f.act.value+'<?php echo _t('할 게시판을 한개 이상 선택해 주십시오.'); ?>');
+        alert('게시물을 '+f.act.value+'할 게시판을 한개 이상 선택해 주십시오.');
         return false;
     }
 

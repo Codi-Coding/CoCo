@@ -1,21 +1,27 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-if (G5_IS_MOBILE) {
-    require_once(G5_MOBILE_PATH.'/tail.sub.php');
-    return;
-}   
+if(defined('_THEME_PREVIEW_') && _THEME_PREVIEW_ === true) {
+	if(defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/tail.sub.php')) {
+	    require_once(G5_THEME_PATH.'/tail.sub.php');
+		return;
+	}
+} else if(USE_G5_THEME) {
+	if(!defined('G5_IS_ADMIN') && defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/tail.sub.php')) {
+	    require_once(G5_THEME_PATH.'/tail.sub.php');
+		return;
+	}
+}
 
-if(!defined('G5_IS_ADMIN') && defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/tail.sub.php')) {
-    require_once(G5_THEME_PATH.'/tail.sub.php');
-    return;
+if(APMS_PRINT) {
+	@include_once($print_skin_path.'/print.tail.php');
 }
 ?>
 
-<?php include_once(G5_PATH.'/etc/demo_button.php'); ?>
-
-<?php if ($is_admin == 'super') {  ?><!-- <div style='float:left; text-align:center;'>RUN TIME : <?php echo get_microtime()-$begin_time; ?><br></div> --><?php }  ?>
-
+<!-- <?php echo APMS_VERSION;?> -->
+<?php if ($is_admin == 'super') {  ?>
+<!-- RUN TIME : <?php echo get_microtime()-$begin_time; ?> -->
+<?php }  ?>
 <!-- ie6,7에서 사이드뷰가 게시판 목록에서 아래 사이드뷰에 가려지는 현상 수정 -->
 <!--[if lte IE 7]>
 <script>

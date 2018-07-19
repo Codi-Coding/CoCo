@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 if($is_guest)
-    alert(_t('회원이시라면 로그인 후 이용해 주십시오.'), G5_URL);
+    alert('회원이시라면 로그인 후 이용해 주십시오.', G5_URL);
 
 $delete_token = get_session('ss_qa_delete_token');
 set_session('ss_qa_delete_token', '');
@@ -19,10 +19,10 @@ else // 일괄삭제
 
 $count = count($tmp_array);
 if(!$count)
-    alert(_t('삭제할 게시글을 하나이상 선택해 주십시오.'));
+    alert('삭제할 게시글을 하나이상 선택해 주십시오.');
 
 for($i=0; $i<$count; $i++) {
-    $qa_id = (int) $tmp_array[$i];
+    $qa_id = (int)$tmp_array[$i];
 
     $sql = " select qa_id, mb_id, qa_type, qa_status, qa_parent, qa_content, qa_file1, qa_file2
                 from {$g5['qa_content_table']}
@@ -33,11 +33,11 @@ for($i=0; $i<$count; $i++) {
         continue;
 
     // 자신의 글이 아니면 건너뜀
-    if($is_admin != 'super' && $row['mb_id'] !== $member['mb_id'])
+    if($is_admin !== 'super' && $row['mb_id'] !== $member['mb_id'])
         continue;
 
     // 답변이 달린 글은 삭제못함
-    if($is_admin != 'super' && !$row['qa_type'] && $row['qa_status'])
+    if($is_admin !== 'super' && !$row['qa_type'] && $row['qa_status'])
         continue;
 
     // 첨부파일 삭제
@@ -51,6 +51,9 @@ for($i=0; $i<$count; $i++) {
 
     // 에디터 썸네일 삭제
     delete_editor_thumbnail($row['qa_content']);
+
+	// 에디터 이미지 삭제
+	apms_editor_image($row['qa_content']);
 
     // 답변이 있는 질문글이라면 답변글 삭제
     if(!$row['qa_type'] && $row['qa_status']) {
@@ -66,6 +69,9 @@ for($i=0; $i<$count; $i++) {
 
         // 에디터 썸네일 삭제
         delete_editor_thumbnail($row2['qa_content']);
+
+		// 에디터 이미지 삭제
+		apms_editor_image($row2['qa_content']);
 
         sql_query(" delete from {$g5['qa_content_table']} where qa_type = '1' and qa_parent = '$qa_id' ");
     }
