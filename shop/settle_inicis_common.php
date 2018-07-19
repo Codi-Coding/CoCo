@@ -72,7 +72,7 @@ if( $PG_IP == "203.238.37.3" || $PG_IP == "203.238.37.15" || $PG_IP == "203.238.
                 $sql = " update {$g5['g5_shop_order_table']}
                             set od_receipt_price = od_receipt_price + '$amt_input',
                                 od_receipt_time = '$receipt_time',
-                                od_shop_memo = concat(od_shop_memo, \"\\n개인결제 ".$row['pp_id']." 로 결제완료 - ".$receipt_time."\")
+                                od_shop_memo = concat(od_shop_memo, \"\\n"._t("개인결제")." ".$row['pp_id']." "._t("로 결제완료")." - ".$receipt_time."\")
                           where od_id = '{$row['od_id']}' ";
                 $result = sql_query($sql, FALSE);
             }

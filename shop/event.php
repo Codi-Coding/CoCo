@@ -11,13 +11,13 @@ $sql = " select * from {$g5['g5_shop_event_table']}
             and ev_use = 1 ";
 $ev = sql_fetch($sql);
 if (!$ev['ev_id'])
-    alert('등록된 이벤트가 없습니다.');
+    alert(_t('등록된 이벤트가 없습니다.'));
 
 $g5['title'] = $ev['ev_subject'];
 include_once('./_head.php');
 
 if ($is_admin)
-    echo '<div class="sev_admin"><a href="'.G5_ADMIN_URL.'/shop_admin/itemeventform.php?w=u&amp;ev_id='.$ev['ev_id'].'" class="btn_admin">이벤트 관리</a></div>';
+    echo '<div class="sev_admin"><a href="'.G5_ADMIN_URL.'/shop_admin/itemeventform.php?w=u&amp;ev_id='.$ev['ev_id'].'" class="btn_admin">'._t('이벤트 관리').'</a></div>';
 ?>
 
 <script>
@@ -51,7 +51,7 @@ define('G5_SHOP_CSS_URL', G5_SHOP_SKIN_URL);
 $list_file = G5_SHOP_SKIN_PATH."/{$ev['ev_skin']}";
 if (file_exists($list_file))
 {
-    
+
     echo '<div id="sct_sortlst">';
     include G5_SHOP_SKIN_PATH.'/list.sort.skin.php';
 
@@ -88,7 +88,7 @@ if (file_exists($list_file))
 }
 else
 {
-    echo '<div align="center">'.$ev['ev_skin'].' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</div>';
+    echo '<div align="center">'.$ev['ev_skin'].' '._t('파일을 찾을 수 없습니다.').'<br>'._t('관리자에게 알려주시면 감사하겠습니다.').'</div>';
 }
 ?>
 

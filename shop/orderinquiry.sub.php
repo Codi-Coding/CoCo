@@ -15,19 +15,19 @@ if(defined('G5_THEME_SHOP_PATH')) {
 ?>
 
 <!-- 주문 내역 목록 시작 { -->
-<?php if (!$limit) { ?>총 <?php echo $cnt; ?> 건<?php } ?>
+<?php if (!$limit) { ?><?php echo _t('총'); ?> <?php echo $cnt; ?> <?php echo _t('건'); ?><?php } ?>
 
-<div class="tbl_head03 tbl_wrap">
+<div class="tbl_head01 tbl_wrap">
     <table>
     <thead>
     <tr>
-        <th scope="col">주문서번호</th>
-        <th scope="col">주문일시</th>
-        <th scope="col">상품수</th>
-        <th scope="col">주문금액</th>
-        <th scope="col">입금액</th>
-        <th scope="col">미입금액</th>
-        <th scope="col">상태</th>
+        <th scope="col"><?php echo _t('주문서번호'); ?></th>
+        <th scope="col"><?php echo _t('주문일시'); ?></th>
+        <th scope="col"><?php echo _t('상품수'); ?></th>
+        <th scope="col"><?php echo _t('주문금액'); ?></th>
+        <th scope="col"><?php echo _t('입금액'); ?></th>
+        <th scope="col"><?php echo _t('미입금액'); ?></th>
+        <th scope="col"><?php echo _t('상태'); ?></th>
     </tr>
     </thead>
     <tbody>
@@ -44,22 +44,22 @@ if(defined('G5_THEME_SHOP_PATH')) {
 
         switch($row['od_status']) {
             case '주문':
-                $od_status = '<span class="status_01">입금확인중</span>';
+                $od_status = '<span class="status_01">'._t('입금확인중').'</span>';
                 break;
             case '입금':
-                $od_status = '<span class="status_02">입금완료</span>';
+                $od_status = '<span class="status_02">'._t('입금완료').'</span>';
                 break;
             case '준비':
-                $od_status = '<span class="status_03">상품준비중</span>';
+                $od_status = '<span class="status_03">'._t('상품준비중').'</span>';
                 break;
             case '배송':
-                $od_status = '<span class="status_04">상품배송</span>';
+                $od_status = '<span class="status_04">'._t('상품배송').'</span>';
                 break;
             case '완료':
-                $od_status = '<span class="status_05">배송완료</span>';
+                $od_status = '<span class="status_05">'._t('배송완료').'</span>';
                 break;
             default:
-                $od_status = '<span class="status_06">주문취소</span>';
+                $od_status = '<span class="status_06">'._t('주문취소').'</span>';
                 break;
         }
     ?>
@@ -81,7 +81,7 @@ if(defined('G5_THEME_SHOP_PATH')) {
     }
 
     if ($i == 0)
-        echo '<tr><td colspan="7" class="empty_table">주문 내역이 없습니다.</td></tr>';
+        echo '<tr><td colspan="7" class="empty_table">'._t('주문 내역이 없습니다.').'</td></tr>';
     ?>
     </tbody>
     </table>

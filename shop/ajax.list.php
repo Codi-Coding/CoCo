@@ -2,8 +2,6 @@
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/json.lib.php');
 
-define('G5_IS_SHOP_AJAX_LIST', true);
-
 $data = array();
 
 $sql = " select *
@@ -12,7 +10,7 @@ $sql = " select *
             and ca_use = '1'  ";
 $ca = sql_fetch($sql);
 if (!$ca['ca_id'])
-    die(json_encode($data['error'] = '등록된 분류가 없습니다.'));
+    die(json_encode($data['error'] = _t('등록된 분류가 없습니다.')));
 
 // 스킨경로
 $skin_dir = G5_MSHOP_SKIN_PATH;
@@ -62,9 +60,6 @@ $list->set_view('it_img', true);
 $list->set_view('it_id', false);
 $list->set_view('it_name', true);
 $list->set_view('it_price', true);
-if(isset($use_sns) && $use_sns){
-    $list->set_view('sns', true);
-}
 echo $list->run();
 
 $content = ob_get_contents();

@@ -34,9 +34,9 @@ $total_count = $row['cnt'];
 if ($total_count == 0)
 {
     if ($is_member) // 회원일 경우는 메인으로 이동
-        alert('주문이 존재하지 않습니다.', G5_SHOP_URL);
+        alert(_t('주문이 존재하지 않습니다.'), G5_SHOP_URL);
     else // 비회원일 경우는 이전 페이지로 이동
-        alert('주문이 존재하지 않습니다.');
+        alert(_t('주문이 존재하지 않습니다.'));
 }
 
 $rows = $config['cf_page_rows'];
@@ -57,13 +57,13 @@ if (!$is_member)
     }
 }
 
-$g5['title'] = '주문내역조회';
+$g5['title'] = _t('주문내역조회');
 include_once('./_head.php');
 ?>
 
 <!-- 주문 내역 시작 { -->
 <div id="sod_v">
-    <p id="sod_v_info">주문서번호 링크를 누르시면 주문상세내역을 조회하실 수 있습니다.</p>
+    <p id="sod_v_info"><?php echo _t('주문서번호 링크를 누르시면 주문상세내역을 조회하실 수 있습니다.'); ?></p>
 
     <?php
     $limit = " limit $from_record, $rows ";

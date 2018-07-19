@@ -6,7 +6,7 @@ if (G5_IS_MOBILE) {
     return;
 }
 
-$g5['title'] = '개인결제 리스트';
+$g5['title'] = _t('개인결제 리스트');
 include_once('./_head.php');
 ?>
 
@@ -52,12 +52,12 @@ include_once('./_head.php');
     else
     {
         $i = 0;
-        $error = '<p class="sct_nofile">personalpay.skin.php 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</p>';
+        $error = '<p class="sct_nofile">personalpay.skin.php '._t('파일을 찾을 수 없습니다.').'<br>'._t('관리자에게 알려주시면 감사하겠습니다.').'</p>';
     }
 
     if ($i==0)
     {
-        echo '<p class="sct_noitem">등록된 개인결제가 없습니다.</p>';
+        echo '<p class="sct_noitem">'._t('등록된 개인결제가 없습니다.').'</p>';
     }
     ?>
 

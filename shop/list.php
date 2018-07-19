@@ -1,6 +1,10 @@
 <?php
 include_once('./_common.php');
 
+if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/shop'.'/list.ml.php')) { include_once $g5['locale_path'].'/include/ml/shop'.'/list.ml.php'; return; }
+
+if(defined('G5_USE_OLD_CODE') && G5_USE_OLD_CODE) { include_once G5_SHOP_PATH.'/list_old.php'; return; }
+
 if (G5_IS_MOBILE) {
     include_once(G5_MSHOP_PATH.'/list.php');
     return;
@@ -9,7 +13,7 @@ if (G5_IS_MOBILE) {
 $sql = " select * from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' and ca_use = '1'  ";
 $ca = sql_fetch($sql);
 if (!$ca['ca_id'])
-    alert('등록된 분류가 없습니다.');
+    alert(_t('등록된 분류가 없습니다.'));
 
 // 테마미리보기 스킨 등의 변수 재설정
 if(defined('_THEME_PREVIEW_') && _THEME_PREVIEW_ === true) {
@@ -27,9 +31,9 @@ if(!$is_admin) {
         alert($msg, G5_SHOP_URL);
 }
 
-$g5['title'] = $ca['ca_name'].' 상품리스트';
+$g5['title'] = _t($ca['ca_name']).' '._t('상품리스트');
 
-if ($ca['ca_include_head'] && is_include_path_check($ca['ca_include_head']))
+if ($ca['ca_include_head'])
     @include_once($ca['ca_include_head']);
 else
     include_once(G5_SHOP_PATH.'/_head.php');
@@ -56,7 +60,7 @@ if($ca['ca_skin_dir']) {
 define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
 
 if ($is_admin)
-    echo '<div class="sct_admin"><a href="'.G5_ADMIN_URL.'/shop_admin/categoryform.php?w=u&amp;ca_id='.$ca_id.'" class="btn_admin">분류 관리</a></div>';
+    echo '<div class="sct_admin"><a href="'.G5_ADMIN_URL.'/shop_admin/categoryform.php?w=u&amp;ca_id='.$ca_id.'" class="btn_admin">'._t('분류 관리').'</a></div>';
 ?>
 
 <script>
@@ -87,7 +91,7 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
     else
         $order_by = 'it_order, it_id desc';
 
-    $error = '<p class="sct_noitem">등록된 상품이 없습니다.</p>';
+    $error = '<p class="sct_noitem">'._t('등록된 상품이 없습니다.').'</p>';
 
     // 리스트 스킨
     $skin_file = is_include_path_check($skin_dir.'/'.$ca['ca_skin']) ? $skin_dir.'/'.$ca['ca_skin'] : $skin_dir.'/list.10.skin.php';
@@ -138,7 +142,7 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
     }
     else
     {
-        echo '<div class="sct_nofile">'.str_replace(G5_PATH.'/', '', $skin_file).' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</div>';
+        echo '<div class="sct_nofile">'.str_replace(G5_PATH.'/', '', $skin_file).' '._t('파일을 찾을 수 없습니다.').'<br>'._t('관리자에게 알려주시면 감사하겠습니다.').'</div>';
     }
     ?>
 
@@ -157,7 +161,7 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
 <!-- } 상품 목록 끝 -->
 
 <?php
-if ($ca['ca_include_tail'] && is_include_path_check($ca['ca_include_tail']))
+if ($ca['ca_include_tail'])
     @include_once($ca['ca_include_tail']);
 else
     include_once(G5_SHOP_PATH.'/_tail.php');

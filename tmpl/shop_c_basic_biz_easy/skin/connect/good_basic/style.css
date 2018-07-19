@@ -1,0 +1,15 @@
+/* 현재 접속자 */
+#connect_aside {position:relative;padding:15px 15px 14px 14px}
+#connect_aside div {margin:0 auto}
+#connect_aside div:after {display:block;visibility:hidden;clear:both;content:""}
+#connect_aside h2 {margin:0;padding:0}
+#connect_aside .btn_admin {margin-top:5px;width:164px;text-align:center}
+#connect_aside .btn_admin a {display:inline-block;padding:0px;color:#000;text-decoration:none}
+#connect_aside .btn_admin a:focus,
+#connect_aside .btn_admin a:hover {background:#333;color:#fff}
+#connect_aside ul {background:#f7f7f7;width:180px;margin:5px 0;padding:0;list-style:none}
+#connect_aside ul {float:left;list-style:none}
+#connect_aside li {float:left}
+#connect_aside ul a {display:inline-block;padding:10px;color:#000;text-decoration:none}
+#connect_aside ul a:focus,
+#connect_aside ul a:hover {background:#333;color:#fff}

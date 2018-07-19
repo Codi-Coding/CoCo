@@ -1,21 +1,15 @@
 <?php
 include_once('./_common.php');
 
-$g5['title'] = '주문번호 '.$od_id.' 현금영수증 발행';
+$g5['title'] = _t('주문번호').' '.$od_id.' '._t('현금영수증 발행');
 include_once(G5_PATH.'/head.sub.php');
-
-if (!$od_id){
-    alert('주문번호가 누락되었습니다.');
-}
-
-$od_id = preg_replace('/[^a-z0-9_-]/i', '', $od_id);
 
 if($tx == 'personalpay') {
     $od = sql_fetch(" select * from {$g5['g5_shop_personalpay_table']} where pp_id = '$od_id' ");
     if (!$od)
-        die('<p id="scash_empty">개인결제 내역이 존재하지 않습니다.</p>');
+        die('<p id="scash_empty">'._t('개인결제 내역이 존재하지 않습니다.').'</p>');
 
-    $goods_name = $od['pp_name'].'님 개인결제';
+    $goods_name = $od['pp_name']._t('님').' '._t('개인결제');
     $amt_tot = (int)$od['pp_receipt_price'];
     $dir = $od['pp_pg'];
     $od_name = $od['pp_name'];
@@ -29,7 +23,7 @@ if($tx == 'personalpay') {
 } else {
     $od = sql_fetch(" select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ");
     if (!$od)
-        die('<p id="scash_empty">주문서가 존재하지 않습니다.</p>');
+        die('<p id="scash_empty">'._t('주문서가 존재하지 않습니다.').'</p>');
 
     $goods = get_goods($od['od_id']);
     $goods_name = $goods['full_name'];

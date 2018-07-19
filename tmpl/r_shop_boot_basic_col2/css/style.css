@@ -1,0 +1,28 @@
+/* ckeditor 단축키 */
+.btn_cke_sc{display:inline-block;padding:0 10px;/*height:23px*/;border:1px solid #ccc;background:#fafafa;color:#000;text-decoration:none;line-height:1.0em;vertical-align:middle;cursor:pointer;border-radius:4px}
+
+/* 버튼 */
+a.btn01 {display:inline-block;padding:3px 7px;border:1px solid #ccc;background:#fafafa;color:#000;text-decoration:none;vertical-align:middle;border-radius:4px}
+button.btn01 {display:inline-block;margin:0;padding:3px 7px;border:1px solid #ccc;background:#fafafa;color:#000;text-decoration:none;border-radius:4px}
+a.btn02 {display:inline-block;padding:3px 7px;border:1px solid #3b3c3f;background:#4b545e;color:#fff;text-decoration:none;vertical-align:middle;border-radius:4px}
+button.btn02 {display:inline-block;margin:0;padding:3px 7px;border:1px solid #3b3c3f;background:#4b545e;color:#fff;text-decoration:none;border-radius:4px}
+
+.btn_confirm {text-align:center;border-radius:4px} /* 서식단계 진행 */
+
+.btn_submit {padding:4px 8px;border:0;background:#ff3061;color:#fff;letter-spacing:-0.1em;cursor:pointer;border-radius:4px}
+fieldset .btn_submit {padding:3px 7px;height:24px;line-height:1em;border-radius:4px}
+
+a.btn_cancel {display:inline-block;padding:3px 7px;border:1px solid #ccc;background:#fafafa;color:#000;text-decoration:none;vertical-align:middle;border-radius:4px}
+button.btn_cancel {display:inline-block;padding:3px 7px;border:1px solid #ccc;background:#fafafa;color:#000;vertical-align:top;text-decoration:none;border-radius:4px}
+
+a.btn_frmline, button.btn_frmline {display:inline-block;padding:0 5px;height:24px;border:0;background:#333;color:#fff;letter-spacing:-0.1em;text-decoration:none;vertical-align:top;border-radius:4px} /* 우편번호검색버튼 등 */
+a.btn_frmline {line-height:24px;border-radius:4px}
+button.btn_frmline {font-size:1em;border-radius:4px}
+
+/* 게시판용 버튼 */
+a.btn_b01 {display:inline-block;padding:3px 7px;border:1px solid #d9ded9;background:#fafafa;color:#000;text-decoration:none;vertical-align:middle;border-radius:4px}
+a.btn_b02 {display:inline-block;padding:3px 7px;border:1px solid #3b3c3f;background:#4b545e;color:#fff;text-decoration:none;vertical-align:middle;border-radius:4px}
+a.btn_admin {display:inline-block;padding:3px 7px;border:1px solid #e8180c;background:#e8180c;color:#fff;text-decoration:none;vertical-align:middle;border-radius:4px} /* 관리자 전용 버튼 */
+
+/* 게시판 목록 공통 */
+.btn_bo_adm input {padding:4px 8px;border:0;background:#e8180c;color:#fff;text-decoration:none;vertical-align:middle;border-radius:4px}

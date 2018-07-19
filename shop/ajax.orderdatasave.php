@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 if(empty($_POST))
-    die('정보가 넘어오지 않았습니다.');
+    die(_t('정보가 넘어오지 않았습니다.'));
 
 // 일정 기간이 경과된 임시 데이터 삭제
 /*
@@ -19,9 +19,9 @@ if(isset($_POST['pp_id']) && $_POST['pp_id']) {
     $pp_row = sql_fetch($sql);
 
     if( $pp_row['pp_tno'] ){
-        die('해당 개인결제는 이미 결제되었습니다.');
+        die(_t('해당 개인결제는 이미 결제되었습니다.'));
     } else if( ! $pp_row['pp_use'] ){
-        die('해당 개인결제는 사용이 금지되어 있습니다.');
+        die(_t('해당 개인결제는 사용이 금지되어 있습니다.'));
     }
 
 } else {

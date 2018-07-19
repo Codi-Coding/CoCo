@@ -2,12 +2,12 @@
 include_once('./_common.php');
 
 if($is_guest)
-    die('회원 로그인 후 이용해 주십시오.');
+    die(_t('회원 로그인 후 이용해 주십시오.'));
 
 $count = count($_POST['chk']);
 
 if (!$count) {
-    alert('수정하실 항목을 하나이상 선택하세요.');
+    alert(_t('수정하실 항목을 하나이상 선택하세요.'));
 }
 
 if ($is_member && $count) {

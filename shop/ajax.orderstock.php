@@ -7,7 +7,7 @@ else
     $tmp_cart_id = get_session('ss_cart_id');
 
 if (get_cart_count($tmp_cart_id) == 0)// 장바구니에 담기
-    die("장바구니가 비어 있습니다.\n\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.");
+    die(_t("장바구니가 비어 있습니다.")."\n\n"._t("이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다."));
 
 $keep_term = $default['de_cart_keep_term'];
 if(!$keep_term)
@@ -34,7 +34,7 @@ if($cart_stock_limit > 0) {
     $row = sql_fetch($sql);
 
     if(!$row['cnt'])
-        die("주문 요청 때까지 ".$cart_stock_limit."시간 이상 경과되어 주문 상품이 초기화 됐습니다.\n\n 장바구니에서 주문하실 상품을 다시 확인해 주십시오.");
+        die(_t("주문 요청 때까지")." ".$cart_stock_limit._t("시간 이상 경과되어 주문 상품이 초기화 됐습니다.")."\n\n"." "._t("장바구니에서 주문하실 상품을 다시 확인해 주십시오."));
 }
 
 // 재고체크
@@ -58,7 +58,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
         if($row['io_id'])
             $item_option .= '('.$row['ct_option'].')';
 
-        die( $item_option." 상품이 품절되었습니다.\n\n장바구니에서 해당 상품을 삭제후 다시 주문해 주세요." );
+        die( $item_option." "._t("상품이 품절되었습니다.")."\n\n"._t("장바구니에서 해당 상품을 삭제후 다시 주문해 주세요.") );
     }
 
     if(!$row['io_id'])
@@ -72,7 +72,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
         if($row['io_id'])
             $item_option .= '('.$row['ct_option'].')';
 
-        die($item_option." 의 재고수량이 부족합니다.\n\n현재 재고수량 : " . number_format($it_stock_qty) . " 개");
+        die($item_option." "._t("의 재고수량이 부족합니다.")."\n\n"._t("현재 재고수량")." : " . number_format($it_stock_qty) . " "._t("개"));
     }
 }
 

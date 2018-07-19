@@ -6,7 +6,7 @@ include_once(G5_LIB_PATH.'/mailer.lib.php');
 //------------------------------------------------------------------------------
 // 운영자에게 메일보내기
 //------------------------------------------------------------------------------
-$subject = $config['cf_title'].' - 주문 알림 메일 ('.$od_name.')';
+$subject = $config['cf_title'].' - '._t('주문 알림 메일').' ('.$od_name.')';
 ob_start();
 include G5_SHOP_PATH.'/mail/orderupdate1.mail.php';
 $content = ob_get_contents();
@@ -18,7 +18,7 @@ mailer($od_name, $od_email, $config['cf_admin_email'], $subject, $content, 1);
 //------------------------------------------------------------------------------
 // 주문자에게 메일보내기
 //------------------------------------------------------------------------------
-$subject = $config['cf_title'].' - 주문 내역 안내 메일';
+$subject = $config['cf_title'].' - '._t('주문 내역 안내 메일');
 ob_start();
 include G5_SHOP_PATH.'/mail/orderupdate2.mail.php';
 $content = ob_get_contents();
@@ -82,7 +82,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     $list[$i]['it_opt']  = $options;
     $list[$i]['ct_price'] = $sum['price'];
 
-    $subject = $config['cf_title'].' - 주문 알림 메일 (주문자 '.$od_name.'님)';
+    $subject = $config['cf_title'].' - '._t('주문 알림 메일').' ('._t('주문자').' '.$od_name._t('님').')';
     ob_start();
     include G5_SHOP_PATH.'/mail/orderupdate3.mail.php';
     $content = ob_get_contents();

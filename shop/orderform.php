@@ -20,7 +20,7 @@ else {
 }
 
 if (get_cart_count($tmp_cart_id) == 0)
-    alert('장바구니가 비어 있습니다.', G5_SHOP_URL.'/cart.php');
+    alert(_t('장바구니가 비어 있습니다.'), G5_SHOP_URL.'/cart.php');
 
 // 새로운 주문번호 생성
 $od_id = get_uniqid();
@@ -29,7 +29,7 @@ $s_cart_id = $tmp_cart_id;
 if($default['de_pg_service'] == 'inicis' || $default['de_inicis_lpay_use'])
     set_session('ss_order_inicis_id', $od_id);
 
-$g5['title'] = '주문서 작성';
+$g5['title'] = _t('주문서 작성');
 
 if(G5_IS_MOBILE)
     include_once(G5_MSHOP_PATH.'/_head.php');

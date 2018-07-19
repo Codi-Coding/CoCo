@@ -9,11 +9,11 @@ $sql_order  = " order by cz_id desc ";
 
 add_javascript('<script src="'.G5_JS_URL.'/shop.couponzone.js"></script>', 100);
 
-$g5['title'] = '쿠폰존';
+$g5['title'] = _t('쿠폰존');
 include_once(G5_SHOP_PATH.'/_head.php');
 
 if (!G5_IS_MOBILE && $is_admin)
-    echo '<div class="sct_admin"><a href="'.G5_ADMIN_URL.'/shop_admin/couponzonelist.php" class="btn_admin">쿠폰존 관리</a></div>';
+    echo '<div class="sct_admin"><a href="'.G5_ADMIN_URL.'/shop_admin/couponzonelist.php" class="btn_admin">'._t('쿠폰존').' '._t('관리').'</a></div>';
 
 if(G5_IS_MOBILE) {
     define('G5_SHOP_CSS_URL', G5_MSHOP_SKIN_URL);
@@ -27,7 +27,7 @@ if (is_file($skin_file)) {
     include_once($skin_file);
 
 } else {
-    echo '<div class="sct_nofile">'.str_replace(G5_PATH.'/', '', $skin_file).' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</div>';
+    echo '<div class="sct_nofile">'.str_replace(G5_PATH.'/', '', $skin_file).' '._t('파일을 찾을 수 없습니다.').'<br>'._t('관리자에게 알려주시면 감사하겠습니다.').'</div>';
 }
 
 include_once(G5_SHOP_PATH.'/_tail.php');

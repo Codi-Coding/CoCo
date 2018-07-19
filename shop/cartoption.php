@@ -24,7 +24,7 @@ if(!sql_num_rows($result))
     die('no-cart');
 ?>
 
-<h2>상품옵션수정</h2>
+<h2><?php echo _t('상품옵션').' '._t('수정'); ?></h2>
 <!-- 장바구니 옵션 시작 { -->
 <form name="foption" method="post" action="<?php echo G5_SHOP_URL; ?>/cartupdate.php" onsubmit="return formcheck(this);">
 <input type="hidden" name="act" value="optionmod">
@@ -42,7 +42,7 @@ if(defined('G5_THEME_USE_OPTIONS_TRTD') && G5_THEME_USE_OPTIONS_TRTD){
 if($option_1) {
 ?>
 <section class="option_wr">
-    <h3>선택옵션</h3>
+    <h3><?php echo _t('선택옵션'); ?></h3>
 
     <?php // 선택옵션
     echo $option_1;
@@ -63,7 +63,7 @@ if(defined('G5_THEME_USE_OPTIONS_TRTD') && G5_THEME_USE_OPTIONS_TRTD){
 if($option_2) {
 ?>
 <section class="option_wr">
-    <h3>추가옵션</h3>
+    <h3><?php echo _t('추가옵션'); ?></h3>
 
     <?php // 추가옵션
     echo $option_2;
@@ -84,9 +84,9 @@ if($option_2) {
                 $it_stock_qty = get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
 
             if($row['io_price'] < 0)
-                $io_price = '('.number_format($row['io_price']).'원)';
+                $io_price = '('.number_format($row['io_price'])._t('원').')';
             else
-                $io_price = '(+'.number_format($row['io_price']).'원)';
+                $io_price = '(+'.number_format($row['io_price'])._t('원').')';
 
             $cls = 'opt';
             if($row['io_type'])
@@ -99,15 +99,15 @@ if($option_2) {
             <input type="hidden" class="io_price" value="<?php echo $row['io_price']; ?>">
             <input type="hidden" class="io_stock" value="<?php echo $it_stock_qty; ?>">
             <div class="opt_name">
-                <span class="sit_opt_subj"><?php echo $row['ct_option']; ?></span>
+                <span class="sit_opt_subj"><?php echo _t($row['ct_option']); ?></span>
             </div>
             <div class="opt_count">
-                <button type="button" class="sit_qty_minus btn_frmline"><i class="fa fa-minus" aria-hidden="true"></i><span class="sound_only">감소</span></button>
-                <label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
+                <button type="button" class="sit_qty_minus btn_frmline"><i class="fa fa-minus" aria-hidden="true"></i><span class="sound_only"><?php echo _t('감소'); ?></span></button>
+                <label for="ct_qty_<?php echo $i; ?>" class="sound_only"><?php echo _t('수량'); ?></label>
                 <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="num_input" size="5">
-                <button type="button" class="sit_qty_plus btn_frmline"><i class="fa fa-plus" aria-hidden="true"></i><span class="sound_only">증가</span></button>
+                <button type="button" class="sit_qty_plus btn_frmline"><i class="fa fa-plus" aria-hidden="true"></i><span class="sound_only"><?php echo _t('증가'); ?></span></button>
                 <span class="sit_opt_prc"><?php echo $io_price; ?></span>
-                <button type="button" class="sit_opt_del"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only">삭제</span></button>
+                <button type="button" class="sit_opt_del"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only"><?php echo _t('삭제'); ?></span></button>
             </div>
 
         </li>
@@ -120,8 +120,8 @@ if($option_2) {
 <div id="sit_tot_price"></div>
 
 <div class="btn_confirm">
-    <input type="submit" value="선택사항적용" class="btn_submit">
-    <button type="button" id="mod_option_close" class="btn_close"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only">닫기</span></button>
+    <input type="submit" value="<?php echo _t('선택사항적용'); ?>" class="btn_submit">
+    <button type="button" id="mod_option_close" class="btn_close"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only"><?php echo _t('닫기'); ?></span></button>
 </div>
 </form>
 
@@ -138,19 +138,19 @@ function formcheck(f)
         val = $(this).val();
 
         if(val.length < 1) {
-            alert("수량을 입력해 주십시오.");
+            alert("<?php echo _t('수량을 입력해 주십시오.'); ?>");
             result = false;
             return false;
         }
 
         if(val.replace(/[0-9]/g, "").length > 0) {
-            alert("수량은 숫자로 입력해 주십시오.");
+            alert("<?php echo _t('수량은 숫자로 입력해 주십시오.'); ?>");
             result = false;
             return false;
         }
 
         if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
-            alert("수량은 1이상 입력해 주십시오.");
+            alert("<?php echo _t('수량은 1이상 입력해 주십시오.'); ?>");
             result = false;
             return false;
         }
@@ -165,12 +165,12 @@ function formcheck(f)
     }
 
     if(min_qty > 0 && sum_qty < min_qty) {
-        alert("선택옵션 개수 총합 "+number_format(String(min_qty))+"개 이상 주문해 주십시오.");
+        alert("<?php echo _t('선택옵션 개수 총합'); ?> "+number_format(String(min_qty))+"<?php echo _t('개 이상 주문해 주십시오.'); ?>");
         return false;
     }
 
     if(max_qty > 0 && sum_qty > max_qty) {
-        alert("선택옵션 개수 총합 "+number_format(String(max_qty))+"개 이하로 주문해 주십시오.");
+        alert("<?php echo _t('선택옵션 개수 총합'); ?> "+number_format(String(max_qty))+"<?php echo _t('개 이하로 주문해 주십시오.'); ?>");
         return false;
     }
 

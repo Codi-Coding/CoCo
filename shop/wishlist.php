@@ -1,6 +1,10 @@
 <?php
 include_once('./_common.php');
 
+if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/shop'.'/wishlist.ml.php')) { include_once $g5['locale_path'].'/include/ml/shop'.'/wishlist.ml.php'; return; }
+
+if(defined('G5_USE_OLD_CODE') && G5_USE_OLD_CODE) { include_once G5_SHOP_PATH.'/wishlist_old.php'; return; }
+
 if (!$is_member)
     goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL.'/wishlist.php'));
 
@@ -19,7 +23,7 @@ if(defined('G5_THEME_SHOP_PATH')) {
     }
 }
 
-$g5['title'] = "위시리스트";
+$g5['title'] = _t("위시리스트");
 include_once('./_head.php');
 ?>
 
@@ -83,14 +87,14 @@ include_once('./_head.php');
         }
 
         if ($i == 0)
-            echo '<li class="empty_table">보관함이 비었습니다.</li>';
+            echo '<tr><td colspan="5" class="empty_table">'._t('보관함이 비었습니다.').'</td></tr>';
         ?>
         </ul>
     </div>
 
     <div id="sod_ws_act">
-        <button type="submit" class="btn01" onclick="return fwishlist_check(document.fwishlist,'');"><i class="fa fa-shopping-cart" aria-hidden="true"></i> 장바구니 담기</button>
-        <button type="submit" class="btn02" onclick="return fwishlist_check(document.fwishlist,'direct_buy');"><i class="fa fa-credit-card" aria-hidden="true"></i> 주문하기</button>
+        <button type="submit" class="btn01" onclick="return fwishlist_check(document.fwishlist,'');"><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?php echo _t('장바구니 담기'); ?></button>
+        <button type="submit" class="btn02" onclick="return fwishlist_check(document.fwishlist,'direct_buy');"><i class="fa fa-credit-card" aria-hidden="true"></i> <?php echo _t('주문하기'); ?></button>
     </div>
     </form>
 </div>
@@ -100,13 +104,13 @@ include_once('./_head.php');
     function out_cd_check(fld, out_cd)
     {
         if (out_cd == 'no'){
-            alert("옵션이 있는 상품입니다.\n\n상품을 클릭하여 상품페이지에서 옵션을 선택한 후 주문하십시오.");
+            alert("<?php echo _t('옵션이 있는 상품입니다.'); ?>\n\n<?php echo _t('상품을 클릭하여 상품페이지에서 옵션을 선택한 후 주문하십시오.'); ?>");
             fld.checked = false;
             return;
         }
 
         if (out_cd == 'tel_inq'){
-            alert("이 상품은 전화로 문의해 주십시오.\n\n장바구니에 담아 구입하실 수 없습니다.");
+            alert("<?php echo _t('이 상품은 전화로 문의해 주십시오.'); ?>\n\n<?php echo _t('장바구니에 담아 구입하실 수 없습니다.'); ?>");
             fld.checked = false;
             return;
         }
@@ -125,7 +129,7 @@ include_once('./_head.php');
 
         if(k == 0)
         {
-            alert("상품을 하나 이상 체크 하십시오");
+            alert("<?php echo _t('상품을 하나 이상 체크 하십시오'); ?>");
             return false;
         }
 

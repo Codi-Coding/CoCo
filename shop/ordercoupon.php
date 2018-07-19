@@ -7,7 +7,7 @@ if($is_guest)
 $price = (int)preg_replace('#[^0-9]#', '', $_POST['price']);
 
 if($price <= 0)
-    die('상품금액이 0원이므로 쿠폰을 사용할 수 없습니다.');
+    die(_t('상품금액이 0원이므로 쿠폰을 사용할 수 없습니다.'));
 
 // 쿠폰정보
 $sql = " select *
@@ -23,16 +23,16 @@ $count = sql_num_rows($result);
 
 <!-- 쿠폰 선택 시작 { -->
 <div id="od_coupon_frm" class="od_coupon">
-    <h3>쿠폰 선택</h3>
+    <h3><?php echo _t('쿠폰 선택'); ?></h3>
     <?php if($count > 0) { ?>
     <div class="tbl_head02 tbl_wrap">
         <table>
-        <caption>쿠폰 선택</caption>
+        <caption><?php echo _t('쿠폰 선택'); ?></caption>
         <thead>
         <tr>
-            <th scope="col">쿠폰명</th>
-            <th scope="col">할인금액</th>
-            <th scope="col">적용</th>
+            <th scope="col"><?php echo _t('쿠폰명'); ?></th>
+            <th scope="col"><?php echo _t('할인금액'); ?></th>
+            <th scope="col"><?php echo _t('적용'); ?></th>
         </tr>
         </thead>
         <tbody>
@@ -60,7 +60,7 @@ $count = sql_num_rows($result);
                 <?php echo get_text($row['cp_subject']); ?>
             </td>
             <td class="td_numbig"><?php echo number_format($dc); ?></td>
-            <td class="td_mngsmall"><button type="button" class="od_cp_apply btn_frmline">적용</button></td>
+            <td class="td_mngsmall"><button type="button" class="od_cp_apply btn_frmline"><?php echo _t('적용'); ?></button></td>
         </tr>
         <?php
         }
@@ -70,11 +70,11 @@ $count = sql_num_rows($result);
     </div>
     <?php
     } else {
-        echo '<p>사용할 수 있는 쿠폰이 없습니다.</p>';
+        echo '<p>'._t('사용할 수 있는 쿠폰이 없습니다.').'</p>';
     }
     ?>
     <div class="btn_confirm">
-        <button type="button" id="od_coupon_close" class="btn_close"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only">닫기</span></button>
+        <button type="button" id="od_coupon_close" class="btn_close"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only"><?php echo _t('닫기'); ?></span></button>
     </div>
 </div>
 <!-- } 쿠폰 선택 끝 -->

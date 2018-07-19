@@ -1,12 +1,16 @@
 <?php
 include_once('./_common.php');
 
+if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/shop'.'/search.ml.php')) { include_once $g5['locale_path'].'/include/ml/shop'.'/search.ml.php'; return; }
+
+if(defined('G5_USE_OLD_CODE') && G5_USE_OLD_CODE) { include_once G5_SHOP_PATH.'/search_old.php'; return; }
+
 if (G5_IS_MOBILE) {
     include_once(G5_MSHOP_PATH.'/search.php');
     return;
 }
 
-$g5['title'] = "상품 검색 결과";
+$g5['title'] = _t("상품 검색 결과");
 include_once('./_head.php');
 
 // QUERY 문에 공통적으로 들어가는 내용
@@ -137,7 +141,7 @@ $q = get_text($q);
 $search_skin = G5_SHOP_SKIN_PATH.'/search.skin.php';
 
 if(!file_exists($search_skin)) {
-    echo str_replace(G5_PATH.'/', '', $search_skin).' 스킨 파일이 존재하지 않습니다.';
+    echo str_replace(G5_PATH.'/', '', $search_skin).' '._t('스킨 파일이 존재하지 않습니다.');
 } else {
     include_once($search_skin);
 }

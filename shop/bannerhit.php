@@ -7,7 +7,7 @@ $sql = " select bn_id, bn_url from {$g5['g5_shop_banner_table']} where bn_id = '
 $row = sql_fetch($sql);
 
 if( ! $row['bn_id'] ){
-    alert('해당 배너가 존재하지 않습니다.', G5_SHOP_URL);
+    alert(_t('해당 배너가 존재하지 않습니다.'), G5_SHOP_URL);
 }
 
 if ($_COOKIE['ck_bn_id'] != $bn_id)

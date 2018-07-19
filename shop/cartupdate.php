@@ -17,20 +17,20 @@ else
 // 브라우저에서 쿠키를 허용하지 않은 경우라고 볼 수 있음.
 if (!$tmp_cart_id)
 {
-    alert('더 이상 작업을 진행할 수 없습니다.\\n\\n브라우저의 쿠키 허용을 사용하지 않음으로 설정한것 같습니다.\\n\\n브라우저의 인터넷 옵션에서 쿠키 허용을 사용으로 설정해 주십시오.\\n\\n그래도 진행이 되지 않는다면 쇼핑몰 운영자에게 문의 바랍니다.');
+    alert(_t('더 이상 작업을 진행할 수 없습니다.').'\\n\\n'._t('브라우저의 쿠키 허용을 사용하지 않음으로 설정한것 같습니다.').'\\n\\n'._t('브라우저의 인터넷 옵션에서 쿠키 허용을 사용으로 설정해 주십시오.').'\\n\\n'._t('그래도 진행이 되지 않는다면 쇼핑몰 운영자에게 문의 바랍니다.'));
 }
 
 
 // 레벨(권한)이 상품구입 권한보다 작다면 상품을 구입할 수 없음.
 if ($member['mb_level'] < $default['de_level_sell'])
 {
-    alert('상품을 구입할 수 있는 권한이 없습니다.');
+    alert(_t('상품을 구입할 수 있는 권한이 없습니다.'));
 }
 
 if($act == "buy")
 {
     if(!count($_POST['ct_chk']))
-        alert("주문하실 상품을 하나이상 선택해 주십시오.");
+        alert(_t("주문하실 상품을 하나이상 선택해 주십시오."));
 
     // 선택필드 초기화
     $sql = " update {$g5['g5_shop_cart_table']} set ct_select = '0' where od_id = '$tmp_cart_id' ";
@@ -70,11 +70,11 @@ if($act == "buy")
 
                 if ($ct_qty + $sum_qty > $it_stock_qty)
                 {
-                    $item_option = $row['it_name'];
+                    $item_option = _t($row['it_name']);
                     if($row['io_id'])
                         $item_option .= '('.$row['ct_option'].')';
 
-                    alert($item_option." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($it_stock_qty - $sum_qty) . " 개");
+                    alert($item_option." "._t("의 재고수량이 부족합니다.")."\\n\\n"._t("현재 재고수량")." : " . number_format($it_stock_qty - $sum_qty) . " "._t("개"));
                 }
             }
 
@@ -101,7 +101,7 @@ else if ($act == "alldelete") // 모두 삭제이면
 else if ($act == "seldelete") // 선택삭제
 {
     if(!count($_POST['ct_chk']))
-        alert("삭제하실 상품을 하나이상 선택해 주십시오.");
+        alert(_t("삭제하실 상품을 하나이상 선택해 주십시오."));
 
     $fldcnt = count($_POST['it_id']);
     for($i=0; $i<$fldcnt; $i++) {
@@ -117,7 +117,7 @@ else // 장바구니에 담기
 {
     $count = count($_POST['it_id']);
     if ($count < 1)
-        alert('장바구니에 담을 상품을 선택하여 주십시오.');
+        alert(_t('장바구니에 담을 상품을 선택하여 주십시오.'));
 
     $ct_count = 0;
     for($i=0; $i<$count; $i++) {
@@ -129,18 +129,18 @@ else // 장바구니에 담기
         $opt_count = count($_POST['io_id'][$it_id]);
 
         if($opt_count && $_POST['io_type'][$it_id][0] != 0)
-            alert('상품의 선택옵션을 선택해 주십시오.');
+            alert(_t('상품의 선택옵션을 선택해 주십시오.'));
 
         for($k=0; $k<$opt_count; $k++) {
             if ($_POST['ct_qty'][$it_id][$k] < 1)
-                alert('수량은 1 이상 입력해 주십시오.');
+                alert(_t('수량은 1 이상 입력해 주십시오.'));
         }
 
         // 상품정보
         $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
         $it = sql_fetch($sql);
         if(!$it['it_id'])
-            alert('상품정보가 존재하지 않습니다.');
+            alert(_t('상품정보가 존재하지 않습니다.'));
 
         // 바로구매에 있던 장바구니 자료를 지운다.
         if($i == 0 && $sw_direct)
@@ -151,14 +151,14 @@ else // 장바구니에 담기
             $sum_qty = 0;
             for($k=0; $k<$opt_count; $k++) {
                 if($_POST['io_type'][$it_id][$k] == 0)
-                    $sum_qty += (int) $_POST['ct_qty'][$it_id][$k];
+                    $sum_qty += $_POST['ct_qty'][$it_id][$k];
             }
 
             if($it['it_buy_min_qty'] > 0 && $sum_qty < $it['it_buy_min_qty'])
-                alert($it['it_name'].'의 선택옵션 개수 총합 '.number_format($it['it_buy_min_qty']).'개 이상 주문해 주십시오.');
+                alert(_t($it['it_name'])._t('의 선택옵션 개수 총합').' '.number_format($it['it_buy_min_qty'])._t('개 이상 주문해 주십시오.'));
 
             if($it['it_buy_max_qty'] > 0 && $sum_qty > $it['it_buy_max_qty'])
-                alert($it['it_name'].'의 선택옵션 개수 총합 '.number_format($it['it_buy_max_qty']).'개 이하로 주문해 주십시오.');
+                alert(_t($it['it_name'])._t('의 선택옵션 개수 총합').' '.number_format($it['it_buy_max_qty'])._t('개 이하로 주문해 주십시오.'));
 
             // 기존에 장바구니에 담긴 상품이 있는 경우에 최대 구매수량 체크
             if($it['it_buy_max_qty'] > 0) {
@@ -171,13 +171,13 @@ else // 장바구니에 담기
                 $row4 = sql_fetch($sql4);
 
                 if(($sum_qty + $row4['ct_sum']) > $it['it_buy_max_qty'])
-                    alert($it['it_name'].'의 선택옵션 개수 총합 '.number_format($it['it_buy_max_qty']).'개 이하로 주문해 주십시오.', './cart.php');
+                    alert(_t($it['it_name'])._t('의 선택옵션 개수 총합').' '.number_format($it['it_buy_max_qty'])._t('개 이하로 주문해 주십시오.'), './cart.php');
             }
         }
 
         // 옵션정보를 얻어서 배열에 저장
         $opt_list = array();
-        $sql = " select * from {$g5['g5_shop_item_option_table']} where it_id = '$it_id' and io_use = 1 order by io_no asc ";
+        $sql = " select * from {$g5['g5_shop_item_option_table']} where it_id = '$it_id' order by io_no asc ";
         $result = sql_query($sql);
         $lst_count = 0;
         for($k=0; $row=sql_fetch_array($result); $k++) {
@@ -213,7 +213,7 @@ else // 장바구니에 담기
                 $sum_qty = $row['cnt'];
 
                 // 재고 구함
-                $ct_qty = (int) $_POST['ct_qty'][$it_id][$k];
+                $ct_qty = $_POST['ct_qty'][$it_id][$k];
                 if(!$io_id)
                     $it_stock_qty = get_it_stock_qty($it_id);
                 else
@@ -221,7 +221,7 @@ else // 장바구니에 담기
 
                 if ($ct_qty + $sum_qty > $it_stock_qty)
                 {
-                    alert($io_value." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($it_stock_qty - $sum_qty) . " 개");
+                    alert($io_value." "._t("의 재고수량이 부족합니다.")."\\n\\n"._t("현재 재고수량")." : " . number_format($it_stock_qty - $sum_qty) . " "._t("개"));
                 }
             }
         }
@@ -261,15 +261,15 @@ else // 장바구니에 담기
                 continue;
 
             $io_price = $opt_list[$io_type][$io_id]['price'];
-            $ct_qty = (int) $_POST['ct_qty'][$it_id][$k];
+            $ct_qty = $_POST['ct_qty'][$it_id][$k];
 
             // 구매가격이 음수인지 체크
             if($io_type) {
                 if((int)$io_price < 0)
-                    alert('구매금액이 음수인 상품은 구매할 수 없습니다.');
+                    alert(_t('구매금액이 음수인 상품은 구매할 수 없습니다.'));
             } else {
                 if((int)$it['it_price'] + (int)$io_price < 0)
-                    alert('구매금액이 음수인 상품은 구매할 수 없습니다.');
+                    alert(_t('구매금액이 음수인 상품은 구매할 수 없습니다.'));
             }
 
             // 동일옵션의 상품이 있으면 수량 더함
@@ -290,7 +290,7 @@ else // 장바구니에 담기
 
                 if ($tmp_ct_qty + $ct_qty > $tmp_it_stock_qty)
                 {
-                    alert($io_value." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($tmp_it_stock_qty) . " 개");
+                    alert($io_value." "._t("의 재고수량이 부족합니다.")."\\n\\n"._t("현재 재고수량")." : " . number_format($tmp_it_stock_qty) . " "._t("개"));
                 }
 
                 $sql3 = " update {$g5['g5_shop_cart_table']}
@@ -318,11 +318,8 @@ else // 장바구니에 담기
                 $ct_send_cost = 2; // 무료
             else if($it['it_sc_type'] > 1 && $it['it_sc_method'] == 1)
                 $ct_send_cost = 1; // 착불
-            
-            $io_value = sql_real_escape_string($io_value);
-            $remote_addr = get_real_client_ip();
 
-            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$remote_addr', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time' )";
+            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$REMOTE_ADDR', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time' )";
             $comma = ' , ';
             $ct_count++;
         }

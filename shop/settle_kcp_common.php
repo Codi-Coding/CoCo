@@ -161,7 +161,7 @@ if(!$default['de_card_test']) {
                 $sql = " update {$g5['g5_shop_order_table']}
                             set od_receipt_price = od_receipt_price + '$ipgm_mnyx',
                                 od_receipt_time = '$tx_tm',
-                                od_shop_memo = concat(od_shop_memo, \"\\n개인결제 ".$row['pp_id']." 로 결제완료 - ".$receipt_time."\")
+                                od_shop_memo = concat(od_shop_memo, \"\\n"._t("개인결제")." ".$row['pp_id']." "._t("로 결제완료")." - ".$receipt_time."\")
                           where od_id = '{$row['od_id']}' ";
                 $result = sql_query($sql, FALSE);
             }

@@ -142,7 +142,7 @@ function wishlist_nc(url)
 }
 function not_buy_nc()
 {
-    alert("죄송합니다. 네이버페이로 구매가 불가한 상품입니다.");
+    alert("'._t('죄송합니다.').' '._t('네이버페이로 구매가 불가한 상품입니다.').'");
     return false;
 }
 //]]></script>'.PHP_EOL;

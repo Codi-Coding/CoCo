@@ -16,31 +16,31 @@ require_once(G5_SHOP_PATH.'/'.$default['de_pg_service'].'/orderform.1.php');
     ?>
 
     <section id="sod_frm_pay" class="pesonal sod_left ">
-        <h2>개인결제정보</h2>
+        <h2><?php echo _t('개인결제정보'); ?></h2>
 
         <div class="tbl_frm01 tbl_wrap ">
             <table>
             <tbody>
             <?php if(trim($pp['pp_content'])) { ?>
             <tr>
-                <th>상세내용</th>
+                <th><?php echo _t('상세내용'); ?></th>
                 <td><?php echo conv_content($pp['pp_content'], 0); ?></td>
             </tr>
             <?php } ?>
             <tr>
-                <th>결제금액</th>
+                <th><?php echo _t('결제금액'); ?></th>
                 <td><?php echo display_price($pp['pp_price']); ?></td>
             </tr>
             <tr>
-                <th scope="row"><label for="pp_name">이름<strong class="sound_only"> 필수</strong></label></th>
+                <th scope="row"><label for="pp_name"><?php echo _t('이름'); ?><strong class="sound_only"> <?php echo _t('필수'); ?></strong></label></th>
                 <td><input type="text" name="pp_name" value="<?php echo get_text($pp['pp_name']); ?>" id="pp_name" required class="required frm_input"></td>
             </tr>
             <tr>
-                <th scope="row"><label for="pp_email">이메일<strong class="sound_only"> 필수</strong></label></th>
+                <th scope="row"><label for="pp_email"><?php echo _t('이메일'); ?><strong class="sound_only"> <?php echo _t('필수'); ?></strong></label></th>
                 <td><input type="text" name="pp_email" value="<?php echo $member['mb_email']; ?>" id="pp_email" required class="required frm_input" size="30"></td>
             </tr>
             <tr>
-                <th scope="row"><label for="pp_hp">휴대폰</label></th>
+                <th scope="row"><label for="pp_hp"><?php echo _t('휴대폰'); ?></label></th>
                 <td><input type="text" name="pp_hp" value="<?php echo get_text($member['mb_hp']); ?>" id="pp_hp" required class="required frm_input"></td>
             </tr>
             </tbody>
@@ -51,46 +51,46 @@ require_once(G5_SHOP_PATH.'/'.$default['de_pg_service'].'/orderform.1.php');
     </section>
 
     <div class="sod_right" id="personal_pay">
-        <h2>결제수단</h2>
+        <h2><?php echo _t('결제수단'); ?></h2>
         <?php
         $multi_settle == 0;
         $checked = '';
 
         $escrow_title = "";
         if ($default['de_escrow_use']) {
-            $escrow_title = "에스크로<br>";
+            $escrow_title = _t("에스크로")."<br>";
         }
 
         if ($default['de_vbank_use'] || $default['de_iche_use'] || $default['de_card_use'] || $default['de_hp_use']) {
             echo '<fieldset id="sod_frm_paysel">';
-            echo '<legend>결제방법 선택</legend>';
+            echo '<legend>'._t('결제방법 선택').'</legend>';
         }
 
         // 가상계좌 사용
         if ($default['de_vbank_use']) {
             $multi_settle++;
-            echo '<input type="radio" id="pp_settle_vbank" name="pp_settle_case" value="가상계좌" '.$checked.'><label for="pp_settle_vbank" class="lb_icon vbank_icon">'.$escrow_title.'가상계좌</label>'.PHP_EOL;
+            echo '<input type="radio" id="pp_settle_vbank" name="pp_settle_case" value="가상계좌" '.$checked.'><label for="pp_settle_vbank" class="lb_icon vbank_icon">'.$escrow_title._t('가상계좌').'</label>'.PHP_EOL;
             $checked = '';
         }
 
         // 계좌이체 사용
         if ($default['de_iche_use']) {
             $multi_settle++;
-            echo '<input type="radio" id="pp_settle_iche" name="pp_settle_case" value="계좌이체" '.$checked.'><label for="pp_settle_iche" class="lb_icon vbank_icon">'.$escrow_title.'계좌이체</label>'.PHP_EOL;
+            echo '<input type="radio" id="pp_settle_iche" name="pp_settle_case" value="계좌이체" '.$checked.'> <label for="pp_settle_iche" class="lb_icon vbank_icon">'.$escrow_title._t('계좌이체').'</label>'.PHP_EOL;
             $checked = '';
         }
 
         // 휴대폰 사용
         if ($default['de_hp_use']) {
             $multi_settle++;
-            echo '<input type="radio" id="pp_settle_hp" name="pp_settle_case" value="휴대폰" '.$checked.'> <label for="pp_settle_hp"  class="lb_icon hp_icon">휴대폰</label>'.PHP_EOL;
+            echo '<input type="radio" id="pp_settle_hp" name="pp_settle_case" value="휴대폰" '.$checked.'> <label for="pp_settle_hp" class="lb_icon hp_icon">'._t('휴대폰').'</label>'.PHP_EOL;
             $checked = '';
         }
 
         // 신용카드 사용
         if ($default['de_card_use']) {
             $multi_settle++;
-            echo '<input type="radio" id="pp_settle_card" name="pp_settle_case" value="신용카드" '.$checked.'> <label for="pp_settle_card"  class="lb_icon card_icon">신용카드</label>'.PHP_EOL;
+            echo '<input type="radio" id="pp_settle_card" name="pp_settle_case" value="신용카드" '.$checked.'> <label for="pp_settle_card" class="lb_icon card_icon">'._t('신용카드').'</label>'.PHP_EOL;
             $checked = '';
         }
 
@@ -100,7 +100,7 @@ require_once(G5_SHOP_PATH.'/'.$default['de_pg_service'].'/orderform.1.php');
         }
 
         if ($multi_settle == 0)
-            echo '<p>결제할 방법이 없습니다.<br>운영자에게 알려주시면 감사하겠습니다.</p>';
+            echo '<p>'._t('결제할 방법이 없습니다.').'<br>'._t('운영자에게 알려주시면 감사하겠습니다.').'</p>';
         ?>
         <?php
         // 결제대행사별 코드 include (주문버튼)
@@ -135,7 +135,7 @@ function forderform_check(f)
     }
     if (!settle_check)
     {
-        alert("결제방식을 선택하십시오.");
+        alert("<?php echo _t('결제방식을 선택하십시오.'); ?>");
         return false;
     }
 
@@ -144,7 +144,7 @@ function forderform_check(f)
     if (document.getElementById("pp_settle_iche")) {
         if (document.getElementById("pp_settle_iche").checked) {
             if (tot_price < 150) {
-                alert("계좌이체는 150원 이상 결제가 가능합니다.");
+                alert("<?php echo _t('계좌이체는 150원 이상 결제가 가능합니다.'); ?>");
                 return false;
             }
         }
@@ -153,7 +153,7 @@ function forderform_check(f)
     if (document.getElementById("pp_settle_card")) {
         if (document.getElementById("pp_settle_card").checked) {
             if (tot_price < 1000) {
-                alert("신용카드는 1000원 이상 결제가 가능합니다.");
+                alert("<?php echo _t('신용카드는 1000원 이상 결제가 가능합니다.'); ?>");
                 return false;
             }
         }
@@ -162,7 +162,7 @@ function forderform_check(f)
     if (document.getElementById("pp_settle_hp")) {
         if (document.getElementById("pp_settle_hp").checked) {
             if (tot_price < 350) {
-                alert("휴대폰은 350원 이상 결제가 가능합니다.");
+                alert("<?php echo _t('휴대폰은 350원 이상 결제가 가능합니다.'); ?>");
                 return false;
             }
         }

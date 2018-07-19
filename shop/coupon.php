@@ -17,9 +17,9 @@ if(defined('G5_THEME_SHOP_PATH')) {
 }
 
 if ($is_guest)
-    alert_close('회원만 조회하실 수 있습니다.');
+    alert_close(_t('회원만 조회하실 수 있습니다.'));
 
-$g5['title'] = $member['mb_nick'].' 님의 쿠폰 내역';
+$g5['title'] = $member['mb_nick'].' '._t('님의 쿠폰 내역');
 include_once(G5_PATH.'/head.sub.php');
 
 $sql = " select cp_id, cp_subject, cp_method, cp_target, cp_start, cp_end, cp_type, cp_price
@@ -46,27 +46,27 @@ $result = sql_query($sql);
             if($row['cp_method'] == 1) {
                 $sql = " select ca_name from {$g5['g5_shop_category_table']} where ca_id = '{$row['cp_target']}' ";
                 $ca = sql_fetch($sql);
-                $cp_target = $ca['ca_name'].'의 상품할인';
+                $cp_target = _t($ca['ca_name'])._t('의 상품할인');
             } else if($row['cp_method'] == 2) {
-                $cp_target = '결제금액 할인';
+                $cp_target = _t('결제금액 할인');
             } else if($row['cp_method'] == 3) {
-                $cp_target = '배송비 할인';
+                $cp_target = _t('배송비 할인');
             } else {
                 $sql = " select it_name from {$g5['g5_shop_item_table']} where it_id = '{$row['cp_target']}' ";
                 $it = sql_fetch($sql);
-                $cp_target = $it['it_name'].' 상품할인';
+                $cp_target = _t($it['it_name']).' '._t('상품할인');
             }
 
             if($row['cp_type'])
                 $cp_price = $row['cp_price'].'%';
             else
-                $cp_price = number_format($row['cp_price']).'원';
+                $cp_price = number_format($row['cp_price'])._t('원');
 
             $cp_count++;
         ?>
         <li>
             <div>
-                <span class="cou_tit"><?php echo $row['cp_subject']; ?></span>
+                <span class="cou_tit"><?php echo _t($row['cp_subject']); ?></span>
                 <span class="cou_pri"><?php echo $cp_price; ?></span>
             </div>
             <div>
@@ -78,12 +78,12 @@ $result = sql_query($sql);
         }
 
         if(!$cp_count)
-            echo '<li class="empty_li">사용할 수 있는 쿠폰이 없습니다.</li>';
+            echo '<li class="empty_li">'._t('사용할 수 있는 쿠폰이 없습니다.').'</li>';
         ?>
         </ul>
     </div>
 
-    <button type="button" onclick="window.close();" class="btn_close">창닫기</button>
+    <button type="button" onclick="window.close();" class="btn_close"><?php echo _t('창닫기'); ?></button>
 </div>
 
 <?php

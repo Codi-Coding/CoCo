@@ -8,12 +8,12 @@ $sql = " select * from {$g5['g5_shop_personalpay_table']} where pp_id = '$pp_id'
 $pp = sql_fetch($sql);
 
 if(!$pp['pp_id'])
-    alert('개인결제 정보가 존재하지 않습니다.');
+    alert(_t('개인결제 정보가 존재하지 않습니다.'));
 
 if($pp['pp_tno'])
-    alert('이미 결제하신 개인결제 내역입니다.');
+    alert(_t('이미 결제하신 개인결제 내역입니다.'));
 
-$g5['title'] = $pp['pp_name'].'님 개인결제';
+$g5['title'] = $pp['pp_name']._t('님').' '._t('개인결제');
 
 if(G5_IS_MOBILE)
     include_once(G5_MSHOP_PATH.'/_head.php');
@@ -29,7 +29,7 @@ set_session('ss_personalpay_hash', $hash_data);
 if($default['de_escrow_use']) {
     $good_info .= "seq=1".chr(31);
     $good_info .= "ordr_numb={$pp_id}_".sprintf("%04d", 1).chr(31);
-    $good_info .= "good_name=".addslashes($pp['pp_name'].'님 개인결제').chr(31);
+    $good_info .= "good_name=".addslashes($pp['pp_name']._t('님').' '._t('개인결제')).chr(31);
     $good_info .= "good_cntx=1".chr(31);
     $good_info .= "good_amtx=".$pp['pp_price'].chr(31);
 }
@@ -37,7 +37,7 @@ if($default['de_escrow_use']) {
 // 주문폼과 공통 사용을 위해 추가
 $od_id = $pp_id;
 $tot_price = $pp['pp_price'];
-$goods = $pp['pp_name'].'님 개인결제';
+$goods = $pp['pp_name']._t('님').' '._t('개인결제');
 
 if($default['de_pg_service'] == 'inicis')
     set_session('ss_order_inicis_id', $od_id);

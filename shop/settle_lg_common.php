@@ -97,7 +97,7 @@ if ( $LGD_HASHDATA2 == $LGD_HASHDATA ) { //해쉬값 검증이 성공이면
                                 set od_receipt_price = od_receipt_price + '$LGD_AMOUNT',
                                     od_receipt_time  = '$LGD_PAYDATE',
                                     od_casseqno      = '$LGD_CASSEQNO',
-                                    od_shop_memo     = concat(od_shop_memo, \"\\n개인결제 ".$row['pp_id']." 로 결제완료 - ".$receipt_time."\")
+                                    od_shop_memo     = concat(od_shop_memo, \"\\n"._t("개인결제")." ".$row['pp_id']." "._t("로 결제완료")." - ".$receipt_time."\")
                               where od_id = '{$row['od_id']}' ";
                     $result = sql_query($sql, FALSE);
                 }
@@ -171,7 +171,7 @@ if ( $LGD_HASHDATA2 == $LGD_HASHDATA ) { //해쉬값 검증이 성공이면
     /*
      * hashdata검증 실패 로그를 처리하시기 바랍니다.
      */
-    $resultMSG = "결제결과 상점 DB처리(LGD_CASNOTEURL) 해쉬값 검증이 실패하였습니다.";
+    $resultMSG = _t("결제결과 상점 DB처리(LGD_CASNOTEURL) 해쉬값 검증이 실패하였습니다.");
 }
 
 echo $resultMSG;

@@ -20,17 +20,16 @@ $count = sql_num_rows($result);
 ?>
 
 <!-- 쿠폰선택 시작 { -->
-<div id="sc_coupon_frm" class="od_coupon">
-    <h3>배송비쿠폰</h3>
+<div id="sc_coupon_frm">
     <?php if($count > 0) { ?>
     <div class="tbl_head02 tbl_wrap">
         <table>
-        <caption>쿠폰 선택</caption>
+        <caption><?php echo _t('쿠폰 선택'); ?></caption>
         <thead>
         <tr>
-            <th scope="col">쿠폰명</th>
-            <th scope="col">할인금액</th>
-            <th scope="col">적용</th>
+            <th scope="col"><?php echo _t('쿠폰명'); ?></th>
+            <th scope="col"><?php echo _t('할인금액'); ?></th>
+            <th scope="col"><?php echo _t('적용'); ?></th>
         </tr>
         </thead>
         <tbody>
@@ -61,7 +60,7 @@ $count = sql_num_rows($result);
                 <?php echo get_text($row['cp_subject']); ?>
             </td>
             <td class="td_numbig"><?php echo number_format($dc); ?></td>
-            <td class="td_mngsmall"><button type="button" class="sc_cp_apply btn_frmline">적용</button></td>
+            <td class="td_mngsmall"><button type="button" class="sc_cp_apply btn_frmline"><?php echo _t('적용'); ?></button></td>
         </tr>
         <?php
         }
@@ -71,11 +70,11 @@ $count = sql_num_rows($result);
     </div>
     <?php
     } else {
-        echo '<p>사용할 수 있는 쿠폰이 없습니다.</p>';
+        echo '<p>'._t('사용할 수 있는 쿠폰이 없습니다.').'</p>';
     }
     ?>
     <div class="btn_confirm">
-        <button type="button" id="sc_coupon_close" class="btn_close"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only">닫기</span></button>
+        <button type="button" id="sc_coupon_close" class="btn_submit"><?php echo _t('닫기'); ?></button>
     </div>
 </div>
 <!-- } 쿠폰선택 끝 -->

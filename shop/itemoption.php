@@ -22,7 +22,7 @@ $sql = " select * from {$g5['g5_shop_item_option_table']}
                 order by io_no asc ";
 $result = sql_query($sql);
 
-$str = '<option value="">선택</option>';
+$str = '<option value="">'._t('선택').'</option>';
 $opt = array();
 
 for($i=0; $row=sql_fetch_array($result); $i++) {
@@ -48,14 +48,14 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
         $str .= PHP_EOL.'<option value="'.$val[$key].'">'.$val[$key].'</option>';
     } else {
         if($row['io_price'] >= 0)
-            $price = '&nbsp;&nbsp;+ '.number_format($row['io_price']).'원';
+            $price = '&nbsp;&nbsp;+ '.number_format($row['io_price'])._t('원');
         else
-            $price = '&nbsp;&nbsp; '.number_format($row['io_price']).'원';
+            $price = '&nbsp;&nbsp; '.number_format($row['io_price'])._t('원');
 
         $io_stock_qty = get_option_stock_qty($it_id, $row['io_id'], $row['io_type']);
 
         if($io_stock_qty < 1)
-            $soldout = '&nbsp;&nbsp;[품절]';
+            $soldout = '&nbsp;&nbsp;['._t('품절').']';
         else
             $soldout = '';
 
