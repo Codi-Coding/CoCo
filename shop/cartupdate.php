@@ -87,10 +87,14 @@ if($act == "buy")
         }
     }
 
-    if ($is_member) // 회원인 경우
-        goto_url(G5_SHOP_URL.'/orderform.php');
-    else
-        goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/orderform.php'));
+	// 그누테마 사용에 따라 비회원 로직 변경
+	if ($is_member) { // 회원인 경우
+		goto_url(G5_SHOP_URL.'/orderform.php');
+	} else if (USE_G5_THEME) {
+		goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/orderform.php'));
+	} else {
+		goto_url(G5_SHOP_URL.'/orderform.php?sw_guest=1');
+	}
 }
 else if ($act == "alldelete") // 모두 삭제이면
 {
@@ -244,13 +248,17 @@ else // 장바구니에 담기
         // 장바구니에 Insert
         $comma = '';
         $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
-                        ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time )
+                        ( od_id, mb_id, it_id, it_name, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, ct_status, ct_price, ct_point, ct_point_use, ct_stock_use, ct_option, ct_qty, ct_notax, io_id, io_type, io_price, ct_time, ct_ip, ct_send_cost, ct_direct, ct_select, ct_select_time, pt_it, pt_msg1, pt_msg2, pt_msg3 )
                     VALUES ";
 
         for($k=0; $k<$opt_count; $k++) {
             $io_id = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$it_id][$k]);
             $io_type = preg_replace('#[^01]#', '', $_POST['io_type'][$it_id][$k]);
             $io_value = $_POST['io_value'][$it_id][$k];
+
+			$pt_msg1 = get_text($_POST['pt_msg1'][$it_id][$k]);
+            $pt_msg2 = get_text($_POST['pt_msg2'][$it_id][$k]);
+            $pt_msg3 = get_text($_POST['pt_msg3'][$it_id][$k]);
 
             // 선택옵션정보가 존재하는데 선택된 옵션이 없으면 건너뜀
             if($lst_count && $io_id == '')
@@ -278,7 +286,10 @@ else // 장바구니에 담기
                         where od_id = '$tmp_cart_id'
                           and it_id = '$it_id'
                           and io_id = '$io_id'
-                          and ct_status = '쇼핑' ";
+						  and pt_msg1 = '{$pt_msg1}'
+						  and pt_msg2 = '{$pt_msg2}'
+						  and pt_msg3 = '{$pt_msg3}'
+						  and ct_status = '쇼핑' ";
             $row2 = sql_fetch($sql2);
             if($row2['ct_id']) {
                 // 재고체크
@@ -319,7 +330,7 @@ else // 장바구니에 담기
             else if($it['it_sc_type'] > 1 && $it['it_sc_method'] == 1)
                 $ct_send_cost = 1; // 착불
 
-            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$REMOTE_ADDR', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time' )";
+            $sql .= $comma."( '$tmp_cart_id', '{$member['mb_id']}', '{$it['it_id']}', '".addslashes($it['it_name'])."', '{$it['it_sc_type']}', '{$it['it_sc_method']}', '{$it['it_sc_price']}', '{$it['it_sc_minimum']}', '{$it['it_sc_qty']}', '쇼핑', '{$it['it_price']}', '$point', '0', '0', '$io_value', '$ct_qty', '{$it['it_notax']}', '$io_id', '$io_type', '$io_price', '".G5_TIME_YMDHIS."', '$REMOTE_ADDR', '$ct_send_cost', '$sw_direct', '$ct_select', '$ct_select_time', '{$it['pt_it']}', '$pt_msg1', '$pt_msg2', '$pt_msg3' )";
             $comma = ' , ';
             $ct_count++;
         }
@@ -330,19 +341,18 @@ else // 장바구니에 담기
 }
 
 // 바로 구매일 경우
-if ($sw_direct)
-{
-    if ($is_member)
-    {
-    	goto_url(G5_SHOP_URL."/orderform.php?sw_direct=$sw_direct");
-    }
-    else
-    {
-    	goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL."/orderform.php?sw_direct=$sw_direct"));
-    }
-}
-else
-{
+if ($sw_direct) {
+	$sw_url = G5_SHOP_URL.'/orderform.php?sw_direct='.$sw_direct;
+
+	// 그누테마 사용에 따라 비회원 로직 변경
+	if ($is_member) {
+   		goto_url($sw_url);
+	} else if (USE_G5_THEME) {
+   		goto_url(G5_BBS_URL."/login.php?url=".urlencode($sw_url));
+	} else {
+		goto_url($sw_url.'&amp;sw_guest=1');
+	}
+} else {
     goto_url(G5_SHOP_URL.'/cart.php');
 }
 ?>
