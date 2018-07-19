@@ -69,7 +69,7 @@ function number_format(data)
     var cutlen = 3;
     var comma = ',';
     var i;
-    
+
     data = data + '';
 
     var sign = data.match(/^[\+\-]/);
@@ -133,7 +133,7 @@ function no_comma(data)
 // 삭제 검사 확인
 function del(href)
 {
-    if(confirm("한번 삭제한 자료는 복구할 방법이 없습니다.\n\n정말 삭제하시겠습니까?")) {
+    if(confirm(g5_msg_unrecoverable+"\n\n"+g5_msg_delete_really)) {
         var iev = -1;
         if (navigator.appName == 'Microsoft Internet Explorer') {
             var ua = navigator.userAgent;
@@ -380,7 +380,7 @@ var win_homepage = function(href) {
  **/
 var win_zip = function(frm_name, frm_zip, frm_addr1, frm_addr2, frm_addr3, frm_jibeon) {
     if(typeof daum === 'undefined'){
-        alert("다음 우편번호 postcode.v2.js 파일이 로드되지 않았습니다.");
+        alert(g5_msg_daum_file_unloaded+" (postcode.v2.js)");
         return false;
     }
 
@@ -440,7 +440,7 @@ var win_zip = function(frm_name, frm_zip, frm_addr1, frm_addr2, frm_addr3, frm_j
                 element_wrap = document.createElement("div");
                 element_wrap.setAttribute("id", daum_pape_id);
                 element_wrap.style.cssText = 'display:none;border:1px solid;left:0;width:100%;height:300px;margin:5px 0;position:relative;-webkit-overflow-scrolling:touch;';
-                element_wrap.innerHTML = '<img src="//i1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-21px;z-index:1" class="close_daum_juso" alt="접기 버튼">';
+                element_wrap.innerHTML = '<img src="//i1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-21px;z-index:1" class="close_daum_juso" alt="'+g5_msg_unfold_button+'">';
                 jQuery('form[name="'+frm_name+'"]').find('input[name="'+frm_addr1+'"]').before(element_wrap);
                 jQuery("#"+daum_pape_id).off("click", ".close_daum_juso").on("click", ".close_daum_juso", function(e){
                     e.preventDefault();
@@ -483,7 +483,7 @@ var win_zip = function(frm_name, frm_zip, frm_addr1, frm_addr2, frm_addr3, frm_j
                 element_layer = document.createElement("div");
                 element_layer.setAttribute("id", rayer_id);
                 element_layer.style.cssText = 'display:none;border:5px solid;position:fixed;width:300px;height:460px;left:50%;margin-left:-155px;top:50%;margin-top:-235px;overflow:hidden;-webkit-overflow-scrolling:touch;z-index:10000';
-                element_layer.innerHTML = '<img src="//i1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" class="close_daum_juso" alt="닫기 버튼">';
+                element_layer.innerHTML = '<img src="//i1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" class="close_daum_juso" alt="'+g5_msg_close_button+'">';
                 document.body.appendChild(element_layer);
                 jQuery("#"+rayer_id).off("click", ".close_daum_juso").on("click", ".close_daum_juso", function(e){
                     e.preventDefault();
@@ -738,7 +738,7 @@ $(function() {
         var token = get_write_token(bo_table);
 
         if(!token) {
-            alert("토큰 정보가 올바르지 않습니다.");
+            alert(g5_msg_token_info_not_correct);
             return false;
         }
 
@@ -752,3 +752,38 @@ $(function() {
         return true;
     });
 });
+
+/// 환율 변환 
+function _cc(price)
+{
+    if(g5_use_currency_conversion == 1) 
+        return parseFloat(price/g5_exchange_rate).toFixed(2);
+    else
+        return price;
+}
+
+/// 소숫점 이하 지원 number_format
+function number_format2(num, decimals, dec_point, thousands_sep)
+{
+    num = parseFloat(num);
+    if(isNaN(num)) return '0';
+ 
+    if(typeof(decimals) == 'undefined') decimals = 0;
+    if(typeof(dec_point) == 'undefined') dec_point = '.';
+    if(typeof(thousands_sep) == 'undefined') thousands_sep = ',';
+    decimals = Math.pow(10, decimals);
+ 
+    num = num * decimals;
+    num = Math.round(num);
+    num = num / decimals;
+ 
+    num = String(num);
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    var tmp = num.split('.');
+    var n = tmp[0];
+    var d = tmp[1] ? dec_point + tmp[1] : '';
+ 
+    while(reg.test(n)) n = n.replace(reg, "$1"+thousands_sep+"$2");
+ 
+    return n + d;
+}

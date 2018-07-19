@@ -1,0 +1,38 @@
+<?php // 굿빌더 ?>
+<?php
+define("_SUBPAGE_", TRUE);
+define("_ABOUT_", TRUE);
+include_once("./_common.php");
+
+$g5['title'] = $menu_name." > ".$submenu_name;
+
+include_once("./_head.php");
+?>
+				<div class="about">
+					<h2><?php echo $submenu_name?></h2>
+					<div>
+						<img src="<?php echo $g5['tmpl_url']?>/images/about.jpg" alt="<?php echo $submenu_name?>">
+						<h3>안녕하십니까?</h3>
+						<p>
+						저희 사이트를 방문해 주셔서 감사합니다.
+						저희 사이트를 방문해 주셔서 감사합니다.
+						저희 사이트를 방문해 주셔서 감사합니다.
+						저희 사이트를 방문해 주셔서 감사합니다.
+						저희 사이트를 방문해 주셔서 감사합니다.
+						</p>
+					</div>
+					<h3>반갑습니다.</h3>
+					<p>
+					좋은 하루 되시기를 기원합니다.
+					좋은 하루 되시기를 기원합니다.
+					좋은 하루 되시기를 기원합니다.
+					좋은 하루 되시기를 기원합니다.
+					좋은 하루 되시기를 기원합니다.
+					</p>
+					<p class="bottom">
+						- 운영자 올림 -
+					</p>
+				</div>
+<?php
+include_once("./_tail.php");
+?>

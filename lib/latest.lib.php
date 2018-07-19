@@ -44,7 +44,7 @@ function latest($skin_dir='', $bo_table, $rows=10, $subject_len=40, $cache_time=
                     $cache_fwrite = true;
                 }
             }
-            
+
             if(!$cache_fwrite) {
                 try{
                     $file_contents = file_get_contents($cache_file);
@@ -68,6 +68,14 @@ function latest($skin_dir='', $bo_table, $rows=10, $subject_len=40, $cache_time=
         $board = sql_fetch($sql);
         $bo_subject = get_text($board['bo_subject']);
 
+        /// multi lang
+        if($g5['is_db_trans'] && file_exists(G5_PATH.'/locale/include/func.latest.bo_subject.inc.php')) {
+            include G5_PATH.'/locale/include/func.latest.bo_subject.inc.php';
+        } else {
+            $board['bo_subject'] = _t($board['bo_subject']);
+            $bo_subject = get_text($board['bo_subject']);
+        }
+
         $tmp_write_table = $g5['write_prefix'] . $bo_table; // 게시판 테이블 전체이름
         $sql = " select * from {$tmp_write_table} where wr_is_comment = 0 order by wr_num limit 0, {$rows} ";
         $result = sql_query($sql);
@@ -82,6 +90,11 @@ function latest($skin_dir='', $bo_table, $rows=10, $subject_len=40, $cache_time=
                 $row['file'] = array('count'=>0);
             }
             $list[$i] = get_list($row, $board, $latest_skin_url, $subject_len);
+
+            /// multi lang
+            if($g5['is_db_trans'] && file_exists(G5_PATH.'/locale/include/func.latest.list.inc.php')) {
+                include G5_PATH.'/locale/include/func.latest.list.inc.php';
+            }
         }
 
         if($cache_fwrite) {

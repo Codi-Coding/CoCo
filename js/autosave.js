@@ -105,7 +105,7 @@ $(function(){
         var as_id = $li.data("as_id");
         $.get(g5_bbs_url+"/ajax.autosavedel.php", {"as_id":as_id}, function(data){
             if (data == -1) {
-                alert("임시 저장된글을 삭제중에 오류가 발생하였습니다.");
+                alert(g5_msg_tmp_saved_del_error);
             } else {
                 $("#autosave_count").html(data);
                 $li.remove();

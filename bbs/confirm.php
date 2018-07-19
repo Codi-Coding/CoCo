@@ -26,16 +26,16 @@ if (confirm(conf)) {
 <header>
     <hgroup>
         <h1><?php echo $header; ?></h1> <!-- 수행 중이던 작업 내용 -->
-        <h2>아래 내용을 확인해 주세요.</h2>
+        <h2><?php echo _t('아래 내용을 확인해 주세요.'); ?></h2>
     </hgroup>
 </header>
 <p>
     <?php echo $msg; ?>
 </p>
 
-<a href="<?php echo $url1; ?>">확인</a>
-<a href="<?php echo $url2; ?>">취소</a><br><br>
-<a href="<?php echo $url3; ?>">돌아가기</a>
+<a href="<?php echo $url1; ?>"><?php echo _t('확인'); ?></a>
+<a href="<?php echo $url2; ?>"><?php echo _t('취소'); ?></a><br><br>
+<a href="<?php echo $url3; ?>"><?php echo _t('돌아가기'); ?></a>
 </article>
 </noscript>
 

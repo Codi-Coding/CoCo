@@ -1,8 +1,18 @@
 <?php
 include_once('./_common.php');
 
-$g5['title'] = '전체검색 결과';
+if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/bbs'.'/search.ml.php')) { include_once $g5['locale_path'].'/include/ml/bbs'.'/search.ml.php'; return; }
+
+$g5['title'] = _t('전체검색 결과');
 include_once('./_head.php');
+
+/// 검색 결과 테이블 형태로 출력
+if($config[cf_search_skin] == 'g4_good_bbs_list') {
+    $search_skin_path = "$g5[path]/skin/search/$config[cf_search_skin]";
+    include("$search_skin_path/bbs/search.php");
+    exit;
+}
+/// 검색 결과 테이블 형태로 출력 : 끝
 
 $search_table = Array();
 $table_index = 0;
@@ -139,7 +149,7 @@ if ($stx) {
             $sch_all = "";
             if ($onetable == $g5_search['tables'][$i]) $sch_class = "class=sch_on";
             else $sch_all = "class=sch_on";
-            $str_board_list .= '<li><a href="'.$_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;onetable='.$g5_search['tables'][$i].'" '.$sch_class.'><strong>'.((G5_IS_MOBILE && $row2['bo_mobile_subject']) ? $row2['bo_mobile_subject'] : $row2['bo_subject']).'</strong><span class="cnt_cmt">'.$row['cnt'].'</span></a></li>';
+            $str_board_list .= '<li><a href="'.$_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;onetable='.$g5_search['tables'][$i].'" '.$sch_class.'><strong>'.((G5_IS_MOBILE && $row2['bo_mobile_subject']) ? _t($row2['bo_mobile_subject']) : _t($row2['bo_subject'])).'</strong><span class="cnt_cmt">'.$row['cnt'].'</span></a></li>';
         }
     }
 
@@ -184,7 +194,7 @@ if ($stx) {
 
             // 비밀글은 검색 불가
             if (strstr($row['wr_option'].$row2['wr_option'], 'secret'))
-                $row['wr_content'] = '[비밀글 입니다.]';
+                $row['wr_content'] = '['._t('비밀글 입니다.').']';
 
             $subject = get_text($row['wr_subject']);
             if (strstr($sfl, 'wr_subject'))
@@ -224,11 +234,11 @@ if ($stx) {
     $write_pages = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, $_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;srows='.$srows.'&amp;onetable='.$onetable.'&amp;page=');
 }
 
-$group_select = '<label for="gr_id" class="sound_only">게시판 그룹선택</label><select name="gr_id" id="gr_id" class="select"><option value="">전체 분류';
+$group_select = '<label for="gr_id" class="sound_only">'._t('게시판 그룹선택').'</label><select name="gr_id" id="gr_id" class="select"><option value="">'._t('전체 분류');
 $sql = " select gr_id, gr_subject from {$g5['group_table']} order by gr_id ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
-    $group_select .= "<option value=\"".$row['gr_id']."\"".get_selected($_GET['gr_id'], $row['gr_id']).">".$row['gr_subject']."</option>";
+    $group_select .= "<option value=\"".$row['gr_id']."\"".get_selected($_GET['gr_id'], $row['gr_id']).">"._t($row['gr_subject'])."</option>";
 $group_select .= '</select>';
 
 if (!$sfl) $sfl = 'wr_subject';

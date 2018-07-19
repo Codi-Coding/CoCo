@@ -26,7 +26,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/style.css">', 
             // if ($list[$i]['link']['count']) { echo "[{$list[$i]['link']['count']}]"; }
             // if ($list[$i]['file']['count']) { echo "<{$list[$i]['file']['count']}>"; }
 
-            if (isset($list[$i]['icon_new']) && $list[$i]['icon_new']) echo " <span class=\"new_icon\">NEW</span>";
+            if (isset($list[$i]['icon_new']) && $list[$i]['icon_new']) echo " <span class=\"new_icon\">"._t("NEW")."</span>";
             //if (isset($list[$i]['icon_hot'])) echo " <i class=\"fa fa-heart\" aria-hidden=\"true\"></i>" ;
             //if (isset($list[$i]['icon_file'])) echo " <i class=\"fa fa-download\" aria-hidden=\"true\"></i>" ;
             //if (isset($list[$i]['icon_link'])) echo " <i class=\"fa fa-link\" aria-hidden=\"true\"></i>" ;
@@ -35,7 +35,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/style.css">', 
         </li>
     <?php }  ?>
     <?php if (count($list) == 0) { //게시물이 없을 때  ?>
-    <li>게시물이 없습니다.</li>
+    <li><?php echo _t('게시물이 없습니다.'); ?></li>
     <?php }  ?>
     </ul>
 </div>

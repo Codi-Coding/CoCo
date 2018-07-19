@@ -34,23 +34,23 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 
 
     // 공백없이 연속 입력한 문자 자르기 (way 보드 참고. way.co.kr)
-    //$list[$i]['content'] = eregi_replace("[^ \n<>]{130}", "\\0\n", $row['wr_content']);
+    //$list[$i]['content'] = eregi_replace("[^ \n<>]{130}", "\\0\n", _t($row['wr_content']));
 
-    $list[$i]['content'] = $list[$i]['content1']= '비밀글 입니다.';
+    $list[$i]['content'] = $list[$i]['content1']= _t('비밀글 입니다.');
     if (!strstr($row['wr_option'], 'secret') ||
         $is_admin ||
         ($write['mb_id']===$member['mb_id'] && $member['mb_id']) ||
         ($row['mb_id']===$member['mb_id'] && $member['mb_id'])) {
-        $list[$i]['content1'] = $row['wr_content'];
-        $list[$i]['content'] = conv_content($row['wr_content'], 0, 'wr_content');
+        $list[$i]['content1'] = _t($row['wr_content']);
+        $list[$i]['content'] = conv_content(_t($row['wr_content']), 0, 'wr_content');
         $list[$i]['content'] = search_font($stx, $list[$i]['content']);
     } else {
         $ss_name = 'ss_secret_comment_'.$bo_table.'_'.$list[$i]['wr_id'];
 
         if(!get_session($ss_name))
-            $list[$i]['content'] = '<a href="./password.php?w=sc&amp;bo_table='.$bo_table.'&amp;wr_id='.$list[$i]['wr_id'].$qstr.'" class="s_cmt">댓글내용 확인</a>';
+            $list[$i]['content'] = '<a href="./password.php?w=sc&amp;bo_table='.$bo_table.'&amp;wr_id='.$list[$i]['wr_id'].$qstr.'" class="s_cmt">'._t('댓글내용 확인').'</a>';
         else {
-            $list[$i]['content'] = conv_content($row['wr_content'], 0, 'wr_content');
+            $list[$i]['content'] = conv_content(_t($row['wr_content']), 0, 'wr_content');
             $list[$i]['content'] = search_font($stx, $list[$i]['content']);
         }
     }

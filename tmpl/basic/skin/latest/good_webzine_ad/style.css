@@ -1,0 +1,15 @@
+/* 새글 스킨 (latest webzine ad) */
+/* .lt_gallery_wz_ad {position:relative;float:none;padding:0 10px 10px 14px;width:167px;height:auto;border-bottom:1px none #ddd} */
+.lt_gallery_wz_ad {position:relative;float:none;padding:0 10px 10px 14px;width:167px;height:auto;border-bottom:1px solid #ddd}
+.lt_gallery_wz_ad .lt_pc {float:left;margin-left:20px}
+/* .lt_gallery_wz_ad .lt_title {display:block;padding:10px 0 8px 3px;background:#eee} */
+.lt_gallery_wz_ad .lt_title {display:block;padding:10px 0 8px 3px}
+.lt_gallery_wz_ad .lt_more {position:absolute;top:10px;right:0;padding-right:3px}
+
+.lt_gallery_wz_ad ul {background:#fff;width:100%;margin:5px 0;padding:0;list-style:none}
+.lt_gallery_wz_ad ul {float:none;list-style:none}
+.lt_gallery_wz_ad ul li {text-align:center}
+.lt_gallery_wz_ad ul li img {width:163px}
+.lt_gallery_wz_ad ul li a {display:inline-block;width:100%;padding-top:2px;padding-bottom:2px;color:#000;text-decoration:none}
+.lt_gallery_wz_ad ul li a:focus,
+.lt_gallery_wz_ad ul li a:hover {background:#333;color:#fff}

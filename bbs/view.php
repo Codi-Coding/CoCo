@@ -1,6 +1,8 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/bbs'.'/view.ml.php')) { include_once $g5['locale_path'].'/include/ml/bbs'.'/view.ml.php'; return; } /// 2018.02.10
+
 // 게시판에서 두단어 이상 검색 후 검색된 게시물에 코멘트를 남기면 나오던 오류 수정
 $sop = strtolower($sop);
 if ($sop != 'and' && $sop != 'or')
@@ -116,7 +118,7 @@ if (strstr($view['wr_option'], 'html1'))
 else if (strstr($view['wr_option'], 'html2'))
     $html = 2;
 
-$view['content'] = conv_content($view['wr_content'], $html);
+$view['content'] = conv_content(_t($view['wr_content']), $html);
 if (strstr($sfl, 'content'))
     $view['content'] = search_font($stx, $view['content']);
 
@@ -126,7 +128,7 @@ function conv_rich_content($matches)
     global $view;
     return view_image($view, $matches[1], $matches[2]);
 }
-$view['rich_content'] = preg_replace_callback("/{이미지\:([0-9]+)[:]?([^}]*)}/i", "conv_rich_content", $view['content']);
+$view['rich_content'] = preg_replace_callback("/{"._t("이미지")."\:([0-9]+)[:]?([^}]*)}/i", "conv_rich_content", $view['content']);
 
 $is_signature = false;
 $signature = '';
@@ -136,6 +138,14 @@ if ($board['bo_use_signature'] && $view['mb_id']) {
     $signature = $mb['mb_signature'];
 
     $signature = conv_content($signature, 1);
+}
+
+/// goodbuilder 
+if($board['bo_sort_field'] == 'wr_datetime asc' or $board['bo_sort_field'] == 'wr_last asc') {
+    $prev_href_org = $prev_href;
+    $next_href_org = $next_href;
+    $prev_href = $next_href_org;
+    $next_href = $prev_href_org;
 }
 
 include_once($board_skin_path.'/view.skin.php');

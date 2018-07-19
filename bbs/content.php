@@ -1,9 +1,11 @@
 <?php
 include_once('./_common.php');
 
+if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/bbs'.'/content.ml.php')) { include_once $g5['locale_path'].'/include/ml/bbs'.'/content.ml.php'; return; }
+
 //dbconfig파일에 $g5['content_table'] 배열변수가 있는지 체크
 if( !isset($g5['content_table']) ){
-    die('<meta charset="utf-8">관리자 모드에서 게시판관리->내용 관리를 먼저 확인해 주세요.');
+    die('<meta charset="utf-8">'._t('관리자 모드에서').' '._t('게시판관리').'->'._t('내용 관리를 먼저 확인해 주세요.'));
 }
 
 if (G5_IS_MOBILE) {
@@ -15,9 +17,9 @@ if (G5_IS_MOBILE) {
 $sql = " select * from {$g5['content_table']} where co_id = '$co_id' ";
 $co = sql_fetch($sql);
 if (!$co['co_id'])
-    alert('등록된 내용이 없습니다.');
+    alert(_t('등록된 내용이 없습니다.'));
 
-$g5['title'] = $co['co_subject'];
+$g5['title'] = _t($co['co_subject']);
 
 if ($co['co_include_head'] && is_include_path_check($co['co_include_head']))
     @include_once($co['co_include_head']);
@@ -58,6 +60,12 @@ $dst[] = $default['de_admin_info_email'];
 
 $str = preg_replace($src, $dst, $str);
 
+if(defined('G5_USE_TMPL_SKIN') and G5_USE_TMPL_SKIN) { /// content config가 config에 포함될 때까지
+    if(!(defined('G5_IS_ADMIN') && G5_IS_ADMIN)) {
+        $co['co_skin'] = $config['cf_co_skin'];
+    }
+}
+
 // 스킨경로
 if(trim($co['co_skin']) == '')
     $co['co_skin'] = 'basic';
@@ -67,7 +75,7 @@ $content_skin_url  = get_skin_url('content', $co['co_skin']);
 $skin_file = $content_skin_path.'/content.skin.php';
 
 if ($is_admin)
-    echo '<div class="ctt_admin"><a href="'.G5_ADMIN_URL.'/contentform.php?w=u&amp;co_id='.$co_id.'" class="btn_admin btn">내용 수정</a></div>';
+    echo '<div class="ctt_admin"><a href="'.G5_ADMIN_URL.'/contentform.php?w=u&amp;co_id='.$co_id.'" class="btn_admin btn">'._t('내용 수정').'</a></div>';
 ?>
 
 <?php
@@ -82,7 +90,7 @@ if(is_file($skin_file)) {
     if (file_exists($timg)) // 하단 이미지
         echo '<div id="ctt_timg" class="ctt_img"><img src="'.G5_DATA_URL.'/content/'.$co_id.'_t" alt=""></div>';
 } else {
-    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</p>';
+    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</p>';
 }
 
 if ($co['co_include_tail'] && is_include_path_check($co['co_include_tail']))

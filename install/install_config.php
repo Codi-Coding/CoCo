@@ -9,7 +9,7 @@ header('Pragma: no-cache'); // HTTP/1.0
 @header('X-Robots-Tag: noindex');
 
 include_once ('../config.php');
-$title = G5_VERSION." 초기환경설정 2/3";
+$title = GB_VERSION." 초기환경설정 2/3";
 include_once ('./install.inc.php');
 
 if (!isset($_POST['agree']) || $_POST['agree'] != '동의함') {
@@ -17,6 +17,17 @@ if (!isset($_POST['agree']) || $_POST['agree'] != '동의함') {
     echo "<div class=\"inner_btn\"><a href=\"./\">뒤로가기</a></div></div>".PHP_EOL;
     exit;
 }
+
+if(file_exists('../shop')) {
+    $shop_checked = " checked=\"checked\"";
+}
+
+if(file_exists('../contents')) {
+    $contents_checked = " checked=\"checked\"";
+}
+
+include_once ('../locale/basic/lang_name_list.inc.php');
+$g5['lang_list_all'] = array_keys($g5['lang_name_list']);
 ?>
 
 
@@ -30,6 +41,17 @@ if (!isset($_POST['agree']) || $_POST['agree'] != '동의함') {
         <col>
     </colgroup>
     <tbody>
+    <tr>
+        <th scope="row"><label for="mysql_host">홈 페이지 기본 언어</label></th>
+        <td>
+            <select name="lang" id="lang">
+            <option value=""> ==  Select default language ==
+            <?php for($i = 0; $i < count($g5['lang_list_all']); $i++) { $lang = $g5['lang_list_all'][$i]; $flag = $g5['flag_list'][$lang]; ?>
+            <option value="<?php echo $lang; ?>"><img src="<?php echo "../locale/img/flag/".$flag.".png"; ?>" alt="<?php echo $g5['lang_name_list'][$lang]; ?>" title="<?php echo $g5['lang_name_list'][$lang]; ?>"> <?php echo $g5['lang_name_list'][$lang]; ?>
+            <?php } ?>
+            </select> (설치 후 변경 가능)
+        </td>
+    </tr>
     <tr>
         <th scope="row"><label for="mysql_host">Host</label></th>
         <td>
@@ -61,6 +83,7 @@ if (!isset($_POST['agree']) || $_POST['agree'] != '동의함') {
             <span>가능한 변경하지 마십시오.</span>
         </td>
     </tr>
+<?php if(file_exists('./sql_buildershop.sql')) { ?>
     <tr>
         <th scope="row"><label for="">쇼핑몰TABLE명 접두사</label></th>
         <td>
@@ -68,18 +91,38 @@ if (!isset($_POST['agree']) || $_POST['agree'] != '동의함') {
             <input name="g5_shop_prefix" type="text" value="g5_shop_" id="g5_shop_prefix">
         </td>
     </tr>
+<?php } ?>
+<?php if(file_exists('./sql_buildercontents.sql')) { ?>
     <tr>
-        <th scope="row"><label for=""><?php echo G5_VERSION; ?> 재설치</label></th>
+        <th scope="row"><label for="">컨텐츠몰TABLE명 접두사</label></th>
         <td>
-            <input name="g5_install" type="checkbox" value="1" id="g5_install">재설치
+            <span>가능한 변경하지 마십시오.</span>
+            <input name="g5_contents_prefix" type="text" value="g5_contents_" id="g5_contents_prefix">
         </td>
     </tr>
+<?php } ?>
+    <tr>
+        <th scope="row"><label for=""><?php echo GB_VERSION; ?> 설치</label></th>
+        <td>
+            <input name="g5_install" type="checkbox" value="1" id="g5_install" checked="checked">설치
+        </td>
+    </tr>
+<?php if(file_exists('./sql_buildershop.sql')) { ?>
     <tr>
         <th scope="row"><label for="">쇼핑몰설치</label></th>
         <td>
-            <input name="g5_shop_install" type="checkbox" value="1" id="g5_shop_install" checked="checked">설치
+            <input name="g5_shop_install" type="checkbox" value="1" id="g5_shop_install"<?php echo $shop_checked?>>설치
         </td>
     </tr>
+<?php } ?>
+<?php if(file_exists('./sql_buildercontents.sql')) { ?>
+    <tr>
+        <th scope="row"><label for="">컨텐츠몰설치</label></th>
+        <td>
+            <input name="g5_contents_install" type="checkbox" value="1" id="g5_contents_install"<?php echo $contents_checked?>>설치
+        </td>
+    </tr>
+<?php } ?>
     </tbody>
     </table>
 
@@ -118,8 +161,8 @@ if (!isset($_POST['agree']) || $_POST['agree'] != '동의함') {
     </table>
 
     <p>
-        <strong class="st_strong">주의! 이미 <?php echo G5_VERSION ?>가 존재한다면 DB 자료가 망실되므로 주의하십시오.</strong><br>
-        주의사항을 이해했으며, 그누보드 설치를 계속 진행하시려면 다음을 누르십시오.
+        <strong class="st_strong">주의! 이미 <?php echo GB_VERSION ?>가 존재한다면 DB 자료가 망실되므로 주의하십시오.</strong><br>
+        주의사항을 이해했으며, 굿빌더 설치를 계속 진행하시려면 다음을 누르십시오.
     </p>
 
     <div class="inner_btn">
@@ -130,7 +173,15 @@ if (!isset($_POST['agree']) || $_POST['agree'] != '동의함') {
 <script>
 function frm_install_submit(f)
 {
-    if (f.mysql_host.value == '')
+    if (f.g5_install.checked == false)
+    {
+        alert('굿빌더 설치에 체크해 주십시요.'); f.g5_install.focus(); return false;
+    }
+    else if (f.lang.value == '')
+    {
+        alert('기본 언어를 선택하십시오.'); f.lang.focus(); return false;
+    }
+    else if (f.mysql_host.value == '')
     {
         alert('MySQL Host 를 입력하십시오.'); f.mysql_host.focus(); return false;
     }

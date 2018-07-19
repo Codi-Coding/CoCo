@@ -2,6 +2,11 @@
 // 이 파일은 새로운 파일 생성시 반드시 포함되어야 함
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+if (G5_IS_MOBILE) {
+    require_once(G5_MOBILE_PATH.'/head.sub.php');
+    return;
+}
+
 // 테마 head.sub.php 파일
 if(!defined('G5_IS_ADMIN') && defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/head.sub.php')) {
     require_once(G5_THEME_PATH.'/head.sub.php');
@@ -34,7 +39,14 @@ header("Expires: 0"); // rfc2616 - Section 14.21
 header("Pragma: no-cache"); // HTTP/1.0
 */
 ?>
+<?php if($g5['tmpl'] == 'g4_basic_g4' && !defined('G5_IS_ADMIN')) { ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?php } else { ?>
 <!doctype html>
+<?php } ?>
+<?php ///*** Do not remove the line below
+echo "<!-- ".BUILDER_NAME; echo " ".BUILDER_VERSION_NUMBER; if(defined('BUILDER_VERSION_CLASS') and BUILDER_VERSION_CLASS) echo " ".BUILDER_VERSION_CLASS; echo ", ".BUILDER_VERSION_DATE.", ".BUILDER_HOME." -->".PHP_EOL; ///goodbuilder
+?>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
@@ -43,6 +55,7 @@ if (G5_IS_MOBILE) {
     echo '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0,maximum-scale=10">'.PHP_EOL;
     echo '<meta name="HandheldFriendly" content="true">'.PHP_EOL;
     echo '<meta name="format-detection" content="telephone=no">'.PHP_EOL;
+    echo '<meta http-equiv="X-UA-Compatible" content="IE=Edge">'.PHP_EOL; /// 추가
 } else {
     echo '<meta http-equiv="imagetoolbar" content="no">'.PHP_EOL;
     echo '<meta http-equiv="X-UA-Compatible" content="IE=Edge">'.PHP_EOL;
@@ -51,15 +64,37 @@ if (G5_IS_MOBILE) {
 if($config['cf_add_meta'])
     echo $config['cf_add_meta'].PHP_EOL;
 ?>
-<title><?php echo $g5_head_title; ?></title>
+<?php if(0) { ?><title><?php echo $g5_head_title; ?></title><?php } ?>
+<?php /// New
+/// if($site_name == '') $site_name = $config['cf_1'];
+if($site_name == '') $site_name = $config['cf_title'];
+if($index_title)
+    echo "<title>"._t($index_title)."</title>\n";
+else if($g5[title])
+    /// echo "<title>$g5[title] > $group[gr_subject] > $site_name</title>\n";
+    echo "<title>"._t($g5[title])." > "._t($site_name)."</title>\n";
+else
+    echo "<title>"._t($site_name)."</title>\n";
+?>
 <?php
 if (defined('G5_IS_ADMIN')) {
     if(!defined('_THEME_PREVIEW_'))
         echo '<link rel="stylesheet" href="'.G5_ADMIN_URL.'/css/admin.css">'.PHP_EOL;
 } else {
-    $shop_css = '';
-    if (defined('_SHOP_')) $shop_css = '_shop';
-    echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/'.(G5_IS_MOBILE?'mobile':'default').$shop_css.'.css?ver='.G5_CSS_VER.'">'.PHP_EOL;
+    $shop_css = '_shop';
+    if(G5_IS_MOBILE) {
+        echo '<link rel="stylesheet" href="'.$g5['mobile_tmpl_url'].'/css/'.'default.css?ver='.G5_CSS_VER.'">'.PHP_EOL;
+        /// echo '<link rel="stylesheet" href="'.$g5['mobile_tmpl_url'].'/css/'.'style.css?ver='.G5_CSS_VER.'">'.PHP_EOL;
+        add_stylesheet('<link rel="stylesheet" href="'.$g5['mobile_tmpl_url'].'/css/'.'style.css?ver='.G5_CSS_VER.'">', 0);
+    } else {
+        echo '<link rel="stylesheet" href="'.$g5['tmpl_url'].'/css/'.'default.css?ver='.G5_CSS_VER.'">'.PHP_EOL;
+        /// echo '<link rel="stylesheet" href="'.$g5['tmpl_url'].'/css/'.'style.css?ver='.G5_CSS_VER.'">'.PHP_EOL;
+        add_stylesheet('<link rel="stylesheet" href="'.$g5['tmpl_url'].'/css/'.'style.css?ver='.G5_CSS_VER.'">', 0);
+    }
+}
+if($g5['def_font'] and file_exists($g5['path'].'/font/font_'.$g5['def_font'].'.css')) {
+    if(!($g5['def_font_g4_no_use'] && preg_match('/^g4_/', $g5['tmpl'])))
+    echo '<link rel="stylesheet" href="'.$g5['url'].'/font/'.'font_'.$g5['def_font'].'.css">'.PHP_EOL;
 }
 ?>
 <!--[if lte IE 8]>
@@ -79,8 +114,27 @@ var g5_cookie_domain = "<?php echo G5_COOKIE_DOMAIN ?>";
 <?php if(defined('G5_IS_ADMIN')) { ?>
 var g5_admin_url = "<?php echo G5_ADMIN_URL; ?>";
 <?php } ?>
+// g4 자바스크립트에서 사용했던 전역변수 선언 추가. 호환성 고려
+var g5_bbs       = "<?php echo $g5['bbs']?>";
+var g5_bbs_img   = "<?php echo $g5['bbs_img']?>";
+var g5_charset   = "<?php echo $g5['charset']?>";
+var g5_is_gecko  = navigator.userAgent.toLowerCase().indexOf("gecko") != -1;
+var g5_is_ie     = navigator.userAgent.toLowerCase().indexOf("msie") != -1;
+<?php if ($is_admin) { echo "var g5_admin = '{$g5['admin']}';".PHP_EOL; } ?>
 </script>
+<?php if(1) { ?>
+<?php include_once $g5['locale_path'].'/basic/lang_js_var.inc.php'; ?>
+<?php if (defined('_SHOP_') || defined('_CONTENTS_')) { ?>
+<?php include_once $g5['locale_path'].'/basic/lang_shop_js_var.inc.php'; ?>
+<?php } ?>
+<?php } ?>
+<?php if(0) { ?>
 <script src="<?php echo G5_JS_URL ?>/jquery-1.8.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
+<?php } ?>
+<script src="<?php echo G5_JS_URL ?>/jquery-1.10.2.min.js"></script>
+<script src="<?php echo G5_JS_URL ?>/jquery-migrate-1.2.1.js"></script>
 <?php
 if (defined('_SHOP_')) {
     if(!G5_IS_MOBILE) {
@@ -93,7 +147,8 @@ if (defined('_SHOP_')) {
 <script src="<?php echo G5_JS_URL ?>/jquery.menu.js?ver=<?php echo G5_JS_VER; ?>"></script>
 <?php } ?>
 <script src="<?php echo G5_JS_URL ?>/common.js?ver=<?php echo G5_JS_VER; ?>"></script>
-<script src="<?php echo G5_JS_URL ?>/wrest.js?ver=<?php echo G5_JS_VER; ?>"></script>
+<!--<script src="<?php echo G5_JS_URL ?>/wrest.js?ver=<?php echo G5_JS_VER; ?>"></script>-->
+<script src="<?php echo $g5['legacy_url'] ?>/js/wrest.js?ver=<?php echo G5_JS_VER; ?>"></script>
 <script src="<?php echo G5_JS_URL ?>/placeholders.min.js"></script>
 <link rel="stylesheet" href="<?php echo G5_JS_URL ?>/font-awesome/css/font-awesome.min.css">
 <?php
@@ -105,6 +160,11 @@ if(!defined('G5_IS_ADMIN'))
 ?>
 </head>
 <body<?php echo isset($g5['body_script']) ? $g5['body_script'] : ''; ?>>
+
+<?php
+if($g5['lang_button_ok']) include_once G5_PATH.'/locale/basic/lang_button.inc.php';
+?>
+
 <?php
 if ($is_member) { // 회원이라면 로그인 중이라는 메세지를 출력해준다.
     $sr_admin_msg = '';

@@ -2,7 +2,7 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 if(!$is_admin)
-    alert('접근 권한이 없습니다.', G5_URL);
+    alert(_t('접근 권한이 없습니다.'), G5_URL);
 
 // 4.11
 @include_once($board_skin_path.'/delete_all.head.skin.php');

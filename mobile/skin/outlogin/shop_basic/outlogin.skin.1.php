@@ -6,19 +6,19 @@ add_stylesheet('<link rel="stylesheet" href="'.$outlogin_skin_url.'/style.css">'
 ?>
 
 <aside id="ol_before" class="ol">
-    <h2>회원로그인</h2>
+    <h2><?php echo _t('회원로그인'); ?></h2>
     <!-- 로그인 전 외부로그인 시작 -->
     <form name="foutlogin" action="<?php echo $outlogin_action_url ?>" onsubmit="return fhead_submit(this);" method="post" autocomplete="off">
     <fieldset>
         <input type="hidden" name="url" value="<?php echo $outlogin_url ?>">
-        <input type="text" name="mb_id" id="ol_id" placeholder="아이디" required maxlength="20">
-        <input type="password" id="ol_pw" name="mb_password" placeholder="비밀번호" required  maxlength="20">
+        <input type="text" name="mb_id" id="ol_id" placeholder="<?php echo _t('아이디'); ?>" required maxlength="20">
+        <input type="password" id="ol_pw" name="mb_password" placeholder="<?php echo _t('비밀번호'); ?>" required  maxlength="20">
         <div id="ol_svc">
             <input type="checkbox" id="auto_login" name="auto_login" value="1">
-            <label for="auto_login" id="auto_login_label">자동로그인</label>
+            <label for="auto_login" id="auto_login_label"><?php echo _t('자동로그인'); ?></label>
 
         </div>
-        <input type="submit" id="ol_submit" value="로그인" class="btn_submit">
+        <input type="submit" id="ol_submit" value="<?php echo _t('로그인'); ?>" class="btn_submit">
 
     </fieldset>
     </form>
@@ -51,7 +51,7 @@ $omp.blur(function() {
 
 $("#auto_login").click(function(){
     if (this.checked) {
-        this.checked = confirm("자동로그인을 사용하시면 다음부터 회원아이디와 비밀번호를 입력하실 필요가 없습니다.\n\n공공장소에서는 개인정보가 유출될 수 있으니 사용을 자제하여 주십시오.\n\n자동로그인을 사용하시겠습니까?");
+        this.checked = confirm("<?php echo _t('자동로그인을 사용하시면 다음부터 회원아이디와 비밀번호를 입력하실 필요가 없습니다.')."\n\n"._t('공공장소에서는 개인정보가 유출될 수 있으니 사용을 자제하여 주십시오.')."\n\n"._t('자동로그인을 사용하시겠습니까?'); ?>");
     }
 });
 

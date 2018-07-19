@@ -16,7 +16,7 @@ if (G5_IS_MOBILE) {
 }
 
 if(!$is_admin && $group['gr_device'] == 'mobile')
-    alert($group['gr_subject'].' 그룹은 모바일에서만 접근할 수 있습니다.');
+    alert($group['gr_subject'].' '._t('그룹은 모바일에서만 접근할 수 있습니다.'));
 
 $g5['title'] = $group['gr_subject'];
 include_once('./_head.php');
@@ -35,6 +35,7 @@ $sql = " select bo_table, bo_subject
               and bo_device <> 'mobile' ";
 if(!$is_admin)
     $sql .= " and bo_use_cert = '' ";
+$sql .= " and (bo_10 = '' or bo_10 = '{$g5['tmpl']}') ";
 $sql .= " order by bo_order ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {

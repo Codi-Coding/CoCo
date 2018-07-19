@@ -6,13 +6,13 @@ include_once(G5_PATH.'/head.sub.php');
 if (!$is_member)
 {
     $href = './login.php?'.$qstr.'&amp;url='.urlencode('./board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id);
-    echo '<script> alert(\'회원만 접근 가능합니다.\'); top.location.href = \''.str_replace('&amp;', '&', $href).'\'; </script>';
+    echo '<script> alert(\''._t('회원만 접근 가능합니다.').'\'); top.location.href = \''.str_replace('&amp;', '&', $href).'\'; </script>';
     exit;
 }
 
 // 게시글 존재하는지
 if(!$write['wr_id'])
-    alert_close('스크랩하시려는 게시글이 존재하지 않습니다.');
+    alert_close(_t('스크랩하시려는 게시글이 존재하지 않습니다.'));
 
 $sql = " select count(*) as cnt from {$g5['scrap_table']}
             where mb_id = '{$member['mb_id']}'
@@ -23,15 +23,15 @@ if ($row['cnt'])
 {
     echo '
     <script>
-    if (confirm(\'이미 스크랩하신 글 입니다.'."\n\n".'지금 스크랩을 확인하시겠습니까?\'))
+    if (confirm(\''._t('이미 스크랩하신 글 입니다.')."\n\n"._t('지금 스크랩을 확인하시겠습니까?').'\'))
         document.location.href = \'./scrap.php\';
     else
         window.close();
     </script>
     <noscript>
-    <p>이미 스크랩하신 글 입니다.</p>
-    <a href="./scrap.php">스크랩 확인하기</a>
-    <a href="./board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'">돌아가기</a>
+    <p>'._t('이미 스크랩하신 글 입니다.').'</p>
+    <a href="./scrap.php">'._t('스크랩 확인하기').'</a>
+    <a href="./board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'">'._t('돌아가기').'</a>
     </noscript>';
     exit;
 }
@@ -105,14 +105,14 @@ delete_cache_latest($bo_table);
 
 echo <<<HEREDOC
 <script>
-    if (confirm('이 글을 스크랩 하였습니다.\\n\\n지금 스크랩을 확인하시겠습니까?'))
+    if (confirm(_t('이 글을 스크랩 하였습니다.\\n\\n지금 스크랩을 확인하시겠습니까?')))
         document.location.href = './scrap.php';
     else
         window.close();
 </script>
 <noscript>
-<p>이 글을 스크랩 하였습니다.</p>
-<a href="./scrap.php">스크랩 확인하기</a>
+<p>_t('이 글을 스크랩 하였습니다.')</p>
+<a href="./scrap.php">_t('스크랩 확인하기')</a>
 </noscript>
 HEREDOC;
 ?>

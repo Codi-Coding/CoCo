@@ -1,0 +1,34 @@
+<?php
+$tmpl[$i] = $arr[$i];
+$tmpl_name[$i] = "다국어 부트스트랩 기본 - 비디오";
+$line1 = "
+- 반응형 홈 페이지 구성을 위한 템플릿입니다. (<b>반응형</b>)
+";
+$line2 = "
+- 메인 페이지는 게시판 내용 중심으로 구성되어 있습니다.
+";
+$line3 = "
+- 서브 페이지들은 게시판들로 구성되어 있습니다.
+";
+$line4 = "
+- 메뉴는 게시판 링크들로 구성되어 있습니다.
+";
+$line5 = "
+- 중앙 화면 관리 기능을 이용합니다.
+";
+?>
+
+<span style="font-size:16px; font-weight:bold">[<?php echo $tmpl[$i]?>]</span>
+<span style="font-size:14px; font-weight:normal; float:right"><?php echo $tmpl_name[$i]?></span>
+
+<div style="margin-top:8px; line-height:150%">
+<?php echo $line1?>
+<br>
+<?php echo $line2?>
+<br>
+<?php echo $line3?>
+<br>
+<?php echo $line4?>
+<br>
+<?php echo $line5?>
+</div>

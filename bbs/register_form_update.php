@@ -9,16 +9,16 @@ include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 referer_check();
 
 if (!($w == '' || $w == 'u')) {
-    alert('w 값이 제대로 넘어오지 않았습니다.');
+    alert(_t('w 값이 제대로 넘어오지 않았습니다.'));
 }
 
 if ($w == 'u' && $is_admin == 'super') {
     if (file_exists(G5_PATH.'/DEMO'))
-        alert('데모 화면에서는 하실(보실) 수 없는 작업입니다.');
+        alert(_t('데모 화면에서는 하실(보실) 수 없는 작업입니다.'));
 }
 
 if (!chk_captcha()) {
-    alert('자동등록방지 숫자가 틀렸습니다.');
+    alert(_t('자동등록방지 숫자가 틀렸습니다.'));
 }
 
 if($w == 'u')
@@ -26,10 +26,10 @@ if($w == 'u')
 else if($w == '')
     $mb_id = trim($_POST['mb_id']);
 else
-    alert('잘못된 접근입니다', G5_URL);
+    alert(_t('잘못된 접근입니다'), G5_URL);
 
 if(!$mb_id)
-    alert('회원아이디 값이 없습니다. 올바른 방법으로 이용해 주십시오.');
+    alert(_t('회원아이디 값이 없습니다. 올바른 방법으로 이용해 주십시오.'));
 
 $mb_password    = trim($_POST['mb_password']);
 $mb_password_re = trim($_POST['mb_password_re']);
@@ -84,17 +84,17 @@ if ($w == '' || $w == 'u') {
     // 서버환경에 따라 정상적으로 체크되지 않을 수 있음.
     $tmp_mb_name = iconv('UTF-8', 'UTF-8//IGNORE', $mb_name);
     if($tmp_mb_name != $mb_name) {
-        alert('이름을 올바르게 입력해 주십시오.');
+        alert(_t('이름을 올바르게 입력해 주십시오.'));
     }
     $tmp_mb_nick = iconv('UTF-8', 'UTF-8//IGNORE', $mb_nick);
     if($tmp_mb_nick != $mb_nick) {
-        alert('닉네임을 올바르게 입력해 주십시오.');
+        alert(_t('닉네임을 올바르게 입력해 주십시오.'));
     }
 
     if ($w == '' && !$mb_password)
-        alert('비밀번호가 넘어오지 않았습니다.');
+        alert(_t('비밀번호가 넘어오지 않았습니다.'));
     if($w == '' && $mb_password != $mb_password_re)
-        alert('비밀번호가 일치하지 않습니다.');
+        alert(_t('비밀번호가 일치하지 않습니다.'));
 
     if ($msg = empty_mb_name($mb_name))       alert($msg, "", true, true);
     if ($msg = empty_mb_nick($mb_nick))     alert($msg, "", true, true);
@@ -120,22 +120,22 @@ if ($w == '' || $w == 'u') {
             set_session('ss_check_mb_nick', '');
             set_session('ss_check_mb_email', '');
 
-            alert('올바른 방법으로 이용해 주십시오.');
+            alert(i_t('올바른 방법으로 이용해 주십시오.'));
         }
 
         // 본인확인 체크
         if($config['cf_cert_use'] && $config['cf_cert_req']) {
             if(trim($_POST['cert_no']) != $_SESSION['ss_cert_no'] || !$_SESSION['ss_cert_no'])
-                alert("회원가입을 위해서는 본인확인을 해주셔야 합니다.");
+                alert(_t("회원가입을 위해서는 본인확인을 해주셔야 합니다."));
         }
 
         if ($config['cf_use_recommend'] && $mb_recommend) {
             if (!exist_mb_id($mb_recommend))
-                alert("추천인이 존재하지 않습니다.");
+                alert(_t("추천인이 존재하지 않습니다."));
         }
 
         if (strtolower($mb_id) == strtolower($mb_recommend)) {
-            alert('본인을 추천할 수 없습니다.');
+            alert(_t('본인을 추천할 수 없습니다.'));
         }
     } else {
         // 자바스크립트로 정보변경이 가능한 버그 수정
@@ -162,7 +162,7 @@ if($config['cf_cert_use'] && $_SESSION['ss_cert_type'] && $_SESSION['ss_cert_dup
     $sql = " select mb_id from {$g5['member_table']} where mb_id <> '{$member['mb_id']}' and mb_dupinfo = '{$_SESSION['ss_cert_dupinfo']}' ";
     $row = sql_fetch($sql);
     if ($row['mb_id']) {
-        alert("입력하신 본인확인 정보로 가입된 내역이 존재합니다.\\n회원아이디 : ".$row['mb_id']);
+        alert(_t("입력하신 본인확인 정보로 가입된 내역이 존재합니다.")."\\n"._t("회원아이디")." : ".$row['mb_id']);
     }
 }
 
@@ -252,7 +252,7 @@ if ($w == '') {
 
     // 회원님께 메일 발송
     if ($config['cf_email_mb_member']) {
-        $subject = '['.$config['cf_title'].'] 회원가입을 축하드립니다.';
+        $subject = '['.$config['cf_title'].'] '._t('회원가입을 축하드립니다.');
 
         // 어떠한 회원정보도 포함되지 않은 일회용 난수를 생성하여 인증에 사용
         if ($config['cf_use_email_certify']) {
@@ -275,7 +275,7 @@ if ($w == '') {
 
     // 최고관리자님께 메일 발송
     if ($config['cf_email_mb_super_admin']) {
-        $subject = '['.$config['cf_title'].'] '.$mb_nick .' 님께서 회원으로 가입하셨습니다.';
+        $subject = '['.$config['cf_title'].'] '.$mb_nick .' '._t('님께서 회원으로 가입하셨습니다.');
 
         ob_start();
         include_once ('./register_form_update_mail2.php');
@@ -296,7 +296,7 @@ if ($w == '') {
         alert('로그인 되어 있지 않습니다.');
 
     if (trim($_POST['mb_id']) != $mb_id)
-        alert("로그인된 정보와 수정하려는 정보가 틀리므로 수정할 수 없습니다.\\n만약 올바르지 않은 방법을 사용하신다면 바로 중지하여 주십시오.");
+        alert(_t("로그인된 정보와 수정하려는 정보가 틀리므로 수정할 수 없습니다.")."\\n"._t("만약 올바르지 않은 방법을 사용하신다면 바로 중지하여 주십시오."));
 
     $sql_password = "";
     if ($mb_password)
@@ -381,7 +381,7 @@ if (isset($_FILES['mb_icon']) && is_uploaded_file($_FILES['mb_icon']['tmp_name']
                 // gif 파일에 악성코드를 심어 업로드 하는 경우를 방지
                 // 에러메세지는 출력하지 않는다.
                 //-----------------------------------------------------------------
-                $size = @getimagesize($dest_path);
+                $size = getimagesize($dest_path);
                 if (!($size[2] === 1 || $size[2] === 2 || $size[2] === 3)) { // jpg, gif, png 파일이 아니면 올라간 이미지를 삭제한다.
                     @unlink($dest_path);
                 } else if ($size[0] > $config['cf_member_icon_width'] || $size[1] > $config['cf_member_icon_height']) {
@@ -402,11 +402,11 @@ if (isset($_FILES['mb_icon']) && is_uploaded_file($_FILES['mb_icon']['tmp_name']
                 //=================================================================\
             }
         } else {
-            $msg .= '회원아이콘을 '.number_format($config['cf_member_icon_size']).'바이트 이하로 업로드 해주십시오.';
+            $msg .= _t('회원아이콘을').' '.number_format($config['cf_member_icon_size'])._t('바이트 이하로 업로드 해주십시오.');
         }
 
     } else {
-        $msg .= $_FILES['mb_icon']['name'].'은(는) 이미지 파일이 아닙니다.';
+        $msg .= $_FILES['mb_icon']['name']._t('은(는) 이미지 파일이 아닙니다.');
     }
 }
 
@@ -471,7 +471,7 @@ if( $config['cf_member_img_size'] && $config['cf_member_img_width'] && $config['
 
 // 인증메일 발송
 if ($config['cf_use_email_certify'] && $old_email != $mb_email) {
-    $subject = '['.$config['cf_title'].'] 인증확인 메일입니다.';
+    $subject = '['.$config['cf_title'].'] '._t('인증확인 메일입니다.');
 
     // 어떠한 회원정보도 포함되지 않은 일회용 난수를 생성하여 인증에 사용
     $mb_md5 = md5(pack('V*', rand(), rand(), rand(), rand()));
@@ -510,7 +510,7 @@ if($w == '' && $default['de_member_reg_coupon_use'] && $default['de_member_reg_c
     } while(1);
 
     if($create_coupon) {
-        $cp_subject = '신규 회원가입 축하 쿠폰';
+        $cp_subject = _t('신규 회원가입 축하 쿠폰');
         $cp_method = 2;
         $cp_target = '';
         $cp_start = G5_TIME_YMD;
@@ -554,14 +554,14 @@ if ($w == '') {
 
     if ($old_email != $mb_email && $config['cf_use_email_certify']) {
         set_session('ss_mb_id', '');
-        alert('회원 정보가 수정 되었습니다.\n\nE-mail 주소가 변경되었으므로 다시 인증하셔야 합니다.', G5_URL);
+        alert(_t('회원 정보가 수정 되었습니다.').'\n\n'._t('E-mail 주소가 변경되었으므로 다시 인증하셔야 합니다.'), G5_URL);
     } else {
         echo '
         <!doctype html>
         <html lang="ko">
         <head>
         <meta charset="utf-8">
-        <title>회원정보수정</title>
+        <title>'._t('회원정보수정').'</title>
         <body>
         <form name="fregisterupdate" method="post" action="'.G5_HTTP_BBS_URL.'/register_form.php">
         <input type="hidden" name="w" value="u">
@@ -570,7 +570,7 @@ if ($w == '') {
         <input type="hidden" name="is_update" value="1">
         </form>
         <script>
-        alert("회원 정보가 수정 되었습니다.");
+        alert("'._t('회원 정보가 수정 되었습니다.').'");
         document.fregisterupdate.submit();
         </script>
         </body>

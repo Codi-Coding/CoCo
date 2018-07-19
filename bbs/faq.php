@@ -3,7 +3,7 @@ include_once('./_common.php');
 
 //dbconfig파일에 $g5['faq_table'] , $g5['faq_master_table'] 배열변수가 있는지 체크
 if( !isset($g5['faq_table']) || !isset($g5['faq_master_table']) ){
-    die('<meta charset="utf-8">관리자 모드에서 게시판관리->FAQ관리를 먼저 확인해 주세요.');
+    die('<meta charset="utf-8">'._t('관리자 모드에서').' '._t('게시판관리').'->'._t('FAQ관리를 먼저 확인해 주세요.'));
 }
 
 // FAQ MASTER
@@ -13,6 +13,7 @@ $result = sql_query($sql);
 while ($row=sql_fetch_array($result))
 {
     $key = $row['fm_id'];
+    $row['fm_subject'] = _t($row['fm_subject']); /// 2018.03.14
     if (!$fm_id) $fm_id = $key;
     $faq_master_list[$key] = $row;
 }
@@ -23,9 +24,9 @@ if ($fm_id){
 
 $fm = $faq_master_list[$fm_id];
 if (!$fm['fm_id'])
-    alert('등록된 내용이 없습니다.');
+    alert(_t('등록된 내용이 없습니다.'));
 
-$g5['title'] = $fm['fm_subject'];
+$g5['title'] = _t($fm['fm_subject']);
 
 $skin_file = $faq_skin_path.'/list.skin.php';
 
@@ -84,6 +85,7 @@ if(is_file($skin_file)) {
     $result = sql_query($sql);
     for ($i=0;$row=sql_fetch_array($result);$i++){
         $faq_list[] = $row;
+
         if($stx) {
             $faq_list[$i]['fa_subject'] = search_font($stx, conv_content($faq_list[$i]['fa_subject'], 1));
             $faq_list[$i]['fa_content'] = search_font($stx, conv_content($faq_list[$i]['fa_content'], 1));
@@ -91,7 +93,7 @@ if(is_file($skin_file)) {
     }
     include_once($skin_file);
 } else {
-    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</p>';
+    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</p>';
 }
 
 include_once('./_tail.php');

@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-$g5['title'] = '비밀번호 입력';
+$g5['title'] = _t('비밀번호 입력');
 
 switch ($w) {
     case 'u' :
@@ -38,7 +38,7 @@ switch ($w) {
         }
         break;
     default :
-        alert('w 값이 제대로 넘어오지 않았습니다.');
+        alert(_t('w 값이 제대로 넘어오지 않았습니다.'));
 }
 
 include_once(G5_PATH.'/head.sub.php');

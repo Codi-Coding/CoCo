@@ -2,11 +2,11 @@
 include_once('./_common.php');
 
 if ($is_guest)
-    alert_close('회원만 이용하실 수 있습니다.');
+    alert_close(_t('회원만 이용하실 수 있습니다.'));
 
 set_session('ss_memo_delete_token', $token = uniqid(time()));
 
-$g5['title'] = '내 쪽지함';
+$g5['title'] = _t('내 쪽지함');
 include_once(G5_PATH.'/head.sub.php');
 
 $kind = $kind ? clean_xss_tags(strip_tags($kind)) : 'recv';
@@ -16,7 +16,7 @@ if ($kind == 'recv')
 else if ($kind == 'send')
     $unkind = 'recv';
 else
-    alert(''.$kind .'값을 넘겨주세요.');
+    alert(''.$kind ._t('값을 넘겨주세요.'));
 
 $sql = " select count(*) as cnt from {$g5['memo_table']} where me_{$kind}_mb_id = '{$member['mb_id']}' ";
 $row = sql_fetch($sql);
@@ -28,13 +28,13 @@ $from_record = ((int) $page - 1) * $config['cf_page_rows']; // 시작 열을 구
 
 if ($kind == 'recv')
 {
-    $kind_title = '받은';
+    $kind_title = _t('받은');
     $recv_img = 'on';
     $send_img = 'off';
 }
 else
 {
-    $kind_title = '보낸';
+    $kind_title = _t('보낸');
     $recv_img = 'off';
     $send_img = 'on';
 }
@@ -56,12 +56,12 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     if ($row['mb_nick'])
         $mb_nick = $row['mb_nick'];
     else
-        $mb_nick = '정보없음';
+        $mb_nick = _t('정보없음');
 
     $name = get_sideview($row['mb_id'], $row['mb_nick'], $row['mb_email'], $row['mb_homepage']);
 
     if (substr($row['me_read_datetime'],0,1) == 0)
-        $read_datetime = '아직 읽지 않음';
+        $read_datetime = _t('아직 읽지 않음');
     else
         $read_datetime = substr($row['me_read_datetime'],2,14);
 

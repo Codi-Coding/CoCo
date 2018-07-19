@@ -1,7 +1,10 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-$print_version = defined('G5_YOUNGCART_VER') ? 'YoungCart Version '.G5_YOUNGCART_VER : 'Version '.G5_GNUBOARD_VER;
+///$print_version = defined('G5_YOUNGCART_VER') ? 'YoungCart Version '.G5_YOUNGCART_VER : 'Version '.G5_GNUBOARD_VER;
+$print_version = 'GNUBoard Version '.G5_GNUBOARD_VER;
+if(defined('G5_USE_SHOP') && G5_USE_SHOP) $print_version .= ', YoungCart Version '.G5_YOUNGCART_VER;
+if(defined('G5_USE_CONTENTS') && G5_USE_CONTENTS) $print_version .= ', GNUContents Version '.G5_GNUCONTENTS_VER;
 ?>
 
         <noscript>

@@ -3,14 +3,14 @@ include_once('./_common.php');
 
 $po = sql_fetch(" select * from {$g5['poll_table']} where po_id = '{$_POST['po_id']}' ");
 if (!$po['po_id'])
-    alert('po_id 값이 제대로 넘어오지 않았습니다.');
+    alert(_t('po_id 값이 제대로 넘어오지 않았습니다.'));
 
 if ($member['mb_level'] < $po['po_level'])
-    alert_close('권한 '.$po['po_level'].' 이상 회원만 투표에 참여하실 수 있습니다.');
+    alert_close(_t('권한').' '.$po['po_level'].' '._t('이상 회원만 투표에 참여하실 수 있습니다.'));
 
 $gb_poll = preg_replace('/[^0-9]/', '', $gb_poll);
 if(!$gb_poll)
-    alert_close('항목을 선택하세요.');
+    alert_close(_t('항목을 선택하세요.'));
 
 $search_mb_id = false;
 $search_ip = false;
@@ -50,7 +50,7 @@ if (!($search_ip || $search_mb_id)) {
 
     sql_query($sql);
 } else {
-    alert($po['po_subject'].'에 이미 참여하셨습니다.', $result_url);
+    alert(_t($po['po_subject'])._t('에 이미 참여하셨습니다.'), $result_url);
 }
 
 if (!$search_mb_id)

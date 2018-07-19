@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 if($is_guest)
-    alert('회원이시라면 로그인 후 이용해 주십시오.', G5_URL);
+    alert(_t('회원이시라면 로그인 후 이용해 주십시오.'), G5_URL);
 
 $delete_token = get_session('ss_qa_delete_token');
 set_session('ss_qa_delete_token', '');
@@ -19,7 +19,7 @@ else // 일괄삭제
 
 $count = count($tmp_array);
 if(!$count)
-    alert('삭제할 게시글을 하나이상 선택해 주십시오.');
+    alert(_t('삭제할 게시글을 하나이상 선택해 주십시오.'));
 
 for($i=0; $i<$count; $i++) {
     $qa_id = (int) $tmp_array[$i];

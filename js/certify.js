@@ -96,16 +96,16 @@ function cert_confirm()
 
     switch(val) {
         case "ipin":
-            type = "아이핀";
+            type = g5_msg_ipin;
             break;
         case "hp":
-            type = "휴대폰";
+            type = g5_msg_hphone;
             break;
         default:
             return true;
     }
 
-    if(confirm("이미 "+type+"으로 본인확인을 완료하셨습니다.\n\n이전 인증을 취소하고 다시 인증하시겠습니까?"))
+    if(confirm(g5_msg_confirm_completed + "(" + type + ").\n\n" + g5_msg_reconfirm))
         return true;
     else
         return false;

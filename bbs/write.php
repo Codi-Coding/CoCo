@@ -4,11 +4,11 @@ include_once(G5_EDITOR_LIB);
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 
 if (!$board['bo_table']) {
-    alert('존재하지 않는 게시판입니다.', G5_URL);
+    alert(_t('존재하지 않는 게시판입니다.'), G5_URL);
 }
 
 if (!$bo_table) {
-    alert("bo_table 값이 넘어오지 않았습니다.\\nwrite.php?bo_table=code 와 같은 방식으로 넘겨 주세요.", G5_URL);
+    alert(_t("bo_table 값이 넘어오지 않았습니다.")."\\nwrite.php?bo_table=code "._t("와 같은 방식으로 넘겨 주세요."), G5_URL);
 }
 
 check_device($board['bo_device']);
@@ -16,7 +16,7 @@ check_device($board['bo_device']);
 $notice_array = explode(',', trim($board['bo_notice']));
 
 if (!($w == '' || $w == 'u' || $w == 'r')) {
-    alert('w 값이 제대로 넘어오지 않았습니다.');
+    alert('w '._t('값이 제대로 넘어오지 않았습니다.'));
 }
 
 if ($w == 'u' || $w == 'r') {
@@ -27,20 +27,20 @@ if ($w == 'u' || $w == 'r') {
             $$vvar = $write['wr_'.$i];
         }
     } else {
-        alert("글이 존재하지 않습니다.\\n삭제되었거나 이동된 경우입니다.", G5_URL);
+        alert(_t("글이 존재하지 않습니다.")."\\n"._t("삭제되었거나 이동된 경우입니다."), G5_URL);
     }
 }
 
 if ($w == '') {
     if ($wr_id) {
-        alert('글쓰기에는 \$wr_id 값을 사용하지 않습니다.', G5_BBS_URL.'/board.php?bo_table='.$bo_table);
+        alert(_t('글쓰기에는 \$wr_id 값을 사용하지 않습니다.'), G5_BBS_URL.'/board.php?bo_table='.$bo_table);
     }
 
     if ($member['mb_level'] < $board['bo_write_level']) {
         if ($member['mb_id']) {
-            alert('글을 쓸 권한이 없습니다.');
+            alert(_t('글을 쓸 권한이 없습니다.'));
         } else {
-            alert("글을 쓸 권한이 없습니다.\\n회원이시라면 로그인 후 이용해 보십시오.", './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
+            alert(_t("글을 쓸 권한이 없습니다.")."\\n"._t("회원이시라면 로그인 후 이용해 보십시오."), './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
         }
     }
 
@@ -48,11 +48,11 @@ if ($w == '') {
     if ($is_member) {
         $tmp_point = ($member['mb_point'] > 0) ? $member['mb_point'] : 0;
         if ($tmp_point + $board['bo_write_point'] < 0 && !$is_admin) {
-            alert('보유하신 포인트('.number_format($member['mb_point']).')가 없거나 모자라서 글쓰기('.number_format($board['bo_write_point']).')가 불가합니다.\\n\\n포인트를 적립하신 후 다시 글쓰기 해 주십시오.');
+            alert(_t('보유하신 포인트가 없거나 모자라서 글쓰기가 불가합니다.').'\\n\\n'._t('포인트를 적립하신 후 다시 글쓰기 해 주십시오.').' ('._t('보유하신 포인트:').number_format($member['mb_point'])._t('글쓰기 포인트:').number_format($board['bo_write_point']).')');
         }
     }
 
-    $title_msg = '글쓰기';
+    $title_msg = _t('글쓰기');
 } else if ($w == 'u') {
     // 김선용 1.00 : 글쓰기 권한과 수정은 별도로 처리되어야 함
     //if ($member['mb_level'] < $board['bo_write_level']) {
@@ -60,9 +60,9 @@ if ($w == '') {
         ;
     } else if ($member['mb_level'] < $board['bo_write_level']) {
         if ($member['mb_id']) {
-            alert('글을 수정할 권한이 없습니다.');
+            alert(_t('글을 수정할 권한이 없습니다.'));
         } else {
-            alert('글을 수정할 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
+            alert(_t('글을 수정할 권한이 없습니다.').'\\n\\n'._t('회원이시라면 로그인 후 이용해 보십시오.'), './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
         }
     }
 
@@ -78,7 +78,7 @@ if ($w == '') {
                 and wr_is_comment = 0 ";
     $row = sql_fetch($sql);
     if ($row['cnt'] && !$is_admin)
-        alert('이 글과 관련된 답변글이 존재하므로 수정 할 수 없습니다.\\n\\n답변글이 있는 원글은 수정할 수 없습니다.');
+        alert(_t('이 글과 관련된 답변글이 존재하므로 수정 할 수 없습니다.').'\\n\\n'._t('답변글이 있는 원글은 수정할 수 없습니다.'));
 
     // 코멘트 달린 원글의 수정 여부
     $sql = " select count(*) as cnt from {$write_table}
@@ -87,41 +87,41 @@ if ($w == '') {
                 and wr_is_comment = 1 ";
     $row = sql_fetch($sql);
     if ($board['bo_count_modify'] && $row['cnt'] >= $board['bo_count_modify'] && !$is_admin)
-        alert('이 글과 관련된 댓글이 존재하므로 수정 할 수 없습니다.\\n\\n댓글이 '.$board['bo_count_modify'].'건 이상 달린 원글은 수정할 수 없습니다.');
+        alert(_t('이 글과 관련된 댓글이 존재하므로 수정 할 수 없습니다.').'\\n\\n'._t('댓글이').' '.$board['bo_count_modify']._t('건 이상 달린 원글은 수정할 수 없습니다.'));
 
-    $title_msg = '글수정';
+    $title_msg = _t('글수정');
 } else if ($w == 'r') {
     if ($member['mb_level'] < $board['bo_reply_level']) {
         if ($member['mb_id'])
-            alert('글을 답변할 권한이 없습니다.');
+            alert(_t('글을 답변할 권한이 없습니다.'));
         else
-            alert('답변글을 작성할 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
+            alert(_t('답변글을 작성할 권한이 없습니다.').'\\n\\n'._t('회원이시라면 로그인 후 이용해 보십시오.'), './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
     }
 
     $tmp_point = isset($member['mb_point']) ? $member['mb_point'] : 0;
     if ($tmp_point + $board['bo_write_point'] < 0 && !$is_admin)
-        alert('보유하신 포인트('.number_format($member['mb_point']).')가 없거나 모자라서 글답변('.number_format($board['bo_comment_point']).')가 불가합니다.\\n\\n포인트를 적립하신 후 다시 글답변 해 주십시오.');
+        alert(_t('보유하신 포인트가 없거나 모자라서 글답변이 불가합니다.').'\\n\\n'._t('포인트를 적립하신 후 다시 글답변 해 주십시오.').'('._t('보유하신 포인트:').number_format($member['mb_point'])._t(', 글답변 포인트:').number_format($board['bo_comment_point']).')');
 
     //if (preg_match("/[^0-9]{0,1}{$wr_id}[\r]{0,1}/",$board['bo_notice']))
     if (in_array((int)$wr_id, $notice_array))
-        alert('공지에는 답변 할 수 없습니다.');
+        alert(_t('공지에는 답변 할 수 없습니다.'));
 
     //----------
     // 4.06.13 : 비밀글을 타인이 열람할 수 있는 오류 수정 (헐랭이, 플록님께서 알려주셨습니다.)
     // 코멘트에는 원글의 답변이 불가하므로
     if ($write['wr_is_comment'])
-        alert('정상적인 접근이 아닙니다.');
+        alert(_t('정상적인 접근이 아닙니다.'));
 
     // 비밀글인지를 검사
     if (strstr($write['wr_option'], 'secret')) {
         if ($write['mb_id']) {
             // 회원의 경우는 해당 글쓴 회원 및 관리자
             if (!($write['mb_id'] === $member['mb_id'] || $is_admin))
-                alert('비밀글에는 자신 또는 관리자만 답변이 가능합니다.');
+                alert(_t('비밀글에는 자신 또는 관리자만 답변이 가능합니다.'));
         } else {
             // 비회원의 경우는 비밀글에 답변이 불가함
             if (!$is_admin)
-                alert('비회원의 비밀글에는 답변이 불가합니다.');
+                alert(_t('비회원의 비밀글에는 답변이 불가합니다.'));
         }
     }
     //----------
@@ -131,7 +131,7 @@ if ($w == '') {
 
     // 최대 답변은 테이블에 잡아놓은 wr_reply 사이즈만큼만 가능합니다.
     if (strlen($reply_array['wr_reply']) == 10)
-        alert('더 이상 답변하실 수 없습니다.\\n\\n답변은 10단계 까지만 가능합니다.');
+        alert(_t('더 이상 답변하실 수 없습니다.').'\\n\\n'._t('답변은 10단계 까지만 가능합니다.'));
 
     $reply_len = strlen($reply_array['wr_reply']) + 1;
     if ($board['bo_reply_order']) {
@@ -151,13 +151,13 @@ if ($w == '') {
     if (!$row['reply'])
         $reply_char = $begin_reply_char;
     else if ($row['reply'] == $end_reply_char) // A~Z은 26 입니다.
-        alert('더 이상 답변하실 수 없습니다.\\n\\n답변은 26개 까지만 가능합니다.');
+        alert(_t('더 이상 답변하실 수 없습니다.').'\\n\\n'._t('답변은 26개 까지만 가능합니다.'));
     else
         $reply_char = chr(ord($row['reply']) + $reply_number);
 
     $reply = $reply_array['wr_reply'] . $reply_char;
 
-    $title_msg = '글답변';
+    $title_msg = _t('글답변');
 
     $write['wr_subject'] = 'Re: '.$write['wr_subject'];
 }
@@ -165,7 +165,7 @@ if ($w == '') {
 // 그룹접근 가능
 if (!empty($group['gr_use_access'])) {
     if ($is_guest) {
-        alert("접근 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.", 'login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
+        alert(_t("접근 권한이 없습니다.")."\\n\\n"._t("회원이시라면 로그인 후 이용해 보십시오."), 'login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
     }
 
     if ($is_admin == 'super' || $group['gr_admin'] === $member['mb_id'] || $board['bo_admin'] === $member['mb_id']) {
@@ -175,7 +175,7 @@ if (!empty($group['gr_use_access'])) {
         $sql = " select gr_id from {$g5['group_member_table']} where gr_id = '{$board['gr_id']}' and mb_id = '{$member['mb_id']}' ";
         $row = sql_fetch($sql);
         if (!$row['gr_id'])
-            alert('접근 권한이 없으므로 글쓰기가 불가합니다.\\n\\n궁금하신 사항은 관리자에게 문의 바랍니다.');
+            alert(_t('접근 권한이 없으므로 글쓰기가 불가합니다.').'\\n\\n'._t('궁금하신 사항은 관리자에게 문의 바랍니다.'));
     }
 }
 
@@ -183,23 +183,23 @@ if (!empty($group['gr_use_access'])) {
 if ($config['cf_cert_use'] && !$is_admin) {
     // 인증된 회원만 가능
     if ($board['bo_use_cert'] != '' && $is_guest) {
-        alert('이 게시판은 본인확인 하신 회원님만 글쓰기가 가능합니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', 'login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
+        alert(_t('이 게시판은 본인확인 하신 회원님만 글쓰기가 가능합니다.').'\\n\\n'._t('회원이시라면 로그인 후 이용해 보십시오.'), 'login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
     }
 
     if ($board['bo_use_cert'] == 'cert' && !$member['mb_certify']) {
-        alert('이 게시판은 본인확인 하신 회원님만 글쓰기가 가능합니다.\\n\\n회원정보 수정에서 본인확인을 해주시기 바랍니다.', G5_URL);
+        alert(_t('이 게시판은 본인확인 하신 회원님만 글쓰기가 가능합니다.').'\\n\\n'._t('회원정보 수정에서 본인확인을 해주시기 바랍니다.'), G5_URL);
     }
 
     if ($board['bo_use_cert'] == 'adult' && !$member['mb_adult']) {
-        alert('이 게시판은 본인확인으로 성인인증 된 회원님만 글쓰기가 가능합니다.\\n\\n성인인데 글쓰기가 안된다면 회원정보 수정에서 본인확인을 다시 해주시기 바랍니다.', G5_URL);
+        alert(_t('이 게시판은 본인확인으로 성인인증 된 회원님만 글쓰기가 가능합니다.').'\\n\\n'._t('성인인데 글쓰기가 안된다면 회원정보 수정에서 본인확인을 다시 해주시기 바랍니다.'), G5_URL);
     }
 
     if ($board['bo_use_cert'] == 'hp-cert' && $member['mb_certify'] != 'hp') {
-        alert('이 게시판은 휴대폰 본인확인 하신 회원님만 글읽기가 가능합니다.\\n\\n회원정보 수정에서 휴대폰 본인확인을 해주시기 바랍니다.', G5_URL);
+        alert(_t('이 게시판은 휴대폰 본인확인 하신 회원님만 글읽기가 가능합니다.').'\\n\\n'._t('회원정보 수정에서 휴대폰 본인확인을 해주시기 바랍니다.'), G5_URL);
     }
 
     if ($board['bo_use_cert'] == 'hp-adult' && (!$member['mb_adult'] || $member['mb_certify'] != 'hp')) {
-        alert('이 게시판은 휴대폰 본인확인으로 성인인증 된 회원님만 글읽기가 가능합니다.\\n\\n현재 성인인데 글읽기가 안된다면 회원정보 수정에서 휴대폰 본인확인을 다시 해주시기 바랍니다.', G5_URL);
+        alert(_t('이 게시판은 휴대폰 본인확인으로 성인인증 된 회원님만 글읽기가 가능합니다.').'\\n\\n'._t('현재 성인인데 글읽기가 안된다면 회원정보 수정에서 휴대폰 본인확인을 다시 해주시기 바랍니다.'), G5_URL);
     }
 }
 
@@ -214,7 +214,7 @@ else
     $write_max = (int)$board['bo_write_max'];
 }
 
-$g5['title'] = ((G5_IS_MOBILE && $board['bo_mobile_subject']) ? $board['bo_mobile_subject'] : $board['bo_subject']).' '.$title_msg;
+$g5['title'] = ((G5_IS_MOBILE && $board['bo_mobile_subject']) ? _t($board['bo_mobile_subject']) : _t($board['bo_subject'])).' '.$title_msg;
 
 $is_notice = false;
 $notice_checked = '';
@@ -310,7 +310,7 @@ if ($w == '') {
     if (!$is_admin) {
         if (!($is_member && $member['mb_id'] === $write['mb_id'])) {
             if (!check_password($wr_password, $write['wr_password'])) {
-                alert('비밀번호가 틀립니다.');
+                alert(_t('비밀번호가 틀립니다.'));
             }
         }
     }
@@ -376,7 +376,7 @@ if ($w == '') {
     $content = get_text($write['wr_content'], 0);
 }
 
-$upload_max_filesize = number_format($board['bo_upload_size']) . ' 바이트';
+$upload_max_filesize = number_format($board['bo_upload_size']) . ' '._t('바이트');
 
 $width = $board['bo_table_width'];
 if ($width <= 100)

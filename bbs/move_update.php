@@ -3,13 +3,13 @@ include_once('./_common.php');
 
 // 게시판 관리자 이상 복사, 이동 가능
 if ($is_admin != 'board' && $is_admin != 'group' && $is_admin != 'super')
-    alert_close('게시판 관리자 이상 접근이 가능합니다.');
+    alert_close(_t('게시판 관리자 이상 접근이 가능합니다.'));
 
 if ($sw != 'move' && $sw != 'copy')
-    alert('sw 값이 제대로 넘어오지 않았습니다.');
+    alert(_t('sw 값이 제대로 넘어오지 않았습니다.'));
 
 if(!count($_POST['chk_bo_table']))
-    alert('게시물을 '.$act.'할 게시판을 한개 이상 선택해 주십시오.', $url);
+    alert(_t('게시물을').' '.$act._t('할 게시판을 한개 이상 선택해 주십시오.'), $url);
 
 // 원본 파일 디렉토리
 $src_dir = G5_DATA_PATH.'/file/'.$bo_table;
@@ -60,7 +60,7 @@ while ($row = sql_fetch_array($result))
                     $log_tag2 = '';
                 }
 
-                $row2['wr_content'] .= "\n".$log_tag1.'[이 게시물은 '.$nick.'님에 의해 '.G5_TIME_YMDHIS.' '.$board['bo_subject'].'에서 '.($sw == 'copy' ? '복사' : '이동').' 됨]'.$log_tag2;
+                $row2['wr_content'] .= "\n".$log_tag1.'['._t('이 게시물은').' '.$nick._t('님에 의해').' '.G5_TIME_YMDHIS.' '.$board['bo_subject']._t('에서').' '.($sw == 'copy' ? _t('복사') : _t('이동')).' '._t('됨').']'.$log_tag2;
             }
 
             // 게시글 추천, 비추천수
@@ -206,7 +206,7 @@ if ($sw == 'move')
     sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write - '$save_count_write', bo_count_comment = bo_count_comment - '$save_count_comment' where bo_table = '$bo_table' ");
 }
 
-$msg = '해당 게시물을 선택한 게시판으로 '.$act.' 하였습니다.';
+$msg = _t('해당 게시물을 선택한 게시판으로').' '.$act.' '._t('하였습니다.');
 $opener_href  = './board.php?bo_table='.$bo_table.'&amp;page='.$page.'&amp;'.$qstr;
 $opener_href1 = str_replace('&amp;', '&', $opener_href);
 
@@ -221,7 +221,7 @@ window.close();
 <p>
     "$msg"
 </p>
-<a href="$opener_href">돌아가기</a>
+<a href="$opener_href">{_t('돌아가기')}</a>
 </noscript>
 HEREDOC;
 ?>

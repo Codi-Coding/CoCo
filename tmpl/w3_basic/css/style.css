@@ -1,0 +1,11 @@
+/* 게시판 목록 공통 */
+.btn_bo_adm input {padding:4px 8px;border:0;background:#e8180c;color:#fff;text-decoration:none;vertical-align:middle;border-radius:4px}
+#bo_cate li {list-style:none}
+/*
+#current_connect_tbl, #new_sch { margin-top: 30px }
+*/
+#sch_res_detail {margin-top:30px}
+#sch_res_ov h2 {font-size:1.2em}
+.w3-top {z-index:4;font-size:1.00em;font-weight:bold}
+#captcha {border:0}
+.w3-dropdown-hover:first-child{background-color:#fff}

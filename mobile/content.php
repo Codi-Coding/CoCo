@@ -5,7 +5,7 @@ include_once('./_common.php');
 $sql = " select * from {$g5['content_table']} where co_id = '$co_id' ";
 $co = sql_fetch($sql);
 if (!$co['co_id'])
-    alert('등록된 내용이 없습니다.');
+    alert(_t('등록된 내용이 없습니다.'));
 
 $g5['title'] = $co['co_subject'];
 include_once('./_head.php');
@@ -45,6 +45,12 @@ $dst[] = $default['de_admin_info_email'];
 
 $str = preg_replace($src, $dst, $str);
 
+if(defined('G5_USE_TMPL_SKIN') and G5_USE_TMPL_SKIN) { /// content config가 config에 포함될 때까지
+    if(!(defined('G5_IS_ADMIN') && G5_IS_ADMIN)) {
+        $co['co_mobile_skin'] = $config['cf_mobile_co_skin'];
+    }
+}
+
 // 스킨경로
 if(trim($co['co_mobile_skin']) == '')
     $co['co_mobile_skin'] = 'basic';
@@ -56,7 +62,7 @@ $skin_file = $content_skin_path.'/content.skin.php';
 if(is_file($skin_file)) {
     include($skin_file);
 } else {
-    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</p>';
+    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</p>';
 }
 
 include_once('./_tail.php');

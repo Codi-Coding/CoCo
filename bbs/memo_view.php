@@ -2,13 +2,13 @@
 include_once('./_common.php');
 
 if (!$is_member)
-    alert('회원만 이용하실 수 있습니다.');
+    alert(_t('회원만 이용하실 수 있습니다.'));
 
 $me_id = (int)$_REQUEST['me_id'];
 
 if ($kind == 'recv')
 {
-    $t = '받은';
+    $t = _t('받은');
     $unkind = 'send';
 
     $sql = " update {$g5['memo_table']}
@@ -20,15 +20,15 @@ if ($kind == 'recv')
 }
 else if ($kind == 'send')
 {
-    $t = '보낸';
+    $t = _t('보낸');
     $unkind = 'recv';
 }
 else
 {
-    alert($kind.' 값을 넘겨주세요.');
+    alert($kind.' '._t('값을 넘겨주세요.'));
 }
 
-$g5['title'] = $t.' 쪽지 보기';
+$g5['title'] = $t.' '._t('쪽지 보기');
 include_once(G5_PATH.'/head.sub.php');
 
 $sql = " select * from {$g5['memo_table']}

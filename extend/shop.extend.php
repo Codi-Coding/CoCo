@@ -1,7 +1,64 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-if (!defined('G5_USE_SHOP') || !G5_USE_SHOP) return;
+///아래에서만 검사*** if (!defined('G5_USE_SHOP') || !G5_USE_SHOP) return;
+
+//------------------------------------------------------------------------------
+// 쇼핑몰 상수 모음 시작
+//------------------------------------------------------------------------------
+
+define('G5_SHOP_DIR', 'shop');
+
+/// g5 or multi language support
+if(defined('ENABLE_MODULE_G5') && ENABLE_MODULE_G5 && file_exists(G5_PATH.'/module/g5/shop')) {
+define('SHOP_NAME', 'module/g5/shop');
+define('MSHOP_NAME', 'module/g5/mobile/shop');
+} else if(defined('ENABLE_MODULE_ML') && ENABLE_MODULE_ML && file_exists(G5_PATH.'/module/ml/shop')) {
+define('SHOP_NAME', 'module/ml/shop');
+define('MSHOP_NAME', 'module/ml/mobile/shop');
+} else {
+define('SHOP_NAME', 'shop');
+define('MSHOP_NAME', 'mobile/shop');
+}
+
+///define('G5_SHOP_PATH',  G5_PATH.'/'.G5_SHOP_DIR);
+///define('G5_SHOP_URL',   G5_URL.'/'.G5_SHOP_DIR);
+///define('G5_MSHOP_PATH', G5_MOBILE_PATH.'/'.G5_SHOP_DIR);
+///define('G5_MSHOP_URL',  G5_MOBILE_URL.'/'.G5_SHOP_DIR);
+
+define('G5_SHOP_PATH',  G5_PATH.'/'.SHOP_NAME);
+define('G5_SHOP_URL',   G5_URL.'/'.SHOP_NAME);
+define('G5_MSHOP_PATH', G5_PATH.'/'.MSHOP_NAME);
+define('G5_MSHOP_URL',  G5_URL.'/'.MSHOP_NAME);
+
+define('G5_SHOP_IMG_URL',  G5_SHOP_URL.'/'.G5_IMG_DIR);
+define('G5_MSHOP_IMG_URL', G5_MSHOP_URL.'/'.G5_IMG_DIR);
+
+// 보안서버주소 설정
+if (G5_HTTPS_DOMAIN) {
+    ///define('G5_HTTPS_SHOP_URL', G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR);
+    ///define('G5_HTTPS_MSHOP_URL', G5_HTTPS_DOMAIN.'/'.G5_MOBILE_DIR.'/'.G5_SHOP_DIR);
+    define('G5_HTTPS_SHOP_URL', G5_HTTPS_DOMAIN.'/'.SHOP_NAME);
+    define('G5_HTTPS_MSHOP_URL', G5_HTTPS_DOMAIN.'/'.MSHOP_NAME);
+} else {
+    define('G5_HTTPS_SHOP_URL', G5_SHOP_URL);
+    define('G5_HTTPS_MSHOP_URL', G5_MSHOP_URL);
+}
+
+//------------------------------------------------------------------------------
+// 쇼핑몰 상수 모음 끝
+//------------------------------------------------------------------------------
+
+/// shop url
+$g5['shop_url'] = G5_SHOP_URL;
+
+if (!defined('G5_USE_SHOP') || !G5_USE_SHOP) return; ///***
+
+//==============================================================================
+// 쇼핑몰 필수 실행코드 모음 시작
+//==============================================================================
+
+$default = sql_fetch(" select * from {$g5['g5_shop_default_table']} ");
 
 /*
 배송업체에 데이터를 추가하는 경우 아래 형식으로 추가하세요.
@@ -25,8 +82,9 @@ define('G5_DELIVERY_COMPANY',
     .'(호남택배^http://www.honamlogis.co.kr/04estimate/songjang_list.php?c_search1=^031-376-6070)'
 );
 
-include_once(G5_LIB_PATH.'/shop.lib.php');
-include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+/// extend/templete.theme.shop.extend.php로 이동. 2018.04.12
+/// include_once(G5_LIB_PATH.'/shop.lib.php');
+/// include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 
 //==============================================================================
 // 쇼핑몰 미수금 등의 주문정보

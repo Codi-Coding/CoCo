@@ -2,9 +2,9 @@
 include_once('./_common.php');
 
 if (!$is_member)
-    alert_close('회원만 조회하실 수 있습니다.');
+    alert_close(_t('회원만 조회하실 수 있습니다.'));
 
-$g5['title'] = get_text($member['mb_nick']).'님의 스크랩';
+$g5['title'] = get_text($member['mb_nick'])._t('님의 스크랩');
 include_once(G5_PATH.'/head.sub.php');
 
 $sql_common = " from {$g5['scrap_table']} where mb_id = '{$member['mb_id']}' ";
@@ -36,7 +36,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     // 게시판 제목
     $sql2 = " select bo_subject from {$g5['board_table']} where bo_table = '{$row['bo_table']}' ";
     $row2 = sql_fetch($sql2);
-    if (!$row2['bo_subject']) $row2['bo_subject'] = '[게시판 없음]';
+    if (!$row2['bo_subject']) $row2['bo_subject'] = '['._t('게시판 없음').']';
 
     // 게시물 제목
     $tmp_write_table = $g5['write_prefix'] . $row['bo_table'];
@@ -44,7 +44,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     $row3 = sql_fetch($sql3, FALSE);
     $subject = get_text(cut_str($row3['wr_subject'], 100));
     if (!$row3['wr_subject'])
-        $row3['wr_subject'] = '[글 없음]';
+        $row3['wr_subject'] = '['._t('글 없음').']';
 
     $list[$i]['num'] = $num;
     $list[$i]['opener_href'] = './board.php?bo_table='.$row['bo_table'];

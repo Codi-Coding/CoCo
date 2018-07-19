@@ -4,7 +4,7 @@ include_once('./_common.php');
 //print_r2($_POST); exit;
 
 if ($is_admin != 'super')
-    alert("최고관리자만 접근이 가능합니다.");
+    alert(_t("최고관리자만 접근이 가능합니다."));
 
 $board = array();
 $save_bo_table = array();
@@ -67,7 +67,7 @@ for($i=0;$i<count($_POST['chk_bn_id']);$i++)
             }
         }
 
-        if ($pressed == '선택내용삭제') {
+        if ($pressed == _t('선택내용삭제')) {
             // 게시글 내용만 삭제
             sql_query(" update $write_table set wr_subject =  '".G5_TIME_YMDHIS." - 본인 요청으로 인한 삭제 (냉무) ☆', wr_content = '', wr_name='본인요청삭제☆' where wr_id = '{$write['wr_id']}' ");
         } else {
@@ -95,7 +95,7 @@ for($i=0;$i<count($_POST['chk_bn_id']);$i++)
         $bo_notice = trim($bo_notice);
         sql_query(" update {$g5['board_table']} set bo_notice = '$bo_notice' where bo_table = '$bo_table' ");
 
-        if ($pressed == '선택삭제') {
+        if ($pressed == _t('선택삭제')) {
             // 글숫자 감소
             if ($count_write > 0 || $count_comment > 0) {
                 sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write - '$count_write', bo_count_comment = bo_count_comment - '$count_comment' where bo_table = '$bo_table' ");

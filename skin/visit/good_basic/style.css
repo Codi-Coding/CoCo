@@ -1,0 +1,14 @@
+/* 방문자 집계 */
+#visit_aside {position:relative;padding:15px 15px 14px 14px}
+#visit_aside div {margin:0 auto}
+#visit_aside div:after {display:block;visibility:hidden;clear:both;content:""}
+#visit_aside h2 {margin:0;padding:0}
+#visit_aside .btn_admin {margin-top:5px;width:164px;text-align:center}
+#visit_aside .btn_admin a {display:inline-block;padding:0px;color:#000;text-decoration:none}
+#visit_aside .btn_admin a:focus,
+#visit_aside .btn_admin a:hover {background:#333;color:#fff}
+#visit_aside ul {background:#f7f7f7;width:180px;margin:5px 0;padding:0;list-style:none}
+#visit_aside ul {float:left;list-style:none}
+#visit_aside li {float:left;display:inline-block;padding:10px;color:#000;text-decoration:none}
+#visit_aside li:focus,
+#visit_aside li:hover {background:#333;color:#fff}

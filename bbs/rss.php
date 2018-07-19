@@ -25,13 +25,13 @@ $lines = $row['bo_page_rows'];
 
 // 비회원 읽기가 가능한 게시판만 RSS 지원
 if ($row['bo_read_level'] >= 2) {
-    echo '비회원 읽기가 가능한 게시판만 RSS 지원합니다.';
+    echo _t('비회원 읽기가 가능한 게시판만 RSS 지원합니다.');
     exit;
 }
 
 // RSS 사용 체크
 if (!$row['bo_use_rss_view']) {
-    echo 'RSS 보기가 금지되어 있습니다.';
+    echo _t('RSS 보기가 금지되어 있습니다.');
     exit;
 }
 
@@ -49,7 +49,7 @@ echo '<?xml version="1.0" encoding="utf-8" ?>'."\n";
 <channel>
 <title><?php echo specialchars_replace($config['cf_title'].' &gt; '.$subj1.' &gt; '.$subj2) ?></title>
 <link><?php echo specialchars_replace(G5_BBS_URL.'/board.php?bo_table='.$bo_table) ?></link>
-<description>테스트 버전 0.2 (2004-04-26)</description>
+<description><?php echo _t('테스트 버전'); ?> 0.2 (2004-04-26)</description>
 <language>ko</language>
 
 <?php

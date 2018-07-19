@@ -1,0 +1,78 @@
+<?php // 굿빌더 ?>
+<?php
+define("_SUBPAGE_", TRUE);
+define("_ABOUT_", TRUE);
+include_once("./_common.php");
+
+$g5['title'] = "소개 > 서적"; 
+
+include_once("./_head.php");
+?>
+				<div class="about">
+					<h2>서적 소개</h2>
+					<div>
+						<img src="<?php echo $g5['tmpl_url']?>/images/book.jpg" alt="서적 소개">
+						<h3>제목</h3>
+<p>
+제목 : 제목
+<br>
+지은이 : 지은이
+<br>
+
+펴낸 곳 : 펴낸 곳
+<br>
+
+펴낸 날 : 펴낸 날
+<br>
+
+판형 : 판형
+<br>
+
+쪽수 : 쪽수
+<br>
+
+정가 : 정가
+<br>
+
+태그 : 키워드들
+</p>
+</div>
+
+<div>
+<h3><책 소개></h3>
+
+<p>
+이 책은 ...
+<br>
+
+소개1 ...
+<br>
+
+소개 내용은 ...
+</p>
+
+<h3><저자 소개></h3>
+
+<p>
+저자 이름
+<br>
+
+저자는 ...
+</p>
+
+<h3>< 차 례></h3>
+
+<p>
+머리말
+</p>
+
+
+<p>
+책 목차
+<br>
+...
+					</div>
+				</div>
+<?php
+include_once("./_tail.php");
+?>

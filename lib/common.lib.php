@@ -23,7 +23,7 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add="")
 
     $str = '';
     if ($cur_page > 1) {
-        $str .= '<a href="'.$url.'1'.$add.'" class="pg_page pg_start">처음</a>'.PHP_EOL;
+        $str .= '<a href="'.$url.'1'.$add.'" class="pg_page pg_start">'._t('처음').'</a>'.PHP_EOL;
     }
 
     $start_page = ( ( (int)( ($cur_page - 1 ) / $write_pages ) ) * $write_pages ) + 1;
@@ -31,21 +31,21 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add="")
 
     if ($end_page >= $total_page) $end_page = $total_page;
 
-    if ($start_page > 1) $str .= '<a href="'.$url.($start_page-1).$add.'" class="pg_page pg_prev">이전</a>'.PHP_EOL;
+    if ($start_page > 1) $str .= '<a href="'.$url.($start_page-1).$add.'" class="pg_page pg_prev">'._t('이전').'</a>'.PHP_EOL;
 
     if ($total_page > 1) {
         for ($k=$start_page;$k<=$end_page;$k++) {
             if ($cur_page != $k)
-                $str .= '<a href="'.$url.$k.$add.'" class="pg_page">'.$k.'<span class="sound_only">페이지</span></a>'.PHP_EOL;
+                $str .= '<a href="'.$url.$k.$add.'" class="pg_page">'.$k.'<span class="sound_only">'._t('페이지').'</span></a>'.PHP_EOL;
             else
-                $str .= '<span class="sound_only">열린</span><strong class="pg_current">'.$k.'</strong><span class="sound_only">페이지</span>'.PHP_EOL;
+                $str .= '<span class="sound_only">'._t('열린').'</span><strong class="pg_current">'.$k.'</strong><span class="sound_only">'._t('페이지').'</span>'.PHP_EOL;
         }
     }
 
-    if ($total_page > $end_page) $str .= '<a href="'.$url.($end_page+1).$add.'" class="pg_page pg_next">다음</a>'.PHP_EOL;
+    if ($total_page > $end_page) $str .= '<a href="'.$url.($end_page+1).$add.'" class="pg_page pg_next">'._t('다음').'</a>'.PHP_EOL;
 
     if ($cur_page < $total_page) {
-        $str .= '<a href="'.$url.$total_page.$add.'" class="pg_page pg_end">맨끝</a>'.PHP_EOL;
+        $str .= '<a href="'.$url.$total_page.$add.'" class="pg_page pg_end">'._t('맨끝').'</a>'.PHP_EOL;
     }
 
     if ($str)
@@ -153,7 +153,7 @@ function alert($msg='', $url='', $error=true, $post=false)
     global $g5, $config, $member;
     global $is_admin;
 
-    $msg = $msg ? strip_tags($msg, '<br>') : '올바른 방법으로 이용해 주십시오.';
+    $msg = $msg ? strip_tags($msg, '<br>') : _t('올바른 방법으로 이용해 주십시오.');
 
     $header = '';
     if (isset($g5['title'])) {
@@ -168,7 +168,7 @@ function alert($msg='', $url='', $error=true, $post=false)
 function alert_close($msg, $error=true)
 {
     global $g5;
-    
+
     $msg = strip_tags($msg, '<br>');
 
     $header = '';
@@ -185,12 +185,12 @@ function confirm($msg, $url1='', $url2='', $url3='')
     global $g5;
 
     if (!$msg) {
-        $msg = '올바른 방법으로 이용해 주십시오.';
+        $msg = _t('올바른 방법으로 이용해 주십시오.');
         alert($msg);
     }
 
     if(!trim($url1) || !trim($url2)) {
-        $msg = '$url1 과 $url2 를 지정해 주세요.';
+        $msg = _t('$url1 과 $url2 를 지정해 주세요.');
         alert($msg);
     }
 
@@ -344,6 +344,12 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
     $list = $write_row;
     unset($write_row);
 
+    /// multi lang
+    $list['wr_subject'] = _t($list['wr_subject']);
+    $list['ca_name_org'] = $list['ca_name']; /// 2018.02.10 추가
+    $list['ca_name'] = _t($list['ca_name']);
+    $list['wr_content'] = _t($list['wr_content']);
+
     $board_notice = array_map('trim', explode(',', $board['bo_notice']));
     $list['is_notice'] = in_array($list['wr_id'], $board_notice);
 
@@ -398,21 +404,21 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
 
     $list['icon_reply'] = '';
     if ($list['reply'])
-        $list['icon_reply'] = '<img src="'.$skin_url.'/img/icon_reply.gif" class="icon_reply" alt="답변글">';
+        $list['icon_reply'] = '<img src="'.$skin_url.'/img/icon_reply.gif" class="icon_reply" alt="'._t('답변글').'">';
 
     $list['icon_link'] = '';
     if ($list['wr_link1'] || $list['wr_link2'])
         $list['icon_link'] = '<i class="fa fa-link" aria-hidden="true"></i> ';
 
     // 분류명 링크
-    $list['ca_name_href'] = G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'&amp;sca='.urlencode($list['ca_name']);
+    $list['ca_name_href'] = G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'&amp;sca='.urlencode($list['ca_name_org']); /// ca_name 2018.02.10
 
     $list['href'] = G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'&amp;wr_id='.$list['wr_id'].$qstr;
     $list['comment_href'] = $list['href'];
 
     $list['icon_new'] = '';
     if ($board['bo_new'] && $list['wr_datetime'] >= date("Y-m-d H:i:s", G5_SERVER_TIME - ($board['bo_new'] * 3600)))
-        $list['icon_new'] = '<img src="'.$skin_url.'/img/icon_new.gif" alt="새글"> ';
+        $list['icon_new'] = '<img src="'.$skin_url.'/img/icon_new.gif" alt="'._t('새글').'">';
 
     $list['icon_hot'] = '';
     if ($board['bo_hot'] && $list['wr_hit'] >= $board['bo_hot'])
@@ -819,7 +825,7 @@ function get_category_option($bo_table='', $ca_name='')
         if ($category == $ca_name) {
             $str .= ' selected="selected"';
         }
-        $str .= ">$categories[$i]</option>\n";
+        $str .= ">"._t($categories[$i])."</option>\n";
     }
 
     return $str;
@@ -841,7 +847,7 @@ function get_group_select($name, $selected='', $event='')
     $result = sql_query($sql);
     $str = "<select id=\"$name\" name=\"$name\" $event>\n";
     for ($i=0; $row=sql_fetch_array($result); $i++) {
-        if ($i == 0) $str .= "<option value=\"\">선택</option>";
+        if ($i == 0) $str .= "<option value=\"\">"._t("선택")."</option>";
         $str .= option_selected($row['gr_id'], $selected, $row['gr_subject']);
     }
     $str .= "</select>";
@@ -864,11 +870,11 @@ function get_yn_select($name, $selected='1', $event='')
 {
     $str = "<select name=\"$name\" $event>\n";
     if ($selected) {
-        $str .= "<option value=\"1\" selected>예</option>\n";
-        $str .= "<option value=\"0\">아니오</option>\n";
+        $str .= "<option value=\"1\" selected>"._t("예")."</option>\n";
+        $str .= "<option value=\"0\">"._t("아니오")."</option>\n";
     } else {
-        $str .= "<option value=\"1\">예</option>\n";
-        $str .= "<option value=\"0\" selected>아니오</option>\n";
+        $str .= "<option value=\"1\">"._t("예")."</option>\n";
+        $str .= "<option value=\"0\" selected>"._t("아니오")."</option>\n";
     }
     $str .= "</select>";
     return $str;
@@ -1088,7 +1094,7 @@ function get_point_sum($mb_id)
         $expire_point = get_expire_point($mb_id);
         if($expire_point > 0) {
             $mb = get_member($mb_id, 'mb_point');
-            $content = '포인트 소멸';
+            $content = _t('포인트 소멸');
             $rel_table = '@expire';
             $rel_id = $mb_id;
             $rel_action = 'expire'.'-'.uniqid('');
@@ -1223,8 +1229,8 @@ function get_sideview($mb_id, $name='', $email='', $homepage='')
 
     $tmp_name = "";
     if ($mb_id) {
-        //$tmp_name = "<a href=\"".G5_BBS_URL."/profile.php?mb_id=".$mb_id."\" class=\"sv_member\" title=\"$name 자기소개\" rel="nofollow" target=\"_blank\" onclick=\"return false;\">$name</a>";
-        $tmp_name = '<a href="'.G5_BBS_URL.'/profile.php?mb_id='.$mb_id.'" class="sv_member" title="'.$name.' 자기소개" target="_blank" rel="nofollow" onclick="return false;">';
+        //$tmp_name = "<a href=\"".G5_BBS_URL."/profile.php?mb_id=".$mb_id."\" class=\"sv_member\" title=\"$name 자기소개\" target=\"_blank\" onclick=\"return false;\">$name</a>";
+        $tmp_name = '<a href="'.G5_BBS_URL.'/profile.php?mb_id='.$mb_id.'" class="sv_member" title="'.$name.' '._t('자기소개').'" target="_blank" rel="nofollow" onclick="return false;">';
 
         if ($config['cf_use_member_icon']) {
             $mb_dir = substr($mb_id,0,2);
@@ -2652,17 +2658,17 @@ function certify_count_check($mb_id, $type)
 
     switch($type) {
         case 'hp':
-            $cert = '휴대폰';
+            $cert = _t('휴대폰');
             break;
         case 'ipin':
-            $cert = '아이핀';
+            $cert = _t('아이핀');
             break;
         default:
             break;
     }
 
     if((int)$row['cnt'] >= (int)$config['cf_cert_limit'])
-        alert_close('오늘 '.$cert.' 본인확인을 '.$row['cnt'].'회 이용하셔서 더 이상 이용할 수 없습니다.');
+        alert_close(_t('오늘').' '.$cert.' '._t('본인확인을').' '.$row['cnt']._t('회 이용하셔서 더 이상 이용할 수 없습니다.'));
 }
 
 // 1:1문의 설정로드
@@ -2672,6 +2678,7 @@ function get_qa_config($fld='*')
 
     $sql = " select $fld from {$g5['qa_config_table']} ";
     $row = sql_fetch($sql);
+    $row['qa_title'] = _t($row['qa_title']);
 
     return $row;
 }
@@ -2730,14 +2737,14 @@ function module_exec_check($exe, $type)
 
     // 모듈 파일 존재하는지 체크
     if(!is_file($exe)) {
-        $error = $exe.' 파일이 존재하지 않습니다.';
+        $error = $exe.' '._t('파일이 존재하지 않습니다.');
     } else {
         // 실행권한 체크
         if(!is_executable($exe)) {
             if($is_linux)
-                $error = $exe.'\n파일의 실행권한이 없습니다.\n\nchmod 755 '.basename($exe).' 과 같이 실행권한을 부여해 주십시오.';
+                $error = $exe.'\n'._t('파일의 실행권한이 없습니다.').'\n\nchmod 755 '.basename($exe).' '._t('과 같이 실행권한을 부여해 주십시오.');
             else
-                $error = $exe.'\n파일의 실행권한이 없습니다.\n\n'.basename($exe).' 파일에 실행권한을 부여해 주십시오.';
+                $error = $exe.'\n'._t('파일의 실행권한이 없습니다.').'\n\n'.basename($exe).' '._t('파일에 실행권한을 부여해 주십시오.');
         } else {
             // 바이너리 파일인지
             if($is_linux) {
@@ -2794,7 +2801,7 @@ function module_exec_check($exe, $type)
                 }
 
                 if(!$isbinary || !$search) {
-                    $error = $exe.'\n파일을 바이너리 타입으로 다시 업로드하여 주십시오.';
+                    $error = $exe.'\n'._t('파일을 바이너리 타입으로 다시 업로드하여 주십시오.');
                 }
             }
         }
@@ -2841,7 +2848,7 @@ function check_input_vars()
         $input_vars = $post_vars + $get_vars + $cookie_vars;
 
         if($input_vars > $max_input_vars) {
-            alert('폼에서 전송된 변수의 개수가 max_input_vars 값보다 큽니다.\\n전송된 값중 일부는 유실되어 DB에 기록될 수 있습니다.\\n\\n문제를 해결하기 위해서는 서버 php.ini의 max_input_vars 값을 변경하십시오.');
+            alert(_t('폼에서 전송된 변수의 개수가 max_input_vars 값보다 큽니다.').'\\n'._t('전송된 값중 일부는 유실되어 DB에 기록될 수 있습니다.').'\\n\\n'._t('문제를 해결하기 위해서는 서버 php.ini의 max_input_vars 값을 변경하십시오.'));
         }
     }
 }
@@ -3037,7 +3044,7 @@ function check_password($pass, $hash)
 function check_url_host($url, $msg='', $return_url=G5_URL, $is_redirect=false)
 {
     if(!$msg)
-        $msg = 'url에 타 도메인을 지정할 수 없습니다.';
+        $msg = _t('url에 타 도메인을 지정할 수 없습니다.');
 
     $p = @parse_url($url);
     $host = preg_replace('/:[0-9]+$/', '', $_SERVER['HTTP_HOST']);
@@ -3061,7 +3068,7 @@ function check_url_host($url, $msg='', $return_url=G5_URL, $is_redirect=false)
 
     if(stripos($url, 'http:') !== false) {
         if(!isset($p['scheme']) || !$p['scheme'] || !isset($p['host']) || !$p['host'])
-            alert('url 정보가 올바르지 않습니다.', $return_url);
+            alert(_t('url 정보가 올바르지 않습니다.'), $return_url);
     }
 
     //php 5.6.29 이하 버전에서는 parse_url 버그가 존재함
@@ -3085,12 +3092,12 @@ function check_url_host($url, $msg='', $return_url=G5_URL, $is_redirect=false)
         //if ($p['host'].(isset($p['port']) ? ':'.$p['port'] : '') != $_SERVER['HTTP_HOST']) {
         if ( ($p['host'] != $host) || $is_host_check ) {
             echo '<script>'.PHP_EOL;
-            echo 'alert("url에 타 도메인을 지정할 수 없습니다.");'.PHP_EOL;
+            echo 'alert("'._t('url에 타 도메인을 지정할 수 없습니다.').'");'.PHP_EOL;
             echo 'document.location.href = "'.$return_url.'";'.PHP_EOL;
             echo '</script>'.PHP_EOL;
             echo '<noscript>'.PHP_EOL;
             echo '<p>'.$msg.'</p>'.PHP_EOL;
-            echo '<p><a href="'.$return_url.'">돌아가기</a></p>'.PHP_EOL;
+            echo '<p><a href="'.$return_url.'">'._t('돌아가기').'</a></p>'.PHP_EOL;
             echo '</noscript>'.PHP_EOL;
             exit;
         }
@@ -3224,9 +3231,9 @@ function get_skin_path($dir, $skin)
         $theme_path = '';
         $cf_theme = trim($config['cf_theme']);
 
-        $theme_path = G5_PATH.'/'.G5_THEME_DIR.'/'.$cf_theme;
+        $theme_path = G5_THEME_PATH; /// goodbuilder
         if(G5_IS_MOBILE) {
-            $skin_path = $theme_path.'/'.G5_MOBILE_DIR.'/'.G5_SKIN_DIR.'/'.$dir.'/'.$match[1];
+            $skin_path = G5_THEME_MOBILE_PATH.'/'.G5_SKIN_DIR.'/'.$dir.'/'.$match[1]; /// goodbuilder
             if(!is_dir($skin_path))
                 $skin_path = $theme_path.'/'.G5_SKIN_DIR.'/'.$dir.'/'.$match[1];
         } else {
@@ -3512,5 +3519,35 @@ function option_array_checked($option, $arr=array()){
     }
 
     return $checked;
+}
+
+/// new. 번역 함수
+function _t($msgid) {
+    global $g5;
+    global $messages;
+
+    if($msgid == '원') {
+        if(defined('G5_IS_ADMIN') && G5_IS_ADMIN) /// 2018.02.26 추가
+            return $g5['currency_unit_name_list'][$g5['def_currency']].'('.$g5['def_currency'].')';
+        else if($g5['lang'] == $g5['base_lang'])
+            return $msgid.'('.$g5['currency'].')';
+        else
+            return $messages[$g5['currency_name']].'('.$g5['currency'].')';
+    }
+    else if($msgid == '' or !$g5['is_trans'])
+        return $msgid;
+    else if($g5['use_gettext'] && function_exists('gettext'))
+        return _($msgid);
+    else
+        return $messages[$msgid] ? $messages[$msgid] : $msgid;
+}
+
+function _cc($price) {
+    global $g5;
+
+    if(defined('G5_USE_CURRENCY_CONVERSION') && G5_USE_CURRENCY_CONVERSION)
+        return $g5['exchange_rate'] ? intval(($price*10000)/$g5['exchange_rate'])/10000 : $price;
+    else
+        return floatval($price);
 }
 ?>

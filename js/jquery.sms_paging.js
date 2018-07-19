@@ -48,7 +48,7 @@
             }
 			$(item).appendTo(op.origin);
             if( is_current ){
-                $(item).prepend('<span class="sound_only">열린</span>');
+                $(item).prepend('<span class="sound_only">'+g5_msg_opened+'</span>');
             } else {
                 (op.origin).append('\n');
             }

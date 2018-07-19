@@ -1,6 +1,6 @@
 <div id="ins_ft">
-    <strong>GNUBOARD5</strong>
-    <p>GPL! OPEN SOURCE GNUBOARD</p>
+    <strong>GOOD BUILDER</strong>
+    <p>GPL! OPEN SOURCE WEB BUILDER</p>
 </div>
 
 </body>

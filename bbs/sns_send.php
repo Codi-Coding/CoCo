@@ -17,6 +17,9 @@ switch($_REQUEST['sns']) {
     case 'gplus' :
         header("Location:https://plus.google.com/share?url=".$short_url);
         break;
+    case 'linkedin' : /// w3
+        header("Location:https://www.linkedin.com/shareArticle?url=".$short_url."&title=".$title);
+        break;
     default :
         echo 'Error';
 }

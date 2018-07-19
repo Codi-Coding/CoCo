@@ -6,18 +6,18 @@ include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 // 토큰체크
 check_write_token($bo_table);
 
-$g5['title'] = '게시글 저장';
+$g5['title'] = _t('게시글 저장');
 
 $msg = array();
 
 if($board['bo_use_category']) {
     $ca_name = trim($_POST['ca_name']);
     if(!$ca_name) {
-        $msg[] = '<strong>분류</strong>를 선택하세요.';
+        $msg[] = _t('분류를 선택하세요.');
     } else {
         $categories = array_map('trim', explode("|", $board['bo_category_list'].($is_admin ? '|공지' : '')));
         if(!empty($categories) && !in_array($ca_name, $categories))
-            $msg[] = '분류를 올바르게 입력하세요.';
+            $msg[] = _t('분류를 올바르게 입력하세요.');
 
         if(empty($categories))
             $ca_name = '';
@@ -32,7 +32,7 @@ if (isset($_POST['wr_subject'])) {
     $wr_subject = preg_replace("#[\\\]+$#", "", $wr_subject);
 }
 if ($wr_subject == '') {
-    $msg[] = '<strong>제목</strong>을 입력하세요.';
+    $msg[] = _t('제목을 입력하세요.');
 }
 
 $wr_content = '';
@@ -41,7 +41,7 @@ if (isset($_POST['wr_content'])) {
     $wr_content = preg_replace("#[\\\]+$#", "", $wr_content);
 }
 if ($wr_content == '') {
-    $msg[] = '<strong>내용</strong>을 입력하세요.';
+    $msg[] = _t('내용을 입력하세요.');
 }
 
 $wr_link1 = '';
@@ -65,14 +65,14 @@ if ($msg) {
 
 // 090710
 if (substr_count($wr_content, '&#') > 50) {
-    alert('내용에 올바르지 않은 코드가 다수 포함되어 있습니다.');
+    alert(_t('내용에 올바르지 않은 코드가 다수 포함되어 있습니다.'));
     exit;
 }
 
 $upload_max_filesize = ini_get('upload_max_filesize');
 
 if (empty($_POST)) {
-    alert("파일 또는 글내용의 크기가 서버에서 설정한 값을 넘어 오류가 발생하였습니다.\\npost_max_size=".ini_get('post_max_size')." , upload_max_filesize=".$upload_max_filesize."\\n게시판관리자 또는 서버관리자에게 문의 바랍니다.");
+    alert(_t("파일 또는 글내용의 크기가 서버에서 설정한 값을 넘어 오류가 발생하였습니다.")."\\npost_max_size=".ini_get('post_max_size')." , upload_max_filesize=".$upload_max_filesize."\\n"._t("게시판관리자 또는 서버관리자에게 문의 바랍니다."));
 }
 
 $notice_array = explode(",", $board['bo_notice']);
@@ -80,13 +80,13 @@ $notice_array = explode(",", $board['bo_notice']);
 if ($w == 'u' || $w == 'r') {
     $wr = get_write($write_table, $wr_id);
     if (!$wr['wr_id']) {
-        alert("글이 존재하지 않습니다.\\n글이 삭제되었거나 이동하였을 수 있습니다.");
+        alert(_t("글이 존재하지 않습니다.")."\\n"._t("글이 삭제되었거나 이동하였을 수 있습니다."));
     }
 }
 
 // 외부에서 글을 등록할 수 있는 버그가 존재하므로 비밀글은 사용일 경우에만 가능해야 함
 if (!$is_admin && !$board['bo_use_secret'] && (stripos($_POST['html'], 'secret') !== false || stripos($_POST['secret'], 'secret') !== false || stripos($_POST['mail'], 'secret') !== false)) {
-	alert('비밀글 미사용 게시판 이므로 비밀글로 등록할 수 없습니다.');
+	alert(_t('비밀글 미사용 게시판 이므로 비밀글로 등록할 수 없습니다.'));
 }
 
 $secret = '';
@@ -131,7 +131,7 @@ if ($w == '' || $w == 'u') {
 
     // 외부에서 글을 등록할 수 있는 버그가 존재하므로 공지는 관리자만 등록이 가능해야 함
     if (!$is_admin && $notice) {
-        alert('관리자만 공지할 수 있습니다.');
+        alert(_t('관리자만 공지할 수 있습니다.'));
     }
 
     //회원 자신이 쓴글을 수정할 경우 공지가 풀리는 경우가 있음 
@@ -149,11 +149,11 @@ if ($w == '' || $w == 'u') {
 } else if ($w == 'r') {
 
     if (in_array((int)$wr_id, $notice_array)) {
-        alert('공지에는 답변 할 수 없습니다.');
+        alert(_t('공지에는 답변 할 수 없습니다.'));
     }
 
     if ($member['mb_level'] < $board['bo_reply_level']) {
-        alert('글을 답변할 권한이 없습니다.');
+        alert(_t('글을 답변할 권한이 없습니다.'));
     }
 
     // 게시글 배열 참조
@@ -161,7 +161,7 @@ if ($w == '' || $w == 'u') {
 
     // 최대 답변은 테이블에 잡아놓은 wr_reply 사이즈만큼만 가능합니다.
     if (strlen($reply_array['wr_reply']) == 10) {
-        alert("더 이상 답변하실 수 없습니다.\\n답변은 10단계 까지만 가능합니다.");
+        alert(_t("더 이상 답변하실 수 없습니다.")."\\n"._t("답변은 10단계 까지만 가능합니다."));
     }
 
     $reply_len = strlen($reply_array['wr_reply']) + 1;
@@ -182,7 +182,7 @@ if ($w == '' || $w == 'u') {
     if (!$row['reply']) {
         $reply_char = $begin_reply_char;
     } else if ($row['reply'] == $end_reply_char) { // A~Z은 26 입니다.
-        alert("더 이상 답변하실 수 없습니다.\\n답변은 26개 까지만 가능합니다.");
+        alert(_t("더 이상 답변하실 수 없습니다.")."\\n"._t("답변은 26개 까지만 가능합니다."));
     } else {
         $reply_char = chr(ord($row['reply']) + $reply_number);
     }
@@ -190,26 +190,26 @@ if ($w == '' || $w == 'u') {
     $reply = $reply_array['wr_reply'] . $reply_char;
 
 } else {
-    alert('w 값이 제대로 넘어오지 않았습니다.');
+    alert('w '._t('값이 제대로 넘어오지 않았습니다.'));
 }
 
 $is_use_captcha = ((($board['bo_use_captcha'] && $w !== 'u') || $is_guest) && !$is_admin) ? 1 : 0;
 
 if ($is_use_captcha && !chk_captcha()) {
-    alert('자동등록방지 숫자가 틀렸습니다.');
+    alert(_t('자동등록방지 숫자가 틀렸습니다.'));
 }
 
 if ($w == '' || $w == 'r') {
     if (isset($_SESSION['ss_datetime'])) {
         if ($_SESSION['ss_datetime'] >= (G5_SERVER_TIME - $config['cf_delay_sec']) && !$is_admin)
-            alert('너무 빠른 시간내에 게시물을 연속해서 올릴 수 없습니다.');
+            alert(_t('너무 빠른 시간내에 게시물을 연속해서 올릴 수 없습니다.'));
     }
 
     set_session("ss_datetime", G5_SERVER_TIME);
 }
 
 if (!isset($_POST['wr_subject']) || !trim($_POST['wr_subject']))
-    alert('제목을 입력하여 주십시오.');
+    alert(_t('제목을 입력하여 주십시오.'));
 
 if ($w == '' || $w == 'r') {
 
@@ -224,7 +224,7 @@ if ($w == '' || $w == 'r') {
         // 비회원의 경우 이름이 누락되는 경우가 있음
         $wr_name = clean_xss_tags(trim($_POST['wr_name']));
         if (!$wr_name)
-            alert('이름은 필히 입력하셔야 합니다.');
+            alert(_t('이름은 필히 입력하셔야 합니다.'));
         $wr_password = get_encrypt_string($wr_password);
         $wr_email = get_email_address(trim($_POST['wr_email']));
         $wr_homepage = clean_xss_tags($wr_homepage);
@@ -304,7 +304,7 @@ if ($w == '' || $w == 'r') {
     }
 }  else if ($w == 'u') {
     if (get_session('ss_bo_table') != $_POST['bo_table'] || get_session('ss_wr_id') != $_POST['wr_id']) {
-        alert('올바른 방법으로 수정하여 주십시오.', G5_BBS_URL.'/board.php?bo_table='.$bo_table);
+        alert(_t('올바른 방법으로 수정하여 주십시오.'), G5_BBS_URL.'/board.php?bo_table='.$bo_table);
     }
 
     $return_url = './board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id;
@@ -314,21 +314,21 @@ if ($w == '' || $w == 'r') {
     else if ($is_admin == 'group') { // 그룹관리자
         $mb = get_member($write['mb_id']);
         if ($member['mb_id'] != $group['gr_admin']) // 자신이 관리하는 그룹인가?
-            alert('자신이 관리하는 그룹의 게시판이 아니므로 수정할 수 없습니다.', $return_url);
+            alert(_t('자신이 관리하는 그룹의 게시판이 아니므로 수정할 수 없습니다.'), $return_url);
         else if ($member['mb_level'] < $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
-            alert('자신의 권한보다 높은 권한의 회원이 작성한 글은 수정할 수 없습니다.', $return_url);
+            alert(_t('자신의 권한보다 높은 권한의 회원이 작성한 글은 수정할 수 없습니다.'), $return_url);
     } else if ($is_admin == 'board') { // 게시판관리자이면
         $mb = get_member($write['mb_id']);
         if ($member['mb_id'] != $board['bo_admin']) // 자신이 관리하는 게시판인가?
-            alert('자신이 관리하는 게시판이 아니므로 수정할 수 없습니다.', $return_url);
+            alert(_t('자신이 관리하는 게시판이 아니므로 수정할 수 없습니다.'), $return_url);
         else if ($member['mb_level'] < $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
-            alert('자신의 권한보다 높은 권한의 회원이 작성한 글은 수정할 수 없습니다.', $return_url);
+            alert(_t('자신의 권한보다 높은 권한의 회원이 작성한 글은 수정할 수 없습니다.'), $return_url);
     } else if ($member['mb_id']) {
         if ($member['mb_id'] != $write['mb_id'])
-            alert('자신의 글이 아니므로 수정할 수 없습니다.', $return_url);
+            alert(_t('자신의 글이 아니므로 수정할 수 없습니다.'), $return_url);
     } else {
         if ($write['mb_id'])
-            alert('로그인 후 수정하세요.', './login.php?url='.urlencode($return_url));
+            alert(_t('로그인 후 수정하세요.'), './login.php?url='.urlencode($return_url));
     }
 
     if ($member['mb_id']) {
@@ -356,7 +356,7 @@ if ($w == '' || $w == 'r') {
     } else {
         $mb_id = "";
         // 비회원의 경우 이름이 누락되는 경우가 있음
-        if (!trim($wr_name)) alert("이름은 필히 입력하셔야 합니다.");
+        if (!trim($wr_name)) alert(_t("이름은 필히 입력하셔야 합니다."));
         $wr_name = clean_xss_tags(trim($_POST['wr_name']));
         $wr_email = get_email_address(trim($_POST['wr_email']));
     }
@@ -437,10 +437,10 @@ for ($i=0; $i<$upload_count; $i++) {
 if($w == 'u') {
     $file = get_file($bo_table, $wr_id);
     if($file_count && (int)$file['count'] > $board['bo_upload_count'])
-        alert('기존 파일을 삭제하신 후 첨부파일을 '.number_format($board['bo_upload_count']).'개 이하로 업로드 해주십시오.');
+        alert(_t('기존 파일을 삭제하신 후 첨부파일을').' '.number_format($board['bo_upload_count'])._t('개 이하로 업로드 해주십시오.'));
 } else {
     if($file_count > $board['bo_upload_count'])
-        alert('첨부파일을 '.number_format($board['bo_upload_count']).'개 이하로 업로드 해주십시오.');
+        alert(_t('첨부파일을').' '.number_format($board['bo_upload_count'])._t('개 이하로 업로드 해주십시오.'));
 }
 
 // 디렉토리가 없다면 생성합니다. (퍼미션도 변경하구요.)
@@ -483,11 +483,11 @@ for ($i=0; $i<count($_FILES['bf_file']['name']); $i++) {
     // 서버에 설정된 값보다 큰파일을 업로드 한다면
     if ($filename) {
         if ($_FILES['bf_file']['error'][$i] == 1) {
-            $file_upload_msg .= '\"'.$filename.'\" 파일의 용량이 서버에 설정('.$upload_max_filesize.')된 값보다 크므로 업로드 할 수 없습니다.\\n';
+            $file_upload_msg .= '\"'.$filename.'\" '._t('파일의 용량이 서버에 설정(').$upload_max_filesize._t(')된 값보다 크므로 업로드 할 수 없습니다.').'\\n';
             continue;
         }
         else if ($_FILES['bf_file']['error'][$i] != 0) {
-            $file_upload_msg .= '\"'.$filename.'\" 파일이 정상적으로 업로드 되지 않았습니다.\\n';
+            $file_upload_msg .= '\"'.$filename.'\" '._t('파일이 정상적으로 업로드 되지 않았습니다.').'\\n';
             continue;
         }
     }
@@ -495,7 +495,7 @@ for ($i=0; $i<count($_FILES['bf_file']['name']); $i++) {
     if (is_uploaded_file($tmp_file)) {
         // 관리자가 아니면서 설정한 업로드 사이즈보다 크다면 건너뜀
         if (!$is_admin && $filesize > $board['bo_upload_size']) {
-            $file_upload_msg .= '\"'.$filename.'\" 파일의 용량('.number_format($filesize).' 바이트)이 게시판에 설정('.number_format($board['bo_upload_size']).' 바이트)된 값보다 크므로 업로드 하지 않습니다.\\n';
+            $file_upload_msg .= '\"'.$filename.'\" '._t('파일의 용량(').number_format($filesize).' '._t('바이트)이 게시판에 설정(').number_format($board['bo_upload_size']).' '._t('바이트)된 값보다 크므로 업로드 하지 않습니다.').'\\n';
             continue;
         }
 
@@ -650,10 +650,10 @@ if (!($w == 'u' || $w == 'cu') && $config['cf_email_use'] && $board['bo_use_emai
 
     $wr_content = conv_content(conv_unescape_nl(stripslashes($wr_content)), $tmp_html);
 
-    $warr = array( ''=>'입력', 'u'=>'수정', 'r'=>'답변', 'c'=>'코멘트', 'cu'=>'코멘트 수정' );
+    $warr = array( ''=>_t('입력'), 'u'=>_t('수정'), 'r'=>_t('답변'), 'c'=>_t('코멘트'), 'cu'=>_t('코멘트 수정') );
     $str = $warr[$w];
 
-    $subject = '['.$config['cf_title'].'] '.$board['bo_subject'].' 게시판에 '.$str.'글이 올라왔습니다.';
+    $subject = '['.$config['cf_title'].'] '.$board['bo_subject'].' '._t('게시판에').' '.$str._t('글이 올라왔습니다.');
 
     $link_url = G5_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;'.$qstr;
 

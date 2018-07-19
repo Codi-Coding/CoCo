@@ -1,0 +1,18 @@
+/* 사이드 메뉴 스킨 */
+#sidemenu_aside {position:relative;padding:15px 15px 14px 14px}
+#sidemenu_aside div {margin:0 auto}
+#sidemenu_aside div:after {display:block;visibility:hidden;clear:both;content:""}
+#sidemenu_aside h2 {margin:0;padding:0}
+#sidemenu_aside .btn_admin {margin-top:5px;width:164px;text-align:center}
+#sidemenu_aside .btn_admin a {display:inline-block;padding:0px;color:#000;text-decoration:none}
+#sidemenu_aside .btn_admin a:focus,
+#sidemenu_aside .btn_admin a:hover {background:#333;color:#fff}
+#sidemenu_aside ul {background:#f7f7f7;width:180px;margin:5px 0;padding:0;list-style:none}
+#sidemenu_aside ul {float:left;list-style:none}
+/*#sidemenu_aside ul li {float:none;line-height:0.5em}*/
+#sidemenu_aside ul li {float:none;line-height:1.0em}
+#sidemenu_aside ul li a {display:inline-block;padding:10px;color:#000;text-decoration:none;width:160px}
+#sidemenu_aside ul li a:focus,
+#sidemenu_aside ul li a:hover {background:#333;color:#fff}
+#sidemenu_aside ul li .sublocalNormal {}
+#sidemenu_aside ul li .sublocalActive {background:#ddd;}

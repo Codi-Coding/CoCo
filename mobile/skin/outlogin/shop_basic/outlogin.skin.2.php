@@ -8,16 +8,16 @@ add_stylesheet('<link rel="stylesheet" href="'.$outlogin_skin_url.'/style.css">'
 <!-- 로그인 후 외부로그인 시작 -->
 <aside id="ol_after" class="ol">
    
-    <h2>나의 회원정보</h2>
+    <h2><?php echo _t('나의 회원정보'); ?></h2>
     <div id="ol_after_hd">
         <span class="profile_img">
             <?php echo get_member_profile_img($member['mb_id'], 60, 60); ?>
-            <a href="<?php echo G5_BBS_URL ?>/member_confirm.php?url=register_form.php" id="ol_after_info"><i class="fa fa-cog" aria-hidden="true"></i><span class="sound_only">정보수정</span></a>
+            <a href="<?php echo G5_BBS_URL ?>/member_confirm.php?url=register_form.php" id="ol_after_info"><i class="fa fa-cog" aria-hidden="true"></i><span class="sound_only"><?php echo _t('정보수정'); ?></span></a>
         </span>
-        <strong><?php echo $nick ?>님</strong>
+        <strong><?php echo $nick ?><?php echo _t('님'); ?></strong>
         <div id="ol_after_btn">
-            <?php if ($is_admin == 'super' || $is_auth) { ?><a href="<?php echo G5_ADMIN_URL ?>" class="btn_admin">관리자</a><?php } ?>
-            <a href="<?php echo G5_BBS_URL ?>/logout.php" id="ol_after_logout">로그아웃</a>
+            <?php if ($is_admin == 'super' || $is_auth) { ?><a href="<?php echo G5_ADMIN_URL ?>" class="btn_admin"><?php echo _t('관리자'); ?></a><?php } ?>
+            <a href="<?php echo G5_BBS_URL ?>/logout.php" id="ol_after_logout"><?php echo _t('로그아웃'); ?></a>
         </div>
     </div>
 
@@ -26,13 +26,13 @@ add_stylesheet('<link rel="stylesheet" href="'.$outlogin_skin_url.'/style.css">'
     <ul id="ol_after_private">
         <li id="ol_after_memo">
             <a href="<?php echo G5_BBS_URL ?>/memo.php" target="_blank">
-                <i class="fa fa-envelope" aria-hidden="true"></i><span class="sound_only">안 읽은 쪽지</span>
+                <i class="fa fa-envelope" aria-hidden="true"></i><span class="sound_only"><?php echo _t('안 읽은 쪽지'); ?></span>
                 <strong><?php echo $memo_not_read ?></strong>
             </a>
         </li>
         <li id="ol_after_pt">
             <a href="<?php echo G5_BBS_URL ?>/point.php" target="_blank">
-                <i class="fa fa-database" aria-hidden="true"></i><span class="sound_only"> 포인트</span>
+                <i class="fa fa-database" aria-hidden="true"></i><span class="sound_only"> <?php echo _t('포인트'); ?></span>
                 <strong><?php echo $point ?></strong>
             </a>
         </li>
@@ -44,7 +44,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$outlogin_skin_url.'/style.css">'
 // 탈퇴의 경우 아래 코드를 연동하시면 됩니다.
 function member_leave()
 {
-    if (confirm("정말 회원에서 탈퇴 하시겠습니까?"))
+    if (confirm("<?php echo _t('정말 회원에서 탈퇴 하시겠습니까?'); ?>"))
         location.href = "<?php echo G5_BBS_URL ?>/member_confirm.php?url=member_leave.php";
 }
 </script>

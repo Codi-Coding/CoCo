@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-$g5['title'] = '현재접속자';
+$g5['title'] = _t('현재접속자');
 include_once('./_head.php');
 
 $list = array();

@@ -1,0 +1,16 @@
+@import url("http://fonts.googleapis.com/earlyaccess/nanummyeongjo.css");
+/* 서버에 직접 폰트 설치하는 경우 (Naver)
+@font-face {
+    font-family:'NanumMyeongjo';
+    src: url('./NanumMyeongjo.eot');
+    src: url('./NanumMyeongjo.eot?#iefix') format('embedded-opentype'),
+         url('./NanumMyeongjo.woff') format('woff'),
+         url('./NanumMyeongjo.ttf') format('truetype');
+         url('./NanumMyeongjo.svg#NanumMyeongjo') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+*/
+body, h1, h2, h3, h4, h5, h6, input, button, textarea, select, p, .new_win .win_ul a, td, .c1, .ct, .small {
+  font-family: 'Nanum Myeongjo';
+}

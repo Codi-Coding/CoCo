@@ -31,6 +31,7 @@ function print_menu1($key, $no='')
 function print_menu2($key, $no='')
 {
     global $menu, $auth_menu, $is_admin, $auth, $g5, $sub_menu;
+    global $submenu_root;
 
     $str .= "<ul>";
     for($i=1; $i<count($menu[$key]); $i++)
@@ -47,6 +48,9 @@ function print_menu2($key, $no='')
         $current_class = '';
 
         if ($menu[$key][$i][0] == $sub_menu){
+            $current_class = ' on';
+        }
+        else if($submenu_root[$sub_menu] && $menu[$key][$i][0] == $submenu_root[$sub_menu]) { /// goodbuilder
             $current_class = ' on';
         }
 
@@ -105,8 +109,12 @@ function imageview(id, w, h)
 
         <div id="tnb">
             <ul>
-                <li class="tnb_li"><a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop" target="_blank" title="쇼핑몰 바로가기">쇼핑몰 바로가기</a></li>
-                <li class="tnb_li"><a href="<?php echo G5_URL ?>/" class="tnb_community" target="_blank" title="커뮤니티 바로가기">커뮤니티 바로가기</a></li>
+                <li class="tnb_li" style="padding:0 10px;height:30px;line-height:30px;color:#cccccc;font-weight:bold"><?php echo ' '.BUILDER_NAME; echo ' '.BUILDER_VERSION_NUMBER; if(defined('BUILDER_VERSION_CLASS') and BUILDER_VERSION_CLASS) echo ' '.BUILDER_VERSION_CLASS; ///goodbuilder ?></li>
+                <li class="tnb_li"><a href="<?php echo G5_ADMIN_URL ?>/" class="tnb_service" title="관리자">관리자</a></li>
+                <!--<li class="tnb_li"><a href="<?php echo G5_BUILDER_ADMIN_URL ?>/" class="tnb_service" title="빌더 관리">빌더 관리</a></li>-->
+                <li class="tnb_li"><a href="<?php echo G5_URL ?>/" class="tnb_community" title="커뮤니티 바로가기">커뮤니티 바로가기</a></li>
+                <li class="tnb_li"><a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop" title="쇼핑몰 바로가기">쇼핑몰 바로가기</a></li>
+                <li class="tnb_li"><a href="<?php echo G5_CONTENTS_URL ?>/" class="tnb_shop" title="컨텐츠몰 바로가기">컨텐츠몰 바로가기</a></li>
                 <li class="tnb_li"><a href="<?php echo G5_ADMIN_URL ?>/service.php" class="tnb_service">부가서비스</a></li>
                 <li class="tnb_li"><button type="button" class="tnb_mb_btn">관리자<span class="./img/btn_gnb.png">메뉴열기</span></button>
                     <ul class="tnb_mb_area">
@@ -197,4 +205,40 @@ jQuery(function($){
     <div id="container" class="<?php echo $adm_menu_cookie['container']; ?>">
 
         <h1 id="container_title"><?php echo $g5['title'] ?></h1>
+
+<?php if($sub_menu && $submenu_root[$sub_menu]) { /// goodbuilder ?>
+<style>
+#lnb2 {margin:0;padding:7px 15px;width:100%;border-bottom:1px solid #e9e9e9;list-style:none;zoom:1}
+#lnb2:after {display:block;visibility:hidden;clear:both;content:""}
+#lnb2 li {float:left}
+#lnb2 a {display:inline-block;padding:0 10px;border-right:1px solid #ccc;font-size:0.95em;letter-spacing:-0.1em}
+#lnb2 .current_submenu {font-weight:bold;color:#990000}
+</style>
+<ul id="lnb2">
+<?php
+$submenu_key = $submenu_root[$sub_menu];
+$nl = '';
+if(isset($submenu[$submenu_key])) {
+foreach($submenu[$submenu_key] as $key=>$value) {
+    if ($is_admin != 'super' && (!array_key_exists($value[0],$auth) || !strstr($auth[$value[0]], 'r')))
+        continue;
+
+    if($value[0] == $sub_menu)
+        $svc_class = ' class="current_submenu"';
+    else if($value[3] == 'cf_service')
+        $svc_class = ' class="lnb_svc"';
+    else
+        $svc_class = '';
+
+    if($key == 0)
+        echo $nl.'<li>&nbsp;&nbsp;▶ <a href="'.$value[2].'"'.$svc_class.'>'.$value[1].'</a></li>';
+    else
+        echo $nl.'<li><a href="'.$value[2].'"'.$svc_class.'>'.$value[1].'</a></li>';
+    $nl = PHP_EOL;
+} 
+}
+?>
+</ul>
+<?php } /// goodbuilder ?>
+
         <div class="container_wr">

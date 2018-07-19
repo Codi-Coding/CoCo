@@ -35,7 +35,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/style.css">', 
         </li>
     <?php } ?>
     <?php if (count($list) == 0) { //게시물이 없을 때 ?>
-    <li>게시물이 없습니다.</li>
+    <li><?php echo _t('게시물이 없습니다.'); ?></li>
     <?php } ?>
     </ul>
 </div>

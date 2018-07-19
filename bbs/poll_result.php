@@ -3,15 +3,16 @@ include_once('./_common.php');
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 
 $po = sql_fetch(" select * from {$g5['poll_table']} where po_id = '{$po_id}' ");
+
 if (!$po['po_id'])
-    alert('설문조사 정보가 없습니다.');
+    alert(_t('설문조사 정보가 없습니다.'));
 
 if ($member['mb_level'] < $po['po_level'])
-    alert('권한 '.$po['po_level'].' 이상의 회원만 결과를 보실 수 있습니다.');
+    alert(_t('권한').' '.$po['po_level'].' '._t('이상의 회원만 결과를 보실 수 있습니다.'));
 
-$g5['title'] = '설문조사 결과';
+$g5['title'] = _t('설문조사 결과');
 
-$po_subject = $po['po_subject'];
+$po_subject = _t($po['po_subject']); /// 2018.03.14
 
 $max = 1;
 $total_po_cnt = 0;
@@ -33,7 +34,7 @@ for ($i=1; $i<=9; $i++) {
     $poll = $po['po_poll'.$i];
     if ($poll == '') { break; }
 
-    $list[$i]['content'] = $poll;
+    $list[$i]['content'] = _t($poll); /// 2018.03.14
     $list[$i]['cnt'] = $po['po_cnt'.$i];
     if ($total_po_cnt > 0)
         $list[$i]['rate'] = ($list[$i]['cnt'] / $total_po_cnt) * 100;
@@ -55,7 +56,7 @@ $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {
     $list2[$i]['pc_name']  = get_text($row['pc_name']);
     $list2[$i]['name']     = get_sideview($row['mb_id'], get_text(cut_str($row['pc_name'],10)), '', '', $row['mb_open']);
-    $list2[$i]['idea']     = get_text(cut_str($row['pc_idea'], 255));
+    $list2[$i]['idea']     = get_text(cut_str(_t($row['pc_idea']), 255)); /// 2018.03.14
     $list2[$i]['datetime'] = $row['pc_datetime'];
 
     $list2[$i]['del'] = '';
@@ -82,7 +83,7 @@ $result = sql_query($sql);
 for ($i=0; $row2=sql_fetch_array($result); $i++) {
     $list3[$i]['po_id'] = $row2['po_id'];
     $list3[$i]['date'] = substr($row2['po_date'],2,8);
-    $list3[$i]['subject'] = cut_str($row2['po_subject'],60,"…");
+    $list3[$i]['subject'] = cut_str(_t($row2['po_subject']),60,"…"); /// 2018.03.14
 }
 
 if(preg_match('#^theme/(.+)$#', $skin_dir, $match)) {

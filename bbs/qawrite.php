@@ -3,11 +3,11 @@ include_once('./_common.php');
 include_once(G5_EDITOR_LIB);
 
 if($w != '' && $w != 'u' && $w != 'r') {
-    alert('올바른 방법으로 이용해 주십시오.');
+    alert(_t('올바른 방법으로 이용해 주십시오.'));
 }
 
 if($is_guest)
-    alert('회원이시라면 로그인 후 이용해 보십시오.', './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
+    alert(_t('회원이시라면 로그인 후 이용해 보십시오.'), './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
 
 $qaconfig = get_qa_config();
 
@@ -33,14 +33,14 @@ if(is_file($skin_file)) {
 
         if($w == 'u') {
             if(!$write['qa_id'])
-                alert('게시글이 존재하지 않습니다.\\n삭제되었거나 자신의 글이 아닌 경우입니다.');
+                alert(_t('게시글이 존재하지 않습니다.').'\\n'._t('삭제되었거나 자신의 글이 아닌 경우입니다.'));
 
             if(!$is_admin) {
                 if($write['qa_type'] == 0 && $write['qa_status'] == 1)
-                    alert('답변이 등록된 문의글은 수정할 수 없습니다.');
+                    alert(_t('답변이 등록된 문의글은 수정할 수 없습니다.'));
 
                 if($write['mb_id'] != $member['mb_id'])
-                    alert('게시글을 수정할 권한이 없습니다.\\n\\n올바른 방법으로 이용해 주십시오.', G5_URL);
+                    alert(_t('게시글을 수정할 권한이 없습니다.').'\\n\\n'._t('올바른 방법으로 이용해 주십시오.'), G5_URL);
             }
         }
     }
@@ -50,10 +50,10 @@ if(is_file($skin_file)) {
     if(trim($qaconfig['qa_category'])) {
         $category = explode('|', $qaconfig['qa_category']);
         for($i=0; $i<count($category); $i++) {
-            $category_option .= option_selected($category[$i], $write['qa_category']);
+            $category_option .= option_selected($category[$i], $write['qa_category'], _t($category[$i]));
         }
     } else {
-        alert('1:1문의 설정에서 분류를 설정해 주십시오');
+        alert(_t('1:1문의 설정에서 분류를 설정해 주십시오'));
     }
 
     $is_dhtml_editor = false;
@@ -70,9 +70,9 @@ if(is_file($skin_file)) {
         $content = $qaconfig['qa_insert_content'];
     } else if($w == 'r') {
         if($is_dhtml_editor)
-            $content = '<div><br><br><br>====== 이전 답변내용 =======<br></div>';
+            $content = '<div><br><br><br>====== '._t('이전 답변내용').' =======<br></div>';
         else
-            $content = "\n\n\n\n====== 이전 답변내용 =======\n";
+            $content = "\n\n\n\n====== '._t('이전 답변내용').' =======\n";
 
         $content .= get_text($write['qa_content'], 0);
     } else {
@@ -87,7 +87,7 @@ if(is_file($skin_file)) {
     $editor_js .= get_editor_js('qa_content', $is_dhtml_editor);
     $editor_js .= chk_editor_js('qa_content', $is_dhtml_editor);
 
-    $upload_max_filesize = number_format($qaconfig['qa_upload_size']) . ' 바이트';
+    $upload_max_filesize = number_format($qaconfig['qa_upload_size']) . ' '._t('바이트');
 
     $html_value = '';
     if ($write['qa_html']) {
@@ -134,7 +134,7 @@ if(is_file($skin_file)) {
 
     include_once($skin_file);
 } else {
-    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</div>';
+    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</div>';
 }
 
 include_once('./qatail.php');

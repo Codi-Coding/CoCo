@@ -19,7 +19,7 @@ sql_query(" update {$g5['member_table']} set mb_lost_certify = '' where mb_no = 
 if ($mb_nonce === substr($mb['mb_lost_certify'], 0, 32)) {
     $new_password_hash = substr($mb['mb_lost_certify'], 33);
     sql_query(" update {$g5['member_table']} set mb_password = '$new_password_hash' where mb_no = '$mb_no' ");
-    alert('비밀번호가 변경됐습니다.\\n\\n회원아이디와 변경된 비밀번호로 로그인 하시기 바랍니다.', G5_BBS_URL.'/login.php');
+    alert(_t('비밀번호가 변경됐습니다.').'\\n\\n'._t('회원아이디와 변경된 비밀번호로 로그인 하시기 바랍니다.'), G5_BBS_URL.'/login.php');
 }
 else {
     die("Error");

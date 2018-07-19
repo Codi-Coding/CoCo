@@ -5,7 +5,7 @@ if( function_exists('social_check_login_before') ){
     $social_login_html = social_check_login_before();
 }
 
-$g5['title'] = '로그인';
+$g5['title'] = _t('로그인');
 include_once('./_head.sub.php');
 
 $url = $_GET['url'];

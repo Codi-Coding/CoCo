@@ -3,7 +3,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 $data_path = '../'.G5_DATA_DIR;
 
 
-if (!$title) $title = G5_VERSION." 설치";
+if (!$title) $title = GB_VERSION." 설치";
 
 ?>
 <!doctype html>
@@ -16,7 +16,7 @@ if (!$title) $title = G5_VERSION." 설치";
 <body>
 
 <div id="ins_bar">
-    <span id="bar_img">GNUBOARD5</span>
+    <span id="bar_img">GOOD BUILDER</span>
     <span id="bar_txt">INSTALLATION</span>
 </div>
 
@@ -25,7 +25,7 @@ if (!$title) $title = G5_VERSION." 설치";
 $dbconfig_file = $data_path.'/'.G5_DBCONFIG_FILE;
 if (file_exists($dbconfig_file)) {
 ?>
-<h1><?php echo G5_VERSION; ?> 프로그램이 이미 설치되어 있습니다.</h1>
+<h1><?php echo GB_VERSION; ?> 프로그램이 이미 설치되어 있습니다.</h1>
 
 <div class="ins_inner">
     <p>프로그램이 이미 설치되어 있습니다.<br />새로 설치하시려면 다음 파일을 삭제 하신 후 새로고침 하십시오.</p>
@@ -44,7 +44,7 @@ $exists_data_dir = true;
 if (!is_dir($data_path))
 {
 ?>
-<h1><?php echo G5_VERSION; ?> 설치를 위해 아래 내용을 확인해 주십시오.</h1>
+<h1><?php echo GB_VERSION; ?> 설치를 위해 아래 내용을 확인해 주십시오.</h1>
 
 <div class="ins_inner">
     <p>

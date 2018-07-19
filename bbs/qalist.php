@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 if($is_guest)
-    alert('회원이시라면 로그인 후 이용해 보십시오.', './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
+    alert(_t('회원이시라면 로그인 후 이용해 보십시오.'), './login.php?url='.urlencode(G5_BBS_URL.'/qalist.php'));
 
 $qaconfig = get_qa_config();
 
@@ -18,7 +18,7 @@ if ($qaconfig['qa_category']) {
     $category_option .= '<li><a href="'.$category_href.'"';
     if ($sca=='')
         $category_option .= ' id="bo_cate_on"';
-    $category_option .= '>전체</a></li>';
+    $category_option .= '>'._t('전체').'</a></li>';
 
     $categories = explode('|', $qaconfig['qa_category']); // 구분자가 | 로 되어 있음
     for ($i=0; $i<count($categories); $i++) {
@@ -30,7 +30,7 @@ if ($qaconfig['qa_category']) {
             $category_option .= ' id="bo_cate_on"';
             $category_msg = '<span class="sound_only">열린 분류 </span>';
         }
-        $category_option .= '>'.$category_msg.$category.'</a></li>';
+        $category_option .= '>'.$category_msg._t($category).'</a></li>';
     }
 }
 
@@ -117,7 +117,7 @@ if(is_file($skin_file)) {
     $stx = get_text(stripslashes($stx));
     include_once($skin_file);
 } else {
-    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</div>';
+    echo '<div>'.str_replace(G5_PATH.'/', '', $skin_file)._t('이 존재하지 않습니다.').'</div>';
 }
 
 include_once('./qatail.php');

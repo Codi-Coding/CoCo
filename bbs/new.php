@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-$g5['title'] = '새글';
+$g5['title'] = _t('새글');
 include_once('./_head.php');
 
 $sql_common = " from {$g5['board_new_table']} a, {$g5['board_table']} b, {$g5['group_table']} c where a.bo_table = b.bo_table and b.gr_id = c.gr_id and b.bo_use_search = 1 ";
@@ -37,11 +37,11 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$group_select = '<label for="gr_id" class="sound_only">그룹</label><select name="gr_id" id="gr_id"><option value="">전체그룹';
+$group_select = '<label for="gr_id" class="sound_only">'._t('그룹').'</label><select name="gr_id" id="gr_id"><option value="">'._t('전체그룹');
 $sql = " select gr_id, gr_subject from {$g5['group_table']} order by gr_id ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {
-    $group_select .= "<option value=\"".$row['gr_id']."\">".$row['gr_subject'];
+    $group_select .= "<option value=\"".$row['gr_id']."\">"._t($row['gr_subject']);
 }
 $group_select .= '</select>';
 
@@ -106,6 +106,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     $list[$i]['gr_subject'] = $row['gr_subject'];
     $list[$i]['bo_subject'] = ((G5_IS_MOBILE && $row['bo_mobile_subject']) ? $row['bo_mobile_subject'] : $row['bo_subject']);
     $list[$i]['wr_subject'] = $row2['wr_subject'];
+
 }
 
 $write_pages = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "?gr_id=$gr_id&amp;view=$view&amp;mb_id=$mb_id&amp;page=");

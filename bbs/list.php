@@ -1,17 +1,23 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+if($g5['is_db_trans'] && file_exists($g5['locale_path'].'/include/ml/bbs'.'/list.ml.php')) { include_once $g5['locale_path'].'/include/ml/bbs'.'/list.ml.php'; return; }
+
 // 분류 사용 여부
 $is_category = false;
 $category_option = '';
-if ($board['bo_use_category']) {
+if ($board[bo_use_category] && preg_match('/^g4_/', $board['bo_skin'])) {
+    $is_category = true;
+    $category_location = "./board.php?bo_table=$bo_table&sca=";
+    $category_option = get_category_option($bo_table); // SELECT OPTION 태그로 넘겨받음
+} else if ($board['bo_use_category']) {
     $is_category = true;
     $category_href = G5_BBS_URL.'/board.php?bo_table='.$bo_table;
 
     $category_option .= '<li><a href="'.$category_href.'"';
     if ($sca=='')
         $category_option .= ' id="bo_cate_on"';
-    $category_option .= '>전체</a></li>';
+    $category_option .= '>'._t('전체').'</a></li>';
 
     $categories = explode('|', $board['bo_category_list']); // 구분자가 , 로 되어 있음
     for ($i=0; $i<count($categories); $i++) {
@@ -21,9 +27,9 @@ if ($board['bo_use_category']) {
         $category_msg = '';
         if ($category==$sca) { // 현재 선택된 카테고리라면
             $category_option .= ' id="bo_cate_on"';
-            $category_msg = '<span class="sound_only">열린 분류 </span>';
+            $category_msg = '<span class="sound_only">'._t('열린 분류').' </span>';
         }
-        $category_option .= '>'.$category_msg.$category.'</a></li>';
+        $category_option .= '>'.$category_msg._t($category).'</a></li>';
     }
 }
 
@@ -50,7 +56,7 @@ if ($sca || $stx || $stx === '0') {     //검색이면
     $sql_search .= " and (wr_num between {$spt} and ({$spt} + {$config['cf_search_part']})) ";
 
     // 원글만 얻는다. (코멘트의 내용도 검색하기 위함)
-    // 라엘님 제안 코드로 대체 http://sir.kr/g5_bug/2922
+    // 라엘님 제안 코드로 대체 http://sir.kr/bbs/board.php?bo_table=g5_bug&wr_id=2922
     $sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM {$write_table} WHERE {$sql_search} ";
     $row = sql_fetch($sql);
     $total_count = $row['cnt'];
@@ -215,14 +221,14 @@ if ($is_search_bbs) {
     if (isset($min_spt) && $prev_spt >= $min_spt) {
         $qstr1 = preg_replace($patterns, '', $qstr);
         $prev_part_href = './board.php?bo_table='.$bo_table.$qstr1.'&amp;spt='.$prev_spt.'&amp;page=1';
-        $write_pages = page_insertbefore($write_pages, '<a href="'.$prev_part_href.'" class="pg_page pg_prev">이전검색</a>');
+        $write_pages = page_insertbefore($write_pages, '<a href="'.$prev_part_href.'" class="pg_page pg_prev">'._t('이전검색').'</a>');
     }
 
     $next_spt = $spt + $config['cf_search_part'];
     if ($next_spt < 0) {
         $qstr1 = preg_replace($patterns, '', $qstr);
         $next_part_href = './board.php?bo_table='.$bo_table.$qstr1.'&amp;spt='.$next_spt.'&amp;page=1';
-        $write_pages = page_insertafter($write_pages, '<a href="'.$next_part_href.'" class="pg_page pg_end">다음검색</a>');
+        $write_pages = page_insertafter($write_pages, '<a href="'.$next_part_href.'" class="pg_page pg_end">'._t('다음검색').'</a>');
     }
 }
 

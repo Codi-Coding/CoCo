@@ -2,7 +2,7 @@
 @header('Content-Type: text/html; charset=utf-8');
 @header('X-Robots-Tag: noindex');
 include_once ('../config.php');
-$title = G5_VERSION." 라이센스 확인 1/3";
+$title = GB_VERSION." 라이센스 확인 1/3";
 include_once ('./install.inc.php');
 ?>
 
@@ -19,9 +19,31 @@ if ($exists_data_dir && $write_data_dir) {
         라이센스에 동의하시는 경우에만 설치가 진행됩니다.
     </p>
 
+    <h3>굿빌더 라이센스 (Good Builder License)</h3>
+
+    <div class="ins_ta ins_license">
+        <textarea name="textarea" id="ins_license" readonly><?php echo implode('', file('../BUILDER_LICENSE.txt')); ?></textarea>
+    </div>
+
+    <?php if(0) { ?>
+    <h3>그누보드5 라이센스 (GNU Board 5 License)</h3>
+
     <div class="ins_ta ins_license">
         <textarea name="textarea" id="ins_license" readonly><?php echo implode('', file('../LICENSE.txt')); ?></textarea>
     </div>
+
+    <h3>그누보드4 라이센스 (GNU Board 4 License)</h3>
+
+    <div class="ins_ta ins_license">
+        <textarea name="textarea" id="ins_license" readonly><?php echo implode('', file('../LICENSE.g4/LICENSE')); ?></textarea>
+    </div>
+
+    <h3>그누보드 모바일1 라이센스 (GNU Board Mobile 1 License)</h3>
+
+    <div class="ins_ta ins_license">
+        <textarea name="textarea" id="ins_license" readonly><?php echo implode('', file('../LICENSE.gm1/__license.txt')); ?></textarea>
+    </div>
+    <?php } ?>
 
     <div id="ins_agree">
         <label for="agree">동의합니다.</label>

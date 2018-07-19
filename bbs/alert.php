@@ -2,12 +2,14 @@
 global $lo_location;
 global $lo_url;
 
+$return_url = $url; /// goodbuilder
+
 include_once('./_common.php');
 
 if($error) {
-    $g5['title'] = "오류안내 페이지";
+    $g5['title'] = _t("오류안내 페이지");
 } else {
-    $g5['title'] = "결과안내 페이지";
+    $g5['title'] = _t("결과안내 페이지");
 }
 include_once(G5_PATH.'/head.sub.php');
 // 필수 입력입니다.
@@ -31,6 +33,8 @@ include_once(G5_PATH.'/head.sub.php');
 $msg = isset($msg) ? strip_tags($msg) : '';
 $msg2 = str_replace("\\n", "<br>", $msg);
 
+$url = $return_url; /// goodbuilder
+
 $url = clean_xss_tags($url);
 if (!$url) $url = clean_xss_tags($_SERVER['HTTP_REFERER']);
 
@@ -40,9 +44,9 @@ $url = preg_replace("/[\<\>\'\"\\\'\\\"\(\)]/", "", $url);
 check_url_host($url, $msg);
 
 if($error) {
-    $header2 = "다음 항목에 오류가 있습니다.";
+    $header2 = _t("다음 항목에 오류가 있습니다.");
 } else {
-    $header2 = "다음 내용을 확인해 주세요.";
+    $header2 = _t("다음 내용을 확인해 주세요.");
 }
 ?>
 
@@ -77,11 +81,11 @@ history.back();
     <?php
     }
     ?>
-    <input type="submit" value="돌아가기">
+    <input type="submit" value="<?php echo _t('돌아가기'); ?>">
     </form>
     <?php } else { ?>
     <div class="btn_confirm">
-        <a href="<?php echo $url ?>">돌아가기</a>
+        <a href="<?php echo $url ?>"><?php echo _t('돌아가기'); ?></a>
     </div>
     <?php } ?>
 

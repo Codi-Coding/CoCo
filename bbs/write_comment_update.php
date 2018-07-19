@@ -7,11 +7,11 @@ include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 $comment_token = trim(get_session('ss_comment_token'));
 set_session('ss_comment_token', '');
 if(!trim($_POST['token']) || !$comment_token || $comment_token != $_POST['token'])
-    alert('올바른 방법으로 이용해 주십시오.');
+    alert(_t('올바른 방법으로 이용해 주십시오.'));
 
 // 090710
 if (substr_count($wr_content, "&#") > 50) {
-    alert('내용에 올바르지 않은 코드가 다수 포함되어 있습니다.');
+    alert(_t('내용에 올바르지 않은 코드가 다수 포함되어 있습니다.'));
     exit;
 }
 
@@ -26,28 +26,28 @@ if (!empty($_POST['wr_email']))
 // 비회원의 경우 이름이 누락되는 경우가 있음
 if ($is_guest) {
     if ($wr_name == '')
-        alert('이름은 필히 입력하셔야 합니다.');
+        alert(_t('이름은 필히 입력하셔야 합니다.'));
     if(!chk_captcha())
-        alert('자동등록방지 숫자가 틀렸습니다.');
+        alert(_t('자동등록방지 숫자가 틀렸습니다.'));
 }
 
 if ($w == "c" || $w == "cu") {
     if ($member['mb_level'] < $board['bo_comment_level'])
-        alert('댓글을 쓸 권한이 없습니다.');
+        alert(_t('댓글을 쓸 권한이 없습니다.'));
 }
 else
-    alert('w 값이 제대로 넘어오지 않았습니다.');
+    alert('w '._t('값이 제대로 넘어오지 않았습니다.'));
 
 // 세션의 시간 검사
 // 4.00.15 - 댓글 수정시 연속 게시물 등록 메시지로 인한 오류 수정
 if ($w == 'c' && $_SESSION['ss_datetime'] >= (G5_SERVER_TIME - $config['cf_delay_sec']) && !$is_admin)
-    alert('너무 빠른 시간내에 게시물을 연속해서 올릴 수 없습니다.');
+    alert(_t('너무 빠른 시간내에 게시물을 연속해서 올릴 수 없습니다.'));
 
 set_session('ss_datetime', G5_SERVER_TIME);
 
 $wr = get_write($write_table, $wr_id);
 if (empty($wr['wr_id']))
-    alert("글이 존재하지 않습니다.\\n글이 삭제되었거나 이동하였을 수 있습니다.");
+    alert(_t("글이 존재하지 않습니다.")."\\n"._t("글이 삭제되었거나 이동하였을 수 있습니다."));
 
 
 // "인터넷옵션 > 보안 > 사용자정의수준 > 스크립팅 > Action 스크립팅 > 사용 안 함" 일 경우의 오류 처리
@@ -78,7 +78,7 @@ if ($w == 'c') // 댓글 입력
     // 댓글쓰기 포인트설정시 회원의 포인트가 음수인 경우 댓글을 쓰지 못하던 버그를 수정 (곱슬최씨님)
     $tmp_point = ($member['mb_point'] > 0) ? $member['mb_point'] : 0;
     if ($tmp_point + $board['bo_comment_point'] < 0 && !$is_admin)
-        alert('보유하신 포인트('.number_format($member['mb_point']).')가 없거나 모자라서 댓글쓰기('.number_format($board['bo_comment_point']).')가 불가합니다.\\n\\n포인트를 적립하신 후 다시 댓글을 써 주십시오.');
+        alert(_t('보유하신 포인트가 없거나 모자라서 댓글쓰기가 불가합니다.').'\\n\\n'._t('포인트를 적립하신 후 다시 댓글을 써 주십시오.').' ('._t('보유하신 포인트:').number_format($member['mb_point'])._t('댓글쓰기 포인트:').number_format($board['bo_comment_point']).')');
 
     // 댓글 답변
     if ($comment_id)
@@ -87,15 +87,15 @@ if ($w == 'c') // 댓글 입력
                     where wr_id = '$comment_id' ";
         $reply_array = sql_fetch($sql);
         if (!$reply_array['wr_id'])
-            alert('답변할 댓글이 없습니다.\\n\\n답변하는 동안 댓글이 삭제되었을 수 있습니다.');
+            alert(_t('답변할 댓글이 없습니다.').'\\n\\n'._t('답변하는 동안 댓글이 삭제되었을 수 있습니다.'));
 
         if($wr['wr_parent'] != $reply_array['wr_parent'])
-            alert('댓글을 등록할 수 없습니다.');
+            alert(_t('댓글을 등록할 수 없습니다.'));
 
         $tmp_comment = $reply_array['wr_comment'];
 
         if (strlen($reply_array['wr_comment_reply']) == 5)
-            alert('더 이상 답변하실 수 없습니다.\\n\\n답변은 5단계 까지만 가능합니다.');
+            alert(_t('더 이상 답변하실 수 없습니다.').'\\n\\n'._t('답변은 5단계 까지만 가능합니다.'));
 
         $reply_len = strlen($reply_array['wr_comment_reply']) + 1;
         if ($board['bo_reply_order']) {
@@ -126,7 +126,7 @@ if ($w == 'c') // 댓글 입력
         if (!$row['reply'])
             $reply_char = $begin_reply_char;
         else if ($row['reply'] == $end_reply_char) // A~Z은 26 입니다.
-            alert('더 이상 답변하실 수 없습니다.\\n\\n답변은 26개 까지만 가능합니다.');
+            alert(_t('더 이상 답변하실 수 없습니다.').'\\n\\n'._t('답변은 26개 까지만 가능합니다.'));
         else
             $reply_char = chr(ord($row['reply']) + $reply_number);
 
@@ -200,10 +200,10 @@ if ($w == 'c') // 댓글 입력
 
         $wr_content = nl2br(get_text(stripslashes("원글\n{$wr['wr_subject']}\n\n\n댓글\n$wr_content")));
 
-        $warr = array( ''=>'입력', 'u'=>'수정', 'r'=>'답변', 'c'=>'댓글 ', 'cu'=>'댓글 수정' );
+        $warr = array( ''=>_t('입력'), 'u'=>_t('수정'), 'r'=>_t('답변'), 'c'=>_t('댓글'), 'cu'=>_t('댓글 수정') );
         $str = $warr[$w];
 
-        $subject = '['.$config['cf_title'].'] '.$board['bo_subject'].' 게시판에 '.$str.'글이 올라왔습니다.';
+        $subject = '['.$config['cf_title'].'] '.$board['bo_subject'].' '._t('게시판에').' '.$str._t('글이 올라왔습니다.');
         // 4.00.15 - 메일로 보내는 댓글의 바로가기 링크 수정
         $link_url = G5_BBS_URL."/board.php?bo_table=".$bo_table."&amp;wr_id=".$wr_id."&amp;".$qstr."#c_".$comment_id;
 
@@ -273,24 +273,24 @@ else if ($w == 'cu') // 댓글 수정
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
                 ;
             else
-                alert('그룹관리자의 권한보다 높은 회원의 댓글이므로 수정할 수 없습니다.');
+                alert(_t('그룹관리자의 권한보다 높은 회원의 댓글이므로 수정할 수 없습니다.'));
         } else
-            alert('자신이 관리하는 그룹의 게시판이 아니므로 댓글을 수정할 수 없습니다.');
+            alert(_t('자신이 관리하는 그룹의 게시판이 아니므로 댓글을 수정할 수 없습니다.'));
     } else if ($is_admin == 'board') { // 게시판관리자이면
         $mb = get_member($comment['mb_id']);
         if ($member['mb_id'] === $board['bo_admin']) { // 자신이 관리하는 게시판인가?
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
                 ;
             else
-                alert('게시판관리자의 권한보다 높은 회원의 댓글이므로 수정할 수 없습니다.');
+                alert(_t('게시판관리자의 권한보다 높은 회원의 댓글이므로 수정할 수 없습니다.'));
         } else
-            alert('자신이 관리하는 게시판이 아니므로 댓글을 수정할 수 없습니다.');
+            alert(_t('자신이 관리하는 게시판이 아니므로 댓글을 수정할 수 없습니다.'));
     } else if ($member['mb_id']) {
         if ($member['mb_id'] !== $comment['mb_id'])
-            alert('자신의 글이 아니므로 수정할 수 없습니다.');
+            alert(_t('자신의 글이 아니므로 수정할 수 없습니다.'));
     } else {
         if($comment['wr_password'] != $wr_password)
-            alert('댓글을 수정할 권한이 없습니다.');
+            alert(_t('댓글을 수정할 권한이 없습니다.'));
     }
 
     $sql = " select count(*) as cnt from $write_table
@@ -301,7 +301,7 @@ else if ($w == 'cu') // 댓글 수정
                 and wr_is_comment = 1 ";
     $row = sql_fetch($sql);
     if ($row['cnt'] && !$is_admin)
-        alert('이 댓글와 관련된 답변댓글이 존재하므로 수정 할 수 없습니다.');
+        alert(_t('이 댓글와 관련된 답변댓글이 존재하므로 수정 할 수 없습니다.'));
 
     $sql_ip = "";
     if (!$is_admin)

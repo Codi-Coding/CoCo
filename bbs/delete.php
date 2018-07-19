@@ -5,7 +5,7 @@ $delete_token = get_session('ss_delete_token');
 set_session('ss_delete_token', '');
 
 if (!($token && $delete_token == $token))
-    alert('토큰 에러로 삭제 불가합니다.');
+    alert(_t('토큰 에러로 삭제 불가합니다.'));
 
 //$wr = sql_fetch(" select * from $write_table where wr_id = '$wr_id' ");
 
@@ -16,23 +16,23 @@ if ($is_admin == 'super') // 최고관리자 통과
 else if ($is_admin == 'group') { // 그룹관리자
     $mb = get_member($write['mb_id']);
     if ($member['mb_id'] != $group['gr_admin']) // 자신이 관리하는 그룹인가?
-        alert('자신이 관리하는 그룹의 게시판이 아니므로 삭제할 수 없습니다.');
+        alert(_t('자신이 관리하는 그룹의 게시판이 아니므로 삭제할 수 없습니다.'));
     else if ($member['mb_level'] < $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
-        alert('자신의 권한보다 높은 권한의 회원이 작성한 글은 삭제할 수 없습니다.');
+        alert(_t('자신의 권한보다 높은 권한의 회원이 작성한 글은 삭제할 수 없습니다.'));
 } else if ($is_admin == 'board') { // 게시판관리자이면
     $mb = get_member($write['mb_id']);
     if ($member['mb_id'] != $board['bo_admin']) // 자신이 관리하는 게시판인가?
-        alert('자신이 관리하는 게시판이 아니므로 삭제할 수 없습니다.');
+        alert(_t('자신이 관리하는 게시판이 아니므로 삭제할 수 없습니다.'));
     else if ($member['mb_level'] < $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
-        alert('자신의 권한보다 높은 권한의 회원이 작성한 글은 삭제할 수 없습니다.');
+        alert(_t('자신의 권한보다 높은 권한의 회원이 작성한 글은 삭제할 수 없습니다.'));
 } else if ($member['mb_id']) {
     if ($member['mb_id'] !== $write['mb_id'])
-        alert('자신의 글이 아니므로 삭제할 수 없습니다.');
+        alert(_t('자신의 글이 아니므로 삭제할 수 없습니다.'));
 } else {
     if ($write['mb_id'])
-        alert('로그인 후 삭제하세요.', './login.php?url='.urlencode('./board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id));
+        alert(_t('로그인 후 삭제하세요.'), './login.php?url='.urlencode('./board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id));
     else if (!check_password($wr_password, $write['wr_password']))
-        alert('비밀번호가 틀리므로 삭제할 수 없습니다.');
+        alert(_t('비밀번호가 틀리므로 삭제할 수 없습니다.'));
 }
 
 $len = strlen($write['wr_reply']);
@@ -47,7 +47,7 @@ $sql = " select count(*) as cnt from $write_table
             and wr_is_comment = 0 ";
 $row = sql_fetch($sql);
 if ($row['cnt'] && !$is_admin)
-    alert('이 글과 관련된 답변글이 존재하므로 삭제 할 수 없습니다.\\n\\n우선 답변글부터 삭제하여 주십시오.');
+    alert(_t('이 글과 관련된 답변글이 존재하므로 삭제 할 수 없습니다.').'\\n\\n'._t('우선 답변글부터 삭제하여 주십시오.'));
 
 // 코멘트 달린 원글의 삭제 여부
 $sql = " select count(*) as cnt from $write_table
@@ -56,7 +56,7 @@ $sql = " select count(*) as cnt from $write_table
             and wr_is_comment = 1 ";
 $row = sql_fetch($sql);
 if ($row['cnt'] >= $board['bo_count_delete'] && !$is_admin)
-    alert('이 글과 관련된 코멘트가 존재하므로 삭제 할 수 없습니다.\\n\\n코멘트가 '.$board['bo_count_delete'].'건 이상 달린 원글은 삭제할 수 없습니다.');
+    alert(_t('이 글과 관련된 코멘트가 존재하므로 삭제 할 수 없습니다.').'\\n\\n'._t('코멘트가').' '.$board['bo_count_delete']._t('건 이상 달린 원글은 삭제할 수 없습니다.'));
 
 
 // 사용자 코드 실행

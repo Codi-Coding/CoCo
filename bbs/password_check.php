@@ -7,7 +7,7 @@ if ($w == 's') {
     $wr = get_write($write_table, $wr_id);
 
     if (!check_password($wr_password, $wr['wr_password']))
-        alert('비밀번호가 틀립니다.');
+        alert(_t('비밀번호가 틀립니다.'));
 
     // 세션에 아래 정보를 저장. 하위번호는 비밀번호없이 보아야 하기 때문임.
     //$ss_name = 'ss_secret.'_'.$bo_table.'_'.$wr_id';
@@ -21,7 +21,7 @@ if ($w == 's') {
     $wr = get_write($write_table, $wr_id);
 
     if (!check_password($wr_password, $wr['wr_password']))
-        alert('비밀번호가 틀립니다.');
+        alert(_t('비밀번호가 틀립니다.'));
 
     // 세션에 아래 정보를 저장. 하위번호는 비밀번호없이 보아야 하기 때문임.
     $ss_name = 'ss_secret_comment_'.$bo_table.'_'.$wr['wr_id'];
@@ -29,7 +29,7 @@ if ($w == 's') {
     set_session($ss_name, TRUE);
 
 } else
-    alert('w 값이 제대로 넘어오지 않았습니다.');
+    alert(_t('w 값이 제대로 넘어오지 않았습니다.'));
 
 goto_url(G5_HTTP_BBS_URL.'/board.php?'.$qstr);
 ?>

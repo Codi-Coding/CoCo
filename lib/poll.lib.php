@@ -38,6 +38,11 @@ function poll($skin_dir='basic', $po_id=false)
 
     $po = sql_fetch(" select * from {$g5['poll_table']} where po_id = '$po_id' ");
 
+    /// multi lang
+    if($g5['is_db_trans'] && file_exists(G5_PATH.'/locale/include/func.poll.inc.php')) {
+        include_once G5_PATH.'/locale/include/func.poll.inc.php';
+    }
+
     ob_start();
     include_once ($poll_skin_path.'/poll.skin.php');
     $content = ob_get_contents();

@@ -10,7 +10,7 @@ if ($w == '')
 
     $po = sql_fetch(" select * from {$g5['poll_table']} where po_id = '{$po_id}' ");
     if (!$po['po_id'])
-        alert('po_id 값이 제대로 넘어오지 않았습니다.');
+        alert(_t('po_id 값이 제대로 넘어오지 않았습니다.'));
 
     $tmp_row = sql_fetch(" select max(pc_id) as max_pc_id from {$g5['poll_etc_table']} ");
     $pc_id = $tmp_row['max_pc_id'] + 1;
@@ -41,7 +41,7 @@ if ($w == '')
         // 관리자에게 보내는 메일
         $admin = get_admin('super');
         $from_email = $member['mb_email'] ? $member['mb_email'] : $admin['mb_email'];
-        mailer($name, $from_email, $admin['mb_email'], '['.$config['cf_title'].'] 설문조사 기타의견 메일', $content, 1);
+        mailer($name, $from_email, $admin['mb_email'], '['.$config['cf_title'].'] '._t('설문조사 기타의견 메일'), $content, 1);
     }
 }
 else if ($w == 'd')

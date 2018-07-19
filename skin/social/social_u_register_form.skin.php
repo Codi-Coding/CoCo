@@ -13,7 +13,7 @@ add_stylesheet('<link rel="stylesheet" href="'.get_social_skin_url().'/style.css
 ?>
 
 <li>
-    <label class="frm_label">SNS 로그인 관리</label>
+    <label class="frm_label"><?php echo _t('SNS 로그인 관리'); ?></label>
     <div class="reg-form sns-wrap-reg">
         <div class="sns-wrap">
 
@@ -30,18 +30,18 @@ add_stylesheet('<link rel="stylesheet" href="'.get_social_skin_url().'/style.css
                 
                 $link_href = G5_SOCIAL_LOGIN_URL.'/unlink.php?provider='.$social.'&amp;social_nonce='.$social_nonce;
 
-                $title = $provider_name.' 연결을 해제합니다.';
+                $title = $provider_name.' '._t('연결을 해제합니다.');
             } else {
                 $add_class = ' sns-icon-not';
 
                 $link_href = $self_url.'?provider='.$social.'&amp;mylink=1&amp;url='.$urlencode;
 
-                $title = $provider_name.' 계정을 연결 합니다.';
+                $title = $provider_name.' '._t('계정을 연결합니다.');
 
             }
         ?>
 
-        <a href="<?php echo $link_href; ?>" id="sns-<?php echo $social; ?>" class="sns-icon social_link sns-<?php echo $social; ?><?php echo $add_class; ?>" title="<?php echo $title; ?>" data-provider="<?php echo $social; ?>" ><span class="ico"></span><span class="txt"><?php echo $provider_name; ?> 로그인</span></a>
+        <a href="<?php echo $link_href; ?>" id="sns-<?php echo $social; ?>" class="sns-icon social_link sns-<?php echo $social; ?><?php echo $add_class; ?>" title="<?php echo $title; ?>" data-provider="<?php echo $social; ?>" ><span class="ico"></span><span class="txt"><?php echo $provider_name; ?> <?php echo _t('로그인'); ?></span></a>
 
         <?php }     //end foreach ?>
 
@@ -71,11 +71,11 @@ function social_link_fn(provider){
 
         var social_url = "<?php echo G5_SOCIAL_LOGIN_URL; ?>",
             link_href = social_url+"/unlink.php?provider="+provider+"&social_nonce="+social_get_nonce(provider),
-            atitle = provider+" 연결을 해제합니다.";
+            atitle = provider+" <?php echo _t('연결을 해제합니다.'); ?>";
 
         $icon.attr({"href":link_href, "title":atitle}).removeClass("sns-icon-not");
         
-        alert('연결 되었습니다');
+        alert('<?php echo _t('연결되었습니다'); ?>');
 
         return true;
     }
@@ -94,9 +94,9 @@ jQuery(function($){
 
         var othis = $(this);
 
-        if( ! othis.hasClass('sns-icon-not') ){     //소셜계정 해제하기
+        if( ! othis.hasClass('sns-icon-not') ){     //소셜 계정 해제하기
 
-            if (!confirm('정말 이 계정 연결을 해제하시겠습니까?')) {
+            if (!confirm('<?php echo _t('정말 이 계정 연결을 해제하시겠습니까?'); ?>')) {
                 return false;
             }
 
@@ -105,7 +105,7 @@ jQuery(function($){
                 provider = $(this).attr("data-provider");
 
             if( ! provider ){
-                alert("잘못된 요청! provider 값이 없습니다.");
+                alert("<?php echo _t('잘못된 요청! provider 값이 없습니다.'); ?>");
                 return false;
             }
 
@@ -125,7 +125,7 @@ jQuery(function($){
                         alert(data.error);
                         return false;
                     } else {
-                        var atitle = provider+" 계정을 연결 합니다.",
+                        var atitle = provider+" <?php echo _t('계정을 연결 합니다.'); ?>",
                             link_href = self_url+"?provider="+provider+"&mylink=1&url="+urlencode;
                         
                         othis.attr({"href":link_href, "title":atitle}).addClass("sns-icon-not");
@@ -137,7 +137,7 @@ jQuery(function($){
                 }
             });
 
-        } else {        //소셜계정 연결하기
+        } else {        //소셜 계정 연결하기
 
             var pop_url = $(this).attr("href");
             var is_popup = "<?php echo G5_SOCIAL_USE_POPUP; ?>";
@@ -150,7 +150,7 @@ jQuery(function($){
                 );
 
                 if(!newWin || newWin.closed || typeof newWin.closed=='undefined')
-                     alert('브라우저에서 팝업이 차단되어 있습니다. 팝업 활성화 후 다시 시도해 주세요.');
+                     alert('<?php echo _t('브라우저에서 팝업이 차단되어 있습니다. 팝업 활성화 후 다시 시도해 주세요.'); ?>');
 
             } else {
                 location.replace(pop_url);
