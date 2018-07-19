@@ -1,4 +1,6 @@
 <?php
+include_once('./lib/common.lib.php');
+
 include_once('./common.php');
 
 // 커뮤니티 사용여부
