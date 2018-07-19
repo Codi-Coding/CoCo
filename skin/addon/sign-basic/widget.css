@@ -1,0 +1,8 @@
+@charset "utf-8";
+
+.sign-author .sign-photo { width:160px; padding-right:15px; }
+.sign-author .sign-photo-icon i { background: rgb(245, 245, 245); padding: 16px; border-radius: 50%; width: 80px; height: 80px; text-align: center; color: rgb(143, 143, 143); font-size: 40px; display: inline-block; }
+.sign-author .sign-photo-icon img { border-radius: 50%; width: 80px !important; height: 80px !important; display:inline-block; }
+@media all and (max-width:480px) {
+	.responsive .sign-author .sign-photo { float:none; width:100%; padding-right:0px; }
+}

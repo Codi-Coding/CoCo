@@ -10,10 +10,8 @@ auth_check($auth[$sub_menu], "w");
 $g5['title'] = "주문 내역 수정";
 include_once(G5_ADMIN_PATH.'/admin.head.php');
 
-
 // 완료된 주문에 포인트를 적립한다.
 save_order_point("완료");
-
 
 //------------------------------------------------------------------------------
 // 주문서 정보
@@ -23,10 +21,7 @@ $od = sql_fetch($sql);
 if (!$od['od_id']) {
     alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
-
-$od['mb_id'] = $od['mb_id'] ? $od['mb_id'] : "비회원";
 //------------------------------------------------------------------------------
-
 
 $pg_anchor = '<ul class="anchor">
 <li><a href="#anc_sodr_list">주문상품 목록</a></li>
@@ -46,17 +41,25 @@ if($default['de_escrow_use'])
     $qstr1 .= "&amp;od_escrow=$od_escrow";
 $qstr = "$qstr1&amp;sort1=$sort1&amp;sort2=$sort2&amp;page=$page";
 
-// 상품목록
-$sql = " select it_id,
-                it_name,
-                cp_price,
-                ct_notax,
-                ct_send_cost,
-                it_sc_type
-           from {$g5['g5_shop_cart_table']}
-          where od_id = '{$od['od_id']}'
-          group by it_id
-          order by ct_id ";
+$sql = " select a.it_id,
+				a.it_name,
+                a.cp_price,
+                a.ct_notax,
+                a.ct_send_cost,
+                a.it_sc_type,
+				a.pt_it,
+				a.pt_id,
+				b.ca_id,
+				b.ca_id2,
+				b.ca_id3,
+				b.pt_msg1,
+				b.pt_msg2,
+				b.pt_msg3
+		  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+		  where a.od_id = '$od_id'
+		  group by a.it_id
+		  order by a.ct_id ";
+
 $result = sql_query($sql);
 
 // 주소 참고항목 필드추가
@@ -93,6 +96,9 @@ if($od['od_pg'] == 'lg') {
 
 // add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
+
+// 파트너
+$is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
 ?>
 
 <section id="anc_sodr_list">
@@ -124,17 +130,24 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     <input type="hidden" name="pg_cancel" value="0">
 
     <div class="tbl_head01 tbl_wrap">
+
         <table>
         <caption>주문 상품 목록</caption>
         <thead>
         <tr>
-            <th scope="col">상품명</th>
+			<?php if($is_use_partner) { ?>
+				<th scope="col">파트너</th>
+			<?php } ?>
+			<th scope="col">종류</th>
+			<th scope="col">이미지</th>
+			<th scope="col">상품명</th>
             <th scope="col">
                 <label for="sit_select_all" class="sound_only">주문 상품 전체</label>
                 <input type="checkbox" id="sit_select_all">
             </th>
-            <th scope="col">옵션항목</th>
-            <th scope="col">상태</th>
+            <th scope="col">&nbsp;</th>
+			<th scope="col">옵션항목</th>
+			<th scope="col">상태</th>
             <th scope="col">수량</th>
             <th scope="col">판매가</th>
             <th scope="col">소계</th>
@@ -147,18 +160,27 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
         </thead>
         <tbody>
         <?php
-        $chk_cnt = 0;
+		$pt_email = array();
+		$pt_name = array();
+		$chk_cnt = 0;
         for($i=0; $row=sql_fetch_array($result); $i++) {
-            // 상품이미지
+
+			// 파트너에게 이메일 보내기 체크
+			if($is_use_partner && $row['pt_id']) {
+				$pt_email[] = $row['pt_id'];
+			}
+
+			// 상품이미지
             $image = get_it_image($row['it_id'], 50, 50);
 
             // 상품의 옵션정보
-            $sql = " select ct_id, it_id, ct_price, ct_point, ct_qty, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, io_type, io_price
+            $sql = " select ct_id, mb_id, it_id, ct_price, ct_point, ct_qty, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, io_type, io_price, pt_msg1, pt_msg2, pt_msg3
                         from {$g5['g5_shop_cart_table']}
                         where od_id = '{$od['od_id']}'
                           and it_id = '{$row['it_id']}'
                         order by io_type asc, ct_id asc ";
             $res = sql_query($sql);
+
             $rowspan = sql_num_rows($res);
 
             // 합계금액 계산
@@ -192,7 +214,36 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             }
 
             for($k=0; $opt=sql_fetch_array($res); $k++) {
-                if($opt['io_type'])
+
+				// 구매회원 아이디 체크
+				if($od['mb_id'] && $od['mb_id'] != $opt['mb_id']) {
+					sql_query(" update {$g5['g5_shop_cart_table']} set mb_id = '{$od['mb_id']}' where od_id = '{$od_id}' and ct_id = '{$opt['ct_id']}' ", false);
+				}
+
+				$opt_msg = get_text($opt['ct_option']);
+
+				if($opt['pt_msg1']) {
+					$opt_msg .= '<div style="color:#888;">';
+					if($row['pt_msg1']) $opt_msg .= $row['pt_msg1'].' : ';
+					$opt_msg .= get_text($opt['pt_msg1']).'</div>';
+
+				}
+				if($opt['pt_msg2']) {
+					$opt_msg .= '<div style="color:#888;">';
+					if($row['pt_msg2']) $opt_msg .= $row['pt_msg2'].' : ';
+					$opt_msg .= get_text($opt['pt_msg2']).'</div>';
+
+				}
+				if($opt['pt_msg3']) {
+					$opt_msg .= '<div style="color:#888;">';
+					if($row['pt_msg3']) $opt_msg .= $row['pt_msg3'].' : ';
+					$opt_msg .= get_text($opt['pt_msg3']).'</div>';
+
+				}
+
+				$opt['ct_option'] = $opt_msg;
+
+				if($opt['io_type'])
                     $opt_price = $opt['io_price'];
                 else
                     $opt_price = $opt['ct_price'] + $opt['io_price'];
@@ -203,8 +254,41 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             ?>
             <tr>
                 <?php if($k == 0) { ?>
-                <td rowspan="<?php echo $rowspan; ?>" class="td_left">
-                    <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>"><?php echo $image; ?> <?php echo stripslashes($row['it_name']); ?></a>
+				<?php if($is_use_partner) { ?>
+				<td class="td_num" rowspan="<?php echo $rowspan; ?>">
+					<nobr>
+						<?php 
+							if ($row['pt_id']) {
+								$p_name = '탈퇴';
+
+								$pmb = get_member($row['pt_id'], 'mb_nick, mb_email, mb_homepage');
+								
+								if ($pmb['mb_nick']) {
+									$p_name = get_text($pmb['mb_nick']);
+									echo '<b>'.apms_sideview($row['pt_id'], $p_name, $pmb['mb_email'], $pmb['mb_homepage']).'</b>';
+								} else {
+									echo '<b>'.$p_name.'</b>';
+								}
+
+								echo '<br>('.$row['pt_id'].')';
+
+								$p_id = $row['pt_id'];
+								$pt_name[$p_id] = $p_name; 
+							} else {
+								echo '-';
+							}
+						?>
+					</nobr>
+				</td>
+				<?php } ?>
+				<td class="td_num" rowspan="<?php echo $rowspan; ?>">
+					<nobr><?php echo apms_pt_it($row['pt_it'],1);?></nobr>
+				</td>
+				<td class="td_num" rowspan="<?php echo $rowspan; ?>">
+                    <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>"><?php echo $image; ?></a>
+				</td>
+				<td rowspan="<?php echo $rowspan; ?>">
+                    <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>"><?php echo stripslashes($row['it_name']); ?></a>
                     <?php if($od['od_tax_flag'] && $row['ct_notax']) echo '[비과세상품]'; ?>
                 </td>
                 <td rowspan="<?php echo $rowspan; ?>" class="td_chk">
@@ -212,21 +296,23 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <input type="checkbox" id="sit_sel_<?php echo $i; ?>" name="it_sel[]">
                 </td>
                 <?php } ?>
-                <td class="td_left">
+				<td class="td_chk">
                     <label for="ct_chk_<?php echo $chk_cnt; ?>" class="sound_only"><?php echo get_text($opt['ct_option']); ?></label>
                     <input type="checkbox" name="ct_chk[<?php echo $chk_cnt; ?>]" id="ct_chk_<?php echo $chk_cnt; ?>" value="<?php echo $chk_cnt; ?>" class="sct_sel_<?php echo $i; ?>">
                     <input type="hidden" name="ct_id[<?php echo $chk_cnt; ?>]" value="<?php echo $opt['ct_id']; ?>">
-                    <?php echo get_text($opt['ct_option']); ?>
                 </td>
-                <td class="td_mngsmall"><?php echo $opt['ct_status']; ?></td>
+				<td>
+                    <?php echo $opt['ct_option']; ?>
+                </td>
+				<td class="td_mngsmall"><?php echo $opt['ct_status']; ?></td>
                 <td class="td_num">
                     <label for="ct_qty_<?php echo $chk_cnt; ?>" class="sound_only"><?php echo get_text($opt['ct_option']); ?> 수량</label>
                     <input type="text" name="ct_qty[<?php echo $chk_cnt; ?>]" id="ct_qty_<?php echo $chk_cnt; ?>" value="<?php echo $opt['ct_qty']; ?>" required class="frm_input required" size="5">
                 </td>
-                <td class="td_num_right "><?php echo number_format($opt_price); ?></td>
-                <td class="td_num_right"><?php echo number_format($ct_price['stotal']); ?></td>
-                <td class="td_num_right"><?php echo number_format($opt['cp_price']); ?></td>
-                <td class=" td_num_right"><?php echo number_format($ct_point['stotal']); ?></td>
+                <td class="td_num"><?php echo number_format($opt_price); ?></td>
+                <td class="td_num"><?php echo number_format($ct_price['stotal']); ?></td>
+                <td class="td_num"><?php echo number_format($opt['cp_price']); ?></td>
+                <td class="td_num"><?php echo number_format($ct_point['stotal']); ?></td>
                 <td class="td_sendcost_by"><?php echo $ct_send_cost; ?></td>
                 <td class="td_mngsmall"><?php echo get_yn($opt['ct_point_use']); ?></td>
                 <td class="td_mngsmall"><?php echo get_yn($opt['ct_stock_use']); ?></td>
@@ -240,20 +326,21 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
         ?>
         </tbody>
         </table>
+
     </div>
 
     <div class="btn_list02 btn_list">
         <p>
             <input type="hidden" name="chk_cnt" value="<?php echo $chk_cnt; ?>">
             <strong>주문 및 장바구니 상태 변경</strong>
-            <input type="submit" name="ct_status" value="주문" onclick="document.pressed=this.value" class="btn_02 color_01">
-            <input type="submit" name="ct_status" value="입금" onclick="document.pressed=this.value" class="btn_02 color_02">
-            <input type="submit" name="ct_status" value="준비" onclick="document.pressed=this.value" class="btn_02 color_03">
-            <input type="submit" name="ct_status" value="배송" onclick="document.pressed=this.value" class="btn_02 color_04">
-            <input type="submit" name="ct_status" value="완료" onclick="document.pressed=this.value" class="btn_02 color_05">
-            <input type="submit" name="ct_status" value="취소" onclick="document.pressed=this.value" class="btn_02 color_06">
-            <input type="submit" name="ct_status" value="반품" onclick="document.pressed=this.value" class="btn_02 color_06">
-            <input type="submit" name="ct_status" value="품절" onclick="document.pressed=this.value" class="btn_02 color_06">
+            <input type="submit" name="ct_status" value="주문" onclick="document.pressed=this.value">
+            <input type="submit" name="ct_status" value="입금" onclick="document.pressed=this.value">
+            <input type="submit" name="ct_status" value="준비" onclick="document.pressed=this.value">
+            <input type="submit" name="ct_status" value="배송" onclick="document.pressed=this.value">
+            <input type="submit" name="ct_status" value="완료" onclick="document.pressed=this.value">
+            <input type="submit" name="ct_status" value="취소" onclick="document.pressed=this.value">
+            <input type="submit" name="ct_status" value="반품" onclick="document.pressed=this.value">
+            <input type="submit" name="ct_status" value="품절" onclick="document.pressed=this.value">
         </p>
     </div>
 
@@ -300,7 +387,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     //$amount['미수'] = $amount['order'] - $amount['receipt'] - $amount['coupon'];
 
     // 결제방법
-    $s_receipt_way = $od['od_settle_case'];
+    $s_receipt_way = ($od['pt_case']) ? $od['pt_case'] : $od['od_settle_case'];
 
     if($od['od_settle_case'] == '간편결제') {
         switch($od['od_pg']) {
@@ -347,7 +434,12 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             <td class="td_numbig td_numsum"><?php echo display_price($amount['order']); ?></td>
             <td class="td_numbig"><?php echo display_price($od['od_send_cost'] + $od['od_send_cost2']); ?></td>
             <td class="td_numbig"><?php echo display_point($od['od_receipt_point']); ?></td>
-            <td class="td_numbig td_numincome"><?php echo number_format($amount['receipt']); ?>원</td>
+            <td class="td_numbig td_numincome">
+				<?php echo number_format($amount['receipt']); ?>원
+				<?php if($od['pt_price']) { //페이팔 등 결제금액 ?>
+					<br />(<?php echo $od['pt_price'];?>)
+				<?php } ?>
+			</td>
             <td class="td_numbig td_numcoupon"><?php echo display_price($amount['coupon']); ?></td>
             <td class="td_numbig td_numcancel"><?php echo number_format($amount['cancel']); ?>원</td>
         </tr>
@@ -386,32 +478,60 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <col>
                 </colgroup>
                 <tbody>
-                <?php if ($od['od_settle_case'] == '무통장' || $od['od_settle_case'] == '가상계좌' || $od['od_settle_case'] == '계좌이체') { ?>
-                <?php if ($od['od_settle_case'] == '무통장' || $od['od_settle_case'] == '가상계좌') { ?>
+				<?php if($od['pt_case']) { ?>
+					<tr>
+						<th scope="row">결제방법</th>
+						<td><?php echo $od['pt_case']; ?></td>
+					</tr>
+					<tr>
+						<th scope="row">결제금액</th>
+						<td><?php echo $od['pt_price']; ?></td>
+					</tr>
+					<tr>
+						<th scope="row">결제정보</th>
+						<td><?php echo get_text($od['pt_memo']); ?></td>
+					</tr>
+					<tr>
+						<th scope="row">결제일시</th>
+						<td>
+							<?php echo $od['od_receipt_time']; ?> (<?php echo get_yoil($od['od_receipt_time']); ?>)
+						</td>
+					</tr>
+				<?php } else { ?>
+					<?php if ($od['od_settle_case'] == '무통장' || $od['od_settle_case'] == '가상계좌' || $od['od_settle_case'] == '계좌이체') { ?>
+					<?php if ($od['od_settle_case'] == '무통장' || $od['od_settle_case'] == '가상계좌') { ?>
+					<tr>
+						<th scope="row">계좌번호</th>
+						<td><?php echo get_text($od['od_bank_account']); ?></td>
+					</tr>
+					<?php } ?>
+					<tr>
+						<th scope="row"><?php echo $od['od_settle_case']; ?> 입금액</th>
+						<td><?php echo display_price($od['od_receipt_price']); ?></td>
+					</tr>
+					<tr>
+						<th scope="row">입금자</th>
+						<td><?php echo get_text($od['od_deposit_name']); ?></td>
+					</tr>
+					<tr>
+						<th scope="row">입금확인일시</th>
+						<td>
+							<?php if ($od['od_receipt_time'] == 0) { ?>입금 확인일시를 체크해 주세요.
+							<?php } else { ?><?php echo $od['od_receipt_time']; ?> (<?php echo get_yoil($od['od_receipt_time']); ?>)
+							<?php } ?>
+						</td>
+					</tr>
+					<?php } ?>
+				<?php } ?>
+				<?php if ($od['od_settle_case'] == '포인트') { ?>
                 <tr>
-                    <th scope="row">계좌번호</th>
-                    <td><?php echo get_text($od['od_bank_account']); ?></td>
-                </tr>
-                <?php } ?>
-                <tr>
-                    <th scope="row"><?php echo $od['od_settle_case']; ?> 입금액</th>
-                    <td><?php echo display_price($od['od_receipt_price']); ?></td>
-                </tr>
-                <tr>
-                    <th scope="row">입금자</th>
-                    <td><?php echo get_text($od['od_deposit_name']); ?></td>
-                </tr>
-                <tr>
-                    <th scope="row">입금확인일시</th>
+                    <th scope="row">결제 확인일시</th>
                     <td>
-                        <?php if ($od['od_receipt_time'] == 0) { ?>입금 확인일시를 체크해 주세요.
-                        <?php } else { ?><?php echo $od['od_receipt_time']; ?> (<?php echo get_yoil($od['od_receipt_time']); ?>)
-                        <?php } ?>
+                       <?php echo $od['od_receipt_time']; ?> (<?php echo get_yoil($od['od_receipt_time']); ?>)
                     </td>
                 </tr>
                 <?php } ?>
-
-                <?php if ($od['od_settle_case'] == '휴대폰') { ?>
+				<?php if ($od['od_settle_case'] == '휴대폰') { ?>
                 <tr>
                     <th scope="row">휴대폰번호</th>
                     <td><?php echo get_text($od['od_bank_account']); ?></td>
@@ -487,12 +607,12 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                 </tr>
                 <?php } ?>
 
-                <?php if ($od['od_settle_case'] != '무통장') { ?>
+                <?php if ($od['od_settle_case'] != '무통장' && $od['od_settle_case'] != '포인트') { ?>
                 <tr>
                     <th scope="row">결제대행사 링크</th>
                     <td>
                         <?php
-                        if ($od['od_settle_case'] != '무통장') {
+                        if ($od['od_settle_case'] != '무통장' && $od['od_settle_case'] != '포인트') {
                             switch($od['od_pg']) {
                                 case 'lg':
                                     $pg_url  = 'http://pgweb.uplus.co.kr';
@@ -510,7 +630,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                                     $pg_url  = 'https://mms.cnspay.co.kr';
                                     $pg_test = 'KAKAOPAY';
                                     break;
-                                default:
+								default:
                                     $pg_url  = 'http://admin8.kcp.co.kr';
                                     $pg_test = 'KCP';
                                     if ($default['de_card_test']) {
@@ -589,7 +709,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     </td>
                 </tr>
                 <?php
-                if ($od['od_misu'] == 0 && $od['od_receipt_price'] && ($od['od_settle_case'] == '무통장' || $od['od_settle_case'] == '가상계좌' || $od['od_settle_case'] == '계좌이체')) {
+				if ($od['od_misu'] == 0 && $od['od_receipt_price'] && ($od['od_settle_case'] == '무통장' || $od['od_settle_case'] == '가상계좌' || $od['od_settle_case'] == '계좌이체')) {
                 ?>
                 <tr>
                     <th scope="row">현금영수증</th>
@@ -614,7 +734,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                         } else if($od['od_pg'] == 'inicis') {
                             $cash = unserialize($od['od_cash_info']);
                             $cash_receipt_script = 'window.open(\'https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/Cash_mCmReceipt.jsp?noTid='.$cash['TID'].'&clpaymethod=22\',\'showreceipt\',\'width=380,height=540,scrollbars=no,resizable=no\');';
-                        } else {
+						} else {
                             require G5_SHOP_PATH.'/settle_kcp.inc.php';
 
                             $cash = unserialize($od['od_cash_info']);
@@ -630,6 +750,61 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                 <?php
                 }
                 ?>
+				<?php
+				// 영수증
+				$disp_receipt_href = '';
+				$disp_receipt = ($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == '휴대폰' || $od['od_settle_case'] == 'KAKAOPAY') ? true : false;
+				if($disp_receipt) {
+					if($od['od_settle_case'] == '휴대폰')
+					{
+						if($od['od_pg'] == 'lg') {
+							require_once G5_SHOP_PATH.'/settle_lg.inc.php';
+							$LGD_TID      = $od['od_tno'];
+							$LGD_MERTKEY  = $config['cf_lg_mert_key'];
+							$LGD_HASHDATA = md5($LGD_MID.$LGD_TID.$LGD_MERTKEY);
+
+							$hp_receipt_script = 'showReceiptByTID(\''.$LGD_MID.'\', \''.$LGD_TID.'\', \''.$LGD_HASHDATA.'\');';
+						} else if($od['od_pg'] == 'inicis') {
+							$hp_receipt_script = 'window.open(\'https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid='.$od['od_tno'].'&noMethod=1\',\'receipt\',\'width=430,height=700\');';
+						} else {
+							$hp_receipt_script = 'window.open(\''.G5_BILL_RECEIPT_URL.'mcash_bill&tno='.$od['od_tno'].'&order_no='.$od['od_id'].'&trade_mony='.$od['od_receipt_price'].'\', \'winreceipt\', \'width=500,height=690,scrollbars=yes,resizable=yes\');';
+						}
+						
+						$disp_receipt_href = 'href="javascript:;" onclick="'.$hp_receipt_script.'"';
+					}
+
+					if($od['od_settle_case'] == '신용카드')
+					{
+						if($od['od_pg'] == 'lg') {
+							require_once G5_SHOP_PATH.'/settle_lg.inc.php';
+							$LGD_TID      = $od['od_tno'];
+							$LGD_MERTKEY  = $config['cf_lg_mert_key'];
+							$LGD_HASHDATA = md5($LGD_MID.$LGD_TID.$LGD_MERTKEY);
+
+							$card_receipt_script = 'showReceiptByTID(\''.$LGD_MID.'\', \''.$LGD_TID.'\', \''.$LGD_HASHDATA.'\');';
+						} else if($od['od_pg'] == 'inicis') {
+							$card_receipt_script = 'window.open(\'https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid='.$od['od_tno'].'&noMethod=1\',\'receipt\',\'width=430,height=700\');';
+						} else {
+							$card_receipt_script = 'window.open(\''.G5_BILL_RECEIPT_URL.'card_bill&tno='.$od['od_tno'].'&order_no='.$od['od_id'].'&trade_mony='.$od['od_receipt_price'].'\', \'winreceipt\', \'width=470,height=815,scrollbars=yes,resizable=yes\');';
+						}
+						
+						$disp_receipt_href = 'href="javascript:;" onclick="'.$card_receipt_script.'"';
+					}
+
+					if($od['od_settle_case'] == 'KAKAOPAY')
+					{
+						$card_receipt_script = 'window.open(\'https://mms.cnspay.co.kr/trans/retrieveIssueLoader.do?TID='.$od['od_tno'].'&type=0\', \'popupIssue\', \'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=420,height=540\');';
+
+						$disp_receipt_href = 'href="javascript:;" onclick="'.$card_receipt_script.'"';
+					}
+				}
+				?>
+				<?php if($disp_receipt_href) { ?>
+					<tr>
+						<th scope="row">영수증</th>
+						<td><a <?php echo $disp_receipt_href;?>>영수증 출력</a></td>
+					</tr>
+				<?php } ?>
                 </tbody>
                 </table>
             </div>
@@ -784,7 +959,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                 <tr>
                     <th scope="row"><label for="od_refund_price">결제취소/환불 금액</label></th>
                     <td>
-                        <input type="text" name="od_refund_price" value="<?php echo $od['od_refund_price']; ?>" id="od_refund_price" class="frm_input" size="10"> 원
+                        <input type="text" name="od_refund_price" value="<?php echo $od['od_refund_price']; ?>" class="frm_input" size="10"> 원
                     </td>
                 </tr>
                 <tr>
@@ -816,15 +991,32 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                 </tr>
 
                 <?php if ($config['cf_email_use']) { ?>
-                <tr>
-                    <th scope="row"><label for="od_send_mail">메일발송</label></th>
-                    <td>
-                        <?php echo help("주문자님께 입금, 배송내역을 메일로 발송합니다.\n메일발송시 상점메모에 기록됩니다."); ?>
-                        <input type="checkbox" name="od_send_mail" value="1" id="od_send_mail"> 메일발송
-                    </td>
-                </tr>
-                <?php } ?>
-
+					<tr>
+						<th scope="row"><label for="od_send_mail">메일발송</label></th>
+						<td>
+							<?php echo help("주문자님께 입금, 배송내역을 메일로 발송합니다.\n메일발송시 상점메모에 기록됩니다."); ?>
+							<input type="checkbox" name="od_send_mail" value="1" id="od_send_mail"> 메일발송
+						</td>
+					</tr>
+					<?php // 파트너 메일알림 
+					if($is_use_partner && count($pt_email)) { 
+					    $pt_email = array_unique($pt_email);
+					    $pt_email = array_values($pt_email);
+					?>
+						<tr>
+							<th scope="row"><label for="pt_send_mail">주문알림</label></th>
+							<td>
+								<?php echo help("파트너에게 결제, 주문내역을 메일로 발송합니다."); ?>
+								<?php for($i=0; $i < count($pt_email); $i++) { 
+									$pt_id = $pt_email[$i];
+								?>
+									<p><label><input type="checkbox" name="pt_email[]" value="<?php echo $pt_email[$i];?>" id="pt_send_mail<?php $i;?>"> <b><?php echo $pt_name[$pt_id];?></b>(<?php echo $pt_id;?>) 님께 메일발송</label></p>
+								<?php } ?>
+						        <textarea name="pt_email_memo" id="pt_email_memo" rows="4" placeholder="파트너 전달사항" style="height:80px;"></textarea>
+							</td>
+						</tr>
+					<?php } ?>
+				<?php } ?>
                 </tbody>
                 </table>
             </div>
@@ -833,14 +1025,14 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="결제/배송내역 수정" class="btn_submit btn">
+        <input type="submit" value="결제/배송내역 수정" class="btn_submit">
         <?php if($od['od_status'] == '주문' && $od['od_misu'] > 0) { ?>
-        <a href="./personalpayform.php?popup=yes&amp;od_id=<?php echo $od_id; ?>" id="personalpay_add" class="btn btn_02">개인결제추가</a>
+        <a href="./personalpayform.php?popup=yes&amp;od_id=<?php echo $od_id; ?>" id="personalpay_add">개인결제추가</a>
         <?php } ?>
         <?php if($od['od_misu'] < 0 && ($od['od_receipt_price'] - $od['od_refund_price']) > 0 && ($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == '계좌이체' || $od['od_settle_case'] == 'KAKAOPAY')) { ?>
-        <a href="./orderpartcancel.php?od_id=<?php echo $od_id; ?>" id="orderpartcancel" class="btn btn_02"><?php echo $od['od_settle_case']; ?> 부분취소</a>
+        <a href="./orderpartcancel.php?od_id=<?php echo $od_id; ?>" id="orderpartcancel"><?php echo $od['od_settle_case']; ?> 부분취소</a>
         <?php } ?>
-        <a href="./orderlist.php?<?php echo $qstr; ?>" class="btn btn_02">목록</a>
+        <a href="./orderlist.php?<?php echo $qstr; ?>">목록</a>
     </div>
     </form>
 </section>
@@ -870,7 +1062,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="메모 수정" class="btn_submit btn">
+        <input type="submit" value="메모 수정" class="btn_submit">
     </div>
 
     </form>
@@ -929,7 +1121,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                         <input type="text" name="od_addr3" value="<?php echo get_text($od['od_addr3']); ?>" id="od_addr3" class="frm_input" size="35">
                         <label for="od_addr3">참고항목</label>
                         <input type="hidden" name="od_addr_jibeon" value="<?php echo get_text($od['od_addr_jibeon']); ?>"><br>
-                    </td>
+					</td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="od_email"><span class="sound_only">주문하신 분 </span>E-mail</label></th>
@@ -1004,8 +1196,8 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="주문자/배송지 정보 수정" class="btn_submit btn ">
-        <a href="./orderlist.php?<?php echo $qstr; ?>" class="btn">목록</a>
+        <input type="submit" value="주문자/배송지 정보 수정" class="btn_submit">
+        <a href="./orderlist.php?<?php echo $qstr; ?>">목록</a>
     </div>
 
     </form>

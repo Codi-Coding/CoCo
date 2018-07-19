@@ -17,14 +17,14 @@ include_once('./admin.head.php');
 
 <?php
 $directory = array();
-$dl = array('file', 'editor');
-
-if( defined('G5_YOUNGCART_VER') ){
-    $dl[] = 'item';
-}
+$dl = array('file', 'editor', 'item', 'apms/video', 'apms/background', 'apms/title', 'apms/image', 'amps/banner');
 
 foreach($dl as $val) {
-    if($handle = opendir(G5_DATA_PATH.'/'.$val)) {
+	$dir = G5_DATA_PATH.'/'.$val;
+
+	if(!is_dir($dir)) continue;
+
+	if($handle = opendir($dir)) {
         while(false !== ($entry = readdir($handle))) {
             if($entry == '.' || $entry == '..')
                 continue;
@@ -35,6 +35,15 @@ foreach($dl as $val) {
                 $directory[] = $path;
         }
     }
+}
+
+$ds = array('banner', 'content', 'event', 'faq');
+foreach($ds as $val) {
+	$dir = G5_DATA_PATH.'/'.$val;
+
+	if(!is_dir($dir)) continue;
+
+	$directory[] = $dir;
 }
 
 flush();

@@ -69,7 +69,7 @@ function number_format(data)
     var cutlen = 3;
     var comma = ',';
     var i;
-    
+
     data = data + '';
 
     var sign = data.match(/^[\+\-]/);
@@ -133,7 +133,7 @@ function no_comma(data)
 // 삭제 검사 확인
 function del(href)
 {
-    if(confirm("한번 삭제한 자료는 복구할 방법이 없습니다.\n\n정말 삭제하시겠습니까?")) {
+    if(confirm(aslang[19])) { //한번 삭제한 자료는 복구할 방법이 없습니다.\n\n정말 삭제하시겠습니까?
         var iev = -1;
         if (navigator.appName == 'Microsoft Internet Explorer') {
             var ua = navigator.userAgent;
@@ -344,23 +344,10 @@ var win_memo = function(href) {
 }
 
 /**
- * 쪽지 창
- **/
-var check_goto_new = function(href, event) {
-    if( !(typeof g5_is_mobile != "undefined" && g5_is_mobile) ){
-        if (window.opener && window.opener.document && window.opener.document.getElementById) {
-            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-            window.open(href);
-            //window.opener.document.location.href = href;
-        }
-    }
-}
-
-/**
  * 메일 창
  **/
 var win_email = function(href) {
-    var new_win = window.open(href, 'win_email', 'left=100,top=100,width=600,height=580,scrollbars=1');
+    var new_win = window.open(href, 'win_email', 'left=100,top=100,width=600,height=580,scrollbars=0');
     new_win.focus();
 }
 
@@ -393,7 +380,7 @@ var win_homepage = function(href) {
  **/
 var win_zip = function(frm_name, frm_zip, frm_addr1, frm_addr2, frm_addr3, frm_jibeon) {
     if(typeof daum === 'undefined'){
-        alert("다음 우편번호 postcode.v2.js 파일이 로드되지 않았습니다.");
+        alert(aslang[20]); //다음 우편번호 postcode.v2.js 파일이 로드되지 않았습니다.
         return false;
     }
 
@@ -553,7 +540,7 @@ $(function() {
 /**
  * 텍스트 리사이즈
 **/
-function font_resize(id, rmv_class, add_class, othis)
+function font_resize(id, rmv_class, add_class)
 {
     var $el = $("#"+id);
 
@@ -561,10 +548,6 @@ function font_resize(id, rmv_class, add_class, othis)
 
     set_cookie("ck_font_resize_rmv_class", rmv_class, 1, g5_cookie_domain);
     set_cookie("ck_font_resize_add_class", add_class, 1, g5_cookie_domain);
-
-    if(typeof othis !== "undefined"){
-        $(othis).addClass('select').siblings().removeClass('select');
-    }
 }
 
 /**
@@ -575,16 +558,16 @@ function set_comment_token(f)
     if(typeof f.token === "undefined")
         $(f).prepend('<input type="hidden" name="token" value="">');
 
-    $.ajax({
-        url: g5_bbs_url+"/ajax.comment_token.php",
-        type: "GET",
-        dataType: "json",
-        async: false,
-        cache: false,
-        success: function(data, textStatus) {
-            f.token.value = data.token;
-        }
-    });
+	$.ajax({
+		url: g5_bbs_url+"/ajax.comment_token.php",
+		type: "GET",
+		dataType: "json",
+		async: false,
+		cache: false,
+		success: function(data, textStatus) {
+			f.token.value = data.token;
+		}
+	});
 }
 
 $(function(){
@@ -739,19 +722,35 @@ function get_write_token(bo_table)
     return token;
 }
 
+function set_write_token(f)
+{
+        var bo_table = f.bo_table.value;
+        var token = get_write_token(bo_table);
+
+        if(token) {
+
+			var $f = $(f);
+
+			if(typeof f.token === "undefined")
+				$f.prepend('<input type="hidden" name="token" value="">');
+
+			$f.find("input[name=token]").val(token);
+		}
+}
+
 $(function() {
     $(document).on("click", "form[name=fwrite] input:submit, form[name=fwrite] button:submit, form[name=fwrite] input:image", function() {
         var f = this.form;
 
-        if (typeof(f.bo_table) == "undefined") {
+		if (typeof(f.bo_table) == "undefined") {
             return;
         }
 
-        var bo_table = f.bo_table.value;
+		var bo_table = f.bo_table.value;
         var token = get_write_token(bo_table);
 
         if(!token) {
-            alert("토큰 정보가 올바르지 않습니다.");
+            alert(aslang[41]); //토큰 정보가 올바르지 않습니다.
             return false;
         }
 

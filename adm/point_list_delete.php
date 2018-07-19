@@ -53,6 +53,10 @@ for ($i=0; $i<$count; $i++)
     $sum_point = get_point_sum($_POST['mb_id'][$k]);
     $sql= " update {$g5['member_table']} set mb_point = '$sum_point' where mb_id = '{$_POST['mb_id'][$k]}' ";
     sql_query($sql);
+
+	// XP UPDATE
+	$point = $row['po_point'] * (-1);
+	update_xp($row['mb_id'], $point, $row['po_content'], $row['po_rel_table'], $row['po_rel_action']);
 }
 
 goto_url('./point_list.php?'.$qstr);

@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+.tagbox-box { border:1px solid #ddd; background:#fafafa; padding:20px 15px 3px; margin-bottom:20px; }
+.tagbox-none { padding:80px 20px; }
+.btn-tag { background:none; border:none; }
+
+.tagbox-media { padding-bottom:10px; }
+.tagbox-media .photo i { border-radius:50%; background: rgb(245, 245, 245); padding: 15px; width: 64px; height: 64px; text-align: center; color: rgb(143, 143, 143); font-size: 30px; display: inline-block; }
+.tagbox-media .photo img { border-radius:50%; width: 64px !important; height: 64px !important; display:inline-block; }
+.tagbox-media .media { border-bottom:1px solid #eee; margin:0px; padding:12px; }
+.tagbox-media :first-child.media { margin-top:0px; padding-top:0px; }
+.tagbox-media :last-child.media { border-bottom:0px; }
+.tagbox-media .media-heading { padding:0; margin:0px; line-height: 22px; }
+.tagbox-media .media .media-body { padding-left:0px; }
+.tagbox-media .media .media-info { line-height:20px; padding:4px 0px; }
+.tagbox-media .media .media-info .sp { display:inline-block; width:20px; text-align:center; font-size:11px; color:#888; }
+.tagbox-media .media .media-content {  }
+.tagbox-media .media .media-content p { margin:0px; padding:0px; }

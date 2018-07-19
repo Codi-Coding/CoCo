@@ -1,82 +1,73 @@
 <?php
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
-if(defined('G5_THEME_PATH')) {
+//Level Up
+if($member['mb_id']) { 
+	//Auto Grade
+	if($xp['xp_from'] > 1 && $xp['xp_to'] >= $xp['xp_from']) {
+		if($member['mb_level'] >= $xp['xp_from'] && $member['mb_level'] <= $xp['xp_to']) {
+			$level = $member['mb_level'];
+			$n = 1;
+			for($i = $xp['xp_from']; $i <= $xp['xp_to']; $i++) {
+				$g = 'xp_auto'.$n;
+				if($member['as_level'] < $xp[$g]) {
+					$level = $i;
+					break;
+				}
+				$n++;
+			}
+
+			if($level == $member['mb_level']) {
+				;
+			} else {
+				$member['as_msg'] = ($member['mb_level'] > $level) ? 4 : 3; //3 : 등업, 4 : 다운
+				$member['mb_level'] = $level;
+			}
+		}
+	}
+
+	switch($member['as_msg']) { //Message
+		case '1'		: $levelup_msg = "축하합니다! ".$member['as_level']."레벨로 레벨업하셨습니다."; break;
+		case '2'		: $levelup_msg = $member['as_level']."레벨로 레벨다운되셨습니다."; break;
+		case '3'		: $mg = 'xp_grade'.$member['mb_level']; $levelup_msg = $xp[$mg]."(".$member['mb_level'].")등급으로 등업하셨습니다."; break;
+		case '4'		: $mg = 'xp_grade'.$member['mb_level']; $levelup_msg = $xp[$mg]."(".$member['mb_level'].")등급으로 다운되셨습니다."; break;
+	}
+
+	if($member['as_msg']) {
+		// 회원정보 업데이트
+		sql_query(" update {$g5['member_table']} set mb_level = '{$member['mb_level']}', as_msg = '0' where mb_id = '{$member['mb_id']}' ", false);
+
+		// 회원자료 업데이트
+		change_xp($member['mb_id'], $member['as_level']);
+
+		echo "<script> alert('".$levelup_msg."');</script>";
+	}
+}
+
+if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     require_once(G5_THEME_SHOP_PATH.'/shop.tail.php');
     return;
 }
 
-$admin = get_admin("super");
-
-// 사용자 화면 우측과 하단을 담당하는 페이지입니다.
-// 우측, 하단 화면을 꾸미려면 이 파일을 수정합니다.
-?>
-
-    </div>
-    <!-- } 콘텐츠 끝 -->
-
-<!-- 하단 시작 { -->
-</div>
-
-<div id="ft">
-    <div class="ft_wr">
-        <ul class="ft_ul">
-            <li><a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=company">회사소개</a></li>
-            <li><a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=provision">서비스이용약관</a></li>
-            <li><a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=privacy">개인정보처리방침</a></li>
-            <li><a href="<?php echo get_device_change_url(); ?>">모바일버전</a></li>
-        </ul>
-        
-        <a href="<?php echo G5_SHOP_URL; ?>/" id="ft_logo"><img src="<?php echo G5_DATA_URL; ?>/common/logo_img2" alt="처음으로"></a>
-
-        <div class="ft_info">
-            <span><b>회사명</b> <?php echo $default['de_admin_company_name']; ?></span>
-            <span><b>주소</b> <?php echo $default['de_admin_company_addr']; ?></span><br>
-            <span><b>사업자 등록번호</b> <?php echo $default['de_admin_company_saupja_no']; ?></span>
-            <span><b>대표</b> <?php echo $default['de_admin_company_owner']; ?></span>
-            <span><b>전화</b> <?php echo $default['de_admin_company_tel']; ?></span>
-            <span><b>팩스</b> <?php echo $default['de_admin_company_fax']; ?></span><br>
-            <!-- <span><b>운영자</b> <?php echo $admin['mb_name']; ?></span><br> -->
-            <span><b>통신판매업신고번호</b> <?php echo $default['de_admin_tongsin_no']; ?></span>
-            <span><b>개인정보 보호책임자</b> <?php echo $default['de_admin_info_name']; ?></span>
-
-            <?php if ($default['de_admin_buga_no']) echo '<span><b>부가통신사업신고번호</b> '.$default['de_admin_buga_no'].'</span>'; ?><br>
-            Copyright &copy; 2001-2013 <?php echo $default['de_admin_company_name']; ?>. All Rights Reserved.
-        </div>
-
-        <div class="ft_cs">
-            <h2>고객센터</h2>
-            <strong>02-123-1234</strong>
-            <p>월-금 am 9:00 - pm 05:00<br>점심시간 : am 12:00 - pm 01:00</p>
-        </div>
-        <button type="button" id="top_btn"><i class="fa fa-arrow-up" aria-hidden="true"></i><span class="sound_only">상단으로</span></button>
-        <script>
-        
-        $(function() {
-            $("#top_btn").on("click", function() {
-                $("html, body").animate({scrollTop:0}, '500');
-                return false;
-            });
-        });
-        </script>
-    </div>
-
-
-</div>
-
-<?php
-$sec = get_microtime() - $begin_time;
-$file = $_SERVER['SCRIPT_NAME'];
-
-if ($config['cf_analytics']) {
+if (isset($config['cf_analytics']) && $config['cf_analytics']) {
     echo $config['cf_analytics'];
 }
-?>
 
-<script src="<?php echo G5_JS_URL; ?>/sns.js"></script>
-<!-- } 하단 끝 -->
+if(IS_SHOP) echo '<script src="'.G5_JS_URL.'/sns.js"></script>'.PHP_EOL;
 
+// Page Iframe Modal
+if(APMS_PIM || $is_layout_sub) {
+	@include_once(THEMA_PATH.'/tail.sub.php');
+	include_once(G5_PATH.'/tail.sub.php');
+	return;
+}
 
-<?php
-include_once(G5_PATH.'/tail.sub.php');
+if(file_exists(THEMA_PATH.'/shop.tail.php')) {
+	include_once(THEMA_PATH.'/shop.tail.php');
+} else {
+	include_once(THEMA_PATH.'/tail.php');
+}
+
+include_once(G5_PATH."/tail.sub.php"); 
+
 ?>

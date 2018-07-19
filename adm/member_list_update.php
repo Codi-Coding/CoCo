@@ -14,6 +14,9 @@ check_admin_token();
 
 if ($_POST['act_button'] == "선택수정") {
 
+	//멤버쉽 해제 등급
+	$is_membership_withdraw = (defined('APMS_MEMBERSHIP_WITHDRAW') && APMS_MEMBERSHIP_WITHDRAW > 0) ? APMS_MEMBERSHIP_WITHDRAW : 2;
+
     for ($i=0; $i<count($_POST['chk']); $i++)
     {
         // 실제 번호를 넘김
@@ -33,6 +36,28 @@ if ($_POST['act_button'] == "선택수정") {
             else
                 $mb_adult = 0;
 
+			//이용기간 체크
+			$sql_as_date = '';
+			if(isset($_POST['as_date_del']) && $_POST['as_date_del'][$k]) { // 해제
+				$_POST['mb_level'][$k] = $is_membership_withdraw; //초기화
+				$sql_as_date = " , as_date = '0'"; // 지움
+			} else {
+				if(isset($_POST['as_date']) && isset($_POST['as_date_plus'])) { // 증감
+					if($_POST['as_date'][$k] && $_POST['as_date_plus'][$k]) {
+						$as_date = '';
+						if($_POST['as_date_plus'][$k] > 0) {
+							$as_date = $_POST['as_date'][$k] + (abs($_POST['as_date_plus'][$k]) * 86400);
+						} else if($_POST['as_date_plus'][$k] < 0) {
+							$as_date = $_POST['as_date'][$k] - (abs($_POST['as_date_plus'][$k]) * 86400);
+						}
+
+						if($as_date) {
+							$sql_as_date = " , as_date = '{$as_date}'";
+						}
+					}
+				}
+			}
+
             $sql = " update {$g5['member_table']}
                         set mb_level = '{$_POST['mb_level'][$k]}',
                             mb_intercept_date = '{$_POST['mb_intercept_date'][$k]}',
@@ -41,12 +66,13 @@ if ($_POST['act_button'] == "선택수정") {
                             mb_open = '{$_POST['mb_open'][$k]}',
                             mb_certify = '{$_POST['mb_certify'][$k]}',
                             mb_adult = '{$mb_adult}'
+							$sql_as_date
                         where mb_id = '{$_POST['mb_id'][$k]}' ";
             sql_query($sql);
         }
     }
 
-} else if ($_POST['act_button'] == "선택삭제") {
+} else if ($_POST['act_button'] == "선택삭제" || $_POST['act_button'] == "완전삭제") {
 
     for ($i=0; $i<count($_POST['chk']); $i++)
     {
@@ -66,6 +92,10 @@ if ($_POST['act_button'] == "선택수정") {
         } else {
             // 회원자료 삭제
             member_delete($mb['mb_id']);
+
+			if($_POST['act_button'] == "완전삭제") {
+			    sql_query(" delete from {$g5['member_table']} where mb_id = '{$mb['mb_id']}' ", false);
+			}
         }
     }
 }
