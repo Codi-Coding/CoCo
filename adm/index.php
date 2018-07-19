@@ -1,5 +1,5 @@
 <?php
-include_once('./_common.php');
+include_once('../_common.php');
 
 //아미나빌더 설치체크
 if(!isset($config['as_thema'])) { 
