@@ -3,15 +3,41 @@ $sub_menu = '400200';
 include_once('./_common.php');
 
 if ($file = $_POST['ca_include_head']) {
-    if (!preg_match("/\.(php|htm[l]?)$/i", $file)) {
+    $file_ext = pathinfo($file, PATHINFO_EXTENSION);
+
+    if (! $file_ext || ! in_array($file_ext, array('php', 'htm', 'html')) || !preg_match("/\.(php|htm[l]?)$/i", $file)) {
         alert("상단 파일 경로가 php, html 파일이 아닙니다.");
     }
 }
 
 if ($file = $_POST['ca_include_tail']) {
-    if (!preg_match("/\.(php|htm[l]?)$/i", $file)) {
+    $file_ext = pathinfo($file, PATHINFO_EXTENSION);
+
+    if (! $file_ext || ! in_array($file_ext, array('php', 'htm', 'html')) || !preg_match("/\.(php|htm[l]?)$/i", $file)) {
         alert("하단 파일 경로가 php, html 파일이 아닙니다.");
     }
+}
+
+if( isset($_POST['ca_id']) ){
+    $ca_id = preg_replace('/[^0-9a-z]/i', '', $ca_id);
+    $sql = " select * from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' ";
+    $ca = sql_fetch($sql);
+
+    if (($ca['ca_include_head'] !== $_POST['ca_include_head'] || $ca['ca_include_tail'] !== $_POST['ca_include_tail']) && function_exists('get_admin_captcha_by') && get_admin_captcha_by()){
+        include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
+
+        if (!chk_captcha()) {
+            alert('자동등록방지 숫자가 틀렸습니다.');
+        }
+    }
+}
+
+if(!is_include_path_check($_POST['ca_include_head'], 1)) {
+    alert('상단 파일 경로에 포함시킬수 없는 문자열이 있습니다.');
+}
+
+if(!is_include_path_check($_POST['ca_include_tail'], 1)) {
+    alert('하단 파일 경로에 포함시킬수 없는 문자열이 있습니다.');
 }
 
 if ($w == "u" || $w == "d")
@@ -36,7 +62,7 @@ if ($w == "" || $w == "u")
 }
 
 if( $ca_skin && ! is_include_path_check($ca_skin) ){
-    alert("오류 : 데이터폴더가 포함된 path 를 포함할수 없습니다.");
+    alert('오류 : 데이터폴더가 포함된 path 를 포함할수 없습니다.');
 }
 
 $sql_common = " ca_order                = '$ca_order',
@@ -44,7 +70,7 @@ $sql_common = " ca_order                = '$ca_order',
                 ca_mobile_skin_dir      = '$ca_mobile_skin_dir',
                 ca_skin                 = '$ca_skin',
                 ca_mobile_skin          = '$ca_mobile_skin',
-				ca_img_width            = '$ca_img_width',
+                ca_img_width            = '$ca_img_width',
                 ca_img_height           = '$ca_img_height',
 				ca_list_mod             = '$ca_list_mod',
 				ca_list_row             = '$ca_list_row',
@@ -52,7 +78,7 @@ $sql_common = " ca_order                = '$ca_order',
                 ca_mobile_img_height    = '$ca_mobile_img_height',
 				ca_mobile_list_mod      = '$ca_mobile_list_mod',
                 ca_mobile_list_row      = '$ca_mobile_list_row',
-				ca_sell_email           = '$ca_sell_email',
+                ca_sell_email           = '$ca_sell_email',
                 ca_use                  = '$ca_use',
                 ca_stock_qty            = '$ca_stock_qty',
                 ca_explan_html          = '$ca_explan_html',
@@ -85,13 +111,8 @@ $sql_common = " ca_order                = '$ca_order',
                 ca_7                    = '$ca_7',
                 ca_8                    = '$ca_8',
                 ca_9                    = '$ca_9',
-                ca_10                   = '$ca_10',
-				pt_use			        = '$pt_use',
-				pt_cate			        = '$pt_cate',
-				pt_limit		        = '$pt_limit',
-                pt_item			        = '$pt_item',
-				pt_point		        = '$pt_point',
-				pt_form			        = '$pt_form' "; //APMS - 2014.07.23
+                ca_10                   = '$ca_10' ";
+
 
 if ($w == "")
 {
@@ -111,34 +132,15 @@ else if ($w == "u")
 {
     $sql = " update {$g5['g5_shop_category_table']}
                 set ca_name = '$ca_name',
-                    ca_skin             = '$ca_skin',
-                    ca_mobile_skin      = '$ca_mobile_skin',
-                    ca_skin_dir         = '$ca_skin_dir',
-                    ca_mobile_skin_dir  = '$ca_mobile_skin_dir',
-					$sql_common
+                    $sql_common
               where ca_id = '$ca_id' ";
     sql_query($sql);
 
     // 하위분류를 똑같은 설정으로 반영
     if ($sub_category) {
-		//리스트 설정값
-		$ca = sql_fetch(" select as_list_set, as_mobile_list_set, as_item_set, as_mobile_item_set from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' ", false);
-		$as_list_set = addslashes($ca['as_list_set']);
-		$as_mobile_list_set = addslashes($ca['as_mobile_list_set']);
-		$as_item_set = addslashes($ca['as_item_set']);
-		$as_mobile_item_set = addslashes($ca['as_mobile_item_set']);
-
         $len = strlen($ca_id);
         $sql = " update {$g5['g5_shop_category_table']}
-					set ca_skin             = '$ca_skin',
-						ca_mobile_skin      = '$ca_mobile_skin',
-						ca_skin_dir         = '$ca_skin_dir',
-						ca_mobile_skin_dir  = '$ca_mobile_skin_dir',
-						as_list_set			= '$as_list_set',
-						as_mobile_list_set	= '$as_mobile_list_set',
-						as_item_set			= '$as_item_set',
-						as_mobile_item_set	= '$as_mobile_item_set',
-						$sql_common
+                    set $sql_common
                   where SUBSTRING(ca_id,1,$len) = '$ca_id' ";
         if ($is_admin != 'super')
             $sql .= " and ca_mb_id = '{$member['mb_id']}' ";
@@ -176,6 +178,9 @@ else if ($w == "d")
     $sql = " delete from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' ";
     sql_query($sql);
 }
+
+if(function_exists('get_admin_captcha_by'))
+    get_admin_captcha_by('remove');
 
 if ($w == "" || $w == "u")
 {

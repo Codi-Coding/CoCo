@@ -18,11 +18,10 @@ if( preg_match("/[^0-9]/", $fr_date) ) $fr_date = '';
 if( preg_match("/[^0-9]/", $to_date) ) $to_date = '';
 
 if ($sort1 == "") $sort1 = "it_id_cnt";
+if (!in_array($sort1, array('mb_id', 'it_id', 'wi_time', 'wi_ip'))) $sort1 = "it_id_cnt";
 if ($sort2 == "" || $sort2 != "asc") $sort2 = "desc";
 
 $sql  = " select a.it_id,
-				 b.pt_id,
-				 b.pt_it,
                  b.it_name,
                  COUNT(a.it_id) as it_id_cnt
             from {$g5['g5_shop_wish_table']} a, {$g5['g5_shop_item_table']} b ";
@@ -59,7 +58,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
-    <?php echo $total_count; ?>건
+    <span class="btn_ov01"><span class="ov_txt">전체 </span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
 </div>
 
 <form name="flist" class="local_sch01 local_sch">
@@ -70,15 +69,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sel_ca_id" id="sel_ca_id">
     <option value=''>전체분류</option>
     <?php
-    $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
+    $sql1 = " select ca_id, ca_name from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
     $result1 = sql_query($sql1);
     for ($i=0; $row1=sql_fetch_array($result1); $i++) {
         $len = strlen($row1['ca_id']) / 2 - 1;
         $nbsp = "";
         for ($i=0; $i<$len; $i++) $nbsp .= "&nbsp;&nbsp;&nbsp;";
-		if($row1['as_line']) {
-			echo "<option value=\"\">".$nbsp."------------</option>\n";
-		}
         echo "<option value='{$row1['ca_id']}'".get_selected($row1['ca_id'], $sel_ca_id).">$nbsp{$row1['ca_name']}\n";
     }
     ?>
@@ -99,7 +95,6 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <thead>
     <tr>
         <th scope="col">순위</th>
-        <th scope="col">상품코드</th>
         <th scope="col">상품평</th>
         <th scope="col">건수</th>
     </tr>
@@ -118,14 +113,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     ?>
     <tr class="<?php echo $bg; ?>">
         <td class="td_num"><?php echo $num; ?></td>
-        <td class="td_code" style="white-space:nowrap;">
-			<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
-			<b><?php echo $row['it_id']; ?></b>
-			<?php if($row['pt_id']) { ?>
-				<div style="font-size:11px; letter-spacing:-1px;"><?php echo $row['pt_id'];?></div>
-			<?php } ?>
-        </td>
-		<td>
+        <td class="td_left">
             <a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a>
         </td>
         <td class="td_num"><?php echo $row['it_id_cnt']; ?></td>
@@ -134,7 +122,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     }
 
     if ($i == 0) {
-        echo '<tr><td colspan="4" class="empty_table">자료가 없습니다.</td></tr>';
+        echo '<tr><td colspan="3" class="empty_table">자료가 없습니다.</td></tr>';
     }
     ?>
     </tbody>

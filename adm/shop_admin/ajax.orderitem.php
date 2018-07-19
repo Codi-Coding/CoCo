@@ -12,14 +12,9 @@ $od = sql_fetch($sql);
 if(!$od['od_id'])
     die('<div>주문정보가 존재하지 않습니다.</div>');
 
-// 파트너
-$is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
-
 // 상품목록
 $sql = " select it_id,
                 it_name,
-				pt_id,
-				pt_it,
                 cp_price,
                 ct_notax,
                 ct_send_cost,
@@ -39,12 +34,7 @@ $result = sql_query($sql);
         <caption>주문 상품 목록</caption>
         <thead>
         <tr>
-			<?php if($is_use_partner) { ?>
-	            <th scope="col">파트너</th>
-			<?php } ?>
-            <th scope="col">종류</th>
-			<th scope="col">이미지</th>
-			<th scope="col">상품명</th>
+            <th scope="col">상품명</th>
             <th scope="col">옵션항목</th>
             <th scope="col">상태</th>
             <th scope="col">수량</th>
@@ -86,6 +76,7 @@ $result = sql_query($sql);
 
             // 조건부무료
             if($row['it_sc_type'] == 2) {
+                
                 // 합계금액 계산
                 $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                            SUM(ct_qty) as qty
@@ -114,17 +105,8 @@ $result = sql_query($sql);
             ?>
             <tr>
                 <?php if($k == 0) { ?>
-				<?php if($is_use_partner) { ?>
-	                <td class="td_num" rowspan="<?php echo $rowspan; ?>"><nobr><?php echo ($row['pt_id']) ? $row['pt_id'] : '-'; ?></nobr></td>
-				<?php } ?>
-				<td class="td_num" rowspan="<?php echo $rowspan; ?>">
-					<nobr><?php echo apms_pt_it($row['pt_it'],1);?></nobr>
-				</td>
-				<td class="td_num" rowspan="<?php echo $rowspan; ?>">
-                    <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>"><?php echo $image; ?></a>
-				</td>
-				<td class="td_itname" rowspan="<?php echo $rowspan; ?>">
-                    <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>"><?php echo stripslashes($row['it_name']); ?></a>
+                <td class="td_itname" rowspan="<?php echo $rowspan; ?>">
+                    <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>"><?php echo $image; ?> <?php echo stripslashes($row['it_name']); ?></a>
                     <?php if($od['od_tax_flag'] && $row['ct_notax']) echo '[비과세상품]'; ?>
                 </td>
                 <?php } ?>

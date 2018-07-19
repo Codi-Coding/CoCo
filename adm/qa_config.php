@@ -45,10 +45,7 @@ if(!sql_query(" DESCRIBE `{$g5['qa_config_table']}` ", false)) {
                   `qa_2` varchar(255) NOT NULL DEFAULT '',
                   `qa_3` varchar(255) NOT NULL DEFAULT '',
                   `qa_4` varchar(255) NOT NULL DEFAULT '',
-                  `qa_5` varchar(255) NOT NULL DEFAULT '',
-                  `as_admin` varchar(255) NOT NULL DEFAULT '',
-                  `as_editor` varchar(255) NOT NULL DEFAULT '',
-                  `as_mobile_editor` varchar(255) NOT NULL DEFAULT ''
+                  `qa_5` varchar(255) NOT NULL DEFAULT ''
                 )", true);
     sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['qa_content_table']}` (
                   `qa_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -156,8 +153,7 @@ if(!isset($qaconfig['qa_include_head'])) {
         <tr>
             <th scope="row"><label for="qa_mobile_skin">모바일 스킨 디렉토리<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php //echo get_mobile_skin_select('qa', 'qa_mobile_skin', 'qa_mobile_skin', $qaconfig['qa_mobile_skin'], 'required'); ?>
-                <?php echo get_skin_select('qa', 'qa_mobile_skin', 'qa_mobile_skin', $qaconfig['qa_mobile_skin'], 'required'); ?>
+                <?php echo get_mobile_skin_select('qa', 'qa_mobile_skin', 'qa_mobile_skin', $qaconfig['qa_mobile_skin'], 'required'); ?>
             </td>
         </tr>
         <tr>
@@ -206,38 +202,12 @@ if(!isset($qaconfig['qa_include_head'])) {
             </td>
         </tr>
         <tr>
-            <th scope="row"><label for="as_admin">관리자 추가등록</label></th>
-            <td>
-                <?php echo help('1:1 문의 관리자로 추가 등록할 회원아이디를 콤마(,)로 구분해서 입력해 주세요.<br>등록된 회원은 1:1 문의 등록시 내글반응 알림이 가며, 문의에 대한 답변이 가능합니다.'); ?>
-                <input type="text" name="as_admin" value="<?php echo $qaconfig['as_admin'] ?>" id="as_admin" class="frm_input"  size="70">
-            </td>
-        </tr>
-		<tr>
             <th scope="row"><label for="qa_use_editor">DHTML 에디터 사용</label></th>
             <td>
                 <?php echo help('글작성시 내용을 DHTML 에디터 기능으로 사용할 것인지 설정합니다. 스킨에 따라 적용되지 않을 수 있습니다.'); ?>
                 <select name="qa_use_editor" id="qa_use_editor">
                     <?php echo option_selected(0, $qaconfig['qa_use_editor'], '사용안함'); ?>
                     <?php echo option_selected(1, $qaconfig['qa_use_editor'], '사용함'); ?>
-                </select>
-				&nbsp;
-                <select name="as_editor" id="as_editor">
-                <option value="">PC 기본 에디터</option>
-				<?php
-                $arr = get_skin_dir('', G5_EDITOR_PATH);
-				for ($i=0; $i<count($arr); $i++) {
-                    echo "<option value=\"".$arr[$i]."\"".get_selected($qaconfig['as_editor'], $arr[$i]).">".$arr[$i]."</option>\n";
-                }
-                ?>
-                </select>
-				&nbsp;
-                <select name="as_mobile_editor" id="as_mobile_editor">
-                <option value="">모바일 사용안함</option>
-				<?php
-				for ($i=0; $i<count($arr); $i++) {
-                    echo "<option value=\"".$arr[$i]."\"".get_selected($qaconfig['as_mobile_editor'], $arr[$i]).">".$arr[$i]."</option>\n";
-                }
-                ?>
                 </select>
             </td>
         </tr>
@@ -293,6 +263,22 @@ if(!isset($qaconfig['qa_include_head'])) {
                 <input type="text" name="qa_include_tail" value="<?php echo $qaconfig['qa_include_tail'] ?>" id="qa_include_tail" class="frm_input" size="50">
             </td>
         </tr>
+        <tr id="admin_captcha_box" style="display:none;">
+            <th scope="row">자동등록방지</th>
+            <td>
+                <?php
+                echo help("파일 경로를 입력 또는 수정시 캡챠를 반드시 입력해야 합니다.");
+
+                include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
+                $captcha_html = captcha_html();
+                $captcha_js   = chk_captcha_js();
+                echo $captcha_html;
+                ?>
+                <script>
+                jQuery("#captcha_key").removeAttr("required").removeClass("required");
+                </script>
+            </td>
+        </tr>
         <tr>
             <th scope="row"><label for="qa_content_head">상단 내용</label></th>
             <td>
@@ -339,19 +325,70 @@ if(!isset($qaconfig['qa_include_head'])) {
     </div>
 </section>
 
-<div class="btn_confirm01 btn_confirm">
-    <input type="submit" value="확인" class="btn_submit" accesskey="s">
+<div class="btn_fixed_top">
+    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
 </div>
 
 </form>
 
 <script>
+
+var captcha_chk = false;
+
+function use_captcha_check(){
+    $.ajax({
+        type: "POST",
+        url: g5_admin_url+"/ajax.use_captcha.php",
+        data: { admin_use_captcha: "1" },
+        cache: false,
+        async: false,
+        dataType: "json",
+        success: function(data) {
+        }
+    });
+}
+
+function frm_check_file(){
+    var qa_include_head = "<?php echo $qaconfig['qa_include_head']; ?>";
+    var qa_include_tail = "<?php echo $qaconfig['qa_include_tail']; ?>";
+    var head = jQuery.trim(jQuery("#qa_include_head").val());
+    var tail = jQuery.trim(jQuery("#qa_include_tail").val());
+
+    if(qa_include_head !== head || qa_include_tail !== tail){
+        // 캡챠를 사용합니다.
+        jQuery("#admin_captcha_box").show();
+        captcha_chk = true;
+
+        use_captcha_check();
+
+        return false;
+    } else {
+        jQuery("#admin_captcha_box").hide();
+    }
+
+    return true;
+}
+
+jQuery(function($){
+    if( window.self !== window.top ){   // frame 또는 iframe을 사용할 경우 체크
+        $("#qa_include_head, #qa_include_tail").on("change paste keyup", function(e) {
+            frm_check_file();
+        });
+
+        use_captcha_check();
+    }
+});
+
 function fqaconfigform_submit(f)
 {
     <?php echo get_editor_js("qa_content_head"); ?>
     <?php echo get_editor_js("qa_content_tail"); ?>
     <?php echo get_editor_js("qa_mobile_content_head"); ?>
     <?php echo get_editor_js("qa_mobile_content_tail"); ?>
+
+    if( captcha_chk ) {
+        <?php echo isset($captcha_js) ? $captcha_js : ''; // 캡챠 사용시 자바스크립트에서 입력된 캡챠를 검사함  ?>
+    }
 
     f.action = "./qa_config_update.php";
     return true;

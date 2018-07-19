@@ -8,7 +8,7 @@ $ca_id = trim($ca_id);
 $it_name = trim(strip_tags($it_name));
 
 if(!$ca_id && !$it_name)
-    die('<p>분류를 선택하시거나 제목 또는 상품명을 입력하신 후 검색하여 주십시오.</p>');
+    die('<p>상품의 분류를 선택하시거나 상품명을 입력하신 후 검색하여 주십시오.</p>');
 
 $sql = " select ca_id, it_id, it_name, it_price
            from {$g5['g5_shop_item_table']}
@@ -42,7 +42,7 @@ for($i=0;$row=sql_fetch_array($result);$i++) {
 if($list)
     $list = '<ul>'.$list.'</ul>';
 else
-    $list = '<p>등록된 자료가 없습니다.';
+    $list = '<p>등록된 상품이 없습니다.';
 
 echo $list;
 ?>

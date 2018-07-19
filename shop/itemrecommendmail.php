@@ -43,7 +43,7 @@ $it_name = $it['it_name'];
 $it_mimg = get_it_image($it_id, $default['de_mimg_width'], $default['de_mimg_height']);
 
 ob_start();
-include ($misc_skin_path.'/itemrecommend.mail.php');
+include G5_SHOP_PATH.'/mail/itemrecommend.mail.php';
 $content = ob_get_contents();
 ob_end_clean();
 

@@ -1,50 +1,75 @@
 <?php
 include_once('./_common.php');
 
-if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-    require_once(G5_SHOP_PATH.'/yc/itemstocksms.php');
-    return;
-}
+$g5['title'] = '상품 재입고 알림 (SMS)';
+include_once(G5_PATH.'/head.sub.php');
 
 // 상품정보
-$sql = " select it_id, ca_id, it_name, it_soldout, it_stock_sms
+$sql = " select it_id, it_name, it_soldout, it_stock_sms
             from {$g5['g5_shop_item_table']}
             where it_id = '$it_id' ";
 $it = sql_fetch($sql);
 
 if(!$it['it_id'])
-    alert_close('자료가 없습니다.');
+    alert_close('상품정보가 존재하지 않습니다.');
 
 if(!$it['it_soldout'] || !$it['it_stock_sms'])
-    alert_close('재입고SMS 알림을 신청할 수 없는 자료입니다.');
+    alert_close('재입고SMS 알림을 신청할 수 없는 상품입니다.');
 
-$ca_id = ($ca_id) ? $ca_id : $it['ca_id'];
-$ca = sql_fetch(" select as_item_set, as_mobile_item_set from {$g5['g5_shop_category_table']} where ca_id = '{$ca_id}' ");
-$at = apms_ca_thema($ca_id, $ca, 1);
-if(!defined('THEMA_PATH')) {
-	include_once(G5_LIB_PATH.'/apms.thema.lib.php');
+// add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
+add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_SKIN_URL.'/style.css">', 0);
+?>
+
+<div id="sit_sms_new" class="new_win">
+    <h1 id="win_title"><?php echo $g5['title']; ?></h1>
+
+    <form name="fstocksms" method="post" action="<?php echo G5_HTTPS_SHOP_URL; ?>/itemstocksmsupdate.php" onsubmit="return fstocksms_submit(this);"  autocomplete="off">
+    <input type="hidden" name="it_id" value="<?php echo $it_id; ?>">
+
+    <div class="form_01 new_win_con">
+        <ul>
+            <li class="prd_name">
+                <?php echo $it['it_name']; ?>
+            </li>
+            <li>
+                <label for="ss_hp" class="sound_only">휴대폰번호<strong> 필수</strong></label>
+                <input type="text" name="ss_hp" value="<?php echo $member['mb_hp']; ?>" id="ss_hp" required class="required frm_input full_input">
+            </li>
+            <li>
+                <strong>개인정보처리방침안내</strong>
+                <textarea readonly><?php echo get_text($config['cf_privacy']) ?></textarea>
+            </li>
+        </ul>
+        
+        <div id="sms_agree" class="win_desc">
+            <label for="agree">개인정보처리방침안내의 내용에 동의합니다.</label>
+            <input type="checkbox" name="agree" value="1" id="agree">
+        </div>
+        <div class="win_btn">
+            <input type="submit" value="확인" class="btn_submit">
+            <button type="button" onclick="window.close();" class="btn_close">닫기</button>
+        </div>
+    </div>
+    </form>
+</div>
+
+<script>
+function fstocksms_submit(f)
+{
+    if(!f.agree.checked) {
+        alert("개인정보처리방침안내에 동의해 주십시오.");
+        return false;
+    }
+
+    if(confirm("재입고SMS 알림 요청을 등록하시겠습니까?")) {
+        return true;
+    } else {
+        window.close();
+        return false;
+    }
 }
+</script>
 
-$item_skin = apms_itemview_skin($at['item'], $ca_id, $it['ca_id']);
-
-$wset = array();
-if($ca['as_'.MOBILE_.'item_set']) {
-	$wset = apms_unpack($ca['as_'.MOBILE_.'item_set']);
-}
-
-// 데모
-if($is_demo) {
-	@include ($demo_setup_file);
-}
-
-$item_skin_path = G5_SKIN_PATH.'/apms/item/'.$item_skin;
-$item_skin_url = G5_SKIN_URL.'/apms/item/'.$item_skin;
-
-$g5['title'] = '재입고 알림 (SMS)';
-include_once(G5_PATH.'/head.sub.php');
-@include_once(THEMA_PATH.'/head.sub.php');
-include_once($item_skin_path.'/itemstocksms.skin.php');
-@include_once(THEMA_PATH.'/tail.sub.php');
+<?php
 include_once(G5_PATH.'/tail.sub.php');
-
 ?>

@@ -16,7 +16,7 @@ function get_skin_select($skin_gubun, $id, $name, $selected='', $event='')
 
     $skins = array();
 
-    if(USE_G5_THEME && defined('G5_THEME_PATH') && $config['cf_theme']) {
+    if(defined('G5_THEME_PATH') && $config['cf_theme']) {
         $dirs = get_skin_dir($skin_gubun, G5_THEME_PATH.'/'.G5_SKIN_DIR);
         if(!empty($dirs)) {
             foreach($dirs as $dir) {
@@ -48,7 +48,7 @@ function get_mobile_skin_select($skin_gubun, $id, $name, $selected='', $event=''
 
     $skins = array();
 
-    if(USE_G5_THEME && defined('G5_THEME_PATH') && $config['cf_theme']) {
+    if(defined('G5_THEME_PATH') && $config['cf_theme']) {
         $dirs = get_skin_dir($skin_gubun, G5_THEME_MOBILE_PATH.'/'.G5_SKIN_DIR);
         if(!empty($dirs)) {
             foreach($dirs as $dir) {
@@ -57,7 +57,7 @@ function get_mobile_skin_select($skin_gubun, $id, $name, $selected='', $event=''
         }
     }
 
-    $skins = (USE_G5_THEME) ? array_merge($skins, get_skin_dir($skin_gubun, G5_MOBILE_PATH.'/'.G5_SKIN_DIR)) : array_merge($skins, get_skin_dir($skin_gubun));
+    $skins = array_merge($skins, get_skin_dir($skin_gubun, G5_MOBILE_PATH.'/'.G5_SKIN_DIR));
 
     $str = "<select id=\"$id\" name=\"$name\" $event>\n";
     for ($i=0; $i<count($skins); $i++) {
@@ -196,12 +196,7 @@ function get_theme_config_value($dir, $key='*')
 // 회원권한을 SELECT 형식으로 얻음
 function get_member_level_select($name, $start_id=0, $end_id=10, $selected="", $event="")
 {
-    global $g5, $is_admin;
-
-	//최고관리자면 무조건 10 까지
-	if($is_admin == 'super') {
-		$end_id = 10;
-	}
+    global $g5;
 
     $str = "\n<select id=\"{$name}\" name=\"{$name}\"";
     if ($event) $str .= " $event";
@@ -360,6 +355,18 @@ function get_admin_token()
     return $token;
 }
 
+// 관리자가 자동등록방지를 사용해야 할 경우
+function get_admin_captcha_by($type='get'){
+    
+    $captcha_name = 'ss_admin_use_captcha';
+
+    if($type === 'remove'){
+        set_session($captcha_name, '');
+    }
+
+    return get_session($captcha_name);
+}
+
 //input value 에서 xss 공격 filter 역할을 함 ( 반드시 input value='' 타입에만 사용할것 )
 function get_sanitize_input($s, $is_html=false){
 
@@ -441,14 +448,14 @@ else if ($is_admin != 'super')
 }
 
 // 관리자의 아이피, 브라우저와 다르다면 세션을 끊고 관리자에게 메일을 보낸다.
-$admin_key = md5($member['mb_datetime'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']);
+$admin_key = md5($member['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']);
 if (get_session('ss_mb_key') !== $admin_key) {
 
     session_destroy();
 
     include_once(G5_LIB_PATH.'/mailer.lib.php');
     // 메일 알림
-    mailer($member['mb_nick'], $member['mb_email'], $member['mb_email'], 'XSS 공격 알림', $_SERVER['REMOTE_ADDR'].' 아이피로 XSS 공격이 있었습니다.\n\n관리자 권한을 탈취하려는 접근이므로 주의하시기 바랍니다.\n\n해당 아이피는 차단하시고 의심되는 게시물이 있는지 확인하시기 바랍니다.\n\n'.G5_URL, 0);
+    mailer($member['mb_nick'], $member['mb_email'], $member['mb_email'], 'XSS 공격 알림', $_SERVER['REMOTE_ADDR'].' 아이피로 XSS 공격이 있었습니다.<br><br>관리자 권한을 탈취하려는 접근이므로 주의하시기 바랍니다.<br><br>해당 아이피는 차단하시고 의심되는 게시물이 있는지 확인하시기 바랍니다.'.G5_URL, 0);
 
     alert_close('정상적으로 로그인하여 접근하시기 바랍니다.');
 }
@@ -460,12 +467,17 @@ unset($auth_menu);
 unset($menu);
 unset($amenu);
 $tmp = dir(G5_ADMIN_PATH);
+$menu_files = array();
 while ($entry = $tmp->read()) {
     if (!preg_match('/^admin.menu([0-9]{3}).*\.php$/', $entry, $m))
         continue;  // 파일명이 menu 으로 시작하지 않으면 무시한다.
 
     $amenu[$m[1]] = $entry;
-    include_once(G5_ADMIN_PATH.'/'.$entry);
+    $menu_files[] = G5_ADMIN_PATH.'/'.$entry;
+}
+@asort($menu_files);
+foreach($menu_files as $file){
+    include_once($file);
 }
 @ksort($amenu);
 

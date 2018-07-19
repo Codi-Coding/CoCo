@@ -2,21 +2,10 @@
 $sub_menu = '400000';
 include_once('./_common.php');
 
-//아미나빌더 설치체크
-if(!isset($config['as_thema'])) { 
-	goto_url(G5_ADMIN_URL.'/apms_admin/apms.admin.php');
-}
-
 $max_limit = 7; // 몇행 출력할 것인지?
 
 $g5['title'] = ' 쇼핑몰관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
-
-if($is_admin_skin) {
-	if(is_file(ADMIN_SKIN_PATH.'/admin.index.shop.php')) {
-		goto_url(G5_ADMIN_URL.'/shop_admin/configform.php'); //쇼핑몰설정으로 이동
-	}
-}
 
 $pg_anchor = '<ul class="anchor sidx_anchor">
 <li><a href="#anc_sidx_ord">주문현황</a></li>
@@ -234,7 +223,7 @@ function get_max_value($arr)
                     $info = get_order_status_sum('주문');
                     ?>
                     <th scope="row">주문 -&gt; 입금</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
+                    <td class="td_num"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
                     <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
                 </tr>
                 <tr>
@@ -242,7 +231,7 @@ function get_max_value($arr)
                     $info = get_order_status_sum('입금');
                     ?>
                     <th scope="row">입금 -&gt; 준비</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
+                    <td class="td_num"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
                     <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
                 </tr>
                 <tr>
@@ -250,7 +239,7 @@ function get_max_value($arr)
                     $info = get_order_status_sum('준비');
                     ?>
                     <th scope="row">준비 -&gt; 배송</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
+                    <td class="td_num"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
                     <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
                 </tr>
                 <tr>
@@ -258,7 +247,7 @@ function get_max_value($arr)
                     $info = get_order_status_sum('배송');
                     ?>
                     <th scope="row">배송 -&gt; 완료</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
+                    <td class="td_num"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
                     <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
                 </tr>
                 </tbody>
@@ -306,8 +295,8 @@ function get_max_value($arr)
                 </thead>
                 <tbody>
                 <tr>
-                    <td class="td_numbig"><a href="./itemstocklist.php"><?php echo number_format($item_noti); ?></a></td>
-                    <td class="td_numbig"><a href="./optionstocklist.php"><?php echo number_format($option_noti); ?></a></td>
+                    <td class="td_num2"><a href="./itemstocklist.php"><?php echo number_format($item_noti); ?></a></td>
+                    <td class="td_num2"><a href="./optionstocklist.php"><?php echo number_format($option_noti); ?></a></td>
                     <td class="td_price"><?php echo display_price(intval($userinfo['coin'])); ?></td>
                 </tr>
                 </tbody>
@@ -321,7 +310,7 @@ function get_max_value($arr)
     <h2>결제수단별 주문현황</h2>
     <?php echo $pg_anchor; ?>
 
-    <div id="sidx_settle" class="tbl_head02 tbl_wrap">
+    <div id="sidx_settle" class="tbl_head01 tbl_wrap">
         <table>
         <thead>
         <tr>

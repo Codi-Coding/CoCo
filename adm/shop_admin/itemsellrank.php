@@ -11,6 +11,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 if (!$to_date) $to_date = date("Ymd", time());
 
 if ($sort1 == "") $sort1 = "ct_status_sum";
+if (!in_array($sort1, array('ct_status_1', 'ct_status_2', 'ct_status_3', 'ct_status_4', 'ct_status_5', 'ct_status_6', 'ct_status_7', 'ct_status_8', 'ct_status_9', 'ct_status_sum'))) $sort1 = "ct_status_sum";
 if ($sort2 == "" || $sort2 != "asc") $sort2 = "desc";
 
 $doc = strip_tags($doc);
@@ -66,7 +67,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
-    등록상품 <?php echo $total_count; ?>건
+    <span class="btn_ov01"><span class="ov_txt">등록상품 </span><span class="ov_num"> <?php echo $total_count; ?>건 </span></span> 
 </div>
 
 <form name="flist" class="local_sch01 local_sch">
@@ -79,15 +80,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sel_ca_id" id="sel_ca_id">
     <option value=''>전체분류</option>
     <?php
-    $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
+    $sql1 = " select ca_id, ca_name from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
     $result1 = sql_query($sql1);
     for ($i=0; $row1=sql_fetch_array($result1); $i++) {
         $len = strlen($row1['ca_id']) / 2 - 1;
         $nbsp = "";
         for ($i=0; $i<$len; $i++) $nbsp .= "&nbsp;&nbsp;&nbsp;";
-		if($row1['as_line']) {
-			echo "<option value=\"\">".$nbsp."------------</option>\n";
-		}
         echo '<option value="'.$row1['ca_id'].'" '.get_selected($sel_ca_id, $row1['ca_id']).'>'.$nbsp.$row1['ca_name'].'</option>'.PHP_EOL;
     }
     ?>
@@ -106,9 +104,9 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <p>판매량을 합산하여 상품판매순위를 집계합니다.</p>
 </div>
 
-<div class="btn_add01 btn_add">
-    <a href="./itemlist.php" class="btn_add01 btn_add_optional">상품등록</a>
-    <a href="./itemstocklist.php" class="btn_add01 btn_add_optional">상품재고관리</a>
+<div class="btn_fixed_top">
+    <a href="./itemstocklist.php" class="btn_02 btn">상품재고관리</a>
+    <a href="./itemlist.php" class="btn_01 btn">상품등록</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -117,11 +115,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <thead>
     <tr>
         <th scope="col">순위</th>
-        <th scope="col">상품코드</th>
-		<th scope="col">상품명</th>
-		<?php if(USE_PARTNER) { ?>
-	        <th scope="col">파트너</th>
-		<?php } ?>
+        <th scope="col">상품명</th>
         <th scope="col"><a href="<?php echo title_sort("ct_status_1",1)."&amp;$qstr1"; ?>">쇼핑</a></th>
         <th scope="col"><a href="<?php echo title_sort("ct_status_2",1)."&amp;$qstr1"; ?>">주문</a></th>
         <th scope="col"><a href="<?php echo title_sort("ct_status_3",1)."&amp;$qstr1"; ?>">입금</a></th>
@@ -146,19 +140,8 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         ?>
         <tr class="<?php echo $bg; ?>">
             <td class="td_num"><?php echo $num; ?></td>
-			<td class="td_code" style="white-space:nowrap;">
-				<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
-				<b><?php echo $row['it_id']; ?></b>
-			</td>
-            <td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a></td>
-			<?php if(USE_PARTNER) { ?>
-				<td class="td_code" style="white-space:nowrap;">
-					<?php if($row['pt_id']) { ?>
-						<div style="font-size:11px; letter-spacing:-1px;"><?php echo $row['pt_id'];?></div>
-					<?php } ?>
-				</td>
-			<?php } ?>
-			<td class="td_num"><?php echo $row['ct_status_1']; ?></td>
+            <td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a></td>
+            <td class="td_num"><?php echo $row['ct_status_1']; ?></td>
             <td class="td_num"><?php echo $row['ct_status_2']; ?></td>
             <td class="td_num"><?php echo $row['ct_status_3']; ?></td>
             <td class="td_num"><?php echo $row['ct_status_4']; ?></td>
@@ -173,8 +156,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     }
 
     if ($i == 0) {
-		$colspan = (USE_PARTNER) ? 14 : 13;
-        echo '<tr><td colspan="'.$colspan.'" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
+        echo '<tr><td colspan="12" class="empty_table">자료가 없습니다.</td></tr>';
     }
     ?>
     </tbody>

@@ -24,33 +24,6 @@ $sql = get_table_define($g5['write_prefix'] . $bo_table);
 $sql = str_replace($g5['write_prefix'] . $bo_table, $g5['write_prefix'] . $target_table, $sql);
 sql_query($sql, false);
 
-// APMS
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_type` tinyint(4) NOT NULL DEFAULT '0' ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_shingo` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_type` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_img` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_shingo` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_list` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_img` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_publish` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_list` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_extra` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_publish` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_extend` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_extra` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_level` int(11) NOT NULL DEFAULT '1' AFTER `as_extend` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_download` int(11) NOT NULL DEFAULT '0' AFTER `as_level` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_down` int(11) NOT NULL DEFAULT '0' AFTER `as_download` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_view` int(11) NOT NULL DEFAULT '0' AFTER `as_down` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_lucky` int(11) NOT NULL DEFAULT '0' AFTER `as_view` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_poll` int(11) NOT NULL DEFAULT '0' AFTER `as_lucky` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_star_score` int(11) NOT NULL DEFAULT '0' AFTER `as_poll` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_star_cnt` int(11) NOT NULL DEFAULT '0' AFTER `as_star_score` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_choice` int(11) NOT NULL DEFAULT '0' AFTER `as_star_score` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_choice_cnt` int(11) NOT NULL DEFAULT '0' AFTER `as_choice` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_re_mb` varchar(20) NOT NULL DEFAULT '' AFTER `as_choice_cnt` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_re_name` varchar(255) NOT NULL AFTER `as_re_mb` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_tag` varchar(255) NOT NULL AFTER `as_re_name` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_map` varchar(255) NOT NULL AFTER `as_tag` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_icon` varchar(255) NOT NULL AFTER `as_map` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_thumb` varchar(255) NOT NULL AFTER `as_icon` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_video` varchar(255) NOT NULL AFTER `as_thumb` ", false);
-sql_query(" ALTER TABLE `{$g5['write_prefix']}{$target_table}` ADD `as_update` datetime NOT NULL default '0000-00-00 00:00:00' AFTER `as_video` ", false);
-
 $file_copy = array();
 
 // 구조만 복사시에는 공지사항 번호는 복사하지 않는다.
@@ -90,7 +63,7 @@ $sql = " insert into {$g5['board_table']}
                 bo_use_good = '{$board[bo_use_good]}',
                 bo_use_nogood = '{$board[bo_use_nogood]}',
                 bo_use_name = '{$board[bo_use_name]}',
-				bo_use_signature = '{$board[bo_use_signature]}',
+                bo_use_signature = '{$board[bo_use_signature]}',
                 bo_use_ip_view = '{$board[bo_use_ip_view]}',
                 bo_use_list_view = '{$board['bo_use_list_view']}',
                 bo_use_list_content = '{$board[bo_use_list_content]}',
@@ -126,30 +99,6 @@ $sql = " insert into {$g5['board_table']}
                 bo_use_cert = '{$board[bo_use_cert]}',
                 bo_use_sns = '{$board[bo_use_sns]}',
                 bo_sort_field = '{$board['bo_sort_field']}',
-				as_title =  '{$board['as_title']}',
-				as_desc =  '{$board['as_desc']}',
-				as_autoplay =  '{$board['as_autoplay']}',
-				as_torrent =  '{$board['as_torrent']}',
-				as_shingo =  '{$board['as_shingo']}',
-				as_level =  '{$board['as_level']}',
-				as_lucky =  '{$board['as_lucky']}',
-				as_save =  '{$board['as_save']}',
-				as_code =  '{$board['as_code']}',
-				as_exif =  '{$board['as_exif']}',
-				as_notice =  '{$board['as_notice']}',
-				as_search =  '{$board['as_search']}',
-				as_lightbox =  '{$board['as_lightbox']}',
-				as_rev_cmt =  '{$board['as_rev_cmt']}',
-				as_best_cmt =  '{$board['as_best_cmt']}',
-				as_rank_cmt =  '{$board['as_rank_cmt']}',
-				as_resize =  '{$board['as_resize']}',
-				as_resize_kb =  '{$board['as_resize_kb']}',
-				as_editor =  '{$board['as_editor']}',
-				as_mobile_editor =  '{$board['as_mobile_editor']}',
-				as_comment_rows =  '{$board['as_comment_rows']}',
-				as_comment_mobile_rows =  '{$board['as_comment_mobile_rows']}',
-                as_set = '".addslashes($board['as_set'])."',
-                as_mobile_set = '".addslashes($board['as_mobile_set'])."',
                 bo_1_subj = '".addslashes($board['bo_1_subj'])."',
                 bo_2_subj = '".addslashes($board['bo_2_subj'])."',
                 bo_3_subj = '".addslashes($board['bo_3_subj'])."',
@@ -235,10 +184,10 @@ if (count($file_copy)) {
                     set bo_table = '$target_table',
                          wr_id = '{$file_copy[$i]['wr_id']}',
                          bf_no = '{$file_copy[$i]['bf_no']}',
-                         bf_source = '{$file_copy[$i]['bf_source']}',
+                         bf_source = '".addslashes($file_copy[$i]['bf_source'])."',
                          bf_file = '{$file_copy[$i]['bf_file']}',
                          bf_download = '{$file_copy[$i]['bf_download']}',
-                         bf_content = '{$file_copy[$i]['bf_content']}',
+                         bf_content = '".addslashes($file_copy[$i]['bf_content'])."',
                          bf_filesize = '{$file_copy[$i]['bf_filesize']}',
                          bf_width = '{$file_copy[$i]['bf_width']}',
                          bf_height = '{$file_copy[$i]['bf_height']}',
