@@ -7,9 +7,6 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '이벤트관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
-// APMS 불러오기
-include_once(G5_ADMIN_PATH.'/apms_admin/config/ev_type.php');
-
 $sql_common = " from {$g5['g5_shop_event_table']} ";
 
 // 테이블의 전체 레코드수만 얻음
@@ -36,7 +33,7 @@ $result = sql_query($sql);
     <thead>
     <tr>
         <th scope="col">이벤트번호</th>
-		<th scope="col">제목</th>
+        <th scope="col">제목</th>
         <th scope="col">연결상품</th>
         <th scope="col">사용</th>
         <th scope="col">관리</th>
@@ -55,13 +52,11 @@ $result = sql_query($sql);
         }
         if ($row['ev_subject_strong']) $subject = '<strong>'.$row['ev_subject'].'</strong>';
         else $subject = $row['ev_subject'];
+    ?>
 
-		$t = $row['ev_type'];
-		$type = ($ev_type[$t]) ? ' - '.$ev_type[$t] : '';
-	?>
     <tr>
         <td class="td_num"><?php echo $row['ev_id']; ?></td>
-        <td><?php echo $subject; ?><span style="color:#888;"><?php echo $type;?></span></td>
+        <td><?php echo $subject; ?></td>
         <td class="td_num"><?php echo $href; ?><?php echo $ev['cnt']; ?><?php echo $href_close; ?></td>
         <td class="td_boolean"><?php echo $row['ev_use'] ? '<span class="txt_true">예</span>' : '<span class="txt_false">아니오</span>'; ?></td>
         <td class="td_mng">

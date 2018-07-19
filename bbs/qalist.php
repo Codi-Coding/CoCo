@@ -38,13 +38,8 @@ if(is_file($skin_file)) {
     $sql_common = " from {$g5['qa_content_table']} ";
     $sql_search = " where qa_type = '0' ";
 
-    if($is_admin) {
-		if($qmb) {
-	        $sql_search .= " and mb_id = '{$qmb}' ";
-		}
-	} else {
+    if(!$is_admin)
         $sql_search .= " and mb_id = '{$member['mb_id']}' ";
-	}
 
     if($sca) {
         if (preg_match("/[a-zA-Z]/", $sca))
@@ -99,18 +94,17 @@ if(is_file($skin_file)) {
         if(trim($row['qa_file1']) || trim($row['qa_file2']))
             $list[$i]['icon_file'] = '<img src="'.$qa_skin_url.'/img/icon_file.gif">';
 
-		$list[$i]['name'] = apms_sideview($row['mb_id'], get_text($row['qa_name']), $row['email'], '', 'no');
+        $list[$i]['name'] = get_text($row['qa_name']);
         $list[$i]['date'] = substr($row['qa_datetime'], 2, 8);
+
         $list[$i]['num'] = $num - $i;
     }
 
     $is_checkbox = false;
-	$admin_href = '';
-	$token = '';
-	if($is_admin) {
-		set_session('ss_qa_delete_token', $token = uniqid(time()));
-		$is_checkbox = true;
-		$admin_href = G5_ADMIN_URL.'/qa_config.php';
+    $admin_href = '';
+    if($is_admin) {
+        $is_checkbox = true;
+        $admin_href = G5_ADMIN_URL.'/qa_config.php';
     }
 
     $list_href = G5_BBS_URL.'/qalist.php';

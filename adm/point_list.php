@@ -209,10 +209,7 @@ else
         </tr>
         <tr>
             <th scope="row"><label for="po_point">포인트<strong class="sound_only">필수</strong></label></th>
-            <td>
-				<input type="text" name="po_point" id="po_point" required class="required frm_input">
-				&nbsp;<label><input type="checkbox" name="po_exp" id="po_exp" value="1"> &nbsp;경험치 반영</label>
-			</td>
+            <td><input type="text" name="po_point" id="po_point" required class="required frm_input"></td>
         </tr>
         <?php if($config['cf_point_term'] > 0) { ?>
         <tr>

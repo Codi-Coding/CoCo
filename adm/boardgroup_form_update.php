@@ -38,10 +38,7 @@ $sql_common = " gr_subject = '{$_POST['gr_subject']}',
                 gr_7 = '{$_POST['gr_7']}',
                 gr_8 = '{$_POST['gr_8']}',
                 gr_9 = '{$_POST['gr_9']}',
-                gr_10 = '{$_POST['gr_10']}',
-                as_main = '{$_POST['as_main']}',
-                as_mobile_main = '{$_POST['as_mobile_main']}' ";
-
+                gr_10 = '{$_POST['gr_10']}' ";
 if (isset($_POST['gr_use_access']))
     $sql_common .= ", gr_use_access = '{$_POST['gr_use_access']}' ";
 else

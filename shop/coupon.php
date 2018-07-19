@@ -1,36 +1,26 @@
 <?php
 include_once('./_common.php');
 
-if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-    require_once(G5_SHOP_PATH.'/yc/coupon.php');
+if (G5_IS_MOBILE) {
+    include_once(G5_MSHOP_PATH.'/coupon.php');
     return;
+}
+
+// 테마에 coupon.php 있으면 include
+if(defined('G5_THEME_SHOP_PATH')) {
+    $theme_coupon_file = G5_THEME_SHOP_PATH.'/coupon.php';
+    if(is_file($theme_coupon_file)) {
+        include_once($theme_coupon_file);
+        return;
+        unset($theme_coupon_file);
+    }
 }
 
 if ($is_guest)
     alert_close('회원만 조회하실 수 있습니다.');
 
-$pid = ($pid) ? $pid : ''; // Page ID
-$at = apms_page_thema($pid);
-include_once(G5_LIB_PATH.'/apms.thema.lib.php');
-
-// 스킨 체크
-list($member_skin_path, $member_skin_url) = apms_skin_thema('member', $member_skin_path, $member_skin_url); 
-
-// 설정값 불러오기
-$is_coupon_sub = true;
-@include_once($member_skin_path.'/config.skin.php');
-
-$g5['title'] = $member['mb_nick'].'님의 쿠폰 내역';
-
-if($is_coupon_sub) {
-	include_once(G5_PATH.'/head.sub.php');
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
-} else {
-	include_once('./_head.php');
-}
-
-$skin_path = $member_skin_path;
-$skin_url = $member_skin_url;
+$g5['title'] = $member['mb_nick'].' 님의 쿠폰 내역';
+include_once(G5_PATH.'/head.sub.php');
 
 $sql = " select cp_id, cp_subject, cp_method, cp_target, cp_start, cp_end, cp_type, cp_price
             from {$g5['g5_shop_coupon_table']}
@@ -39,53 +29,69 @@ $sql = " select cp_id, cp_subject, cp_method, cp_target, cp_start, cp_end, cp_ty
               and cp_end >= '".G5_TIME_YMD."'
             order by cp_no ";
 $result = sql_query($sql);
+?>
 
-$cp = array();
+<!-- 쿠폰 내역 시작 { -->
+<div id="coupon" class="new_win">
+    <h1 id="win_title"><?php echo $g5['title'] ?></h1>
 
-$k = 0;
-for($i=0; $row=sql_fetch_array($result); $i++) {
-	if(is_used_coupon($member['mb_id'], $row['cp_id']))
-		continue;
+    <div class="tbl_wrap tbl_head01">
+        <table>
+        <thead>
+        <tr>
+            <th scope="col">쿠폰명</th>
+            <th scope="col">적용대상</th>
+            <th scope="col">할인금액</th>
+            <th scope="col">사용기한</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $cp_count = 0;
+        for($i=0; $row=sql_fetch_array($result); $i++) {
+            if(is_used_coupon($member['mb_id'], $row['cp_id']))
+                continue;
 
-	$cp_href = '';
-	if($row['cp_method'] == 1) {
-		$sql = " select ca_name from {$g5['g5_shop_category_table']} where ca_id = '{$row['cp_target']}' ";
-		$ca = sql_fetch($sql);
-		$cp_target = $ca['ca_name'].'의 상품할인';
-		$cp_href = G5_SHOP_URL.'/list.php?ca_id='.$row['cp_target'];
-	} else if($row['cp_method'] == 2) {
-		$cp_target = '결제금액 할인';
-	} else if($row['cp_method'] == 3) {
-		$cp_target = '배송비 할인';
-	} else {
-		$sql = " select it_name from {$g5['g5_shop_item_table']} where it_id = '{$row['cp_target']}' ";
-		$it = sql_fetch($sql);
-		$cp_target = $it['it_name'].' 상품할인';
-		$cp_href = G5_SHOP_URL.'/item.php?it_id='.$row['cp_target'];
-	}
+            if($row['cp_method'] == 1) {
+                $sql = " select ca_name from {$g5['g5_shop_category_table']} where ca_id = '{$row['cp_target']}' ";
+                $ca = sql_fetch($sql);
+                $cp_target = $ca['ca_name'].'의 상품할인';
+            } else if($row['cp_method'] == 2) {
+                $cp_target = '결제금액 할인';
+            } else if($row['cp_method'] == 3) {
+                $cp_target = '배송비 할인';
+            } else {
+                $sql = " select it_name from {$g5['g5_shop_item_table']} where it_id = '{$row['cp_target']}' ";
+                $it = sql_fetch($sql);
+                $cp_target = $it['it_name'].' 상품할인';
+            }
 
-	if($row['cp_type'])
-		$cp_price = $row['cp_price'].'%';
-	else
-		$cp_price = number_format($row['cp_price']).'원';
+            if($row['cp_type'])
+                $cp_price = $row['cp_price'].'%';
+            else
+                $cp_price = number_format($row['cp_price']).'원';
 
-	$cp[$k] = $row;
-	$cp[$k]['cp_href'] = $cp_href;
-	$cp[$k]['cp_target'] = $cp_target;
-	$cp[$k]['cp_price'] = $cp_price;
+            $cp_count++;
+        ?>
+        <tr>
+            <td><?php echo $row['cp_subject']; ?></td>
+            <td><?php echo $cp_target; ?></td>
+            <td class="td_numbig"><?php echo $cp_price; ?></td>
+            <td class="td_datetime"><?php echo substr($row['cp_start'], 2, 8); ?> ~ <?php echo substr($row['cp_end'], 2, 8); ?></td>
+        </tr>
+        <?php
+        }
 
-	$k++;
-}
+        if(!$cp_count)
+            echo '<tr><td colspan="4" class="empty_table">사용할 수 있는 쿠폰이 없습니다.</td></tr>';
+        ?>
+        </tbody>
+        </table>
+    </div>
 
-// 스킨설정
-$wset = (G5_IS_MOBILE) ? apms_skin_set('member_mobile') : apms_skin_set('member');
+    <div class="win_btn"><button type="button" onclick="window.close();">창닫기</button></div>
+</div>
 
-include_once($skin_path.'/coupon.skin.php');
-
-if($is_coupon_sub) {
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
-	include_once(G5_PATH.'/tail.sub.php');
-} else {
-	include_once('./_tail.php');
-}
+<?php
+include_once(G5_PATH.'/tail.sub.php');
 ?>

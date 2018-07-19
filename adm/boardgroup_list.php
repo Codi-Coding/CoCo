@@ -55,9 +55,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">처음</a>'
 $g5['title'] = '게시판그룹설정';
 include_once('./admin.head.php');
 
-$groupskin = get_skin_dir('group');
-
-$colspan = 12;
+$colspan = 10;
 ?>
 
 <div class="local_ov01 local_ov">
@@ -102,16 +100,14 @@ $colspan = 12;
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
         <th scope="col"><?php echo subject_sort_link('gr_id') ?>그룹아이디</a></th>
-		<th scope="col"><?php echo subject_sort_link('gr_subject') ?>제목</a></th>
+        <th scope="col"><?php echo subject_sort_link('gr_subject') ?>제목</a></th>
         <th scope="col"><?php echo subject_sort_link('gr_admin') ?>그룹관리자</a></th>
-		<th scope="col">게시판</th>
-        <th scope="col">PC 그룹스킨</th>
-        <th scope="col">모바일 그룹스킨</th>
-		<th scope="col">접근<br>사용</th>
+        <th scope="col">게시판</th>
+        <th scope="col">접근<br>사용</th>
         <th scope="col">접근<br>회원수</th>
         <th scope="col"><?php echo subject_sort_link('gr_order') ?>출력<br>순서</a></th>
         <th scope="col">접속기기</th>
-		<th scope="col">관리</th>
+        <th scope="col">관리</th>
     </tr>
     </thead>
     <tbody>
@@ -151,29 +147,7 @@ $colspan = 12;
         <?php } ?>
         </td>
         <td class="td_numsmall"><a href="./board_list.php?sfl=a.gr_id&amp;stx=<?php echo $row['gr_id'] ?>"><?php echo $row2['cnt'] ?></a></td>
-        <td class="td_mng">
-            <label for="as_main_<?php echo $i; ?>" class="sound_only">PC 그룹스킨</label>
-            <select name="as_main[<?php echo $i ?>]" id="as_main_<?php echo $i ?>" style="width:100px;">
-				<option value="">사용안함</option>
-			<?php
-			for ($j=0; $j<count($groupskin); $j++) {
-				echo "<option value=\"".$groupskin[$j]."\"".get_selected($row['as_main'], $groupskin[$j]).">".$groupskin[$j]."</option>\n";
-			}
-			?>
-            </select>
-        </td>
-        <td class="td_mng">
-            <label for="as_mobile_main_<?php echo $i; ?>" class="sound_only">모바일 그룹스킨</label>
-            <select name="as_mobile_main[<?php echo $i ?>]" id="as_mobile_main_<?php echo $i ?>" style="width:100px;">
-				<option value="">사용안함</option>
-			<?php
-			for ($j=0; $j<count($groupskin); $j++) {
-				echo "<option value=\"".$groupskin[$j]."\"".get_selected($row['as_mobile_main'], $groupskin[$j]).">".$groupskin[$j]."</option>\n";
-			}
-			?>
-            </select>
-        </td>
-		<td class="td_chk">
+        <td class="td_chk">
              <label for="gr_use_access_<?php echo $i; ?>" class="sound_only">접근회원 사용</label>
             <input type="checkbox" name="gr_use_access[<?php echo $i ?>]" <?php echo $row['gr_use_access']?'checked':'' ?> value="1" id="gr_use_access_<?php echo $i ?>">
         </td>
@@ -190,7 +164,7 @@ $colspan = 12;
                 <option value="mobile"<?php echo get_selected($row['gr_device'], 'mobile'); ?>>모바일</option>
             </select>
         </td>
-		<td class="td_mngsmall"><?php echo $s_upd ?></td>
+        <td class="td_mngsmall"><?php echo $s_upd ?></td>
     </tr>
 
     <?php

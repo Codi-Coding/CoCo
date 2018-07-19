@@ -21,17 +21,14 @@ if ($w == "u")
     sql_query($sql);
 
     if(trim($iq_answer)) {
-        $sql = " select a.mb_id, a.iq_email, a.iq_hp, b.it_name
+        $sql = " select a.iq_email, a.iq_hp, b.it_name
                     from {$g5['g5_shop_item_qa_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
                     where a.iq_id = '$iq_id' ";
         $row = sql_fetch($sql);
 
-		// 내글반응	등록
-		apms_response('it', 'reply', $it_id, '', '', $iq_subject, $row['mb_id'], $member['mb_id'], $member['mb_nick']);
-
         // SMS 알림
         if($config['cf_sms_use'] == 'icode' && $row['iq_hp']) {
-            $sms_content = get_text($row['it_name']).' 문의에 답변이 등록되었습니다.';
+            $sms_content = get_text($row['it_name']).' 상품문의에 답변이 등록되었습니다.';
             $send_number = preg_replace('/[^0-9]/', '', $default['de_admin_company_tel']);
             $recv_number = preg_replace('/[^0-9]/', '', $row['iq_hp']);
 
@@ -69,21 +66,21 @@ if ($w == "u")
                     $SMS->Add($recv_number, $send_number, $config['cf_icode_id'], iconv_euckr(stripslashes($sms_content)), "");
                     $SMS->Send();
                 }
-			}
+            }
         }
 
         // 답변 이메일전송
         if(trim($row['iq_email'])) {
             include_once(G5_LIB_PATH.'/mailer.lib.php');
 
-            $subject = $config['cf_title'].' '.$row['it_name'].' 문의 답변 알림 메일';
+            $subject = $config['cf_title'].' '.$row['it_name'].' 상품문의 답변 알림 메일';
             $content = conv_content($iq_answer, 1);
 
             mailer($config['cf_title'], $config['cf_admin_email'], $row['iq_email'], $subject, $content, 1);
         }
     }
 
-	goto_url("./itemqaform.php?w=$w&amp;iq_id=$iq_id&amp;$qstr");
+    goto_url("./itemqaform.php?w=$w&amp;iq_id=$iq_id&amp;sca=$sca&amp;$qstr");
 }
 else {
     alert();

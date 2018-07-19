@@ -1,23 +1,12 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-// 관리자스킨
-$admin_skin = $config['cf_8'];
-
-if($is_demo) {
-	if($pva) set_session('pva', $pva);
-	$tmp_pva = get_session('pva');
-	
-	if($tmp_pva && is_dir(G5_SKIN_PATH.'/admin/'.$tmp_pva)) {
-		$admin_skin = $tmp_pva;
-	}
-}
-
 $begin_time = get_microtime();
 
 include_once(G5_PATH.'/head.sub.php');
 
-function print_menu1($key, $no) {
+function print_menu1($key, $no)
+{
     global $menu;
 
     $str = print_menu2($key, $no);
@@ -25,15 +14,13 @@ function print_menu1($key, $no) {
     return $str;
 }
 
-function print_menu2($key, $no) {
-    global $menu, $auth_menu, $is_admin, $auth, $g5, $sub_menu;
+function print_menu2($key, $no)
+{
+    global $menu, $auth_menu, $is_admin, $auth, $g5;
 
     $str .= "<ul class=\"gnb_2dul\">";
-    for($i=1; $i<count($menu[$key]); $i++) {
-
-		if(!$menu[$key][$i][1])
-			continue;
-
+    for($i=1; $i<count($menu[$key]); $i++)
+    {
         if ($is_admin != 'super' && (!array_key_exists($menu[$key][$i][0],$auth) || !strstr($auth[$menu[$key][$i][0]], 'r')))
             continue;
 
@@ -43,10 +30,7 @@ function print_menu2($key, $no) {
         if ($menu[$key][$i][4] == 1) $gnb_grp_style = 'gnb_grp_style';
         else $gnb_grp_style = '';
 
-		if (isset($sub_menu) && $sub_menu == $menu[$key][$i][0]) $gnb_on = ' on';
-        else $gnb_on = '';
-
-        $str .= '<li class="gnb_2dli"><a href="'.$menu[$key][$i][2].'" class="gnb_2da '.$gnb_grp_style.' '.$gnb_grp_div.$gnb_on.'">'.$menu[$key][$i][1].'</a></li>';
+        $str .= '<li class="gnb_2dli"><a href="'.$menu[$key][$i][2].'" class="gnb_2da '.$gnb_grp_style.' '.$gnb_grp_div.'">'.$menu[$key][$i][1].'</a></li>';
 
         $auth_menu[$menu[$key][$i][0]] = $menu[$key][$i][1];
     }
@@ -54,41 +38,6 @@ function print_menu2($key, $no) {
 
     return $str;
 }
-
-// 스킨설정
-function apms_admin_skin($save='', $str='') {
-    global $g5, $admin_skin, $is_demo;
-
-	$set = array();
-
-	if($is_demo) {
-		if($save) {
-			$pva_set = apms_pack($str);
-			set_session($admin_skin.'_ademo_set', $pva_set);
-		}
-		$aset = get_session($admin_skin.'_ademo_set');
-		$set = apms_unpack($aset);
-	} else {
-		$data = sql_fetch(" select * from {$g5['apms_data']} where type = '5' and data_q = '{$admin_skin}' ", false);
-		if($save) {
-			//스킨설정
-			$aset = apms_pack($str);
-
-			if($data['id']) {
-				sql_query(" update {$g5['apms_data']} set data_set = '{$aset}' where id = '{$data['id']}'", false);
-			} else {
-				sql_query(" insert {$g5['apms_data']} set type = '5', data_q = '{$admin_skin}', data_set = '{$aset}' ", false);
-			}
-
-			$set = $str;
-		} else {
-			$set = apms_unpack($data['data_set']);
-		}
-	}
-
-    return $set;
-}
-
 ?>
 
 <script>
@@ -113,22 +62,6 @@ function imageview(id, w, h)
         selectBoxHidden(id);
 }
 </script>
-
-<?php
-// 어드민 스킨
-$is_admin_skin = ($admin_skin && is_file(G5_SKIN_PATH.'/admin/'.$admin_skin.'/admin.head.php')) ? true : false;
-
-if($is_admin_skin) {
-
-	define('ADMIN_SKIN_PATH', G5_SKIN_PATH.'/admin/'.$admin_skin);
-	define('ADMIN_SKIN_URL', G5_SKIN_URL.'/admin/'.$admin_skin);
-
-	include_once(ADMIN_SKIN_PATH.'/admin.head.php');
-
-} else {
-
-// 어드민스킨 미사용시 기본스킨 출력
-?>
 
 <div id="to_content"><a href="#container">본문 바로가기</a></div>
 
@@ -211,5 +144,3 @@ foreach($menu['menu'.$menu_key] as $key=>$value) {
             <button onclick="font_resize('container', 'ts_up ts_up2', 'ts_up2');"><img src="<?php echo G5_ADMIN_URL ?>/img/ts03.gif" alt="더크게"></button>
         </div>
         <h1><?php echo $g5['title'] ?></h1>
-
-<?php } ?>

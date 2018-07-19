@@ -25,38 +25,11 @@ $fm = $faq_master_list[$fm_id];
 if (!$fm['fm_id'])
     alert('등록된 내용이 없습니다.');
 
-// Page ID
-$pid = 'faq';
-$at = apms_page_thema($pid);
-include_once(G5_LIB_PATH.'/apms.thema.lib.php');
-
-// 스킨 체크
-list($faq_skin_path, $faq_skin_url) = apms_skin_thema('faq', $faq_skin_path, $faq_skin_url); 
-
-// 설정값 불러오기
-$is_faq_sub = false;
-@include_once($faq_skin_path.'/config.skin.php');
-
 $g5['title'] = $fm['fm_subject'];
 
-if($is_faq_sub) {
-	include_once(G5_PATH.'/head.sub.php');
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
-} else {
-	include_once('./_head.php');
-}
+$skin_file = $faq_skin_path.'/list.skin.php';
 
-$skin_path = $faq_skin_path;
-$skin_url = $faq_skin_url;
-$skin_file = $skin_path.'/list.skin.php';
-
-// 스킨설정
-$wset = (G5_IS_MOBILE) ? apms_skin_set('faq_mobile') : apms_skin_set('faq');
-
-$setup_href = '';
-if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
-	$setup_href = './skin.setup.php?skin=faq&amp;ts='.urlencode(THEMA);
-}
+include_once('./_head.php');
 
 if(is_file($skin_file)) {
     $admin_href = '';
@@ -116,22 +89,10 @@ if(is_file($skin_file)) {
             $faq_list[$i]['fa_content'] = search_font($stx, conv_content($faq_list[$i]['fa_content'], 1));
         }
     }
-
-	$write_page_rows = $page_rows;
-	$list_page = $_SERVER['SCRIPT_NAME'].'?'.$qstr.'&amp;page=';
-
-	$faq_head_html = conv_content($fm['fm_head_html'], 1);
-	$faq_tail_html = conv_content($fm['fm_tail_html'], 1);
-
-	include_once($skin_file);
+    include_once($skin_file);
 } else {
     echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</p>';
 }
 
-if($is_faq_sub) {
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
-	include_once(G5_PATH.'/tail.sub.php');
-} else {
-	include_once('./_tail.php');
-}
+include_once('./_tail.php');
 ?>

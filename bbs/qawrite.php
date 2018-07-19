@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+include_once(G5_EDITOR_LIB);
 
 if($w != '' && $w != 'u' && $w != 'r') {
     alert('올바른 방법으로 이용해 주십시오.');
@@ -12,17 +13,6 @@ $qaconfig = get_qa_config();
 
 $g5['title'] = $qaconfig['qa_title'];
 include_once('./qahead.php');
-
-// 에디터 별도설정
-$apms_editor = $qaconfig['as_'.MOBILE_.'editor'];
-$is_apms_editor = (G5_IS_MOBILE && !$apms_editor) ? false : true;
-
-if($config['cf_editor'] && $apms_editor) {
-	$config['cf_editor'] = $apms_editor;
-	include_once(G5_EDITOR_PATH.'/'.$config['cf_editor'].'/editor.lib.php');
-} else {
-	include_once(G5_EDITOR_LIB);
-}
 
 $skin_file = $qa_skin_path.'/write.skin.php';
 
@@ -67,9 +57,8 @@ if(is_file($skin_file)) {
     }
 
     $is_dhtml_editor = false;
-    //if ($config['cf_editor'] && $qaconfig['qa_use_editor'] && (!is_mobile() || defined('G5_IS_MOBILE_DHTML_USE') && G5_IS_MOBILE_DHTML_USE)) {
-	if($config['cf_editor'] && $qaconfig['qa_use_editor'] && $is_apms_editor) {
-		$is_dhtml_editor = true;
+    if ($config['cf_editor'] && $qaconfig['qa_use_editor'] && (!is_mobile() || defined('G5_IS_MOBILE_DHTML_USE') && G5_IS_MOBILE_DHTML_USE)) {
+        $is_dhtml_editor = true;
     }
 
     // 추가질문에서는 제목을 공백으로
@@ -91,7 +80,7 @@ if(is_file($skin_file)) {
         
         // KISA 취약점 권고사항 Stored XSS
         $content = get_text(html_purifier($write['qa_content']), 0);
-	}
+    }
 
     $editor_html = editor_html('qa_content', $content, $is_dhtml_editor);
     $editor_js = '';

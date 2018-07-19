@@ -1,15 +1,11 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-//add_stylesheet('<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" type="text/css">', 0);
-//<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-
-//add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/jquery-ui/jquery-ui.css" type="text/css">', 0);
-//add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/jquery-ui/style.css" type="text/css">', 0);
+add_stylesheet('<link type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/base/jquery-ui.css" rel="stylesheet" />', 0);
+add_stylesheet('<link type="text/css" href="'.G5_PLUGIN_URL.'/jquery-ui/style.css">', 0);
 ?>
-<link rel="stylesheet" href="<?php echo G5_PLUGIN_URL;?>/jquery-ui/jquery-ui.css" type="text/css">
-<link rel="stylesheet" href="<?php echo G5_PLUGIN_URL;?>/jquery-ui/style.css" type="text/css">
-<script src="<?php echo G5_PLUGIN_URL;?>/jquery-ui/jquery-ui.min.js"></script>
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
 <script>
 jQuery(function($){
     $.datepicker.regional["ko"] = {

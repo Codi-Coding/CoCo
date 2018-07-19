@@ -30,19 +30,18 @@ if ($w == '')
     // 환경설정의 투표 기타의견 작성시 최고관리자에게 메일발송 사용에 체크되어 있을 경우
     if ($config['cf_email_po_super_admin'])
     {
-		$title = '['.$config['cf_title'].'] 설문조사 기타의견 메일';
-		$subject = $po['po_subject'];
+        $subject = $po['po_subject'];
         $content = $pc_idea;
 
         ob_start();
-        include_once ($misc_skin_path.'/poll_etc_update_mail.php');
+        include_once ('./poll_etc_update_mail.php');
         $content = ob_get_contents();
         ob_end_clean();
 
         // 관리자에게 보내는 메일
         $admin = get_admin('super');
         $from_email = $member['mb_email'] ? $member['mb_email'] : $admin['mb_email'];
-        mailer($name, $from_email, $admin['mb_email'], $title, $content, 1);
+        mailer($name, $from_email, $admin['mb_email'], '['.$config['cf_title'].'] 설문조사 기타의견 메일', $content, 1);
     }
 }
 else if ($w == 'd')

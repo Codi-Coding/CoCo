@@ -15,11 +15,6 @@ $msg = array();
 // 1:1문의 설정값
 $qaconfig = get_qa_config();
 
-// 관리자 체크
-if (chk_multiple_admin($member['mb_id'], $qaconfig['as_admin'])) { 
-	$is_admin = 'super'; 
-}
-
 if(trim($qaconfig['qa_category'])) {
     if($w != 'a') {
         $category = explode('|', $qaconfig['qa_category']);
@@ -281,32 +276,14 @@ if($w == '' || $w == 'a' || $w == 'r') {
                         qa_related  = '$qa_related'
                     where qa_id = '$qa_id' ";
         sql_query($sql);
-
-		//알림
-		$qa_admin_list = ($qaconfig['as_admin']) ? $config['cf_admin'].','.$qaconfig['as_admin'] : $config['cf_admin'];
-		$qa_admin = explode(",", $qa_admin_list);
-		$qa_admin = array_unique($qa_admin);
-
-		for($i=0;$i < count($qa_admin);$i++) {
-
-			$admin_id = trim($qa_admin[$i]);
-
-			if(!$admin_id) continue;
-
-			// APMS : 내글반응 등록
-			apms_response('qa', 'qa', '', '', $qa_id, $qa_subject, $admin_id, $member['mb_id'], $member['mb_nick']);
-		}
-	}
+    }
 
     if($w == 'a') {
         $sql = " update {$g5['qa_content_table']}
                     set qa_status = '1'
                     where qa_id = '{$write['qa_parent']}' ";
         sql_query($sql);
-
-		// APMS : 내글반응 등록
-		apms_response('qa', 'qa', '', '', $write['qa_parent'], $write['qa_subject'], $write['mb_id'], '', '답변완료');
-	}
+    }
 } else if($w == 'u') {
     if(!$upload[1]['file'] && !$upload[1]['del_check']) {
         $upload[1]['file'] = $write['qa_file1'];

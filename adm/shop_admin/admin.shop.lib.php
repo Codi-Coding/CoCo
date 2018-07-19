@@ -49,14 +49,7 @@ function change_status($od_id, $current_status, $change_status)
     $sql = " update {$g5['g5_shop_order_table']} set od_status = '{$change_status}' where od_id = '{$od_id}' and od_status = '{$current_status}' ";
     sql_query($sql, true);
 
-	// 개별 정산일
-	$pt_datetime = ($change_status == "완료") ? ", pt_datetime = '".G5_TIME_YMDHIS."'" : "";
-    $sql = " update {$g5['g5_shop_cart_table']} set ct_status = '{$change_status}' $pt_datetime where od_id = '{$od_id}' and ct_status = '{$current_status}' ";
-    sql_query($sql, true);
-
-	// 개별 배송비
-	$pt_sendcost = ($change_status == "완료") ? "sc_flag = '1', pt_datetime = '".G5_TIME_YMDHIS."'" : "sc_flag = '0', pt_datetime = ''";
-    $sql = " update {$g5['apms_sendcost']} set $pt_sendcost where od_id = '{$od_id}' ";
+    $sql = " update {$g5['g5_shop_cart_table']} set ct_status = '{$change_status}' where od_id = '{$od_id}' and ct_status = '{$current_status}' ";
     sql_query($sql, true);
 }
 

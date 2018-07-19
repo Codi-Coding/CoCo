@@ -28,15 +28,11 @@ $cp = sql_fetch($sql);
 $sql_common = "";
 $fields = sql_field_names($g5['g5_shop_item_table']);
 foreach($fields as $fld) {
-    if ($fld == 'it_id' || $fld == 'it_sum_qty' || $fld == 'it_hit' || $fld == 'it_use_cnt' || $fld == 'it_use_avg' || $fld == 'it_use' || $fld == 'pt_comment' || $fld == 'pt_qa' || $fld == 'pt_good' || $fld == 'pt_nogood' || $fld == 'pt_num' || $fld == 'pt_end' || $fld == 'pt_reserve' || $fld == 'pt_reserve_use' || $fld == 'it_time' || $fld == 'it_update_time')
+    if ($fld == 'it_id' || $fld == 'it_sum_qty' || $fld == 'it_use_cnt' || $fld == 'it_use_avg')
         continue;
 
     $sql_common .= " , $fld = '".addslashes($cp[$fld])."' ";
 }
-
-$sql_common .= " , it_time = '".G5_TIME_YMDHIS."' ";
-$sql_common .= " , it_update_time = '".G5_TIME_YMDHIS."' ";
-$sql_common .= " , pt_num = '".G5_SERVER_TIME."' ";
 
 $sql = " insert {$g5['g5_shop_item_table']}
 			set it_id = '$new_it_id'
@@ -52,47 +48,56 @@ $opt_sql = " insert ignore into {$g5['g5_shop_item_option_table']} ( io_id, io_t
 sql_query($opt_sql);
 
 // html 에디터로 첨부된 이미지 파일 복사
-$hfn = array('it_explan', 'it_mobile_explan', 'pt_explan', 'pt_mobile_explan');
+if($cp['it_explan']) {
+    $matchs = get_editor_image($cp['it_explan'], false);
 
-for($j = 0; $j < count($hfn); $j++) {
+    // 파일의 경로를 얻어 복사
+    for($i=0;$i<count($matchs[1]);$i++) {
+        $p = parse_url($matchs[1][$i]);
+        if(strpos($p['path'], "/data/") != 0)
+            $src_path = preg_replace("/^\/.*\/data/", "/data", $p['path']);
+        else
+            $src_path = $p['path'];
 
-	// 값정리
-	$fkey = $hfn[$j];
-	$fvalue = $cp[$fkey];
+        $srcfile = G5_PATH.$src_path;
+        $dstfile = preg_replace("/\.([^\.]+)$/", "_".$new_it_id.".\\1", $srcfile);
 
-	if($fvalue) {
-		$matchs = get_editor_image($fvalue, false);
+        if(is_file($srcfile)) {
+            copy($srcfile, $dstfile);
 
-		// 파일의 경로를 얻어 복사
-		for($i=0;$i<count($matchs[1]);$i++) {
-			$p = parse_url($matchs[1][$i]);
-			if(strpos($p['path'], "/data/") != 0)
-				$src_path = preg_replace("/^\/.*\/data/", "/data", $p['path']);
-			else
-				$src_path = $p['path'];
+            $newfile = preg_replace("/\.([^\.]+)$/", "_".$new_it_id.".\\1", $matchs[1][$i]);
+            $cp['it_explan'] = str_replace($matchs[1][$i], $newfile, $cp['it_explan']);
+        }
+    }
 
-			$srcfile = G5_PATH.$src_path;
+    $sql = " update {$g5['g5_shop_item_table']} set it_explan = '".addslashes($cp['it_explan'])."' where it_id = '$new_it_id' ";
+    sql_query($sql);
+}
 
-			if(is_file($srcfile)) {
-				$dstfile = preg_replace("/\.([^\.]+)$/", "_".$new_it_id.".\\1", $srcfile);
+if($cp['it_mobile_explan']) {
+    $matchs = get_editor_image($cp['it_mobile_explan'], false);
 
-				// 파일명에서 기존 상품코드 제거
-				$dstfile = str_replace("_".$it_id, "", $dstfile);
+    // 파일의 경로를 얻어 복사
+    for($i=0;$i<count($matchs[1]);$i++) {
+        $p = parse_url($matchs[1][$i]);
+        if(strpos($p['path'], "/data/") != 0)
+            $src_path = preg_replace("/^\/.*\/data/", "/data", $p['path']);
+        else
+            $src_path = $p['path'];
 
-				copy($srcfile, $dstfile);
+        $srcfile = G5_PATH.$src_path;
+        $dstfile = preg_replace("/\.([^\.]+)$/", "_".$new_it_id.".\\1", $srcfile);
 
-				$newfile = preg_replace("/\.([^\.]+)$/", "_".$new_it_id.".\\1", $matchs[1][$i]);
+        if(is_file($srcfile)) {
+            copy($srcfile, $dstfile);
 
-				// 파일명에서 기존 상품코드 제거
-				$newfile = str_replace("_".$it_id, "", $newfile);
+            $newfile = preg_replace("/\.([^\.]+)$/", "_".$new_it_id.".\\1", $matchs[1][$i]);
+            $cp['it_mobile_explan'] = str_replace($matchs[1][$i], $newfile, $cp['it_mobile_explan']);
+        }
+    }
 
-				$fvalue = str_replace($matchs[1][$i], $newfile, $fvalue);
-			}
-		}
-
-		$sql = " update {$g5['g5_shop_item_table']} set $fkey = '".addslashes($fvalue)."' where it_id = '$new_it_id' ";
-		sql_query($sql);
-	}
+    $sql = " update {$g5['g5_shop_item_table']} set it_mobile_explan = '".addslashes($cp['it_mobile_explan'])."' where it_id = '$new_it_id' ";
+    sql_query($sql);
 }
 
 // 상품이미지 복사

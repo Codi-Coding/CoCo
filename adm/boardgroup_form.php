@@ -26,10 +26,6 @@ if (!isset($group['gr_device'])) {
     sql_query(" ALTER TABLE `{$g5['group_table']}` ADD `gr_device` ENUM('both','pc','mobile') NOT NULL DEFAULT 'both' AFTER `gr_subject` ", false);
 }
 
-if (!isset($group['as_group_skin'])) {
-	sql_query(" ALTER TABLE `{$g5['group_table']}` ADD `as_group_skin` varchar(255) NOT NULL DEFAULT '' AFTER `gr_10` ", false);
-}
-if(!$group['as_group_skin']) $group['as_group_skin'] = "basic";
 
 $g5['title'] = $html_title;
 include_once('./admin.head.php');
@@ -84,34 +80,7 @@ include_once('./admin.head.php');
             </select>
         </td>
     </tr>
-	<tr>
-		<th scope="row"><label for="as_main">PC 그룹스킨</label></th>
-		<td>
-			<select name="as_main" id="as_main">
-				<option value="">사용안함</option>
-				<?php
-				$groupskin = get_skin_dir('group');
-				for ($i=0; $i<count($groupskin); $i++) {
-					echo "<option value=\"".$groupskin[$i]."\"".get_selected($group['as_main'], $groupskin[$i]).">".$groupskin[$i]."</option>\n";
-				}
-				?>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row"><label for="as_mobile_main">모바일 그룹스킨</label></th>
-		<td>
-			<select name="as_mobile_main" id="as_mobile_main">
-				<option value="">사용안함</option>
-				<?php
-				for ($i=0; $i<count($groupskin); $i++) {
-					echo "<option value=\"".$groupskin[$i]."\"".get_selected($group['as_mobile_main'], $groupskin[$i]).">".$groupskin[$i]."</option>\n";
-				}
-				?>
-			</select>
-		</td>
-	</tr>
-	<tr>
+    <tr>
         <th scope="row"><?php if ($is_admin == 'super') { ?><label for="gr_admin"><?php } ?>그룹 관리자<?php if ($is_admin == 'super') { ?></label><?php } ?></th>
         <td>
             <?php

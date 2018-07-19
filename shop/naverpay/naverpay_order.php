@@ -26,7 +26,7 @@ if($_POST['naverpay_form'] == 'cart.php') {
         $it_id = preg_replace($pattern, '', $_POST['it_id'][$i]);
 
         // 장바구니 상품
-        $sql = " select ct_id, it_id, ct_option, io_id, io_type, ct_qty, ct_send_cost, it_sc_type, pt_msg1, pt_msg2, pt_msg3 from {$g5['g5_shop_cart_table']} where od_id = '$s_cart_id' and it_id = '$it_id' and ct_status = '쇼핑' order by ct_id asc ";
+        $sql = " select ct_id, it_id, ct_option, io_id, io_type, ct_qty, ct_send_cost, it_sc_type from {$g5['g5_shop_cart_table']} where od_id = '$s_cart_id' and it_id = '$it_id' and ct_status = '쇼핑' order by ct_id asc ";
         $result = sql_query($sql);
 
         for($k=0; $row=sql_fetch_array($result); $k++) {
@@ -35,11 +35,6 @@ if($_POST['naverpay_form'] == 'cart.php') {
             $_POST['ct_qty'][$it_id][] = $row['ct_qty'];
             $_POST['io_value'][$it_id][] = $row['ct_option'];
             $_POST['ct_send_cost'][$it_id][] = $row['ct_send_cost'];
-
-			//텍스트옵션
-			$_POST['pt_msg1'][$it_id][] = $row['pt_msg1'];
-			$_POST['pt_msg2'][$it_id][] = $row['pt_msg2'];
-			$_POST['pt_msg3'][$it_id][] = $row['pt_msg3'];
 
             $is_free = false;   //무료 인지 체크 변수 초기화
 
@@ -158,6 +153,7 @@ for($i=0; $i<$count; $i++) {
         $io_type = (int) $_POST['io_type'][$it_id][$k];
         $io_value = $_POST['io_value'][$it_id][$k];
        
+
         // 재고 구함
         $ct_qty = (int) $_POST['ct_qty'][$it_id][$k];
         if(!$io_id)
@@ -178,11 +174,6 @@ for($i=0; $i<$count; $i++) {
         $io_id = preg_replace(G5_OPTION_ID_FILTER, '', trim(stripslashes($_POST['io_id'][$it_id][$k])));
         $io_type = (int) $_POST['io_type'][$it_id][$k];
         $io_value = $_POST['io_value'][$it_id][$k];
-
-		//텍스트옵션
-		if($_POST['pt_msg1'][$it_id][$k]) $io_value .= get_text($_POST['pt_msg1'][$it_id][$k]);
-		if($_POST['pt_msg2'][$it_id][$k]) $io_value .= get_text($_POST['pt_msg2'][$it_id][$k]);
-		if($_POST['pt_msg3'][$it_id][$k]) $io_value .= get_text($_POST['pt_msg3'][$it_id][$k]);
 
         // 선택옵션정보가 존재하는데 선택된 옵션이 없으면 건너뜀
         if($lst_count && $io_id == '')

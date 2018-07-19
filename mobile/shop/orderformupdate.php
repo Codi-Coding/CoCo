@@ -21,7 +21,7 @@ if(get_session('ss_direct'))
     $page_return_url .= '?sw_direct=1';
 
 // 결제등록 완료 체크
-if($od_settle_case != '무통장' && $od_settle_case != '포인트' && $od_settle_case != 'KAKAOPAY') {
+if($od_settle_case != '무통장' && $od_settle_case != 'KAKAOPAY') {
     if($default['de_pg_service'] == 'kcp' && ($_POST['tran_cd'] == '' || $_POST['enc_info'] == '' || $_POST['enc_data'] == ''))
         alert('결제등록 요청 후 주문해 주십시오.', $page_return_url);
 
@@ -279,16 +279,8 @@ if ($is_member && $config['cf_use_point'])
     }
 }
 
-if ($od_settle_case == "포인트") 
-{
-	$temp_order_point = $i_price + $i_send_cost + $i_send_cost2 - $i_send_coupon;
-	if($temp_order_point != $i_temp_point) 
-        alert('결제하실 금액과 포인트가 일치하지 않습니다.', $page_return_url);
-
-} else {
-	if (($i_temp_point > (int)$temp_point || $i_temp_point < 0) && $config['cf_use_point'])
-		die("Error....");
-}
+if (($i_temp_point > (int)$temp_point || $i_temp_point < 0) && $config['cf_use_point'])
+    die("Error....");
 
 if ($od_temp_point)
 {
@@ -301,7 +293,7 @@ $order_price = $tot_od_price + $send_cost + $send_cost2 - $tot_sc_cp_price - $od
 
 $od_status = '주문';
 $od_tno    = '';
-if ($od_settle_case == "무통장" || $od_settle_case == "포인트")
+if ($od_settle_case == "무통장")
 {
     $od_receipt_point   = $i_temp_point;
     $od_receipt_price   = 0;
@@ -751,11 +743,6 @@ if($is_member) {
     }
 }
 
-// APMS : 주문처리 - 2014.07.21
-apms_order($od_id, $od_status, $member['mb_recommend']);
-
-// 쿠폰업데이트
-apms_coupon_update($member['mb_id']);
 
 include_once(G5_SHOP_PATH.'/ordermail1.inc.php');
 include_once(G5_SHOP_PATH.'/ordermail2.inc.php');
@@ -874,6 +861,7 @@ if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])
 }
 // SMS END   --------------------------------------------------------
 
+
 // orderview 에서 사용하기 위해 session에 넣고
 $uid = md5($od_id.G5_TIME_YMDHIS.$REMOTE_ADDR);
 set_session('ss_orderview_uid', $uid);
@@ -886,6 +874,7 @@ if( $od_pg == 'inicis' && $od_tno ){
     $sql = "delete from {$g5['g5_shop_inicis_log_table']} where oid = '$od_id' and P_TID = '$od_tno' ";
     sql_query($sql, false);
 }
+
 
 // 주문번호제거
 set_session('ss_order_id', '');
@@ -943,19 +932,6 @@ if($is_member) {
 
     sql_query($sql);
 }
-
-// Push - 최고관리자에게 보냄 ---------------------------------------
-	$mb_list = $config['cf_admin'].','.$config['as_admin'];
-	$push = array(
-		'use'=>'od',
-		'flag'=>'new',
-		'od_name'=>$od_name,
-		'od_id'=>$od_id,
-		'od_amount'=>($tot_ct_price + $od_send_cost + $od_send_cost2),
-		'od_status'=>$od_status,
-		'od_memo'=>$od_memo);
-	apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
-// ------------------------------------------------------------------
 
 $is_noti_pay = isset($is_noti_pay) ? $is_noti_pay : false;
 

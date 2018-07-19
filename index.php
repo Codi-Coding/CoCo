@@ -1,47 +1,50 @@
 <?php
 include_once('./_common.php');
+
 define('_INDEX_', true);
+if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-if(!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
-
-$is_index = true;
-$is_main = true;
-
-// 루트 index를 쇼핑몰 index 설정했을 때
-if(IS_YC && isset($default['de_root_index_use']) && $default['de_root_index_use'] && (!isset($ci) || !$ci)) {
-    require_once(G5_SHOP_PATH.'/index.php');
+if(defined('G5_THEME_PATH')) {
+    require_once(G5_THEME_PATH.'/index.php');
     return;
-} else {
-	if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-		require_once(G5_THEME_PATH.'/index.php');
-		return;
-	}
-	define('IS_SHOP', false);
 }
 
-// Intro
-if($config['as_'.MOBILE_.'intro_skin']) {
-	$is_intro = false;
-	include_once(G5_BBS_PATH.'/intro.php');
-	if($is_intro)
-		return;
+if (G5_IS_MOBILE) {
+    include_once(G5_MOBILE_PATH.'/index.php');
+    return;
 }
 
-include_once('./_head.php');
+include_once(G5_PATH.'/head.php');
+?>
 
-if(!isset($config['as_thema']) || !$config['as_thema']) {
-	echo '<br><p align=center>아미나빌더가 설치되어 있지 않습니다. <br><br> 관리자 접속후 관리자화면 > 테마관리에서 아미나빌더를 설치해 주세요.</p><br>';
-} else {
-	if(IS_YC) {
-		if(file_exists(THEMA_PATH.'/index.php')) {
-			include_once(THEMA_PATH.'/index.php');
-		} else {
-			include_once(THEMA_PATH.'/shop.index.php');
-		}
-	} else {
-		include_once(THEMA_PATH.'/index.php');
-	}
+<h2 class="sound_only">최신글</h2>
+<!-- 최신글 시작 { -->
+<?php
+//  최신글
+$sql = " select bo_table
+            from `{$g5['board_table']}` a left join `{$g5['group_table']}` b on (a.gr_id=b.gr_id)
+            where a.bo_device <> 'mobile' ";
+if(!$is_admin)
+    $sql .= " and a.bo_use_cert = '' ";
+$sql .= " order by b.gr_order, a.bo_order ";
+$result = sql_query($sql);
+for ($i=0; $row=sql_fetch_array($result); $i++) {
+    if ($i%2==1) $lt_style = "margin-left:20px";
+    else $lt_style = "";
+?>
+    <div style="float:left;<?php echo $lt_style ?>">
+        <?php
+        // 이 함수가 바로 최신글을 추출하는 역할을 합니다.
+        // 사용방법 : latest(스킨, 게시판아이디, 출력라인, 글자수);
+        // 테마의 스킨을 사용하려면 theme/basic 과 같이 지정
+        echo latest("basic", $row['bo_table'], 5, 25);
+        ?>
+    </div>
+<?php
 }
+?>
+<!-- } 최신글 끝 -->
 
-include_once('./_tail.php');
+<?php
+include_once(G5_PATH.'/tail.php');
 ?>

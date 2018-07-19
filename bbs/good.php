@@ -1,8 +1,6 @@
 <?php
 include_once('./_common.php');
 
-$is_apms = false;
-
 @include_once($board_skin_path.'/good.head.skin.php');
 
 // 자바스크립트 사용가능할 때
@@ -74,26 +72,15 @@ if($_POST['js'] == "on") {
         }
         else
         {
-			@include_once($board_skin_path.'/good.skin.php');
-
-			// 추천(찬성), 비추천(반대) 카운트 증가
+            // 추천(찬성), 비추천(반대) 카운트 증가
             sql_query(" update {$g5['write_prefix']}{$bo_table} set wr_{$good} = wr_{$good} + 1 where wr_id = '{$wr_id}' ");
-
-			// 내역 생성
+            // 내역 생성
             sql_query(" insert {$g5['board_good_table']} set bo_table = '{$bo_table}', wr_id = '{$wr_id}', mb_id = '{$member['mb_id']}', bg_flag = '{$good}', bg_datetime = '".G5_TIME_YMDHIS."' ");
-
-			// 내글반응
-			apms_response('wr', $good, '', $bo_table, $wr_id, $write['wr_subject'], $write['mb_id'], $member['mb_id'], $member['mb_nick']);
-
-			// 새글DB 업데이트
-			apms_board_new('as_'.$good, $bo_table, $wr_id);
 
             $sql = " select wr_{$good} as count from {$g5['write_prefix']}{$bo_table} where wr_id = '$wr_id' ";
             $row = sql_fetch($sql);
 
             $count = $row['count'];
-
-			@include_once($board_skin_path.'/good.tail.skin.php');
 
             print_result($error, $count);
         }
@@ -147,19 +134,10 @@ if($_POST['js'] == "on") {
         }
         else
         {
-			@include_once($board_skin_path.'/good.skin.php');
-
-			// 추천(찬성), 비추천(반대) 카운트 증가
+            // 추천(찬성), 비추천(반대) 카운트 증가
             sql_query(" update {$g5['write_prefix']}{$bo_table} set wr_{$good} = wr_{$good} + 1 where wr_id = '{$wr_id}' ");
-
-			// 내역 생성
+            // 내역 생성
             sql_query(" insert {$g5['board_good_table']} set bo_table = '{$bo_table}', wr_id = '{$wr_id}', mb_id = '{$member['mb_id']}', bg_flag = '{$good}', bg_datetime = '".G5_TIME_YMDHIS."' ");
-
-			// 내글반응
-			apms_response('wr', $good, '', $bo_table, $wr_id, $write['wr_subject'], $write['mb_id'], $member['mb_id'], $member['mb_nick']);
-
-			// 새글DB 업데이트
-			apms_board_new('as_'.$good, $bo_table, $wr_id);
 
             if ($good == 'good')
                 $status = '추천';
@@ -168,11 +146,10 @@ if($_POST['js'] == "on") {
 
             $href = './board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id;
 
-			@include_once($board_skin_path.'/good.tail.skin.php');
-
             alert("이 글을 $status 하셨습니다.", '', false);
         }
     }
 }
 
+@include_once($board_skin_path.'/good.tail.skin.php');
 ?>

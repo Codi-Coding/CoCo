@@ -41,13 +41,11 @@ if ($sca != "") {
 
 if ($sfl == "")  $sfl = "it_name";
 
-$pts = '';
 if (!$sst)  {
-	$pts = 'pt_num desc,';
     $sst  = "it_id";
     $sod = "desc";
 }
-$sql_order = "order by $pts $sst $sod";
+$sql_order = "order by $sst $sod";
 
 $sql_common = "  from {$g5['g5_shop_item_table']} ";
 $sql_common .= $sql_search;
@@ -62,17 +60,13 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-// APMS - 2014.07.20
 $sql  = " select it_id,
                  it_name,
                  it_type1,
                  it_type2,
                  it_type3,
                  it_type4,
-                 it_type5,
-				 ca_id,
-				 pt_it,
-				 pt_id
+                 it_type5
           $sql_common
           $sql_order
           limit $from_record, $rows ";
@@ -82,8 +76,6 @@ $qstr  = $qstr.'&amp;sca='.$sca.'&amp;page='.$page.'&amp;save_stx='.$stx;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 ?>
-
-<script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
@@ -98,15 +90,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sca" id="sca">
     <option value="">전체분류</option>
     <?php
-    $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
+    $sql1 = " select ca_id, ca_name from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
     $result1 = sql_query($sql1);
     for ($i=0; $row1=sql_fetch_array($result1); $i++) {
         $len = strlen($row1['ca_id']) / 2 - 1;
         $nbsp = "";
         for ($i=0; $i<$len; $i++) $nbsp .= "&nbsp;&nbsp;&nbsp;";
-		if($row1['as_line']) {
-			echo "<option value=\"\">".$nbsp."------------</option>\n";
-		}
         echo '<option value="'.$row1['ca_id'].'" '.get_selected($sca, $row1['ca_id']).'>'.$nbsp.$row1['ca_name'].PHP_EOL;
     }
     ?>
@@ -116,9 +105,6 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sfl" id="sfl">
     <option value="it_name" <?php echo get_selected($sfl, 'it_name'); ?>>상품명</option>
     <option value="it_id" <?php echo get_selected($sfl, 'it_id'); ?>>상품코드</option>
-	<!-- APMS - 2014.07.20 -->
-	    <option value="pt_id" <?php echo get_selected($sfl, 'pt_id'); ?>>파트너 아이디</option>
-	<!-- // -->
 </select>
 
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
@@ -154,25 +140,14 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <?php for ($i=0; $row=sql_fetch_array($result); $i++) {
         $href = G5_SHOP_URL.'/item.php?it_id='.$row['it_id'];
 
-		// 등록폼
-        $sql3 = " select pt_form from {$g5['g5_shop_category_table']} where ca_id = '{$row['ca_id']}' ";
-        $row3 = sql_fetch($sql3);
-		$fn = $row3['pt_form'];
-
         $bg = 'bg'.($i%2);
     ?>
     <tr class="<?php echo $bg; ?>">
-		<!-- APMS - 2014.07.20 -->
-        <td class="td_code" style="white-space:nowrap">
+        <td class="td_code">
             <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
-			<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
-			<b><?php echo $row['it_id']; ?></b>
-			<?php if($row['pt_id']) { ?>
-				<div style="font-size:11px; letter-spacing:-1px;"><?php echo $row['pt_id'];?></div>
-			<?php } ?>
+            <?php echo $row['it_id']; ?>
         </td>
-		<!-- // -->
-		<td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?><?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
+        <td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?><?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
         <td class="td_chk">
             <label for="type1_<?php echo $i; ?>" class="sound_only">히트상품</label>
             <input type="checkbox" name="it_type1[<?php echo $i; ?>]" value="1" id="type1_<?php echo $i; ?>" <?php echo ($row['it_type1'] ? 'checked' : ''); ?>>
@@ -194,7 +169,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <input type="checkbox" name="it_type5[<?php echo $i; ?>]" value="1" id="type5_<?php echo $i; ?>" <?php echo ($row['it_type5'] ? 'checked' : ''); ?>>
         </td>
         <td class="td_mngsmall">
-            <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;fn=<?php echo $fn;?>&amp;<?php echo $qstr; ?>"><span class="sound_only"><?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?> </span>수정</a>
+            <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>"><span class="sound_only"><?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?> </span>수정</a>
          </td>
     </tr>
     <?php
