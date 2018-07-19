@@ -30,9 +30,9 @@ else {
 // 원본 게시판을 선택 할 수 있도록 함.
 $sql = " select * from {$g5['board_table']} a, {$g5['group_table']} b where a.gr_id = b.gr_id ";
 if ($is_admin == 'group')
-    $sql .= " and find_in_set('{$member['mb_id']}', b.gr_admin) ";
+    $sql .= " and b.gr_admin = '{$member['mb_id']}' ";
 else if ($is_admin == 'board')
-    $sql .= " and find_in_set('{$member['mb_id']}', a.bo_admin) ";
+    $sql .= " and a.bo_admin = '{$member['mb_id']}' ";
 $sql .= " order by a.gr_id, a.bo_order, a.bo_table ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
@@ -67,7 +67,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                 <input type="checkbox" id="chkall" onclick="if (this.checked) all_checked(true); else all_checked(false);">
             </th>
             <th scope="col">게시판</th>
-            <th scope="col"><input type="text" value="" id="ca_name" name="ca_name" class="frm_input" placeholder="분류지정"></th>
         </tr>
         </thead>
         <tbody>
@@ -84,7 +83,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
                 <label for="chk<?php echo $i ?>" class="sound_only"><?php echo $list[$i]['bo_table'] ?></label>
                 <input type="checkbox" value="<?php echo $list[$i]['bo_table'] ?>" id="chk<?php echo $i ?>" name="chk_bo_table[]">
             </td>
-            <td colspan="2">
+            <td>
                 <label for="chk<?php echo $i ?>">
                     <?php
                     echo $list[$i]['gr_subject'] . ' &gt; ';

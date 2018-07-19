@@ -109,23 +109,19 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="chkall" class="sound_only">알림요청 전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
-        <th scope="col">상품코드</th>
-		<th scope="col">상품명</th>
+        <th scope="col">상품명</th>
         <th scope="col">휴대폰번호</th>
         <th scope="col">SMS전송</th>
         <th scope="col">SMS전송일시</th>
         <th scope="col">등록일시</th>
-		<?php if(USE_PARTNER) { ?>
-			<th scope="col">파트너</th>
-		<?php } ?>
-	</tr>
+    </tr>
     </thead>
     <tbody>
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++)
     {
         // 상품정보
-        $sql = " select it_name, pt_id, pt_it from {$g5['g5_shop_item_table']} where it_id = '{$row['it_id']}' ";
+        $sql = " select it_name from {$g5['g5_shop_item_table']} where it_id = '{$row['it_id']}' ";
         $it = sql_fetch($sql);
 
         if($it['it_name'])
@@ -142,28 +138,16 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i; ?>">
             <input type="hidden" name="ss_id[<?php echo $i; ?>]" value="<?php echo $row['ss_id']; ?>">
         </td>
-        <td class="td_code" style="white-space:nowrap;">
-			<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($it['pt_it'],1);?></div>
-			<b><?php echo $row['it_id']; ?></b>
-        </td>
-		<td><?php echo $it_name; ?></td>
+        <td><?php echo $it_name; ?></td>
         <td class="td_telbig"><?php echo $row['ss_hp']; ?></td>
         <td class="td_stat"><?php echo ($row['ss_send'] ? '전송완료' : '전송전'); ?></td>
         <td class="td_datetime"><?php echo (is_null_time($row['ss_send_time']) ? '' : $row['ss_send_time']); ?></td>
         <td class="td_datetime"><?php echo (is_null_time($row['ss_datetime']) ? '' : $row['ss_datetime']); ?></td>
-		<?php if(USE_PARTNER) { ?>
-			<td class="td_code" style="white-space:nowrap;">
-				<?php if($it['pt_id']) { ?>
-					<div style="font-size:11px; letter-spacing:-1px;"><?php echo $it['pt_id'];?></div>
-				<?php } ?>
-	        </td>
-		<?php } ?>
-	</tr>
+    </tr>
     <?php
     }
     if (!$i)
-		$colspan = (USE_PARTNER) ? 8 : 7;
-        echo '<tr><td colspan="'.$colspan.'" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
+        echo '<tr><td colspan="6" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
     ?>
     </tbody>
     </table>

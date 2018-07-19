@@ -2,27 +2,25 @@
 // 코멘트 삭제
 include_once('./_common.php');
 
-$is_ajax = false;
-
 $delete_comment_token = get_session('ss_delete_comment_'.$comment_id.'_token');
 set_session('ss_delete_comment_'.$comment_id.'_token', '');
 
 if (!($token && $delete_comment_token == $token))
     alert('토큰 에러로 삭제 불가합니다.');
 
-$write = sql_fetch(" select * from {$write_table} where wr_id = '{$comment_id}' ");
-
 // 4.1
 @include_once($board_skin_path.'/delete_comment.head.skin.php');
+
+$write = sql_fetch(" select * from {$write_table} where wr_id = '{$comment_id}' ");
 
 if (!$write['wr_id'] || !$write['wr_is_comment'])
     alert('등록된 코멘트가 없거나 코멘트 글이 아닙니다.');
 
-if ($is_admin === 'super') // 최고관리자 통과
+if ($is_admin == 'super') // 최고관리자 통과
     ;
-else if ($is_admin === 'group') { // 그룹관리자
+else if ($is_admin == 'group') { // 그룹관리자
     $mb = get_member($write['mb_id']);
-    if (chk_multiple_admin($member['mb_id'], $group['gr_admin'])) { // 자신이 관리하는 그룹인가?
+    if ($member['mb_id'] === $group['gr_admin']) { // 자신이 관리하는 그룹인가?
         if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
             ;
         else
@@ -31,7 +29,7 @@ else if ($is_admin === 'group') { // 그룹관리자
         alert('자신이 관리하는 그룹의 게시판이 아니므로 코멘트를 삭제할 수 없습니다.');
 } else if ($is_admin === 'board') { // 게시판관리자이면
     $mb = get_member($write['mb_id']);
-    if (chk_multiple_admin($member['mb_id'], $board['bo_admin'])) { // 자신이 관리하는 게시판인가?
+    if ($member['mb_id'] === $board['bo_admin']) { // 자신이 관리하는 게시판인가?
         if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
             ;
         else
@@ -77,22 +75,14 @@ sql_query(" update {$write_table} set wr_comment = wr_comment - 1, wr_last = '{$
 // 코멘트 숫자 감소
 sql_query(" update {$g5['board_table']} set bo_count_comment = bo_count_comment - 1 where bo_table = '{$bo_table}' ");
 
-// 새글DB 업데이트
-apms_board_new('as_comment', $bo_table, $write['wr_parent'], '- 1');
-
 // 새글 삭제
 sql_query(" delete from {$g5['board_new_table']} where bo_table = '{$bo_table}' and wr_id = '{$comment_id}' ");
-
-// 신고글
-sql_query(" delete from {$g5['apms_shingo']} where bo_table = '{$bo_table}' and wr_id = '{$comment_id}' ", false);
 
 // 사용자 코드 실행
 @include_once($board_skin_path.'/delete_comment.skin.php');
 @include_once($board_skin_path.'/delete_comment.tail.skin.php');
 
 delete_cache_latest($bo_table);
-
-if($pim) $qstr .= '&amp;pim='.$pim;
 
 goto_url(G5_HTTP_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$write['wr_parent'].'&amp;page='.$page. $qstr);
 ?>

@@ -157,7 +157,7 @@ if($ps_run) {
 </div>
 
 <fieldset>
-    <?php echo help('추가 옵션의 상품금액, 재고, 통보수량, 사용여부를 일괄 적용할 수 있습니다.  단, 체크된 수정항목만 일괄 적용됩니다.'); ?>
+    <?php echo help('전체 추가 옵션의 상품금액, 재고/통보수량 및 사용여부를 일괄 적용할 수 있습니다.  단, 체크된 수정항목만 일괄 적용됩니다.'); ?>
     <label for="spl_com_price">상품금액</label>
     <label for="spl_com_price_chk" class="sound_only">상품금액일괄수정</label><input type="checkbox" name="spl_com_price_chk" value="1" id="spl_com_price_chk" class="spl_com_chk">
     <input type="text" name="spl_com_price" value="0" id="spl_com_price" class="frm_input" size="9">

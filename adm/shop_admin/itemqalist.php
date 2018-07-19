@@ -68,18 +68,13 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sca" id="sca">
     <option value="">전체분류</option>
     <?php
-    $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
+    $sql1 = " select ca_id, ca_name from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
     $result1 = sql_query($sql1);
     for ($i=0; $row1=sql_fetch_array($result1); $i++) {
         $len = strlen($row1['ca_id']) / 2 - 1;
         $nbsp = "";
         for ($i=0; $i<$len; $i++) $nbsp .= "&nbsp;&nbsp;&nbsp;";
-
-		if($row1['as_line']) {
-			echo "<option value=\"\">".$nbsp."------------</option>\n";
-		}
-
-		$selected = ($row1['ca_id'] == $sca) ? ' selected="selected"' : '';
+        $selected = ($row1['ca_id'] == $sca) ? ' selected="selected"' : '';
         echo '<option value="'.$row1['ca_id'].'"'.$selected.'>'.$nbsp.$row1['ca_name'].'</option>'.PHP_EOL;
     }
     ?>
@@ -89,9 +84,6 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sfl" id="sfl">
     <option value="it_name" <?php echo get_selected($sfl, 'it_name'); ?>>상품명</option>
     <option value="a.it_id" <?php echo get_selected($sfl, 'a.it_id'); ?>>상품코드</option>
-	<!-- APMS - 2014.07.20 -->
-    <option value="a.pt_id" <?php echo get_selected($sfl, 'a.pt_id'); ?>>파트너 아이디</option>
-	<!-- // -->
 </select>
 
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
@@ -117,15 +109,11 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="chkall" class="sound_only">상품문의 전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
-        <th scope="col"><?php echo subject_sort_link('it_id'); ?>상품코드</a></th>
-		<th scope="col"><?php echo subject_sort_link('it_name'); ?>상품명</a></th>
+        <th scope="col"><?php echo subject_sort_link('it_name'); ?>상품명</a></th>
         <th scope="col"><?php echo subject_sort_link('iq_subject'); ?>질문</a></th>
         <th scope="col"><?php echo subject_sort_link('mb_name'); ?>이름</a></th>
         <th scope="col"><?php echo subject_sort_link('iq_answer'); ?>답변</a></th>
-		<?php if(USE_PARTNER) { ?>
-			<th scope="col"><?php echo subject_sort_link('a.pt_id'); ?>파트너</a></th>
-		<?php } ?>
-		<th scope="col">관리</th>
+        <th scope="col">관리</th>
     </tr>
     </thead>
     <tbody>
@@ -141,16 +129,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         $bg = 'bg'.($i%2);
      ?>
     <tr class="<?php echo $bg; ?>">
-		<td class="td_chk">
+        <td class="td_chk">
             <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['iq_subject']) ?> 상품문의</label>
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i; ?>">
             <input type="hidden" name="iq_id[<?php echo $i; ?>]" value="<?php echo $row['iq_id']; ?>">
         </td>
-        <td class="td_code" style="white-space:nowrap;">
-			<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
-			<b><?php echo $row['it_id']; ?></b>
-        </td>
-		<td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a></td>
+        <td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a></td>
         <td>
             <a href="#" class="qa_href" onclick="return false;" target="<?php echo $i; ?>"><?php echo get_text($row['iq_subject']); ?></a>
             <div id="qa_div<?php echo $i; ?>" class="qa_div" style="display:none;">
@@ -162,18 +146,14 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         </td>
         <td class="td_name"><?php echo $name; ?></td>
         <td class="td_boolean"><?php echo $answer; ?></td>
-		<?php if(USE_PARTNER) { ?>
-		   <td class="td_code"><?php echo $row['pt_id'];?></td>
-		<?php } ?>
-		<td class="td_mngsmall">
+        <td class="td_mngsmall">
             <a href="./itemqaform.php?w=u&amp;iq_id=<?php echo $row['iq_id']; ?>&amp;<?php echo $qstr; ?>"><span class="sound_only"><?php echo get_text($row['iq_subject']); ?> </span>수정</a>
         </td>
     </tr>
     <?php
     }
     if ($i == 0) {
-		$colspan = (USE_PARTNER) ? 8 : 7;
-        echo '<tr><td colspan="'.$colspan.'" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
+        echo '<tr><td colspan="6" class="empty_table"><span>자료가 없습니다.</span></td></tr>';
     }
     ?>
     </tbody>

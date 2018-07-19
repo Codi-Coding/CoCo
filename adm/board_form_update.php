@@ -61,7 +61,7 @@ $src_char = array('&', '=');
 $dst_char = array('＆', '〓');
 $bo_category_list = str_replace($src_char, $dst_char, $bo_category_list);
 //https://github.com/gnuboard/gnuboard5/commit/f5f4925d4eb28ba1af728e1065fc2bdd9ce1da58 에 따른 조치
-$str_bo_category_list = isset($_POST['bo_category_list']) ? preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\^\*]/", "", $_POST['bo_category_list']) : '';
+$str_bo_category_list = isset($_POST['bo_category_list']) ? preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", "", $_POST['bo_category_list']) : '';
 
 $sql_common = " gr_id               = '{$_POST['gr_id']}',
                 bo_subject          = '{$_POST['bo_subject']}',
@@ -159,38 +159,7 @@ $sql_common .= " bo_insert_content   = '{$_POST['bo_insert_content']}',
                 bo_7                = '{$_POST['bo_7']}',
                 bo_8                = '{$_POST['bo_8']}',
                 bo_9                = '{$_POST['bo_9']}',
-                bo_10               = '{$_POST['bo_10']}',
-				as_title			= '{$_POST['as_title']}',
-				as_desc				= '{$_POST['as_desc']}',
-				as_grade			= '{$_POST['as_grade']}',
-				as_equal			= '{$_POST['as_equal']}',
-				as_partner			= '{$_POST['as_partner']}',
-				as_autoplay			= '{$_POST['as_autoplay']}',
-				as_torrent			= '{$_POST['as_torrent']}',
-				as_shingo			= '{$_POST['as_shingo']}',
-				as_level			= '{$_POST['as_level']}',
-				as_lucky			= '{$_POST['as_lucky']}',
-				as_good				= '{$_POST['as_good']}',
-				as_save				= '{$_POST['as_save']}',
-				as_code				= '{$_POST['as_code']}',
-				as_exif				= '{$_POST['as_exif']}',
-				as_loc				= '{$_POST['as_loc']}',
-				as_new				= '{$_POST['as_new']}',
-				as_notice			= '{$_POST['as_notice']}',
-				as_search			= '{$_POST['as_search']}',
-				as_lightbox			= '{$_POST['as_lightbox']}',
-				as_rev_cmt			= '{$_POST['as_rev_cmt']}',
-				as_best_cmt			= '{$_POST['as_best_cmt']}',
-				as_rank_cmt			= '{$_POST['as_rank_cmt']}',
-				as_purifier			= '{$_POST['as_purifier']}',
-				as_resize			= '{$_POST['as_resize']}',
-				as_resize_kb		= '{$_POST['as_resize_kb']}',
-				as_min				= '{$_POST['as_min']}',
-				as_max				= '{$_POST['as_max']}',
-				as_editor			= '{$_POST['as_editor']}',
-				as_mobile_editor	= '{$_POST['as_mobile_editor']}',
-				as_comment_rows		= '{$_POST['as_comment_rows']}',
-				as_comment_mobile_rows	= '{$_POST['as_comment_mobile_rows']}' ";
+                bo_10               = '{$_POST['bo_10']}' ";
 
 if ($w == '') {
 
@@ -216,35 +185,6 @@ if ($w == '') {
     $target = array($create_table, '');
     $sql = preg_replace($source, $target, $sql);
     sql_query($sql, FALSE);
-
-	// APMS
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_type` tinyint(4) NOT NULL DEFAULT '0' ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_shingo` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_type` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_img` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_shingo` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_list` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_img` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_publish` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_list` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_extra` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_publish` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_extend` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_extra` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_level` int(11) NOT NULL DEFAULT '1' AFTER `as_extend` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_download` int(11) NOT NULL DEFAULT '0' AFTER `as_level` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_down` int(11) NOT NULL DEFAULT '0' AFTER `as_download` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_view` int(11) NOT NULL DEFAULT '0' AFTER `as_down` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_lucky` int(11) NOT NULL DEFAULT '0' AFTER `as_view` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_poll` int(11) NOT NULL DEFAULT '0' AFTER `as_lucky` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_star_score` int(11) NOT NULL DEFAULT '0' AFTER `as_poll` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_star_cnt` int(11) NOT NULL DEFAULT '0' AFTER `as_star_score` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_choice` int(11) NOT NULL DEFAULT '0' AFTER `as_star_score` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` DROP COLUMN `as_choice_mb` ", false);
-	//sql_query(" ALTER TABLE `{$create_table}` ADD `as_choice_mb` varchar(20) NOT NULL DEFAULT '' AFTER `as_choice` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_choice_cnt` int(11) NOT NULL DEFAULT '0' AFTER `as_choice` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_re_mb` varchar(255) NOT NULL DEFAULT '' AFTER `as_choice_cnt` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_re_name` varchar(255) NOT NULL AFTER `as_re_mb` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_tag` varchar(255) NOT NULL AFTER `as_re_name` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_map` varchar(255) NOT NULL AFTER `as_tag` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_icon` varchar(255) NOT NULL AFTER `as_map` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_thumb` varchar(255) NOT NULL AFTER `as_icon` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_video` varchar(255) NOT NULL AFTER `as_thumb` ", false);
-	sql_query(" ALTER TABLE `{$create_table}` ADD `as_update` datetime NOT NULL default '0000-00-00 00:00:00' AFTER `as_video` ", false);
 
 } else if ($w == 'u') {
 
@@ -274,11 +214,8 @@ if ($w == '') {
             $sql2 = " select count(*) as cnt from {$g5['write_prefix']}$bo_table where wr_parent = '{$row['wr_id']}' and wr_is_comment = 1 ";
             $row2 = sql_fetch($sql2);
             */
-			
-			// 다운로드수를 얻습니다.
-			$row2 = sql_fetch(" select sum(bf_download) as download from {$g5['board_file_table']} where bo_table = '{$bo_table}' and wr_id = '{$row['wr_id']}' ");
 
-            sql_query(" update {$g5['write_prefix']}{$bo_table} set wr_comment = '{$row['cnt']}', as_download = '{$row2['download']}' where wr_id = '{$row['wr_id']}' ");
+            sql_query(" update {$g5['write_prefix']}{$bo_table} set wr_comment = '{$row['cnt']}' where wr_id = '{$row['wr_id']}' ");
         }
     }
 
@@ -311,31 +248,6 @@ if ($w == '') {
 
 // 같은 그룹내 게시판 동일 옵션 적용
 $grp_fields = '';
-if (is_checked('chk_grp_as_title'))             $grp_fields .= " , as_title = '{$as_title}' ";
-if (is_checked('chk_grp_as_desc'))              $grp_fields .= " , as_desc = '{$as_desc}' ";
-if (is_checked('chk_grp_as_level'))             $grp_fields .= " , as_min = '{$as_min}' , as_max = '{$as_max}' ";
-if (is_checked('chk_grp_as_grade'))             $grp_fields .= " , as_grade = '{$as_grade}' , as_equal = '{$as_equal}' ";
-if (is_checked('chk_grp_as_partner'))           $grp_fields .= " , as_partner = '{$as_partner}' ";
-if (is_checked('chk_grp_as_autoplay'))          $grp_fields .= " , as_autoplay = '{$as_autoplay}' ";
-if (is_checked('chk_grp_as_torrent'))           $grp_fields .= " , as_torrent = '{$as_torrent}' ";
-if (is_checked('chk_grp_as_comment_rows'))      $grp_fields .= " , as_comment_rows = '{$as_comment_rows}' , as_comment_mobile_rows = '{$as_comment_mobile_rows}' ";
-if (is_checked('chk_grp_as_shingo'))			$grp_fields .= " , as_shingo = '{$as_shingo}' ";
-if (is_checked('chk_grp_as_lucky'))				$grp_fields .= " , as_lucky = '{$as_lucky}' ";
-if (is_checked('chk_grp_as_good'))				$grp_fields .= " , as_good = '{$as_good}' ";
-if (is_checked('chk_grp_as_save'))				$grp_fields .= " , as_save = '{$as_save}' ";
-if (is_checked('chk_grp_as_code'))				$grp_fields .= " , as_code = '{$as_code}' ";
-if (is_checked('chk_grp_as_exif'))				$grp_fields .= " , as_exif = '{$as_exif}' ";
-if (is_checked('chk_grp_as_loc'))				$grp_fields .= " , as_loc = '{$as_loc}' ";
-if (is_checked('chk_grp_as_new'))				$grp_fields .= " , as_new = '{$as_new}' ";
-if (is_checked('chk_grp_as_notice'))			$grp_fields .= " , as_notice = '{$as_notice}' ";
-if (is_checked('chk_grp_as_search'))			$grp_fields .= " , as_search = '{$as_search}' ";
-if (is_checked('chk_grp_as_lightbox'))			$grp_fields .= " , as_lightbox = '{$as_lightbox}' ";
-if (is_checked('chk_grp_as_rev_cmt'))			$grp_fields .= " , as_rev_cmt = '{$as_rev_cmt}' ";
-if (is_checked('chk_grp_as_best_cmt'))			$grp_fields .= " , as_best_cmt = '{$as_best_cmt}' , as_rank_cmt = '{$as_rank_cmt}' ";
-if (is_checked('chk_grp_as_purifier'))			$grp_fields .= " , as_purifier = '{$as_purifier}' ";
-if (is_checked('chk_grp_as_resize'))			$grp_fields .= " , as_resize = '{$as_resize}' , as_resize_kb = '{$as_resize_kb}' ";
-if (is_checked('chk_grp_as_boset'))				$grp_fields .= " , as_set = '".addslashes($board['as_set'])."' , as_mobile_set = '".addslashes($board['as_mobile_set'])."' ";
-
 if (is_checked('chk_grp_device'))               $grp_fields .= " , bo_device = '{$bo_device}' ";
 if (is_checked('chk_grp_admin'))                $grp_fields .= " , bo_admin = '{$bo_admin}' ";
 if (is_checked('chk_grp_list_level'))           $grp_fields .= " , bo_list_level = '{$bo_list_level}' ";
@@ -357,10 +269,10 @@ if (is_checked('chk_grp_category_list')) {
     $grp_fields .= " , bo_category_list = '{$bo_category_list}' ";
     $grp_fields .= " , bo_use_category = '{$bo_use_category}' ";
 }
-if (is_checked('chk_grp_use_sideview'))         $grp_fields .= " , bo_use_sideview = '{$bo_use_sideview}' , as_level = '{$as_level}' ";
+if (is_checked('chk_grp_use_sideview'))         $grp_fields .= " , bo_use_sideview = '{$bo_use_sideview}' ";
 if (is_checked('chk_grp_use_file_content'))     $grp_fields .= " , bo_use_file_content = '{$bo_use_file_content}' ";
 if (is_checked('chk_grp_use_secret'))           $grp_fields .= " , bo_use_secret = '{$bo_use_secret}' ";
-if (is_checked('chk_grp_use_dhtml_editor'))     $grp_fields .= " , bo_use_dhtml_editor = '{$bo_use_dhtml_editor}' , as_editor = '{$as_editor}' , as_mobile_editor = '{$as_mobile_editor}' ";
+if (is_checked('chk_grp_use_dhtml_editor'))     $grp_fields .= " , bo_use_dhtml_editor = '{$bo_use_dhtml_editor}' ";
 if (is_checked('chk_grp_use_rss_view'))         $grp_fields .= " , bo_use_rss_view = '{$bo_use_rss_view}' ";
 if (is_checked('chk_grp_use_good'))             $grp_fields .= " , bo_use_good = '{$bo_use_good}' ";
 if (is_checked('chk_grp_use_nogood'))           $grp_fields .= " , bo_use_nogood = '{$bo_use_nogood}' ";
@@ -399,12 +311,12 @@ if (is_checked('chk_grp_upload_size'))          $grp_fields .= " , bo_upload_siz
 
 //최고관리자만 수정가능
 if ($is_admin === 'super'){
-	if (is_checked('chk_grp_include_head'))         $grp_fields .= " , bo_include_head = '{$bo_include_head}' ";
-	if (is_checked('chk_grp_include_tail'))         $grp_fields .= " , bo_include_tail = '{$bo_include_tail}' ";
-	if (is_checked('chk_grp_content_head'))         $grp_fields .= " , bo_content_head = '{$bo_content_head}' ";
-	if (is_checked('chk_grp_content_tail'))         $grp_fields .= " , bo_content_tail = '{$bo_content_tail}' ";
-	if (is_checked('chk_grp_mobile_content_head'))         $grp_fields .= " , bo_mobile_content_head = '{$bo_mobile_content_head}' ";
-	if (is_checked('chk_grp_mobile_content_tail'))         $grp_fields .= " , bo_mobile_content_tail = '{$bo_mobile_content_tail}' ";
+    if (is_checked('chk_grp_include_head'))         $grp_fields .= " , bo_include_head = '{$bo_include_head}' ";
+    if (is_checked('chk_grp_include_tail'))         $grp_fields .= " , bo_include_tail = '{$bo_include_tail}' ";
+    if (is_checked('chk_grp_content_head'))         $grp_fields .= " , bo_content_head = '{$bo_content_head}' ";
+    if (is_checked('chk_grp_content_tail'))         $grp_fields .= " , bo_content_tail = '{$bo_content_tail}' ";
+    if (is_checked('chk_grp_mobile_content_head'))         $grp_fields .= " , bo_mobile_content_head = '{$bo_mobile_content_head}' ";
+    if (is_checked('chk_grp_mobile_content_tail'))         $grp_fields .= " , bo_mobile_content_tail = '{$bo_mobile_content_tail}' ";
 }
 
 if (is_checked('chk_grp_insert_content'))       $grp_fields .= " , bo_insert_content = '{$bo_insert_content}' ";
@@ -424,31 +336,6 @@ if ($grp_fields) {
 
 // 모든 게시판 동일 옵션 적용
 $all_fields = '';
-if (is_checked('chk_all_as_title'))             $all_fields .= " , as_title = '{$as_title}' ";
-if (is_checked('chk_all_as_desc'))              $all_fields .= " , as_desc = '{$as_desc}' ";
-if (is_checked('chk_all_as_level'))             $all_fields .= " , as_min = '{$as_min}' , as_max = '{$as_max}' ";
-if (is_checked('chk_all_as_grade'))             $all_fields .= " , as_grade = '{$as_grade}' , as_equal = '{$as_equal}' ";
-if (is_checked('chk_all_as_partner'))           $all_fields .= " , as_partner = '{$as_partner}' ";
-if (is_checked('chk_all_as_autoplay'))          $all_fields .= " , as_autoplay = '{$as_autoplay}' ";
-if (is_checked('chk_all_as_torrent'))           $all_fields .= " , as_torrent = '{$as_torrent}' ";
-if (is_checked('chk_all_as_comment_rows'))      $all_fields .= " , as_comment_rows = '{$as_comment_rows}' , as_comment_mobile_rows = '{$as_comment_mobile_rows}' ";
-if (is_checked('chk_all_as_shingo'))			$all_fields .= " , as_shingo = '{$as_shingo}' ";
-if (is_checked('chk_all_as_lucky'))				$all_fields .= " , as_lucky = '{$as_lucky}' ";
-if (is_checked('chk_all_as_good'))				$all_fields .= " , as_good = '{$as_good}' ";
-if (is_checked('chk_all_as_save'))				$all_fields .= " , as_save = '{$as_save}' ";
-if (is_checked('chk_all_as_code'))				$all_fields .= " , as_code = '{$as_code}' ";
-if (is_checked('chk_all_as_exif'))				$all_fields .= " , as_exif = '{$as_exif}' ";
-if (is_checked('chk_all_as_loc'))				$all_fields .= " , as_loc = '{$as_loc}' ";
-if (is_checked('chk_all_as_new'))				$all_fields .= " , as_new = '{$as_new}' ";
-if (is_checked('chk_all_as_notice'))			$all_fields .= " , as_notice = '{$as_notice}' ";
-if (is_checked('chk_all_as_search'))			$all_fields .= " , as_search = '{$as_search}' ";
-if (is_checked('chk_all_as_lightbox'))			$all_fields .= " , as_lightbox = '{$as_lightbox}' ";
-if (is_checked('chk_all_as_rev_cmt'))			$all_fields .= " , as_rev_cmt = '{$as_rev_cmt}' ";
-if (is_checked('chk_all_as_best_cmt'))			$all_fields .= " , as_best_cmt = '{$as_best_cmt}' , as_rank_cmt = '{$as_rank_cmt}' ";
-if (is_checked('chk_all_as_purifier'))			$all_fields .= " , as_purifier = '{$as_purifier}' ";
-if (is_checked('chk_all_as_resize'))			$all_fields .= " , as_resize = '{$as_resize}' , as_resize_kb = '{$as_resize_kb}' ";
-if (is_checked('chk_all_as_boset'))				$all_fields .= " , as_set = '".addslashes($board['as_set'])."' , as_mobile_set = '".addslashes($board['as_mobile_set'])."' ";
-
 if (is_checked('chk_all_device'))               $all_fields .= " , bo_device = '{$bo_device}' ";
 if (is_checked('chk_all_admin'))                $all_fields .= " , bo_admin = '{$bo_admin}' ";
 if (is_checked('chk_all_list_level'))           $all_fields .= " , bo_list_level = '{$bo_list_level}' ";
@@ -470,10 +357,10 @@ if (is_checked('chk_all_category_list')) {
     $all_fields .= " , bo_category_list = '{$bo_category_list}' ";
     $all_fields .= " , bo_use_category = '{$bo_use_category}' ";
 }
-if (is_checked('chk_all_use_sideview'))         $all_fields .= " , bo_use_sideview = '{$bo_use_sideview}' , as_level = '{$as_level}' ";
+if (is_checked('chk_all_use_sideview'))         $all_fields .= " , bo_use_sideview = '{$bo_use_sideview}' ";
 if (is_checked('chk_all_use_file_content'))     $all_fields .= " , bo_use_file_content = '{$bo_use_file_content}' ";
 if (is_checked('chk_all_use_secret'))           $all_fields .= " , bo_use_secret = '{$bo_use_secret}' ";
-if (is_checked('chk_all_use_dhtml_editor'))     $all_fields .= " , bo_use_dhtml_editor = '{$bo_use_dhtml_editor}' , as_editor = '{$as_editor}' , as_mobile_editor = '{$as_mobile_editor}' ";
+if (is_checked('chk_all_use_dhtml_editor'))     $all_fields .= " , bo_use_dhtml_editor = '{$bo_use_dhtml_editor}' ";
 if (is_checked('chk_all_use_rss_view'))         $all_fields .= " , bo_use_rss_view = '{$bo_use_rss_view}' ";
 if (is_checked('chk_all_use_good'))             $all_fields .= " , bo_use_good = '{$bo_use_good}' ";
 if (is_checked('chk_all_use_nogood'))           $all_fields .= " , bo_use_nogood = '{$bo_use_nogood}' ";
@@ -512,12 +399,12 @@ if (is_checked('chk_all_upload_size'))          $all_fields .= " , bo_upload_siz
 
 //최고관리자만 수정가능
 if ($is_admin === 'super'){
-	if (is_checked('chk_all_include_head'))         $all_fields .= " , bo_include_head = '{$bo_include_head}' ";
-	if (is_checked('chk_all_include_tail'))         $all_fields .= " , bo_include_tail = '{$bo_include_tail}' ";
-	if (is_checked('chk_all_content_head'))         $all_fields .= " , bo_content_head = '{$bo_content_head}' ";
-	if (is_checked('chk_all_content_tail'))         $all_fields .= " , bo_content_tail = '{$bo_content_tail}' ";
-	if (is_checked('chk_all_mobile_content_head'))         $all_fields .= " , bo_mobile_content_head = '{$bo_mobile_content_head}' ";
-	if (is_checked('chk_all_mobile_content_tail'))         $all_fields .= " , bo_mobile_content_tail = '{$bo_mobile_content_tail}' ";
+    if (is_checked('chk_all_include_head'))         $all_fields .= " , bo_include_head = '{$bo_include_head}' ";
+    if (is_checked('chk_all_include_tail'))         $all_fields .= " , bo_include_tail = '{$bo_include_tail}' ";
+    if (is_checked('chk_all_content_head'))         $all_fields .= " , bo_content_head = '{$bo_content_head}' ";
+    if (is_checked('chk_all_content_tail'))         $all_fields .= " , bo_content_tail = '{$bo_content_tail}' ";
+    if (is_checked('chk_all_mobile_content_head'))         $all_fields .= " , bo_mobile_content_head = '{$bo_mobile_content_head}' ";
+    if (is_checked('chk_all_mobile_content_tail'))         $all_fields .= " , bo_mobile_content_tail = '{$bo_mobile_content_tail}' ";
 }
 
 if (is_checked('chk_all_insert_content'))       $all_fields .= " , bo_insert_content = '{$bo_insert_content}' ";
@@ -535,20 +422,6 @@ if ($all_fields) {
 }
 
 delete_cache_latest($bo_table);
-
-//외부이미지 전체 재수집
-if(is_checked('as_save_all')) {
-	$result = sql_query(" select wr_id, wr_content from {$g5['write_prefix']}{$bo_table} where wr_is_comment = '0' ");
-	for ($i=0; $row=sql_fetch_array($result); $i++) {
-
-		if(!$row['wr_id'] || !$row['wr_content']) continue;
-
-		$content = apms_content_image(addslashes($row['wr_content']));
-
-		sql_query(" update {$g5['write_prefix']}{$bo_table} set wr_content = '$content' where wr_id = '{$row['wr_id']}' ");
-
-	}
-}
 
 goto_url("./board_form.php?w=u&bo_table={$bo_table}&amp;{$qstr}");
 ?>

@@ -12,26 +12,11 @@ else if ($w == 'd')
 
 check_admin_token();
 
-// APMS - 2014.07.20
-include_once('../apms_admin/apms.admin.lib.php');
-
 @mkdir(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
 @chmod(G5_DATA_PATH."/item", G5_DIR_PERMISSION);
 
 // input vars 체크
 check_input_vars();
-
-// APMS - 2014.07.20
-if (!$_POST['pt_it'])
-    alert("서비스종류를 선택해 주십시오.");
-
-if(in_array($pt_it, $g5['apms_automation'])) {
-	$it_sc_type = 1;
-	$it_sc_method = 0;
-	$it_sc_price = 0;
-	$it_sc_minimum = 0;
-	$it_sc_qty = 0;
-}
 
 // 파일정보
 if($w == "u") {
@@ -231,7 +216,7 @@ if($option_count) {
     for($i=0; $i<$option_count; $i++) {
         $_POST['opt_id'][$i] = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['opt_id'][$i]);
 
-		$opt_val = explode(chr(30), $_POST['opt_id'][$i]);
+        $opt_val = explode(chr(30), $_POST['opt_id'][$i]);
         if($opt_val[0])
             $opt1_cnt++;
         if($opt_val[1])
@@ -259,7 +244,7 @@ if($supply_count) {
     for($i=0; $i<$supply_count; $i++) {
         $_POST['spl_id'][$i] = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['spl_id'][$i]);
 
-		$spl_val = explode(chr(30), $_POST['spl_id'][$i]);
+        $spl_val = explode(chr(30), $_POST['spl_id'][$i]);
         if(!in_array($spl_val[0], $arr_spl))
             $arr_spl[] = $spl_val[0];
     }
@@ -282,32 +267,13 @@ if(($it_point_type == 1 || $it_point_type == 2) && $it_point > 99)
 
 $it_name = strip_tags(trim($_POST['it_name']));
 if ($it_name == "")
-    alert("제목 또는 상품명을 입력해 주십시오.");
-
-// APMS - 2014.07.20
-$is_reserve = ($default['pt_reserve_end'] > 0 && $default['pt_reserve_day'] > 0 && $default['pt_reserve_cache'] > 0) ? true : false;
-
-if($pt_reserve_use && $is_reserve) {
-	$pt_reserve_time = "{$pt_reserve_date} {$pt_reserve_hour}:{$pt_reserve_minute}:00";
-	$pt_reserve = strtotime($pt_reserve_time);
-	$it_use = 0;
-} else {
-	$pt_reserve_use = 0;
-	$pt_reserve = 0;
-}
-
-if($pt_end_date && $default['pt_reserve_cache'] > 0) {
-	$pt_end_time = "{$pt_end_date} {$pt_end_hour}:{$pt_end_minute}:00";
-	$pt_end = strtotime($pt_end_time);
-} else {
-	$pt_end = 0;
-}
-
-$pt_syndi_sql = ($is_admin == 'super') ? " pt_syndi = '$pt_syndi', pt_commission = '$pt_commission', pt_incentive = '$pt_incentive', " : "";
+    alert("상품명을 입력해 주십시오.");
 
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
                 ca_id3              = '$ca_id3',
+                it_skin             = '$it_skin',
+                it_mobile_skin      = '$it_mobile_skin',
                 it_name             = '$it_name',
                 it_maker            = '$it_maker',
                 it_origin           = '$it_origin',
@@ -355,7 +321,7 @@ $sql_common = " ca_id               = '$ca_id',
                 it_info_value       = '$it_info_value',
                 it_shop_memo        = '$it_shop_memo',
                 ec_mall_pid         = '$ec_mall_pid',
-				it_img1             = '$it_img1',
+                it_img1             = '$it_img1',
                 it_img2             = '$it_img2',
                 it_img3             = '$it_img3',
                 it_img4             = '$it_img4',
@@ -384,51 +350,25 @@ $sql_common = " ca_id               = '$ca_id',
                 it_7                = '$it_7',
                 it_8                = '$it_8',
                 it_9                = '$it_9',
-                it_10               = '$it_10',
-                pt_it				= '$pt_it',
-                pt_id				= '$pt_id',
-                pt_img				= '$pt_img',
-                pt_ccl				= '$pt_ccl',
-                pt_main				= '$pt_main',
-                pt_point			= '$pt_point',
-				pt_order			= '$pt_order',
-                pt_show				= '$pt_show',
-				pt_tag				= '$pt_tag',
-                pt_link1			= '$pt_link1',
-                pt_link2			= '$pt_link2',
-				pt_marketer			= '$pt_marketer',
-				pt_review_use		= '$pt_review_use',
-				pt_comment_use		= '$pt_comment_use',
-				pt_day				= '$pt_day',
-				pt_end				= '$pt_end',
-				pt_reserve			= '$pt_reserve',
-				pt_reserve_use		= '$pt_reserve_use',
-				$pt_syndi_sql
-				pt_explan	        = '$pt_explan',
-                pt_mobile_explan    = '$pt_mobile_explan',
-				pt_msg1			    = '$pt_msg1',
-                pt_msg2			    = '$pt_msg2',
-                pt_msg3			    = '$pt_msg3'
-				"; // APMS : 2014.07.20
+                it_10               = '$it_10'
+                ";
 
 if ($w == "")
 {
     $it_id = $_POST['it_id'];
 
     if (!trim($it_id)) {
-        alert('코드가 없으므로 추가하실 수 없습니다.');
+        alert('상품 코드가 없으므로 상품을 추가하실 수 없습니다.');
     }
 
     $t_it_id = preg_replace("/[A-Za-z0-9\-_]/", "", $it_id);
     if($t_it_id)
-        alert('코드는 영문자, 숫자, -, _ 만 사용할 수 있습니다.');
+        alert('상품 코드는 영문자, 숫자, -, _ 만 사용할 수 있습니다.');
 
-	$pt_num = time();
     $sql_common .= " , it_time = '".G5_TIME_YMDHIS."' ";
     $sql_common .= " , it_update_time = '".G5_TIME_YMDHIS."' ";
     $sql = " insert {$g5['g5_shop_item_table']}
                 set it_id = '$it_id',
-					pt_num = '$pt_num',
 					$sql_common	";
     sql_query($sql);
 }
@@ -523,34 +463,6 @@ if($supply_count) {
     sql_query($sql);
 }
 
-// APMS : 태그 및 파일 등록 - 2014.07.20
-$file_upload_msg = '';
-if ($w == "" || $w == "u") {
-	// 태그등록
-	$it_time = G5_TIME_YMDHIS;
-	if($w == "u") {
-		$row = sql_fetch("select it_time from {$g5['g5_shop_item_table']} where it_id = '{$it_id}' ");
-		$it_time = $row['it_time'];
-	}
-
-	apms_add_tag($it_id, $pt_tag, $it_time);
-
-	// 파일등록
-	$file_upload_msg = apms_upload_file('item', $it_id);
-
-	// 네이버 신디
-	if ($is_admin == 'super' && $it_use && $pt_syndi) {
-		apms_naver_syndi_ping($it_id);
-	}
-}
-
-// 썸네일 업데이트
-$it = apms_it($it_id);
-$it['chk_img'] = true;
-$it_thumb = apms_it_thumbnail($it, 0, 0, false, true);
-$it_thumb = ($it_thumb) ? $it_thumb : 1;
-sql_query(" update {$g5['g5_shop_item_table']} set pt_thumb = '".addslashes($it_thumb)."' where it_id = '{$it_id}' ", false);
-
 // 동일 분류내 상품 동일 옵션 적용
 $ca_fields = '';
 if(is_checked('chk_ca_it_skin'))                $ca_fields .= " , it_skin = '$it_skin' ";
@@ -564,6 +476,7 @@ if(is_checked('chk_ca_it_brand'))               $ca_fields .= " , it_brand = '$i
 if(is_checked('chk_ca_it_model'))               $ca_fields .= " , it_model = '$it_model' ";
 if(is_checked('chk_ca_it_notax'))               $ca_fields .= " , it_notax = '$it_notax' ";
 if(is_checked('chk_ca_it_sell_email'))          $ca_fields .= " , it_sell_email = '$it_sell_email' ";
+if(is_checked('chk_ca_it_shop_memo'))           $ca_fields .= " , it_shop_memo = '$it_shop_memo' ";
 if(is_checked('chk_ca_it_tel_inq'))             $ca_fields .= " , it_tel_inq = '$it_tel_inq' ";
 if(is_checked('chk_ca_it_use'))                 $ca_fields .= " , it_use = '$it_use' ";
 if(is_checked('chk_ca_it_nocoupon'))            $ca_fields .= " , it_nocoupon = '$it_nocoupon' ";
@@ -615,6 +528,7 @@ if(is_checked('chk_all_it_brand'))               $all_fields .= " , it_brand = '
 if(is_checked('chk_all_it_model'))               $all_fields .= " , it_model = '$it_model' ";
 if(is_checked('chk_all_it_notax'))               $all_fields .= " , it_notax = '$it_notax' ";
 if(is_checked('chk_all_it_sell_email'))          $all_fields .= " , it_sell_email = '$it_sell_email' ";
+if(is_checked('chk_all_it_shop_memo'))           $all_fields .= " , it_shop_memo = '$it_shop_memo' ";
 if(is_checked('chk_all_it_tel_inq'))             $all_fields .= " , it_tel_inq = '$it_tel_inq' ";
 if(is_checked('chk_all_it_use'))                 $all_fields .= " , it_use = '$it_use' ";
 if(is_checked('chk_all_it_nocoupon'))            $all_fields .= " , it_nocoupon = '$it_nocoupon' ";
@@ -652,22 +566,18 @@ if($all_fields) {
 $qstr = "$qstr&amp;sca=$sca&amp;page=$page";
 
 if ($w == "u") {
-    goto_url("./itemform.php?w=u&amp;it_id=$it_id&amp;fn=$fn&amp;$qstr");
-} 
-/*
-else if ($w == "d")  {
+    goto_url("./itemform.php?w=u&amp;it_id=$it_id&amp;$qstr");
+} else if ($w == "d")  {
     $qstr = "ca_id=$ca_id&amp;sfl=$sfl&amp;sca=$sca&amp;page=$page&amp;stx=".urlencode($stx)."&amp;save_stx=".urlencode($save_stx);
     goto_url("./itemlist.php?$qstr");
 }
-*/
 
 echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">";
 ?>
 <script>
-    if (confirm("계속 입력하시겠습니까?")) {
+    if (confirm("계속 입력하시겠습니까?"))
         //location.href = "<?php echo "./itemform.php?it_id=$it_id&amp;sort1=$sort1&amp;sort2=$sort2&amp;sel_ca_id=$sel_ca_id&amp;sel_field=$sel_field&amp;search=$search&amp;page=$page"?>";
-        location.href = "<?php echo "./itemform.php?fn=".$fn."&".str_replace('&amp;', '&', $qstr); ?>";
-	} else {
+        location.href = "<?php echo "./itemform.php?".str_replace('&amp;', '&', $qstr); ?>";
+    else
         location.href = "<?php echo "./itemlist.php?".str_replace('&amp;', '&', $qstr); ?>";
-	}
 </script>

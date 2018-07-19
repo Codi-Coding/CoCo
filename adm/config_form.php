@@ -7,11 +7,6 @@ auth_check($auth[$sub_menu], 'r');
 if ($is_admin != 'super')
     alert('최고관리자만 접근 가능합니다.');
 
-//아미나빌더 설치체크
-if(!isset($config['as_thema'])) { 
-	goto_url('./apms_admin/apms.admin.php');
-}
-
 if (!isset($config['cf_add_script'])) {
     sql_query(" ALTER TABLE `{$g5['config_table']}`
                     ADD `cf_add_script` TEXT NOT NULL AFTER `cf_admin_email_name` ", true);
@@ -199,8 +194,6 @@ if(!sql_query(" select vi_browser from {$g5['visit_table']} limit 1 ")) {
 
 if(!$config['cf_faq_skin']) $config['cf_faq_skin'] = "basic";
 if(!$config['cf_mobile_faq_skin']) $config['cf_mobile_faq_skin'] = "basic";
-if(!$config['as_tag_skin']) $config['as_tag_skin'] = "basic";
-if(!$config['as_mobile_tag_skin']) $config['as_mobile_tag_skin'] = "basic";
 
 $g5['title'] = '환경설정';
 include_once ('./admin.head.php');
@@ -229,7 +222,7 @@ if (!$config['cf_icode_server_ip'])   $config['cf_icode_server_ip'] = '211.172.2
 if (!$config['cf_icode_server_port']) $config['cf_icode_server_port'] = '7295';
 
 if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
-	$userinfo = get_icode_userinfo($config['cf_icode_id'], $config['cf_icode_pw']);
+    $userinfo = get_icode_userinfo($config['cf_icode_id'], $config['cf_icode_pw']);
 }
 ?>
 
@@ -357,111 +350,44 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
         <tr>
             <th scope="row"><label for="cf_new_skin">최근게시물 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/new/') ?>
-				<?php echo get_skin_select('new', 'cf_new_skin', 'cf_new_skin', $config['cf_new_skin'], 'required'); ?>
+                <?php echo get_skin_select('new', 'cf_new_skin', 'cf_new_skin', $config['cf_new_skin'], 'required'); ?>
             </td>
             <th scope="row"><label for="cf_mobile_new_skin">모바일<br>최근게시물 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/new/') ?>
-				<?php echo get_mobile_skin_select('new', 'cf_mobile_new_skin', 'cf_mobile_new_skin', $config['cf_mobile_new_skin'], 'required'); ?>
+                <?php echo get_mobile_skin_select('new', 'cf_mobile_new_skin', 'cf_mobile_new_skin', $config['cf_mobile_new_skin'], 'required'); ?>
             </td>
         </tr>
         <tr>
             <th scope="row"><label for="cf_search_skin">검색 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/search/') ?>
-				<?php echo get_skin_select('search', 'cf_search_skin', 'cf_search_skin', $config['cf_search_skin'], 'required'); ?>
+                <?php echo get_skin_select('search', 'cf_search_skin', 'cf_search_skin', $config['cf_search_skin'], 'required'); ?>
             </td>
             <th scope="row"><label for="cf_mobile_search_skin">모바일 검색 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/search/') ?>
-				<?php echo get_mobile_skin_select('search', 'cf_mobile_search_skin', 'cf_mobile_search_skin', $config['cf_mobile_search_skin'], 'required'); ?>
+                <?php echo get_mobile_skin_select('search', 'cf_mobile_search_skin', 'cf_mobile_search_skin', $config['cf_mobile_search_skin'], 'required'); ?>
             </td>
         </tr>
         <tr>
             <th scope="row"><label for="cf_connect_skin">접속자 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/connect/') ?>
-				<?php echo get_skin_select('connect', 'cf_connect_skin', 'cf_connect_skin', $config['cf_connect_skin'], 'required'); ?>
+                <?php echo get_skin_select('connect', 'cf_connect_skin', 'cf_connect_skin', $config['cf_connect_skin'], 'required'); ?>
             </td>
             <th scope="row"><label for="cf_mobile_connect_skin">모바일 접속자 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/connect/') ?>
-				<?php echo get_mobile_skin_select('connect', 'cf_mobile_connect_skin', 'cf_mobile_connect_skin', $config['cf_mobile_connect_skin'], 'required'); ?>
+                <?php echo get_mobile_skin_select('connect', 'cf_mobile_connect_skin', 'cf_mobile_connect_skin', $config['cf_mobile_connect_skin'], 'required'); ?>
             </td>
         </tr>
         <tr>
             <th scope="row"><label for="cf_faq_skin">FAQ 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/faq/') ?>
-				<?php echo get_skin_select('faq', 'cf_faq_skin', 'cf_faq_skin', $config['cf_faq_skin'], 'required'); ?>
+                <?php echo get_skin_select('faq', 'cf_faq_skin', 'cf_faq_skin', $config['cf_faq_skin'], 'required'); ?>
             </td>
             <th scope="row"><label for="cf_mobile_faq_skin">모바일 FAQ 스킨<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo help('/skin/faq/') ?>
-				<?php echo get_mobile_skin_select('faq', 'cf_mobile_faq_skin', 'cf_mobile_faq_skin', $config['cf_mobile_faq_skin'], 'required'); ?>
+                <?php echo get_mobile_skin_select('faq', 'cf_mobile_faq_skin', 'cf_mobile_faq_skin', $config['cf_mobile_faq_skin'], 'required'); ?>
             </td>
         </tr>
         <tr>
-            <th scope="row"><label for="as_tag_skin">태그 스킨<strong class="sound_only">필수</strong></label></th>
-            <td>
-                <?php echo help('/skin/tag/') ?>
-				<?php echo get_skin_select('tag', 'as_tag_skin', 'as_tag_skin', $config['as_tag_skin'], 'required'); ?>
-            </td>
-            <th scope="row"><label for="as_mobile_tag_skin">모바일 태그 스킨<strong class="sound_only">필수</strong></label></th>
-            <td>
-                <?php echo help('/skin/tag/') ?>
-				<?php echo get_skin_select('tag', 'as_mobile_tag_skin', 'as_mobile_tag_skin', $config['as_mobile_tag_skin'], 'required'); ?>
-            </td>
-        </tr>
-		<tr>
-            <th scope="row"><label for="cf_admin_skin">어드민 스킨</label></th>
-            <td>
-                <?php echo help('/skin/admin/') ?>
-				<select name="cf_8" id="admin_skin">
-                <option value="">기본 관리자 스킨</option>
-				<?php
-                $arr = get_skin_dir('', G5_SKIN_PATH.'/admin');
-
-				for ($i=0; $i<count($arr); $i++) {
-                    echo "<option value=\"".$arr[$i]."\"".get_selected($config['cf_8'], $arr[$i]).">".$arr[$i]."</option>\n";
-                }
-                ?>
-                </select>
-            </td>
-            <th scope="row"><label for="cf_print_skin">프린트 스킨</label></th>
-            <td>
-                <?php echo help('/skin/print/') ?>
-                <select name="cf_8_subj" id="print_skin">
-				<?php
-                $arr = get_skin_dir('', G5_SKIN_PATH.'/print');
-				for ($i=0; $i<count($arr); $i++) {
-                    echo "<option value=\"".$arr[$i]."\"".get_selected($config['cf_8_subj'], $arr[$i]).">".$arr[$i]."</option>\n";
-                }
-                ?>
-                </select>
-            </td>
-		</tr>
-        <tr>
-            <th scope="row"><label for="as_misc_skin">그밖에 스킨<strong class="sound_only">필수</strong></label></th>
-            <td>
-                <?php echo help('/skin/misc/ : 이메일, 구글지도, 글안내 등') ?>
-				<?php echo get_skin_select('misc', 'as_misc_skin', 'as_misc_skin', $config['as_misc_skin'], 'required'); ?>
-            </td>
-            <th scope="row"><label for="as_lang">언어팩<strong class="sound_only">필수</strong></label></th>
-            <td>
-                <?php echo help('/lang/') ?>
-				<select name="as_lang" id="as_lang">
-				<?php
-                $arr = get_skin_dir('', G5_PATH.'/lang');
-				for ($i=0; $i<count($arr); $i++) {
-                    echo "<option value=\"".$arr[$i]."\"".get_selected($config['as_lang'], $arr[$i]).">".$arr[$i]."</option>\n";
-                }
-                ?>
-                </select>
-			</td>
-        </tr>
-		<tr>
             <th scope="row"><label for="cf_editor">에디터 선택</label></th>
             <td colspan="3">
                 <?php echo help(G5_EDITOR_URL.' 밑의 DHTML 에디터 폴더를 선택합니다.') ?>
@@ -551,7 +477,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
     </div>
 </section>
 
-<?php echo (USE_G5_THEME) ? preg_replace('#</div>$#i', '<button type="button" class="get_theme_confc" data-type="conf_skin">테마 스킨설정 가져오기</button></div>', $frm_submit) : $frm_submit; ?>
+<?php echo preg_replace('#</div>$#i', '<button type="button" class="get_theme_confc" data-type="conf_skin">테마 스킨설정 가져오기</button></div>', $frm_submit); ?>
 
 <section id="anc_cf_board">
     <h2 class="h2_frm">게시판 기본 설정</h2>
@@ -764,7 +690,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
     </div>
 </section>
 
-<?php echo (USE_G5_THEME) ? preg_replace('#</div>$#i', '<button type="button" class="get_theme_confc" data-type="conf_member">테마 회원스킨설정 가져오기</button></div>', $frm_submit) : $frm_submit; ?>
+<?php echo preg_replace('#</div>$#i', '<button type="button" class="get_theme_confc" data-type="conf_member">테마 회원스킨설정 가져오기</button></div>', $frm_submit); ?>
 
 <section id="anc_cf_cert">
     <h2 class="h2_frm">본인확인 설정</h2>
@@ -1199,14 +1125,14 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
             <col>
         </colgroup>
         <tbody>
-        <?php for ($i=1; $i<=10; $i++) { //8번은 어드민스킨용으로 사용함 ?>
+        <?php for ($i=1; $i<=10; $i++) { ?>
         <tr>
             <th scope="row">여분필드<?php echo $i ?></th>
             <td class="td_extra">
                 <label for="cf_<?php echo $i ?>_subj">여분필드<?php echo $i ?> 제목</label>
-                <input type="text" name="cf_<?php echo ($i == 8) ? $i.'_old' : $i; ?>_subj" value="<?php echo get_text($config['cf_'.$i.'_subj']) ?>" id="cf_<?php echo $i ?>_subj" class="frm_input" size="30">
+                <input type="text" name="cf_<?php echo $i ?>_subj" value="<?php echo get_text($config['cf_'.$i.'_subj']) ?>" id="cf_<?php echo $i ?>_subj" class="frm_input" size="30">
                 <label for="cf_<?php echo $i ?>">여분필드<?php echo $i ?> 값</label>
-                <input type="text" name="cf_<?php echo ($i == 8) ? $i.'_old' : $i; ?>" value="<?php echo $config['cf_'.$i] ?>" id="cf_<?php echo $i ?>" class="frm_input" size="30">
+                <input type="text" name="cf_<?php echo $i ?>" value="<?php echo $config['cf_'.$i] ?>" id="cf_<?php echo $i ?>" class="frm_input" size="30">
             </td>
         </tr>
         <?php } ?>

@@ -87,21 +87,5 @@ if ($url) {
     $link = G5_URL;
 }
 
-// 내글반응 체크
-if(isset($mb['as_response'])) {
-	$row = sql_fetch(" select count(*) as cnt from {$g5['apms_response']} where mb_id = '{$mb['mb_id']}' and confirm <> '1' ", false);
-	if($mb['as_response'] != $row['cnt']) {
-		sql_query(" update {$g5['member_table']} set as_response = '{$row['cnt']}' where mb_id = '{$mb['mb_id']}' ", false);
-	}
-}
-
-// 쪽지체크
-if(isset($mb['as_memo'])) {
-	$row = sql_fetch(" select count(*) as cnt from {$g5['memo_table']} where me_recv_mb_id = '{$mb['mb_id']}' and me_read_datetime = '0000-00-00 00:00:00' ");
-	if($mb['as_memo'] != $row['cnt']) {
-		sql_query(" update {$g5['member_table']} set as_memo = '{$row['cnt']}' where mb_id = '{$mb['mb_id']}' ", false);
-	}
-}
-
 goto_url($link);
 ?>

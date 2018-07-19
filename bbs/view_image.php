@@ -5,19 +5,13 @@ $g5['title'] = '이미지 크게보기';
 include_once(G5_PATH.'/head.sub.php');
 
 $filename = $_GET['fn'];
-$bo_table = (isset($_GET['bo_table']) && $_GET['bo_table']) ? $_GET['bo_table'] : '';
+$bo_table = $_GET['bo_table'];
 
-if(strpos($filename, 'data/item')) {
-    $editor_file = strstr($filename, 'item');
-    $filepath = G5_DATA_PATH.'/'.$editor_file;
-} else if(strpos($filename, 'data/editor')) {
+if(strpos($filename, 'data/editor')) {
     $editor_file = strstr($filename, 'editor');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
 } else if(strpos($filename, 'data/qa')) {
     $editor_file = strstr($filename, 'qa');
-    $filepath = G5_DATA_PATH.'/'.$editor_file;
-} else if(strpos($filename, 'data/file')) {
-    $editor_file = strstr($filename, 'file');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
 } else {
     $editor_file = '';

@@ -29,12 +29,12 @@ for ($i=$chk_count-1; $i>=0; $i--)
 {
     $write = sql_fetch(" select * from $write_table where wr_id = '$tmp_array[$i]' ");
 
-    if ($is_admin === 'super') // 최고관리자 통과
+    if ($is_admin == 'super') // 최고관리자 통과
         ;
-    else if ($is_admin === 'group') // 그룹관리자
+    else if ($is_admin == 'group') // 그룹관리자
     {
         $mb = get_member($write['mb_id']);
-        if (chk_multiple_admin($member['mb_id'], $group['gr_admin'])) // 자신이 관리하는 그룹인가?
+        if ($member['mb_id'] == $group['gr_admin']) // 자신이 관리하는 그룹인가?
         {
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
                 ;
@@ -44,10 +44,10 @@ for ($i=$chk_count-1; $i>=0; $i--)
         else
             continue;
     }
-    else if ($is_admin === 'board') // 게시판관리자이면
+    else if ($is_admin == 'board') // 게시판관리자이면
     {
         $mb = get_member($write['mb_id']);
-        if (chk_multiple_admin($member['mb_id'], $board['bo_admin'])) // 자신이 관리하는 게시판인가?
+        if ($member['mb_id'] == $board['bo_admin']) // 자신이 관리하는 게시판인가?
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
                 ;
             else
@@ -55,7 +55,7 @@ for ($i=$chk_count-1; $i>=0; $i--)
         else
             continue;
     }
-    else if ($member['mb_id'] && $member['mb_id'] === $write['mb_id']) // 자신의 글이라면
+    else if ($member['mb_id'] && $member['mb_id'] == $write['mb_id']) // 자신의 글이라면
     {
         ;
     }
@@ -82,7 +82,7 @@ for ($i=$chk_count-1; $i>=0; $i--)
 
     // 나라오름님 수정 : 원글과 코멘트수가 정상적으로 업데이트 되지 않는 오류를 잡아 주셨습니다.
     //$sql = " select wr_id, mb_id, wr_comment from {$write_table} where wr_parent = '{$write[wr_id]}' order by wr_id ";
-    $sql = " select wr_id, mb_id, wr_is_comment, wr_content, as_thumb from $write_table where wr_parent = '{$write['wr_id']}' order by wr_id ";
+    $sql = " select wr_id, mb_id, wr_is_comment, wr_content from $write_table where wr_parent = '{$write['wr_id']}' order by wr_id ";
     $result = sql_query($sql);
     while ($row = sql_fetch_array($result))
     {
@@ -109,12 +109,6 @@ for ($i=$chk_count-1; $i>=0; $i--)
             // 에디터 썸네일 삭제
             delete_editor_thumbnail($row['wr_content']);
 
-			// 에디터 이미지 삭제
-			apms_editor_image($row['wr_content']);
-
-			// 동영상 이미지 삭제
-			apms_video_thumbnail($row['as_thumb']);
-
             // 파일테이블 행 삭제
             sql_query(" delete from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '{$row['wr_id']}' ");
 
@@ -128,10 +122,7 @@ for ($i=$chk_count-1; $i>=0; $i--)
 
             $count_comment++;
         }
-
-		// 신고글
-		sql_query(" delete from {$g5['apms_shingo']} where bo_table = '$bo_table' and wr_id = '{$row['wr_id']}' ", false);
-	}
+    }
 
     // 게시글 삭제
     sql_query(" delete from $write_table where wr_parent = '{$write['wr_id']}' ");
@@ -141,21 +132,6 @@ for ($i=$chk_count-1; $i>=0; $i--)
 
     // 스크랩 삭제
     sql_query(" delete from {$g5['scrap_table']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ");
-
-	// 내글반응 삭제
-	sql_query(" delete from {$g5['apms_response']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
-
-	// 태그로그 삭제
-	sql_query(" delete from {$g5['apms_tag_log']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
-
-	// 이벤트 삭제
-	sql_query(" delete from {$g5['apms_event']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
-
-	// 설문 삭제
-	sql_query(" delete from {$g5['apms_poll']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
-
-	// 플레이목록
-	sql_query(" delete from {$g5['apms_playlist']} where bo_table = '$bo_table' and wr_id = '{$write['wr_id']}' ", false);
 
     /*
     // 공지사항 삭제

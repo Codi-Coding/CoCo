@@ -16,7 +16,7 @@ function get_skin_select($skin_gubun, $id, $name, $selected='', $event='')
 
     $skins = array();
 
-    if(USE_G5_THEME && defined('G5_THEME_PATH') && $config['cf_theme']) {
+    if(defined('G5_THEME_PATH') && $config['cf_theme']) {
         $dirs = get_skin_dir($skin_gubun, G5_THEME_PATH.'/'.G5_SKIN_DIR);
         if(!empty($dirs)) {
             foreach($dirs as $dir) {
@@ -48,7 +48,7 @@ function get_mobile_skin_select($skin_gubun, $id, $name, $selected='', $event=''
 
     $skins = array();
 
-    if(USE_G5_THEME && defined('G5_THEME_PATH') && $config['cf_theme']) {
+    if(defined('G5_THEME_PATH') && $config['cf_theme']) {
         $dirs = get_skin_dir($skin_gubun, G5_THEME_MOBILE_PATH.'/'.G5_SKIN_DIR);
         if(!empty($dirs)) {
             foreach($dirs as $dir) {
@@ -57,7 +57,7 @@ function get_mobile_skin_select($skin_gubun, $id, $name, $selected='', $event=''
         }
     }
 
-    $skins = (USE_G5_THEME) ? array_merge($skins, get_skin_dir($skin_gubun, G5_MOBILE_PATH.'/'.G5_SKIN_DIR)) : array_merge($skins, get_skin_dir($skin_gubun));
+    $skins = array_merge($skins, get_skin_dir($skin_gubun, G5_MOBILE_PATH.'/'.G5_SKIN_DIR));
 
     $str = "<select id=\"$id\" name=\"$name\" $event>\n";
     for ($i=0; $i<count($skins); $i++) {
@@ -196,12 +196,7 @@ function get_theme_config_value($dir, $key='*')
 // 회원권한을 SELECT 형식으로 얻음
 function get_member_level_select($name, $start_id=0, $end_id=10, $selected="", $event="")
 {
-    global $g5, $is_admin;
-
-	//최고관리자면 무조건 10 까지
-	if($is_admin == 'super') {
-		$end_id = 10;
-	}
+    global $g5;
 
     $str = "\n<select id=\"{$name}\" name=\"{$name}\"";
     if ($event) $str .= " $event";
@@ -448,7 +443,7 @@ if (get_session('ss_mb_key') !== $admin_key) {
 
     include_once(G5_LIB_PATH.'/mailer.lib.php');
     // 메일 알림
-    mailer($member['mb_nick'], $member['mb_email'], $member['mb_email'], 'XSS 공격 알림', $_SERVER['REMOTE_ADDR'].' 아이피로 XSS 공격이 있었습니다.\n\n관리자 권한을 탈취하려는 접근이므로 주의하시기 바랍니다.\n\n해당 아이피는 차단하시고 의심되는 게시물이 있는지 확인하시기 바랍니다.\n\n'.G5_URL, 0);
+    mailer($member['mb_nick'], $member['mb_email'], $member['mb_email'], 'XSS 공격 알림', $_SERVER['REMOTE_ADDR'].' 아이피로 XSS 공격이 있었습니다.<br><br>관리자 권한을 탈취하려는 접근이므로 주의하시기 바랍니다.<br><br>해당 아이피는 차단하시고 의심되는 게시물이 있는지 확인하시기 바랍니다.'.G5_URL, 0);
 
     alert_close('정상적으로 로그인하여 접근하시기 바랍니다.');
 }
