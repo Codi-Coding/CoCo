@@ -1,0 +1,316 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-personal-pay-form #sod_frm_paysel {margin:0 0 20px;padding:10px;border:1px solid #ddd;background:#f8f8f8;text-align:left}
+.shop-personal-pay-form .btn_submit {height:40px;line-height:40px;padding:0 30px;background:#0078FF;color:#fff;font-size:15px;font-weight:bold;letter-spacing:0;border-radius:2px !important}
+.shop-personal-pay-form a.btn01 {height:40px;line-height:40px;padding:0 30px;background:#2E3340;color:#fff;font-size:15px;font-weight:bold;letter-spacing:0;border-radius:2px !important;border:0}
+.shop-personal-pay-form .personal-pay-form-cont {position:relative;border:1px solid #d5d5d5;padding:10px;margin-bottom:10px;background:#fbfbfb}
+</style>
+
+{_settle_pg}
+{_orderform1 // 결제대행사별 코드 include (스크립트 등)}
+
+<div class="shop-personal-pay-form">
+<form name="forderform" id="forderform" method="post" action="{_action_url}" onsubmit="return forderform_check(this);" autocomplete="off"  class="eyoom-form">
+<input type="hidden" name="pp_id" value="{pp.pp_id}">
+	{_orderform2 // 결제대행사별 코드 include (결제대행사 정보 필드)}
+
+    <div class="headline"><h4><strong>개인결제정보</strong></h4></div>
+    <div class="margin-bottom-30"></div>
+    <div class="row">
+        <!--{? trim(pp.pp_content)}-->
+        <div class="col col-12">
+            <label class="label">상세내용</label>
+            <div class="alert alert-info">
+	        	<p>{=conv_content(pp.pp_content, 0)}</p>
+	        </div>
+        </div>
+        <!--{/}-->
+        <div class="col col-12">
+            <p class="font-size-15"><strong><i class="fa fa-check"></i> 결제금액</strong> : <strong class="color-red">{=display_price(pp.pp_price)}</strong></p>
+        </div>
+        <div class="col col-12">
+        	<div class="margin-hr-15"></div>
+        </div>
+        <div class="col col-4">
+            <label for="pp_name" class="label">이름<small class="color-yellow font-normal margin-left-5"><u>필수입력</u></small></label>
+            <label class="input margin-bottom-10">
+                <i class="icon-append fa fa-user"></i>
+                <input type="text" name="pp_name" value="{pp.pp_name}" id="pp_name" required>
+            </label>
+        </div>
+        <div class="col col-4">
+            <label for="pp_email" class="label">이메일<small class="color-yellow font-normal margin-left-5"><u>필수입력</u></small></label>
+            <label class="input margin-bottom-10">
+                <i class="icon-append fa fa-envelope-o"></i>
+                <input type="text" name="pp_email" value="{member.mb_email}" id="pp_email" required>
+            </label>
+        </div>
+        <div class="col col-4">
+            <label for="pp_hp" class="label">휴대폰</label>
+            <label class="input margin-bottom-10">
+                <i class="icon-append fa fa-tablet"></i>
+                <input type="text" name="pp_hp" value="{member.mb_hp}" id="pp_hp">
+            </label>
+        </div>
+    </div>
+    <div class="margin-hr-15"></div>
+
+	<!--{? default.de_vbank_use || default.de_iche_use || default.de_card_use || default.de_hp_use}-->
+	<div id="sod_frm_paysel">
+		<label class="label">결제방법 선택</label>
+		<div class="inline-group">
+	<!--{/}-->
+
+		<!--{? default.de_vbank_use}-->
+		    <label for="pp_settle_vbank" class="radio">
+		    	<input type="radio" id="pp_settle_vbank" name="pp_settle_case" value="가상계좌"><i class="rounded-x"></i>{_escrow_title}가상계좌
+		    </label>
+		<!--{/}-->
+
+		<!--{? default.de_iche_use}-->
+		    <label for="pp_settle_iche" class="radio">
+		    	<input type="radio" id="pp_settle_iche" name="pp_settle_case" value="계좌이체"><i class="rounded-x"></i>{_escrow_title}계좌이체
+		    </label>
+		<!--{/}-->
+
+		<!--{? default.de_hp_use}-->
+		    <label for="pp_settle_hp" class="radio">
+		    	<input type="radio" id="pp_settle_hp" name="pp_settle_case" value="휴대폰"><i class="rounded-x"></i>휴대폰
+		    </label>
+		<!--{/}-->
+
+		<!--{? default.de_card_use}-->
+		    <label for="pp_settle_card" class="radio">
+		    	<input type="radio" id="pp_settle_card" name="pp_settle_case" value="신용카드"><i class="rounded-x"></i>신용카드
+		    </label>
+		<!--{/}-->
+
+	<!--{? default.de_vbank_use || default.de_iche_use || default.de_card_use || default.de_hp_use}-->
+		</div>
+	</div>
+	<!--{/}-->
+
+	<!--{? _multi_settle == 0}-->
+	<p class="text-center font-size-13 color-grey margin-top-20"><i class="fa fa-exclamation-circle"></i> 결제할 방법이 없습니다. 운영자에게 알려주시면 감사하겠습니다.</p>
+	<!--{/}-->
+
+	<div class="text-center margin-top-50">
+    	{_orderform3 // 결제대행사별 코드 include (주문버튼)}
+	</div>
+</form>
+</div>
+
+<!--{? default.de_escrow_use}-->
+{_orderform4 // 결제대행사별 코드 include (에스크로 안내)}
+<!--{/}-->
+
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+function forderform_check(f) {
+    var settle_case = document.getElementsByName("pp_settle_case");
+    var settle_check = false;
+    var settle_method = "";
+    for (i=0; i<settle_case.length; i++) {
+        if (settle_case[i].checked) {
+            settle_check = true;
+            settle_method = settle_case[i].value;
+            break;
+        }
+    }
+    if (!settle_check) {
+        swal({
+            title: "Oops...",
+            text: "결제방식을 선택하십시오.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    var tot_price = {pp.pp_price*1};
+
+    if (document.getElementById("pp_settle_iche")) {
+        if (document.getElementById("pp_settle_iche").checked) {
+            if (tot_price < 150) {
+		        swal({
+		            title: "Oops...",
+		            text: "계좌이체는 150원 이상 결제가 가능합니다.",
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+                return false;
+            }
+        }
+    }
+
+    if (document.getElementById("pp_settle_card")) {
+        if (document.getElementById("pp_settle_card").checked) {
+            if (tot_price < 1000) {
+		        swal({
+		            title: "Oops...",
+		            text: "신용카드는 1,000원 이상 결제가 가능합니다.",
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+                return false;
+            }
+        }
+    }
+
+    if (document.getElementById("pp_settle_hp")) {
+        if (document.getElementById("pp_settle_hp").checked) {
+            if (tot_price < 350) {
+		        swal({
+		            title: "Oops...",
+		            text: "휴대폰은 350원 이상 결제가 가능합니다.",
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+                return false;
+            }
+        }
+    }
+
+    // pay_method 설정
+	<!--{? default.de_pg_service == 'kcp'}-->
+    switch(settle_method)
+    {
+        case "계좌이체":
+            f.pay_method.value = "010000000000";
+            break;
+        case "가상계좌":
+            f.pay_method.value = "001000000000";
+            break;
+        case "휴대폰":
+            f.pay_method.value = "000010000000";
+            break;
+        case "신용카드":
+            f.pay_method.value = "100000000000";
+            break;
+        default:
+            f.pay_method.value = "무통장";
+            break;
+    }
+	<!--{: default.de_pg_service == 'lg'}-->
+    switch(settle_method)
+    {
+        case "계좌이체":
+            f.LGD_CUSTOM_FIRSTPAY.value = "SC0030";
+            f.LGD_CUSTOM_USABLEPAY.value = "SC0030";
+            break;
+        case "가상계좌":
+            f.LGD_CUSTOM_FIRSTPAY.value = "SC0040";
+            f.LGD_CUSTOM_USABLEPAY.value = "SC0040";
+            break;
+        case "휴대폰":
+            f.LGD_CUSTOM_FIRSTPAY.value = "SC0060";
+            f.LGD_CUSTOM_USABLEPAY.value = "SC0060";
+            break;
+        case "신용카드":
+            f.LGD_CUSTOM_FIRSTPAY.value = "SC0010";
+            f.LGD_CUSTOM_USABLEPAY.value = "SC0010";
+            break;
+        default:
+            f.LGD_CUSTOM_FIRSTPAY.value = "무통장";
+            break;
+    }
+    <!--{: default.de_pg_service == 'inicis'}-->
+    switch(settle_method)
+    {
+        case "계좌이체":
+            f.gopaymethod.value = "onlydbank";
+            break;
+        case "가상계좌":
+            f.gopaymethod.value = "onlyvbank";
+            break;
+        case "휴대폰":
+            f.gopaymethod.value = "onlyhpp";
+            break;
+        case "신용카드":
+            f.gopaymethod.value = "onlycard";
+            break;
+        default:
+            f.gopaymethod.value = "무통장";
+            break;
+    }
+    <!--{/}-->
+
+    // 결제정보설정
+    <!--{? default.de_pg_service == 'kcp'}-->
+    f.buyr_name.value = f.pp_name.value;
+    f.buyr_mail.value = f.pp_email.value;
+    f.buyr_tel1.value = f.pp_hp.value;
+    f.buyr_tel2.value = f.pp_hp.value;
+    f.rcvr_name.value = f.pp_name.value;
+    f.rcvr_tel1.value = f.pp_hp.value;
+    f.rcvr_tel2.value = f.pp_hp.value;
+    f.rcvr_mail.value = f.pp_email.value;
+
+    if(f.pay_method.value != "무통장") {
+        jsf__pay( f );
+    } else {
+        f.submit();
+    }
+    <!--{/}-->
+    <!--{? default.de_pg_service == 'lg'}-->
+    f.LGD_BUYER.value = f.pp_name.value;
+    f.LGD_BUYEREMAIL.value = f.pp_email.value;
+    f.LGD_BUYERPHONE.value = f.pp_hp.value;
+    f.LGD_AMOUNT.value = f.good_mny.value;
+    f.LGD_TAXFREEAMOUNT.value = 0;
+
+    if(f.LGD_CUSTOM_FIRSTPAY.value != "무통장") {
+          launchCrossPlatform(f);
+    } else {
+        f.submit();
+    }
+    <!--{/}-->
+    <!--{? default.de_pg_service == 'inicis'}-->
+    f.price.value       = f.good_mny.value;
+    f.buyername.value   = f.pp_name.value;
+    f.buyeremail.value  = f.pp_email.value;
+    f.buyertel.value    = f.pp_hp.value;
+
+    if(f.gopaymethod.value != "무통장") {
+        // 주문정보 임시저장
+        var order_data = $(f).serialize();
+        var save_result = "";
+        $.ajax({
+            type: "POST",
+            data: order_data,
+            url: g5_url+"/shop/ajax.orderdatasave.php",
+            cache: false,
+            async: false,
+            success: function(data) {
+                save_result = data;
+            }
+        });
+
+        if(save_result) {
+	        swal({
+	            title: "알림",
+	            text: save_result,
+	            confirmButtonColor: "#FF2900",
+	            type: "warning",
+	            confirmButtonText: "확인"
+	        });
+            return false;
+        }
+
+        if(!make_signature(f))
+            return false;
+
+        paybtn(f);
+    } else {
+        f.submit();
+    }
+    <!--{/}-->
+}
+</script>

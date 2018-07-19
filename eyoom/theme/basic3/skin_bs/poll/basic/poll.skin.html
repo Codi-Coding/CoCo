@@ -1,0 +1,123 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.poll {position:relative;margin:0 20px 30px}
+.poll .headline h5 {font-size:15px}
+.poll .headline span {padding-top:6px;font-size:11px}
+.poll .poll-box {position:relative;padding:15px 10px;border:1px solid #e5e5e5;background:#fff;-webkit-border-radius:3px !important;-moz-border-radius:3px !important;border-radius:3px !important}
+.poll .poll-box h6 {font-size:13px}
+</style>
+
+<div class="poll">
+	<form name="fpoll" action="{C.G5_BBS_URL}/poll_update.php" onsubmit="return fpoll_submit(this);" method="post" class="eyoom-form">
+	<input type="hidden" name="po_id" value="{po_id}">
+	<input type="hidden" name="skin_dir" value="{skin_dir}">
+	<section class="poll-box">
+		<div class="headline">
+			<h5><strong>설문조사</strong></h5>
+			<!--{? _is_admin == "super"}-->
+			<span class="pull-right"><a href="{C.G5_ADMIN_URL}/poll_form.php?w=u&amp;po_id={po_id}">설문설정</a></span>
+			<!--{/}-->
+		</div>
+	    <h6><strong>{po.po_subject}</strong></h6>
+	    <div class="margin-hr-10"></div>
+	    <ul class="list-unstyled">
+	        <!--{@ poll}-->
+	        <li>
+	        	<label for="gb_poll_{.key_}" class="radio"><input type="radio" name="gb_poll" value="{.key_}" id="gb_poll_{.key_}"><i class="rounded-x"></i><span class="font-size-12">{.po_poll}</span></label>
+	        </li>
+	        <!--{/}-->
+	    </ul>
+	    <div class="margin-hr-10"></div>
+	    <!--{? po.po_point > 0}-->
+	    <p class="color-grey font-size-11"><i class="fa fa-exclamation-circle"></i> 설문 참여시 <strong class="color-red">{=number_format(po.po_point)}</strong>포인트 획득</p>
+	    <!--{/}-->
+	    <div class="text-right">
+	        <input type="submit" value="투표하기" class="btn-e btn-e-red rounded">
+	        <a {? !C.G5_IS_MOBILE}href="{C.G5_BBS_URL}/poll_result.php?po_id={po_id}&amp;skin_dir={skin_dir}" onclick="poll_result(this.href); return false;"{:}href="{C.G5_BBS_URL}/poll_result.php?po_id={po_id}&amp;skin_dir={skin_dir}" target="_blank"{/} class="btn-e btn-e-dark rounded">결과보기</a>
+	    </div>
+	</section>
+	</form>
+</div>
+
+<!--{* 설문 결과보기 모달 시작 *}-->
+<div class="modal fade poll-result-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>투표 결과 보기</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="poll-result-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 설문 결과보기 모달 끝 *}-->
+
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+function fpoll_submit(f) {
+    <!--{? member.mb_level < po.po_level}-->
+        swal({
+	        html: true,
+            title: "Oops...",
+            text: "권한 <strong class='color-red'>{po.po_level}</strong> 이상의 회원만 투표에 참여할 수 있습니다.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    <!--{/}-->
+    var chk = false;
+    for (i=0; i<f.gb_poll.length;i ++) {
+        if (f.gb_poll[i].checked == true) {
+            chk = f.gb_poll[i].value;
+            break;
+        }
+    }
+    if (!chk) {
+        swal({
+            title: "Oops...",
+            text: "투표하실 설문항목을 선택하세요.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+    var new_win = window.open("about:blank", "win_poll", "width=616,height=500,scrollbars=yes,resizable=yes");
+    f.target = "win_poll";
+    return true;
+}
+
+function poll_result(url) {
+    <!--{? member.mb_level < po.po_level}-->
+        swal({
+	        html: true,
+            title: "Oops...",
+            text: "권한 <strong class='color-red'>{po.po_level}</strong> 이상의 회원만 결과를 볼 수 있습니다.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    <!--{/}-->
+    $('.poll-result-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#poll-result-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.poll-result-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#poll-result-iframe").attr("src", url);
+        $('#poll-result-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+</script>

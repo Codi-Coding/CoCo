@@ -1,0 +1,50 @@
+<?php if (!defined('_GNUBOARD_')) exit;?>
+
+<div class="admin-shop-itemcopy">
+	<form name="fitemcopy" id="fitemcopy" class="eyoom-form">
+	<div class="adm-form-wrap margin-bottom-30">
+		<header>
+			<strong><i class="fa fa-caret-right"></i> 상품복사하기</strong>
+		</header>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-12">
+					<label for="new_it_id" class="label">상품코드</label>
+					<label class="input">
+						<i class="icon-prepend fa fa-clone"></i>
+						<input type="text" name="new_it_id" id="new_it_id" value="{=time()}">
+					</label>
+					<div class="note margin-bottom-10">
+						<strong>Note:</strong> 위 상품코드로 선택한 상품을 동일하게 복사합니다.
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+	
+	{frm_submit}
+
+	</form>
+</div>
+
+<script>
+// <![CDATA[
+function _copy()
+{
+	var link = "{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemcopyupdate&it_id={_it_id}&ca_id={_ca_id}";
+    var new_it_id = document.getElementById('new_it_id').value;
+    var t_it_id = new_it_id.replace(/[A-Za-z0-9\-_]/g, "");
+    if(t_it_id.length > 0) {
+        alert("상품코드는 영문자, 숫자, -, _ 만 사용할 수 있습니다.");
+        return false;
+    }
+    var token = get_ajax_token();
+    if(!token) {
+        alert("토큰 정보가 올바르지 않습니다.");
+        return false;
+    }
+    window.parent.closeModal(link+'&new_it_id='+new_it_id+"&token="+token+"&smode=1");
+}
+// ]]>
+</script>

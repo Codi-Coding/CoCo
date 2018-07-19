@@ -1,0 +1,300 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-point-list">
+	<form name="fsearch" id="fsearch" action="./" class="eyoom-form" method="get">
+	<input type="hidden" name="dir" id="dir" value="{_dir}">
+	<input type="hidden" name="pid" id="pid" value="{_pid}">
+	<div class="headline">
+		<h4><strong>포인트 관리</strong></h4>
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="row">
+		<div class="col col-5">
+			<div class="padding-top-5">
+				<span class="font-size-12 color-grey">
+					<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>전체 {=number_format(_total_count)} 건
+					<!--{? !_sum_point}-->
+					&nbsp;({mb.mb_id} 님 포인트 합계 : {=number_format(mb.mb_point)}점)
+					<!--{:}-->
+					&nbsp;(전체 합계 {=number_format(_sum_point)}점)
+					<!--{/}-->
+				</span>
+			</div>
+		</div>
+		<div class="col col-5">
+			<div class="row">
+				<div class="col col-5">
+					<label for="sfl" class="sound_only">검색대상</label>
+					<label class="select margin-bottom-10">
+						<select name="sfl" id="sfl">
+						    <option value="mb_id" {=get_selected(_GET.sfl, 'mb_id')}>회원 ID</option>
+						    <option value="po_content" {=get_selected(_GET.sfl, 'po_content')}>내용</option>
+						</select>
+						<i></i>
+					</label>
+				</div>
+				<div class="col col-7">
+					<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+					<label class="input input-button">
+						<div class="button"><input type="submit" value="검색">검색</div>
+						<input type="text" name="stx" value="{_stx}" id="stx" required autocomplete="off">
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="col col-2">
+			<section>
+				<label for="sort_list" class="select">
+					<select name="sort_list" id="sort_list" onchange="sorting_list(this.form, this.value);">
+						<option value="">:: 정렬방식선택 ::</option>
+						<option value="mb_id|asc" {? _sst=='mb_id' && _sod=='asc'}selected{/}>회원아이디 정방향 (↓)</option>
+						<option value="mb_id|desc" {? _sst=='mb_id' && _sod=='desc'}selected{/}>회원아이디 역방향 (↑)</option>
+						<option value="po_content|asc" {? _sst=='po_content' && _sod=='asc'}selected{/}>포인트 내용 정방향 (↓)</option>
+						<option value="po_content|desc" {? _sst=='po_content' && _sod=='desc'}selected{/}>포인트 내용 역방향 (↑)</option>
+						<option value="po_point|asc" {? _sst=='po_point' && _sod=='asc'}selected{/}>포인트 정방향 (↓)</option>
+						<option value="po_point|desc" {? _sst=='po_point' && _sod=='desc'}selected{/}>포인트 역방향 (↑)</option>
+						<option value="po_datetime|asc" {? _sst=='po_datetime' && _sod=='asc'}selected{/}>일시 정방향 (↓)</option>
+						<option value="po_datetime|desc" {? _sst=='po_datetime' && _sod=='desc'}selected{/}>일시 역방향 (↑)</option>
+					</select><i></i>
+				</label>
+			</section>
+		</div>
+	</div>
+	</form>
+
+	<form name="fpointlist" id="fpointlist" method="post" action="{_action_url}" onsubmit="return fpointlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="point-list"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-dark btn-e-xs" onclick="document.pressed=this.value">
+	</div>
+	</form>
+
+	<!--{* 페이지 *}-->
+	{=eb_admin_paging('basic')}
+
+	<div class="margin-bottom-30"></div>
+
+	<form name="fpointlist2" method="post" id="fpointlist2" action="{_action_url2}" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="sfl" value="<?php echo $sfl ?>">
+	<input type="hidden" name="stx" value="<?php echo $stx ?>">
+	<input type="hidden" name="sst" value="<?php echo $sst ?>">
+	<input type="hidden" name="sod" value="<?php echo $sod ?>">
+	<input type="hidden" name="page" value="<?php echo $page ?>">
+	<input type="hidden" name="token" value="<?php echo $token ?>">
+	<div class="headline">
+		<h4><strong>개별회원 포인트 증감 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="admin-search-box margin-bottom-30">
+		<div class="row">
+			<div class="col col-4">
+				<section>
+					<label for="mb_id" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 회원아이디</label>
+
+					<label class="input">
+						<input type="text" name="mb_id" id="mb_id" value="{_mb_id}" required>
+					</label>
+					<div class="note">Note! '회원검색' 클릭후 회원아이디를 검색/선택하세요.</div>
+				</section>
+			</div>
+			<div class="col col-2">
+				<section class="label-height">
+					<a href='{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=member_list&amp;wmode=1' class="btn-e btn-e-sm btn-e-dark" onclick="eb_modal(this.href); return false;">회원검색</a>
+				</section>
+			</div>
+			<div class="col col-6">
+				<section>
+					<label class="label"> 회원전체 적용여부</label>
+					<label for="po_all" class="checkbox">
+						<input type="checkbox" name="po_all" id="po_all" value="y"><i></i> 적용하기 (회원아이디가 최고관리자일 때만 적용)
+					</label>
+				</section>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col col-{? config.cf_point_term > 0}5{:}7{/}">
+				<section>
+					<label for="po_content" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 포인트내용</label>
+					<label class="input">
+						<input type="text" name="po_content" id="po_content" value="" required>
+					</label>
+				</section>
+			</div>
+			<div class="col col-2">
+				<section>
+					<label for="po_point" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 포인트</label>
+					<label class="input">
+						<input type="text" name="po_point" id="po_point" value="" required>
+					</label>
+				</section>
+			</div>
+			<!--{? config.cf_point_term > 0}-->
+			<div class="col col-2">
+				<section>
+					<label for="po_expire_term" class="label">포인트 유효기간</label>
+					<label class="input">
+						<i class="icon-append">일</i>
+						<input type="text" name="po_expire_term" id="po_expire_term" value="{config.cf_point_term}">
+					</label>
+				</section>
+			</div>
+			<!--{/}-->
+		</div>
+	</div>
+	<div class="text-center margin-bottom-30">
+		<input type="submit" value="확인" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+	</div>
+	</form>
+</div>
+
+<div id="point-list-modal" class="modal fade point-list-modal" tabindex="-1" role="dialog" aria-labelledby="memberCopyLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="memberCopyLabel" class="modal-title"><strong><i class="fa fa-search"></i> 회원 검색</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="point-list-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function eb_modal(href) {
+    $('.point-list-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#point-list-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.point-list-modal').modal('show').on('shown.bs.modal', function () {
+        $("#point-list-iframe").attr("src", href);
+        $('#point-list-iframe').height(400);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('#point-list-modal').modal('hide');
+};
+
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) || filter.회원아이디 && !(client.회원아이디.indexOf(filter.회원아이디) > -1))
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ point_list}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label><input type='hidden' name='mb_id[{.index_}]' value='{.mb_id}' id='mb_id_{.index_}'><input type='hidden' name='po_id[{.index_}]' value='{.po_id}' id='po_id_{.index_}'>",
+	        회원아이디: "<span class='ellipsis'>{.mb_id}</span>",
+	        이름: "<strong>{.mb_name}</strong>",
+	        닉네임: "<span class='ellipsis'>{.mb_nick}</span>",
+	        포인트내용: "{? .link}<a href='{C.G5_BBS_URL}/board.php?bo_table={.po_rel_table}&amp;wr_id={.po_rel_id}' target='_blank'><span class='ellipsis'>{.po_content}</span></a>{:}<span class='ellipsis'>{.po_content}</span>{/}",
+	        포인트: "{=number_format(.po_point)}",
+	        일시: "{.po_datetime}",
+	        만료일: "{.expire_date}",
+	        포인트합: "{=number_format(.po_mb_point)}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#point-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "회원아이디", type: "text", width: 100 },
+            { name: "이름", type: "text", width: 80 },
+            { name: "닉네임", type: "text", width: 80 },
+            { name: "포인트내용", type: "text", width: 200 },
+            { name: "포인트", type: "number", width: 80 },
+            { name: "일시", type: "text", align: "center", width: 130 },
+            { name: "만료일", type: "text", align: "center", width: 130 },
+            { name: "포인트합", type: "number", width: 100 },
+        ]
+    });
+
+    var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function sorting_list(f, str) {
+    var sort = str.split('|');
+
+	$("#sst").val(sort[0]);
+	$("#sod").val(sort[1]);
+
+	if (sort[0] && sort[1]) {
+		f.action = "{C.EYOOM_ADMIN_URL}/?dir={_dir}&pid={_pid}";
+		f.submit();
+	}
+}
+
+function fpointlist_submit(f) {
+    if ($("input:checked").length == 0) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+</script>

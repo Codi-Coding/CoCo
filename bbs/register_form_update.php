@@ -3,12 +3,10 @@ include_once('./_common.php');
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 include_once(G5_LIB_PATH.'/register.lib.php');
 include_once(G5_LIB_PATH.'/mailer.lib.php');
+include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 
 // 리퍼러 체크
 referer_check();
-
-// 토큰체크
-check_write_token('register');
 
 if (!($w == '' || $w == 'u')) {
     alert('w 값이 제대로 넘어오지 않았습니다.');
@@ -98,18 +96,16 @@ if ($w == '' || $w == 'u') {
     if($w == '' && $mb_password != $mb_password_re)
         alert('비밀번호가 일치하지 않습니다.');
 
-    if ($msg = empty_mb_name($mb_name))     alert($msg, "", true, true);
+    if ($msg = empty_mb_name($mb_name))       alert($msg, "", true, true);
     if ($msg = empty_mb_nick($mb_nick))     alert($msg, "", true, true);
     if ($msg = empty_mb_email($mb_email))   alert($msg, "", true, true);
     if ($msg = reserve_mb_id($mb_id))       alert($msg, "", true, true);
     if ($msg = reserve_mb_nick($mb_nick))   alert($msg, "", true, true);
     // 이름에 한글명 체크를 하지 않는다.
-    //if ($msg = valid_mb_name($mb_name))   alert($msg, "", true, true);
+    //if ($msg = valid_mb_name($mb_name))     alert($msg, "", true, true);
     if ($msg = valid_mb_nick($mb_nick))     alert($msg, "", true, true);
     if ($msg = valid_mb_email($mb_email))   alert($msg, "", true, true);
     if ($msg = prohibit_mb_email($mb_email))alert($msg, "", true, true);
-	// 휴대폰체크
-	if ($msg = exist_mb_hp($mb_hp, $mb_id)) alert($msg, "", true, true);
 
     // 휴대폰 필수입력일 경우 휴대폰번호 유효성 체크
     if (($config['cf_use_hp'] || $config['cf_cert_hp']) && $config['cf_req_hp']) {
@@ -266,7 +262,7 @@ if ($w == '') {
         }
 
         ob_start();
-        include_once ($misc_skin_path.'/register_form_update_mail1.php');
+        include_once ('./register_form_update_mail1.php');
         $content = ob_get_contents();
         ob_end_clean();
 
@@ -282,7 +278,7 @@ if ($w == '') {
         $subject = '['.$config['cf_title'].'] '.$mb_nick .' 님께서 회원으로 가입하셨습니다.';
 
         ob_start();
-        include_once ($misc_skin_path.'/register_form_update_mail2.php');
+        include_once ('./register_form_update_mail2.php');
         $content = ob_get_contents();
         ob_end_clean();
 
@@ -367,13 +363,16 @@ $msg = "";
 
 // 아이콘 업로드
 $mb_icon = '';
+$image_regex = "/(\.(gif|jpe?g|png))$/i";
+$mb_icon_img = $mb_id.'.gif';
+
 if (isset($_FILES['mb_icon']) && is_uploaded_file($_FILES['mb_icon']['tmp_name'])) {
-    if (preg_match("/(\.gif)$/i", $_FILES['mb_icon']['name'])) {
+    if (preg_match($image_regex, $_FILES['mb_icon']['name'])) {
         // 아이콘 용량이 설정값보다 이하만 업로드 가능
         if ($_FILES['mb_icon']['size'] <= $config['cf_member_icon_size']) {
             @mkdir($mb_dir, G5_DIR_PERMISSION);
             @chmod($mb_dir, G5_DIR_PERMISSION);
-            $dest_path = $mb_dir.'/'.$mb_id.'.gif';
+            $dest_path = $mb_dir.'/'.$mb_icon_img;
             move_uploaded_file($_FILES['mb_icon']['tmp_name'], $dest_path);
             chmod($dest_path, G5_FILE_PERMISSION);
             if (file_exists($dest_path)) {
@@ -382,13 +381,24 @@ if (isset($_FILES['mb_icon']) && is_uploaded_file($_FILES['mb_icon']['tmp_name']
                 // gif 파일에 악성코드를 심어 업로드 하는 경우를 방지
                 // 에러메세지는 출력하지 않는다.
                 //-----------------------------------------------------------------
-                $size = getimagesize($dest_path);
-                if ($size[2] != 1) // gif 파일이 아니면 올라간 이미지를 삭제한다.
+                $size = @getimagesize($dest_path);
+                if (!($size[2] === 1 || $size[2] === 2 || $size[2] === 3)) { // jpg, gif, png 파일이 아니면 올라간 이미지를 삭제한다.
                     @unlink($dest_path);
-                else
-                // 아이콘의 폭 또는 높이가 설정값 보다 크다면 이미 업로드 된 아이콘 삭제
-                if ($size[0] > $config['cf_member_icon_width'] || $size[1] > $config['cf_member_icon_height'])
-                    @unlink($dest_path);
+                } else if ($size[0] > $config['cf_member_icon_width'] || $size[1] > $config['cf_member_icon_height']) {
+                    $thumb = null;
+                    if($size[2] === 2 || $size[2] === 3) {
+                        //jpg 또는 png 파일 적용
+                        $thumb = thumbnail($mb_icon_img, $mb_dir, $mb_dir, $config['cf_member_icon_width'], $config['cf_member_icon_height'], true, true);
+                        if($thumb) {
+                            @unlink($dest_path);
+                            rename($mb_dir.'/'.$thumb, $dest_path);
+                        }
+                    }
+                    if( !$thumb ){
+                        // 아이콘의 폭 또는 높이가 설정값 보다 크다면 이미 업로드 된 아이콘 삭제
+                        @unlink($dest_path);
+                    }
+                }
                 //=================================================================\
             }
         } else {
@@ -396,10 +406,68 @@ if (isset($_FILES['mb_icon']) && is_uploaded_file($_FILES['mb_icon']['tmp_name']
         }
 
     } else {
-        $msg .= $_FILES['mb_icon']['name'].'은(는) gif 파일이 아닙니다.';
+        $msg .= $_FILES['mb_icon']['name'].'은(는) 이미지 파일이 아닙니다.';
     }
 }
 
+// 회원 프로필 이미지
+if( $config['cf_member_img_size'] && $config['cf_member_img_width'] && $config['cf_member_img_height'] ){
+    $mb_tmp_dir = G5_DATA_PATH.'/member_image/';
+    $mb_dir = $mb_tmp_dir.substr($mb_id,0,2);
+    if( !is_dir($mb_tmp_dir) ){
+        @mkdir($mb_tmp_dir, G5_DIR_PERMISSION);
+        @chmod($mb_tmp_dir, G5_DIR_PERMISSION);
+    }
+
+    // 아이콘 삭제
+    if (isset($_POST['del_mb_img'])) {
+        @unlink($mb_dir.'/'.$mb_icon_img);
+    }
+
+    // 회원 프로필 이미지 업로드
+    $mb_img = '';
+    if (isset($_FILES['mb_img']) && is_uploaded_file($_FILES['mb_img']['tmp_name'])) {
+
+        $msg = $msg ? $msg."\\r\\n" : '';
+
+        if (preg_match($image_regex, $_FILES['mb_img']['name'])) {
+            // 아이콘 용량이 설정값보다 이하만 업로드 가능
+            if ($_FILES['mb_img']['size'] <= $config['cf_member_img_size']) {
+                @mkdir($mb_dir, G5_DIR_PERMISSION);
+                @chmod($mb_dir, G5_DIR_PERMISSION);
+                $dest_path = $mb_dir.'/'.$mb_icon_img;
+                move_uploaded_file($_FILES['mb_img']['tmp_name'], $dest_path);
+                chmod($dest_path, G5_FILE_PERMISSION);
+                if (file_exists($dest_path)) {
+                    $size = @getimagesize($dest_path);
+                    if (!($size[2] === 1 || $size[2] === 2 || $size[2] === 3)) { // gif jpg png 파일이 아니면 올라간 이미지를 삭제한다.
+                        @unlink($dest_path);
+                    } else if ($size[0] > $config['cf_member_img_width'] || $size[1] > $config['cf_member_img_height']) {
+                        $thumb = null;
+                        if($size[2] === 2 || $size[2] === 3) {
+                            //jpg 또는 png 파일 적용
+                            $thumb = thumbnail($mb_icon_img, $mb_dir, $mb_dir, $config['cf_member_img_width'], $config['cf_member_img_height'], true, true);
+                            if($thumb) {
+                                @unlink($dest_path);
+                                rename($mb_dir.'/'.$thumb, $dest_path);
+                            }
+                        }
+                        if( !$thumb ){
+                            // 아이콘의 폭 또는 높이가 설정값 보다 크다면 이미 업로드 된 아이콘 삭제
+                            @unlink($dest_path);
+                        }
+                    }
+                    //=================================================================\
+                }
+            } else {
+                $msg .= '회원이미지을 '.number_format($config['cf_member_img_size']).'바이트 이하로 업로드 해주십시오.';
+            }
+
+        } else {
+            $msg .= $_FILES['mb_img']['name'].'은(는) gif/jpg 파일이 아닙니다.';
+        }
+    }
+}
 
 // 인증메일 발송
 if ($config['cf_use_email_certify'] && $old_email != $mb_email) {
@@ -413,7 +481,7 @@ if ($config['cf_use_email_certify'] && $old_email != $mb_email) {
     $certify_href = G5_BBS_URL.'/email_certify.php?mb_id='.$mb_id.'&amp;mb_md5='.$mb_md5;
 
     ob_start();
-    include_once ($misc_skin_path.'/register_form_update_mail3.php');
+    include_once ('./register_form_update_mail3.php');
     $content = ob_get_contents();
     ob_end_clean();
 
@@ -479,11 +547,7 @@ if ($msg)
     echo '<script>alert(\''.$msg.'\');</script>';
 
 if ($w == '') {
-	if($pim) {
-		goto_url(G5_HTTP_BBS_URL.'/register_result.php?pim='.$pim);
-	} else {
-		goto_url(G5_HTTP_BBS_URL.'/register_result.php');
-	}
+    goto_url(G5_HTTP_BBS_URL.'/register_result.php');
 } else if ($w == 'u') {
     $row  = sql_fetch(" select mb_password from {$g5['member_table']} where mb_id = '{$member['mb_id']}' ");
     $tmp_password = $row['mb_password'];

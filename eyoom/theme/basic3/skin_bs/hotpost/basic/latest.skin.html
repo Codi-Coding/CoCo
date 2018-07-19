@@ -1,0 +1,29 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.hot-post .hot-post-box {position:relative;border:1px solid #d5d5d5;background:#fbfbfb;padding:10px 15px;-webkit-border-radius:2px !important;-moz-border-radius:2px !important;border-radius:2px !important}
+.hot-post .hot-post-list {position:relative;margin:4px 0px;font-size:12px}
+.hot-post .hot-post-list .hot-post-rank {display:inline-block;width:24px;height:15px;line-height:15px;margin-right:5px;font-size:11px;text-align:center;color:#fff;background:#474A5E}
+.hot-post .hot-post-list:first-child .hot-post-rank {background:#FF2900}
+.hot-post .hot-post-list:nth-child(2) .hot-post-rank {background:#FF9500}
+.hot-post .hot-post-list:nth-child(3) .hot-post-rank {background:#FF9500}
+.hot-post .hot-post-list .hot-post-subj:hover {text-decoration:underline}
+.hot-post .hot-post-list .hot-post-cmt {margin-left:3px;color:#FF2900;font-size:11px}
+</style>
+
+<div class="hot-post">
+	<h5><strong>{board.bo_subject} 월간베스트</strong></h5>
+	<div class="hot-post-box">
+		<!--{@ loop}-->
+		<div class="hot-post-list ellipsis">
+			<span class="hot-post-rank">{.key_+1}</span>
+			<span class="hot-post-subj"><a href="{.href}">{.wr_subject}</a></span>
+			<!--{? .wr_comment}-->
+			<span class="hot-post-cmt">+{.wr_comment}</span>
+			<!--{/}-->
+		</div>
+		<!--{:}-->
+		<div class="text-center font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 출력할 자료가 없습니다.</div>
+		<!--{/}-->
+	</div>
+</div>

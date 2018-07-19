@@ -1,0 +1,88 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-theme-form">
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{theme_name}</span>] 테마 설치하기</strong></h4>
+	</div>
+
+	<form name="fthemeform" method="post" action="{_theme_action_url}" onsubmit="return ftheme_check(this)" class="eyoom-form">
+	<input type="hidden" name="cm_key" id="cm_key" value="">
+	<input type="hidden" name="cm_salt" id="cm_salt" value="">
+	<input type="hidden" name="tm_name" id="tm_name" value="">
+	<input type="hidden" name="tm_shop" id="tm_shop" value="">
+	<input type="hidden" name="tm_community" id="tm_community" value="">
+	<input type="hidden" name="tm_mainside" id="tm_mainside" value="">
+	<input type="hidden" name="tm_subside" id="tm_subside" value="">
+	<input type="hidden" name="tm_mainpos" id="tm_mainpos" value="">
+	<input type="hidden" name="tm_subpos" id="tm_subpos" value="">
+	<input type="hidden" name="tm_shopmainside" id="tm_shopmainside" value="">
+	<input type="hidden" name="tm_shopsubside" id="tm_shopsubside" value="">
+	<input type="hidden" name="tm_shopmainpos" id="tm_shopmainpos" value="">
+	<input type="hidden" name="tm_shopsubpos" id="tm_shopsubpos" value="">
+
+	<div class="adm-form-wrap margin-bottom-30">
+		<fieldset>
+			<section>
+				<label class="label">테마키 입력</label>
+				<label for="tm_key" class="input">
+					<input type="text" name="tm_key" id="tm_key" value="" required>
+				</label>
+			</section>
+			<div class="note margin-bottom-10"><strong>Note:</strong> 테마키는 테마를 다운로드받으신 이윰넷(<a href="{C.EYOOM_SITE}" target="_blank">{C.EYOOM_SITE}</a>)의 마이페이지 다운로드 내역에서 확인하실 수 있습니다.</div>
+		</fieldset>
+	</div>
+
+	{frm_submit}
+
+	</form>
+</div>
+
+<script>
+function ftheme_check(f) {
+	var tmkey 	= $("#tm_key").val();
+	if (!tmkey) {
+		alert("구매하신 테마의 라이센스키를 입력해 주세요.");
+		$("#tm_key").focus();
+		return false;
+	} else {
+		var host = '{hostname.host}';
+		var wurl = '{hostname.host}';
+		var rurl = '';
+		
+		$.ajax({
+			url: "{C.EYOOM3_AJAX_URL}",
+			data: {tmkey: tmkey, host: host, wurl: wurl, rurl: rurl},
+			dataType: 'jsonp',
+			jsonp: 'callback',
+			jsonpCallback: 'set_theme',
+			success: function(){}
+		});
+		return false;
+	}
+}
+
+function set_theme(data) {
+	var f = document.fthemeform;
+	if(data.cm_key) {
+		if (data.cm_key) f.cm_key.value = data.cm_key;
+		if (data.cm_salt) f.cm_salt.value = data.cm_salt;
+		if (data.tm_name) f.tm_name.value = data.tm_name;
+		if (data.tm_shop) f.tm_shop.value = data.tm_shop;
+		if (data.tm_community) f.tm_community.value = data.tm_community;
+		if (data.tm_mainside) f.tm_mainside.value = data.tm_mainside;
+		if (data.tm_subside) f.tm_subside.value = data.tm_subside;
+		if (data.tm_mainpos) f.tm_mainpos.value = data.tm_mainpos;
+		if (data.tm_subpos) f.tm_subpos.value = data.tm_subpos;
+		if (data.tm_shopmainside) f.tm_shopmainside.value = data.tm_shopmainside;
+		if (data.tm_shopsubside) f.tm_shopsubside.value = data.tm_shopsubside;
+		if (data.tm_shopmainpos) f.tm_shopmainpos.value = data.tm_shopmainpos;
+		if (data.tm_shopsubpos) f.tm_shopsubpos.value = data.tm_shopsubpos;
+		f.submit();
+	} else {
+		alert(data.msg);
+		f.tm_key.focus();
+		f.tm_key.select();
+		return false;
+	}
+}
+</script>

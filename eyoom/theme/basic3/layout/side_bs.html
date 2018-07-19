@@ -1,0 +1,139 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../plugins/sly/tab_scroll_category.css" type="text/css" media="screen">',0);
+?>
+
+<aside class="basic-body-side {? side_layout.pos == 'left'}left{:}right{/}-side col-md-3">
+	<div class="side-pc-area">
+		<!--{* 아웃로그인 시작 *}-->
+			<!--{? eyoom.use_gnu_outlogin == 'y' //그누보드 스킨일 경우}-->
+			{=outlogin('basic')}
+			<!--{: //이윰 스킨일 경우}-->
+			{=eb_outlogin(eyoom.outlogin_skin)}
+			<!--{/}-->
+		<!--{* 아웃로그인 끝 *}-->
+
+		<!--{* notice_roll 최신글 영역 시작 *}-->
+			<!--{* 아래 bo_table=게시판id 설정 *}-->
+			{latest->latest_eyoom('notice_roll','bo_table=notify||count=5||cut_subject=50')}
+		<!--{* notice_roll 최신글 영역 끝 *}-->
+
+		<!--{* Side Nav 영역 시작 *}-->
+			<!--{? !defined('_INDEX_')}-->
+			<ul class="sidebar-nav-e1 list-group" id="sidebar-nav">
+				<!--{@ sidemenu}-->
+			    <li class="list-group-item list-toggle {? .active}active{/}">
+					<a {? C.G5_IS_MOBILE && sidemenu.submenu}data-toggle="collapse" data-parent="#sidebar-nav" href="#collapse-{.key_}"{:}href="{.me_link}" target="_{.me_target}"{/}>
+						{.me_name}<!--{? .new}--><i class="fa fa-circle color-red margin-left-5"></i><!--{/}-->
+					</a>
+			        <ul id="collapse-{.key_}" class="collapse {? .active}in{/}">
+						<!--{@ submenu}-->
+			            <li class="{? ..active}active{/}">
+			            	<a href="{..me_link}" target="_{..me_target}">
+				            	{..me_name}
+				            	<!--{? ..new}-->
+				            	<i class="fa fa-circle color-red margin-left-5"></i>
+				            	<!--{/}-->
+			            	</a>
+			            </li>
+						<!--{/}-->
+			        </ul>
+			    </li>
+				<!--{/}-->
+			</ul>
+			<!--{/}-->
+		<!--{* Side Nav 영역 끝 *}-->
+
+		<!--{* 새글 새댓글 최신글 시작 *}-->
+			<div class="sidebar-tab">
+			    <div class="tab-bg tab-bg-dark">
+			        <ul class="nav nav-tabs">
+			            <li class="active"><a href="#side-tn-1" data-toggle="tab">새글</a></li>
+			            <li class="last"><a href="#side-tn-2" data-toggle="tab">새댓글</a></li>
+			        </ul>
+			        <div class="tab-content">
+			            <div class="tab-pane fade active in" id="side-tn-1">
+			                <div class="tab-content-wrap">
+			                    {latest->latest_newpost('tab_newpost', 'count=5||cut_subject=30||photo=y')}
+			                </div>
+			            </div>
+			            <div class="tab-pane fade in" id="side-tn-2">
+			                <div class="tab-content-wrap">
+				                {latest->latest_newpost('tab_newcomment', 'count=5||cut_subject=30||photo=y')}
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		<!--{* 새글 새댓글 최신글 끝 *}-->
+
+		<!--{* 투표 시작 *}-->
+			<!--{? eyoom.use_gnu_poll == 'y' //그누보드 스킨일 경우}-->
+			{=poll('basic')}
+			<!--{: //이윰 스킨일 경우}-->
+			{=eb_poll(eyoom.poll_skin)}
+			<!--{/}-->
+		<!--{* 투표 끝 *}-->
+
+		<!--{* 랭킹 시작 *}-->
+			{latest->latest_rankset('basic','10')}
+		<!--{* 랭킹 끝 *}-->
+
+		<!--{* 인기검색어 시작 *}-->
+			<!--{? eyoom.use_gnu_popular == 'y' //그누보드 스킨일 경우}-->
+			{=popular('basic')}
+			<!--{:}-->
+			<!--{* 아래는 오늘부터 30일 전까지 인기검색어 10개 추출 소스 *}-->
+			{=eb_popular(eyoom.popular_skin, 10, 30)}
+			<!--{/}-->
+		<!--{* 인기검색어 끝 *}-->
+
+		<!--{* 태그메뉴 시작 *}-->
+			<!--{? eyoom.use_tag == 'y'}-->
+			{=eb_tagmenu(eyoom.tag_skin)}
+			<!--{/}-->
+		<!--{* 태그메뉴 끝 *}-->
+
+		<!--{? _is_admin // 관리자일때만 보입니다.}-->
+	    <!--{* 방문자 통계 시작 *}-->
+			<!--{? eyoom.use_gnu_visit == 'y' //그누보드 스킨일 경우}-->
+			{=visit('basic')}
+			<!--{:}-->
+			{=eb_visit(eyoom.visit_skin)}
+			<!--{/}-->
+		<!--{* 방문자 통계 끝 *}-->
+		<!--{/}-->
+	</div>
+</aside>
+
+<script src="../plugins/sly/vendor_plugins.min.js"></script>
+<script src="../plugins/sly/sly.min.js"></script>
+<script>
+$(function() {
+	var $frame = $('#tab-page-category');
+	var $wrap  = $frame.parent();
+	$frame.sly({
+		horizontal: 1,
+		itemNav: 'centered',
+		smart: 1,
+		activateOn: 'click',
+		mouseDragging: 1,
+		touchDragging: 1,
+		releaseSwing: 1,
+		scrollBar: $wrap.find('.scrollbar'),
+		scrollBy: 1,
+		speed: 300,
+		elasticBounds: 1,
+		easing: 'easeOutExpo',
+		dragHandle: 1,
+		dynamicHandle: 1,
+		clickBar: 1,
+		prev: $wrap.find('.prev'),
+		next: $wrap.find('.next')
+	});
+	var tabWidth = $('#tab-page-category').width();
+	var categoryWidth = $('.page-category-list').width();
+	if (tabWidth < categoryWidth) {
+		$('.controls').show();
+	}
+});
+</script>

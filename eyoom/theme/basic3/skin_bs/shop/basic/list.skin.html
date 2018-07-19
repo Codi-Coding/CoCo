@@ -1,0 +1,126 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sly/tab_scroll_category.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-list .shop-list-navi {margin-bottom:20px}
+.shop-list .shop-list-navi .list-navi {font-size:11px}
+.shop-list .shop-list-navi .list-navi a {color:#959595}
+.shop-list .shop-list-navi .list-navi .sct_here {color:#E52700}
+.shop-list .sct_here:before {content:"\f105";font-family:FontAwesome;padding:0 5px;color:#888}
+.shop-list .sct_bg:before {content:"\f105";font-family:FontAwesome;padding:0 5px;color:#888}
+.shop-list .sct-ct {border:2px solid #c5c5c5;background:#fff;padding:10px;margin-bottom:30px;background:#fbfbfb}
+.shop-list .sct-ct h5 {font-size:13px;font-weight:bold;padding-bottom:8px;margin-top:0;border-bottom:1px dotted #e5e5e5;color:#E52700}
+.shop-list .sct-ct li {float:left;padding:2px}
+.shop-list .sct-ct li .btn-e-xs {line-height:1;padding:2px 7px}
+</style>
+
+<div class="shop-list">
+	<div class="shop-list-navi">
+		<div class="pull-left list-navi">
+			<a href="{C.G5_SHOP_URL}/">Home</a>
+			{shop->get_navigation()}
+		</div>
+		<!--{? _is_admin}-->
+		<div class="pull-right">
+			<a href="{C.G5_ADMIN_URL}/shop_admin/categoryform.php?w=u&amp;ca_id={_ca_id}" class="btn-e btn-e-purple rounded">분류 관리</a>
+		</div>
+		<!--{/}-->
+		<div class="clearfix"></div>
+	</div>
+
+	<!--{* 상단 HTML *}-->
+	<div id="sct_hhtml" class="margin-bottom-20">{=conv_content(ca.ca_head_html, 1)}</div>
+
+	<!--{* 상품분류 1 시작 *}-->
+	<!--{? shop->listcategory()}-->
+	<aside class="sct-ct">
+		<h5><strong>관련 카테고리</strong></h5>
+		<ul class="list-unstyled">
+			<!--{@ shop->listcategory()}-->
+			<li><a href="{.href}" class="btn-e btn-e-xs btn-e-dark rounded">{.ca_name} ({.cnt})</a></li>
+			<!--{/}-->
+		</ul>
+		<div class="clearfix"></div>
+	</aside>
+	<!--{/}-->
+	<!--{* 상품분류 1 끝 *}-->
+
+	<!--{* 상품 정렬 선택 시작 *}-->
+	<div class="tab-scroll-category">
+		<div id="tab-category">
+			<div class="category-list">
+				<span {? _GET.sort == 'it_update_time' && _GET.sortodr == 'desc'}class="active"{: !_GET.sort}class="active"{/}>
+					<a href="{_sct_sort_href}it_update_time&amp;sortodr=desc">최근등록순</a>
+				</span>
+				<span {? _GET.sort == 'it_sum_qty' && _GET.sortodr == 'desc'}class="active"{/}>
+					<a href="{_sct_sort_href}it_sum_qty&amp;sortodr=desc">판매많은순</a>
+				</span>
+				<span {? _GET.sort == 'it_price' && _GET.sortodr == 'asc'}class="active"{/}>
+					<a href="{_sct_sort_href}it_price&amp;sortodr=asc">낮은가격순</a>
+				</span>
+				<span {? _GET.sort == 'it_price' && _GET.sortodr == 'desc'}class="active"{/}>
+					<a href="{_sct_sort_href}it_price&amp;sortodr=desc">높은가격순</a>
+				</span>
+				<span {? _GET.sort == 'it_use_avg' && _GET.sortodr == 'desc'}class="active"{/}>
+					<a href="{_sct_sort_href}it_use_avg&amp;sortodr=desc">평점높은순</a>
+				</span>
+				<span {? _GET.sort == 'it_use_cnt' && _GET.sortodr == 'desc'}class="active"{/}>
+					<a href="{_sct_sort_href}it_use_cnt&amp;sortodr=desc">후기많은순</a>
+				</span>
+		        <span class="fake-span"></span>
+			</div>
+			<div class="controls">
+				<button class="btn prev"><i class="fa fa-caret-left"></i></button>
+				<button class="btn next"><i class="fa fa-caret-right"></i></button>
+			</div>
+		</div>
+		<div class="tab-category-divider"></div>
+	</div>
+	<!--{* 상품 정렬 선택 끝 *}-->
+
+	{_list_package}
+
+	<!--{* 페이지 *}-->
+	{=eb_paging('basic')}
+
+	<!--{* 하단 HTML *}-->
+	<div id="sct_thtml">{=conv_content(ca.ca_tail_html, 1)}</div>
+</div>
+
+<script>
+var itemlist_ca_id = "{_ca_id}";
+</script>
+<script src="../../../../../../js/shop.list.js"></script>
+<script src="../../../plugins/sly/vendor_plugins.min.js"></script>
+<script src="../../../plugins/sly/sly.min.js"></script>
+<script>
+$(function() {
+	var $frame = $('#tab-category');
+	var $wrap  = $frame.parent();
+	$frame.sly({
+		horizontal: 1,
+		itemNav: 'centered',
+		smart: 1,
+		activateOn: 'click',
+		mouseDragging: 1,
+		touchDragging: 1,
+		releaseSwing: 1,
+		scrollBar: $wrap.find('.scrollbar'),
+		scrollBy: 1,
+		speed: 300,
+		elasticBounds: 1,
+		easing: 'easeOutExpo',
+		dragHandle: 1,
+		dynamicHandle: 1,
+		clickBar: 1,
+		prev: $wrap.find('.prev'),
+		next: $wrap.find('.next')
+	});
+	var tabWidth = $('#tab-category').width();
+	var categoryWidth = $('.category-list').width();
+	if (tabWidth < categoryWidth) {
+		$('.controls').show();
+	}
+});
+</script>

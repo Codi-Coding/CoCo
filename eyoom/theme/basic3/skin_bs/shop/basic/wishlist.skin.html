@@ -1,0 +1,136 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-wishlist .eyoom-form .radio i, .shop-wishlist .eyoom-form .checkbox i{top:2px}
+.shop-wishlist .headline {margin:0 0 25px;border-bottom:1px solid #d5d5d5}
+.shop-wishlist .table-list-eb thead {border-top:2px solid #454545}
+.shop-wishlist .table-list-eb .table>thead>tr>th {padding:10px;text-align:center}
+.shop-wishlist .table-list-eb .table>tbody>tr>td {padding:10px}
+.shop-wishlist .table-list-eb .td-width-30 {width:30%}
+.shop-wishlist .table-list-eb td img {display:block;width:100% \9;max-width:100%;height:auto}
+.shop-wishlist .table-list-eb .td-img {text-align:center}
+.shop-wishlist .table-list-eb .td-img .td-img-box {display:inline-block;border:1px solid #e5e5e5;padding:2px;margin-top:5px;width:70px;border-radius:2px !important}
+.shop-wishlist .table-list-eb .td-border {border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5}
+.shop-wishlist .table-list-eb .td-border-right {border-right:1px solid #e5e5e5}
+.shop-wishlist .table-list-eb .td-bg-color {background:#fcfcfc}
+</style>
+
+<div class="shop-wishlist">
+    <form name="fwishlist" method="post" action="./cartupdate.php" class="eyoom-form">
+	    <input type="hidden" name="act" value="multi">
+	    <input type="hidden" name="sw_direct" value="">
+	    <input type="hidden" name="prog" value="wish">
+	    <div class="headline"><h4><strong>위시리스트</strong></h4></div>
+		<!--{? C.G5_IS_MOBILE}-->
+		<p class="text-right font-size-11 margin-bottom-5 color-grey">Note! 좌우 스크롤 (<i class="fa fa-arrows-h"></i>)</p>
+		<!--{/}-->
+		<div class="table-list-eb margin-bottom-30">
+			<div class="table-responsive">
+		        <table class="table">
+		            <thead>
+		                <tr>
+				            <th width="30">선택</th>
+				            <th>이미지</th>
+				            <th>상품명</th>
+				            <th>보관일시</th>
+				            <th>삭제</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+				        <!--{@ list}-->
+						<tr>
+				            <td>
+								<!--{? is_soldout(.it_id)}-->
+				                <strong class="color-red">품절</strong>
+				                <!--{: //품절이 아니면 체크할수 있도록한다}-->
+				                <label for="chk_it_id_{.key_}" class="sound_only">{.it_name}</label>
+				                <label class="checkbox">
+				                	<input type="checkbox" name="chk_it_id[{.key_}]" value="1" id="chk_it_id_{.key_}" onclick="out_cd_check(this, '{.out_cd}');"><i></i>
+				                </label>
+				                <!--{/}-->
+				                <input type="hidden" name="it_id[{.key_}]" value="{.it_id}">
+				                <input type="hidden" name="io_type[{.it_id}][0]" value="0">
+				                <input type="hidden" name="io_id[{.it_id}][0]" value="">
+				                <input type="hidden" name="io_value[{.it_id}][0]" value="{.it_name}">
+				                <input type="hidden"   name="ct_qty[{.it_id}][0]" value="1">
+				            </td>
+				            <td class="td-img"><a href="./item.php?it_id={.it_id}" class="td-img-box">{.image}</a></td>
+				            <td class="td-border td-bg-color"><a href="./item.php?it_id={.it_id}">{=stripslashes(.it_name)}</a></td>
+				            <td class="td-border-right">{.wi_time}</td>
+				            <td class="text-center"><a href="./wishupdate.php?w=d&amp;wi_id={.wi_id}" class="btn-e btn-e-xs btn-e-dark rounded color-white"><i class="fa fa-close"></i> 삭제</a></td>
+				        </tr>
+						<!--{:}-->
+						<tr><td colspan="5" class="text-center"><span class="font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 보관 내역이 없습니다.</span></td></tr>
+						<!--{/}-->
+		            </tbody>
+		        </table>
+			</div>
+		</div>
+
+	    <div class="text-center">
+	        <button type="submit" class="btn-e btn-e-red btn-e-lg" onclick="return fwishlist_check(document.fwishlist,'');">장바구니 담기</button>
+	        <button type="submit" class="btn-e btn-e-dark btn-e-lg" onclick="return fwishlist_check(document.fwishlist,'direct_buy');">주문하기</button>
+	    </div>
+    </form>
+</div>
+
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+function out_cd_check(fld, out_cd) {
+    if (out_cd == 'no') {
+        swal({
+            title: "Oops...",
+            text: "옵션이 있는 상품입니다.\n\n상품을 클릭하여 상품페이지에서 옵션을 선택한 후 주문하십시오.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        fld.checked = false;
+        return;
+    }
+
+    if (out_cd == 'tel_inq') {
+        swal({
+            title: "Oops...",
+            text: "이 상품은 전화로 문의해 주십시오.\n\n장바구니에 담아 구입하실 수 없습니다.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        fld.checked = false;
+        return;
+    }
+}
+
+function fwishlist_check(f, act) {
+    var k = 0;
+    var length = f.elements.length;
+
+    for(i=0; i<length; i++) {
+        if (f.elements[i].checked) {
+            k++;
+        }
+    }
+
+    if (k == 0) {
+        swal({
+            title: "Oops...",
+            text: "상품을 하나 이상 체크 하십시오.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    if (act == "direct_buy") {
+        f.sw_direct.value = 1;
+    } else {
+        f.sw_direct.value = 0;
+    }
+
+    return true;
+}
+</script>

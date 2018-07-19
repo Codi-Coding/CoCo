@@ -1,0 +1,806 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.register-form {font-size:12px}
+.register-form .register-box {border:1px solid #ddd;}
+.register-form .register-check-btn {position:absolute;top:0;right:0;line-height:1;padding:3px 15px}
+.register-form .address-search-btn {height:28px;padding:0 25px;line-height:28px;font-size:13px;font-weight:bold}
+.register-form .eyoom-form header {padding:20px 15px;background:#fafafa}
+.register-form .eyoom-form footer {padding:10px 15px}
+.register-form .eyoom-form fieldset {padding:10px}
+.register-form .eyoom-form .vc-captcha fieldset {padding:0}
+.register-form .border-top {border-top:1px solid #ddd}
+.register-form .vc-captcha {padding:0;border:0}
+.register-form .security-display {display:none}
+.register-form .security_0 .security-display, .register-form .security_1 .security-display, .register-form .security_2 .security-display, .register-form .security_3 .security-display, .register-form .security_4 .security-display {display:block}
+.register-form .progress-xxs {height:3px;float:none}
+.register-form .security_0 .progress-bar {width:10%}
+.register-form .security_1 .progress-bar {width:25%}
+.register-form .security_2 .progress-bar {width:50%}
+.register-form .security_3 .progress-bar {width:75%}
+.register-form .security_4 .progress-bar {width:100%}
+.register-form .security_0 .progress-e .progress-bar {background:#000}
+.register-form .security_1 .progress-e .progress-bar {background:#ff2a00}
+.register-form .security_2 .progress-e .progress-bar {background:#ff5500}
+.register-form .security_3 .progress-e .progress-bar {background:#FF9500}
+.register-form .security_4 .progress-e .progress-bar {background:#87BA00}
+.register-form .security_0 .security-heading .pull-right:after {content:"매우약함"}
+.register-form .security_1 .security-heading .pull-right:after {content:"약함"}
+.register-form .security_2 .security-heading .pull-right:after {content:"보통"}
+.register-form .security_3 .security-heading .pull-right:after {content:"강함"}
+.register-form .security_4 .security-heading .pull-right:after {content:"아주강함"}
+</style>
+
+<script src="../../../../../../js/jquery.register_form.js"></script>
+<script src="../../../js/zxcvbn.js"></script>
+<script src="../../../js/jquery.password.strength.js"></script>
+<!--{? config.cf_cert_use && (config.cf_cert_ipin || config.cf_cert_hp)}-->
+<script src="../../../../../../js/certify.js"></script>
+<!--{/}-->
+
+<div class="register-form">
+    <form id="fregisterform" name="fregisterform" action="{_register_action_url}" onsubmit="return fregisterform_submit(this);" method="post" enctype="multipart/form-data" autocomplete="off" class="eyoom-form">
+    <input type="hidden" name="w" value="{_w}">
+    <input type="hidden" name="url" value="{_urlencode}">
+    <input type="hidden" name="agree" value="{_agree}">
+    <input type="hidden" name="agree2" value="{_agree2}">
+    <input type="hidden" name="cert_type" value="{member.mb_certify}">
+    <input type="hidden" name="cert_no" value="">
+    <!--{? isset(member.mb_sex)}--><input type="hidden" name="mb_sex" value="{member.mb_sex}"><!--{/}-->
+    <!--{? isset(member.mb_nick_date) && member.mb_nick_date > date("Y-m-d", C.G5_SERVER_TIME - (config.cf_nick_modify * 86400))}-->
+    <input type="hidden" name="mb_nick_default" value="{member.mb_nick}">
+    <input type="hidden" name="mb_nick" value="{member.mb_nick}">
+    <!--{/}-->
+    <div class="register-box">
+        <header><h5 class="margin-0"><strong>사이트 이용정보 입력</strong></h5></header>
+		<fieldset>
+            <div class="row">
+                <section class="col col-4">
+                	<label for="reg_mb_id" class="label width-100 position-relative">
+                		아이디<strong class="sound_only"> 필수</strong>
+						<!--{? _w==''}-->
+                		<span class="pull-right">
+                			<button class="btn-e btn-e-dark btn-e-sm register-check-btn" type="button" onclick="check_duplication('mb_id');"><span class="color-white">중복체크</span></button>
+                		</span>
+                		<div class="clearfix"></div>
+						<!--{/}-->
+                	</label>
+                    <label class="input">
+                    	<i class="icon-prepend fa fa-user"></i>
+                        <input type="text" name="mb_id" value="{member.mb_id}" id="reg_mb_id" {? _w!=''}required readonly{/} minlength="3" maxlength="20">
+						<!--{? _w==''}--><input type="hidden" name="mb_id_duplicated" id="mb_id_duplicated"><!--{/}-->
+                        <span id="msg_mb_id"></span>
+                    </label>
+                    <!--{? _w==''}-->
+                    <div class="note"><strong>Note:</strong> 아이디 입력 후 <span class="color-yellow">중복체크 필수</span></div>
+                    <!--{/}-->
+                </section>
+                <section class="col col-4">
+                    <label for="reg_mb_password" class="label">비밀번호<strong class="sound_only"> 필수</strong></label>
+                    <label class="input">
+                        <i class="icon-prepend fa fa-lock"></i>
+                        <input type="password" name="mb_password" id="reg_mb_password" {? _w!=''}required{/} minlength="4" maxlength="20">
+                    </label>
+                </section>
+                <section class="col col-4">
+                    <label for="wr_password" class="label">비밀번호 확인<strong class="sound_only"> 필수</strong></label>
+                    <label class="input">
+                        <i class="icon-prepend fa fa-lock"></i>
+                        <input type="password" name="mb_password_re" id="reg_mb_password_re" {? _w!=''}required{/} minlength="4" maxlength="20">
+                    </label>
+                </section>
+                <div class="clearfix"></div>
+                <div id="pass_meter">
+	                <section class="col col-4"></section>
+	                <section class="col col-4">
+		                <div class="security-display">
+				        	<p class="security-heading font-size-11">보안강도체크 <span class="pull-right"></span></p>
+				        	<div class="clearfix"></div>
+							<div class="progress progress-e progress-xxs">
+				                <div class="progress-bar progress-bar-e"></div>
+				            </div>
+		                </div>
+	                </section>
+	                <section class="col col-4">
+		                <div>
+			                <div class="security_text font-size-11 color-red"></div>
+		                </div>
+	                </section>
+                </div>
+            </div>
+		</fieldset>
+		<header class="border-top"><h5 class="margin-0"><strong>개인정보 입력</strong></h5></header>
+		<fieldset>
+			<div class="row">
+				<div class="col col-12 margin-bottom-0">
+					<label for="reg_mb_name" class="label">이름<strong class="sound_only">필수</strong></label>
+				</div>
+				<div class="clearfix"></div>
+				<div class="col col-4">
+                    <label class="input">
+                        <i class="icon-prepend fa fa-male"></i>
+                        <input type="text" name="mb_name" id="reg_mb_name"  value="{member.mb_name}" {? _w!=''}required readonly{/} size="10">
+                    </label>
+				</div>
+                <div class="col col-8">
+						<!--{? config.cf_cert_use}-->
+						<!--{? config.cf_cert_ipin}-->
+						<button type="button" id="win_ipin_cert" class="btn-e btn-e-dark">아이핀 본인확인</button>
+						<!--{/}-->
+						<!--{? config.cf_cert_hp}-->
+						<button type="button" id="win_hp_cert" class="btn-e btn-e-dark">휴대폰 본인확인</button>
+						<!--{/}-->
+						<noscript>본인확인을 위해서는 자바스크립트 사용이 가능해야합니다.</noscript>
+					<!--{/}-->
+                </div>
+                <div class="clearfix"></div>
+                <!--{? config.cf_cert_use}-->
+                <div class="col col-12">
+					<div class="alert alert-warning padding-all-10 margin-bottom-10 margin-top-10"><strong>Note:</strong> 아이핀 본인확인 후에는 이름이 자동 입력되고 휴대폰 본인확인 후에는 이름과 휴대폰번호가 자동 입력되어 수동으로 입력할수 없게 됩니다.</div>
+                </div>
+                <!--{/}-->
+				<!--{? config.cf_cert_use && member.mb_certify}-->
+				<div class="col col-12">
+	                <div id="msg_certify">
+	                    <strong>{? member.mb_certify == 'ipin'}아이핀{:}휴대폰{/} 본인확인</strong><!--{? member.mb_adult}--> 및 <strong>성인인증</strong><!--{/}--> 완료
+	                </div>
+				</div>
+                <!--{/}-->
+			</div>
+			<!--{? _req_nick}-->
+			<div class="margin-hr-15"></div>
+			<div class="row">
+				<div class="col col-4">
+					<label for="reg_mb_nick" class="label width-100 position-relative">
+						닉네임<strong class="sound_only">필수</strong>
+						<!--{? _w==''}-->
+                		<span class="pull-right">
+                			<button class="btn-e btn-e-dark btn-e-sm register-check-btn" type="button" onclick="check_duplication('mb_nick');"><span class="color-white">중복체크</span></button>
+                		</span>
+                		<div class="clearfix"></div>
+						<!--{/}-->
+					</label>
+					<label class="input">
+		                <input type="hidden" name="mb_nick_default" value="{? isset(member.mb_nick)}{member.mb_nick}{/}">
+						<i class="icon-prepend fa fa-smile-o"></i>
+		                <input type="text" name="mb_nick" value="{? isset(member.mb_nick)}{member.mb_nick}{/}" id="reg_mb_nick" required size="10" maxlength="100">
+						<!--{? _w==''}--><input type="hidden" name="mb_nick_duplicated" id="mb_nick_duplicated"><!--{/}-->
+		                <span id="msg_mb_nick"></span>
+					</label>
+					<!--{? _w==''}-->
+					<div class="note"><strong>Note:</strong> 닉네임 입력 후 <span class="color-yellow">중복체크 필수</span></div>
+					<!--{/}-->
+				</div>
+				<div class="clear"></div>
+				<div class="col col-12">
+					<div class="alert alert-warning padding-all-10 margin-top-10">
+						<strong>Note:</strong> 공백없이 한글,영문,숫자만 입력 가능 (한글2자, 영문4자 이상) | 닉네임을 바꾸시면 앞으로 {config.cf_nick_modify*1}일 이내에는 변경 할 수 없습니다.
+					</div>
+				</div>
+			</div>
+			<!--{/}-->
+			<div class="margin-hr-15"></div>
+			<div class="row">
+                <div class="col col-4">
+                    <label for="reg_mb_email" class="label width-100 position-relative">
+                    	이메일<strong class="sound_only"> 필수</strong>
+						<!--{? _w==''}-->
+                		<span class="pull-right">
+                			<button class="btn-e btn-e-dark btn-e-sm register-check-btn" type="button" onclick="check_duplication('mb_email');"><span class="color-white">중복체크</span></button>
+                		</span>
+                		<div class="clearfix"></div>
+						<!--{/}-->
+                    </label>
+                    <label class="input">
+                    	<input type="hidden" name="old_email" value="{member.mb_email}">
+                        <i class="icon-prepend fa fa-envelope-o"></i>
+                        <input type="text" name="mb_email" value="{? isset(member.mb_email)}{member.mb_email}{/}" id="reg_mb_email" required size="70" maxlength="100">
+						<!--{? _w==''}--><input type="hidden" name="mb_email_duplicated" id="mb_email_duplicated"><!--{/}-->
+                    </label>
+                    <!--{? _w==''}-->
+                    <div class="note"><strong>Note:</strong> 이메일 입력 후 <span class="color-yellow">중복체크 필수</span></div>
+                    <!--{/}-->
+                </div>
+                <!--{? config.cf_use_email_certify}-->
+				<div class="col col-12">
+					<div class="alert alert-warning padding-all-10 margin-top-10">
+						<strong>Note:</strong> <!--{?_w==''}-->E-mail 로 발송된 내용을 확인한 후 인증하셔야 회원가입이 완료됩니다.<!--{/}--><!--{?_w=='u'}-->E-mail 주소를 변경하시면 다시 인증하셔야 합니다.<!--{/}-->
+					</div>
+				</div>
+				<!--{/}-->
+                <div class="clearfix"></div>
+                <!--{? config.cf_use_homepage}-->
+                <section class="col col-4">
+                    <label for="reg_mb_homepage" class="label">홈페이지<!--{? config.cf_req_homepage}--><strong class="sound_only">필수</strong><!--{/}--></label>
+                    <label class="input">
+                        <i class="icon-prepend fa fa-home"></i>
+                        <input type="text" name="mb_homepage" value="{member.mb_homepage}" id="reg_mb_homepage" {? config.cf_req_homepage}required{/} size="70" maxlength="255">
+                    </label>
+                </section>
+                <!--{/}-->
+				<!--{? config.cf_use_tel}-->
+                <section class="col col-4">
+                    <label for="reg_mb_tel" class="label">전화번호<!--{? config.cf_req_tel}--><strong class="sound_only">필수</strong><!--{/}--></label>
+                    <label class="input">
+                        <i class="icon-prepend fa fa-fax"></i>
+                        <input type="text" name="mb_tel" value="{member.mb_tel}" id="reg_mb_tel" {? config.cf_req_tel}required{/} maxlength="20">
+                    </label>
+                </section>
+                <!--{/}-->
+                <!--{? config.cf_use_hp || (config.cf_cert_use && config.cf_cert_hp)}-->
+                <section class="col col-4">
+                    <label for="reg_mb_hp" class="label">휴대폰번호<!--{? config.cf_req_hp}--><strong class="sound_only">필수</strong><!--{/}--></label>
+                    <label class="input">
+                        <i class="icon-prepend fa fa-tablet"></i>
+                        <input type="text" name="mb_hp" value="{member.mb_hp}" id="reg_mb_hp" {? config.cf_req_hp}required{/} maxlength="20">
+						<!--{? config.cf_cert_use && config.cf_cert_hp}-->
+						<input type="hidden" name="old_mb_hp" value="{member.mb_hp}">
+						<!--{/}-->
+                    </label>
+                </section>
+                <!--{/}-->
+			</div>
+			<!--{? config.cf_use_addr}-->
+			<div class="margin-hr-15"></div>
+			<div class="row">
+                <div class="col col-12">
+                	<label for="reg_mb_hp" class="label margin-left-5">주소<!--{? config.cf_req_addr}--><strong class="sound_only">필수</strong><!--{/}--></label>
+                </div>
+                <div class="col col-4">
+					<label for="reg_mb_zip" class="sound_only">우편번호<!--{? config.cf_req_addr}--><strong class="sound_only"> 필수</strong><!--{/}--></label>
+					<label class="input">
+						<i class="icon-append fa fa-question-circle"></i>
+                    	<input type="text" name="mb_zip" value="{member.mb_zip1}{member.mb_zip2}" id="reg_mb_zip" {? config.cf_req_addr}required{/} size="5" maxlength="6">
+                    	<b class="tooltip tooltip-top-right">우편번호 (주소 검색 버튼을 클릭하여 조회)</b>
+					</label>
+                </div>
+                <div class="col col-4">
+					<button type="button" onclick="win_zip('fregisterform', 'mb_zip', 'mb_addr1', 'mb_addr2', 'mb_addr3', 'mb_addr_jibeon');" class="btn-e btn-e-indigo rounded address-search-btn">주소 검색</button>
+                </div>
+                <div class="clearfix margin-bottom-10"></div>
+                <div class="col col-12">
+	                <label class="input">
+	                	<input type="text" name="mb_addr1" value="{member.mb_addr1}" id="reg_mb_addr1" {? config.cf_req_addr}required{/} size="50">
+	                </label>
+	                <div class="note margin-bottom-10"><strong>Note:</strong> 기본주소<!--{? config.cf_req_addr}--><strong class="sound_only"> 필수</strong><!--{/}--></div>
+                </div>
+                <div class="clear"></div>
+                <div class="col col-6">
+	                <label class="input">
+	                	<input type="text" name="mb_addr2" value="{member.mb_addr2}" id="reg_mb_addr2" size="50">
+	                </label>
+	                <div class="note margin-bottom-10"><strong>Note:</strong> 상세주소</div>
+                </div>
+                <div class="col col-6">
+	                <label class="input">
+	                	<input type="text" name="mb_addr3" value="{member.mb_addr3}" id="reg_mb_addr3" size="50" readonly="readonly">
+	                </label>
+	                <div class="note margin-bottom-10"><strong>Note:</strong> 참고항목</div>
+                </div>
+                <input type="hidden" name="mb_addr_jibeon" value="{member.mb_addr_jibeon}">
+			</div>
+			<!--{/}-->
+		</fieldset>
+		<header class="border-top"><h5 class="margin-0"><strong>기타 개인설정</strong></h5></header>
+		<fieldset>
+            <div class="row">
+	            <!--{? config.cf_use_signature}-->
+                <section class="col col-12">
+                    <label for="reg_mb_signature" class="label">서명<!--{? config.cf_req_signature}--><strong class="sound_only">필수</strong><!--{/}--></label>
+	                <label class="textarea textarea-resizable">
+	                    <textarea name="mb_signature" id="reg_mb_signature" rows="5" {? config.cf_req_signature}required{/}>{member.mb_signature}</textarea>
+	                </label>
+                </section>
+                <!--{/}-->
+            </div>
+			<div class="row">
+	            <!--{? config.cf_use_profile}-->
+                <section class="col col-12">
+                    <label for="reg_mb_profile" class="label">자기소개</label>
+	                <label class="textarea textarea-resizable">
+	                    <textarea name="mb_profile" id="reg_mb_profile" rows="5" {? config.cf_req_profile}required{/}>{member.mb_profile}</textarea>
+	                </label>
+                </section>
+                <!--{/}-->
+			</div>
+			<div class="row">
+                <section class="col col-6">
+                    <label for="reg_mb_mailling" class="label">메일링서비스</label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="mb_mailling" value="1" id="reg_mb_mailling" {? _w=='' || member.mb_mailling}checked{/}><i></i>정보 메일을 받겠습니다.
+                    </label>
+                </section>
+                <!--{? config.cf_use_hp}-->
+                <section class="col col-6">
+                    <label for="reg_mb_sms" class="label">SMS 수신여부</label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="mb_sms" value="1" id="reg_mb_sms" {? _w=='' || member.mb_sms}checked{/}><i></i>휴대폰 문자메세지를 받겠습니다.
+                    </label>
+                </section>
+                <!--{/}-->
+			</div>
+			<div class="margin-hr-15"></div>
+			<div class="row">
+                <!--{? isset(member.mb_open_date) && member.mb_open_date <= date("Y-m-d", C.G5_SERVER_TIME - (config.cf_open_modify * 86400)) || empty(member.mb_open_date) }-->
+                <section class="col col-6">
+                    <label for="reg_mb_open" class="label">정보공개</label>
+                    <label class="checkbox">
+		                <input type="checkbox" name="mb_open" value="1" {? _w=='' || member.mb_open}checked{/} id="reg_mb_open"><i></i>다른분들이 나의 정보를 볼 수 있도록 합니다.
+		                <input type="hidden" name="mb_open_default" value="{member.mb_open}">
+                    </label>
+                    <div class="note margin-bottom-10"><strong>Note:</strong> 정보공개를 바꾸시면 앞으로 {config.cf_open_modify*1}일 이내에는 변경이 안됩니다.</div>
+                </section>
+                <!--{:}-->
+                <section class="col col-6">
+                    <label for="reg_mb_open" class="label">정보공개</label>
+                    <label class="checkbox">
+                        <input type="hidden" name="mb_open" value="{member.mb_open}">
+                    </label>
+                    <div class="note margin-bottom-10"><strong>Note:</strong> 정보공개는 수정후 {config.cf_open_modify*1}일 이내, {_open_day} 까지는 변경이 안됩니다.<br>이렇게 하는 이유는 잦은 정보공개 수정으로 인하여 쪽지를 보낸 후 받지 않는 경우를 막기 위해서 입니다.</div>
+                </section>
+                <!--{/}-->
+                <!--{? _w=='' && config.cf_use_recommend}-->
+                <section class="col col-6">
+                    <label for="reg_mb_recommend" class="label">추천인아이디</label>
+                    <label class="input">
+                        <i class="icon-prepend fa fa-user"></i>
+                        <i class="icon-append fa fa-question-circle"></i>
+                        <input type="text" name="mb_recommend" id="reg_mb_recommend">
+                        <b class="tooltip tooltip-top-right">추천인 아이디를 남겨주세요.</b>
+                    </label>
+                </section>
+                <!--{/}-->
+			</div>
+			<div class="margin-hr-15"></div>
+			<div class="row">
+	            <section class="col col-12">
+	                <label class="label">자동등록방지</label>
+	                <div class="vc-captcha">{=captcha_html()}</div>
+	            </section>
+			</div>
+		</fieldset>
+
+	    <!--{? social_oauth_url}-->
+	    {# oauth_bs}
+	    <div class="margin-bottom-20"></div>
+	    <!--{/}-->
+
+		<footer class="text-center">
+			<!--{?_w=='u'}-->
+			<button type="button" value="회원탈퇴" id="btn_remove" class="btn-e btn-e-xlg btn-e-default" onclick="member_leave();">회원탈퇴</button>
+			<!--{/}-->
+			<button type="submit" value="{?_w==''}회원가입{:}정보수정{/}" id="btn_submit" class="btn-e btn-e-xlg btn-e-red" accesskey="s">{?_w==''}회원가입{:}정보수정{/}</button>
+		</footer>
+    </div>
+    </form>
+</div>
+
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+$(function() {
+    $("#reg_zip_find").css("display", "inline-block");
+
+	<!--{? config.cf_cert_use && config.cf_cert_ipin}-->
+    // 아이핀인증
+    $("#win_ipin_cert").click(function() {
+        if(!cert_confirm())
+            return false;
+
+        var url = "{C.G5_OKNAME_URL}/ipin1.php";
+        certify_win_open('kcb-ipin', url);
+        return;
+    });
+	<!--{/}-->
+
+	<!--{? config.cf_cert_use && config.cf_cert_hp}-->
+    // 휴대폰인증
+    $("#win_hp_cert").click(function() {
+        if(!cert_confirm()) return false;
+
+		<!--{? config.cf_cert_hp == 'kcb'}-->
+		certify_win_open("kcb-hp", "{C.G5_OKNAME_URL}/hpcert1.php");
+		<!--{: config.cf_cert_hp == 'kcp'}-->
+		certify_win_open("kcp-hp", "{C.G5_KCPCERT_URL}/kcpcert_form.php");
+		<!--{: config.cf_cert_hp == 'lg'}-->
+		certify_win_open("lg-hp", "{C.G5_LGXPAY_URL}/AuthOnlyReq.php");
+		<!--{:}-->
+        swal({
+            title: "중요!",
+            text: "기본환경설정에서 휴대폰 본인확인 설정을 해주십시오.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+		return false;
+		<!--{/}-->
+
+        return;
+    });
+    <!--{/}-->
+});
+
+// submit 최종 폼체크
+function fregisterform_submit(f)
+{
+    // 회원아이디 검사
+    if (f.w.value == "") {
+        var msg = reg_mb_id_check();
+        if (msg) {
+	        swal({
+	            title: "Oops...",
+	            text: msg,
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            f.mb_id.select();
+            return false;
+        }
+    }
+	<!--{? _w==''}-->
+	if(f.mb_id_duplicated.value != 'y') {
+        swal({
+            title: "중요!",
+            text: "아이디 중복검사를 하셔야 합니다.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+		f.mb_id.select();
+		return false;
+	}
+	<!--{/}-->
+
+    if (f.w.value == "") {
+        if (f.mb_password.value.length < 4) {
+	        swal({
+	            title: "중요!",
+	            text: "비밀번호를 4글자 이상 입력하십시오.",
+	            confirmButtonColor: "#FF9500",
+	            type: "warning",
+	            confirmButtonText: "확인"
+	        });
+            f.mb_password.focus();
+            return false;
+        }
+    }
+
+    if (f.mb_password.value != f.mb_password_re.value) {
+        swal({
+            title: "Oops...",
+            text: "비밀번호가 같지 않습니다.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        f.mb_password_re.focus();
+        return false;
+    }
+
+    if (f.mb_password.value.length > 0) {
+        if (f.mb_password_re.value.length < 4) {
+	        swal({
+	            title: "중요!",
+	            text: "비밀번호를 4글자 이상 입력하십시오.",
+	            confirmButtonColor: "#FF9500",
+	            type: "warning",
+	            confirmButtonText: "확인"
+	        });
+            f.mb_password_re.focus();
+            return false;
+        }
+    }
+
+    // 비밀번호 강도체크
+    var pass_strength = $("#pass_meter").attr("class");
+    if (!pass_strength || pass_strength == 'security_0' || pass_strength == 'security_1') {
+        swal({
+            title: "중요!",
+            text: "비밀번호의 강도는 '보통' 이상이여야 합니다.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        f.mb_password.focus();
+        return false;
+    }
+
+    // 이름 검사
+    if (f.w.value=="") {
+        if (f.mb_name.value.length < 1) {
+	        swal({
+	            title: "Oops...",
+	            text: "이름을 입력하십시오.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            f.mb_name.focus();
+            return false;
+        }
+
+        /*
+        var pattern = /([^가-힣\x20])/i;
+        if (pattern.test(f.mb_name.value)) {
+	        swal({
+	            title: "중요!",
+	            text: "이름은 한글로 입력하십시오.",
+	            confirmButtonColor: "#FF9500",
+	            type: "warning",
+	            confirmButtonText: "확인"
+	        });
+            f.mb_name.select();
+            return false;
+        }
+        */
+    }
+
+	<!--{? _w=='' && config.cf_cert_use && config.cf_cert_req}-->
+    // 본인확인 체크
+    if(f.cert_no.value=="") {
+        swal({
+            title: "중요!",
+            text: "회원가입을 위해서는 본인확인을 해주셔야 합니다.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+    <!--{/}-->
+
+    // 닉네임 검사
+    if ((f.w.value == "") || (f.w.value == "u" && f.mb_nick.defaultValue != f.mb_nick.value)) {
+        var msg = reg_mb_nick_check();
+        if (msg) {
+	        swal({
+	            title: "중요!",
+	            text: msg,
+	            confirmButtonColor: "#FF9500",
+	            type: "warning",
+	            confirmButtonText: "확인"
+	        });
+            f.reg_mb_nick.select();
+            return false;
+        }
+    }
+	<!--{? _w==''}-->
+	if(f.mb_nick_duplicated.value != 'y') {
+        swal({
+            title: "중요!",
+            text: "닉네임 중복검사를 하셔야 합니다.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+		f.reg_mb_nick.select();
+		return false;
+	}
+	<!--{/}-->
+
+
+    // E-mail 검사
+    if ((f.w.value == "") || (f.w.value == "u" && f.mb_email.defaultValue != f.mb_email.value)) {
+        var msg = reg_mb_email_check();
+        if (msg) {
+	        swal({
+	            title: "Oops...",
+	            text: msg,
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            f.reg_mb_email.select();
+            return false;
+        }
+    }
+
+	<!--{? _w==''}-->
+	if(f.mb_email_duplicated.value != 'y') {
+        swal({
+            title: "중요!",
+            text: "이메일 중복검사를 하셔야 합니다.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+		f.reg_mb_email.select();
+		return false;
+	}
+	<!--{/}-->
+
+	<!--{? (config.cf_use_hp || config.cf_cert_hp) && config.cf_req_hp}-->
+    // 휴대폰번호 체크
+    var msg = reg_mb_hp_check();
+    if (msg) {
+        swal({
+            title: "중요!",
+            text: msg,
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        f.reg_mb_hp.select();
+        return false;
+    }
+    <!--{/}-->
+
+    if (typeof f.mb_icon != "undefined") {
+        if (f.mb_icon.value) {
+            if (!f.mb_icon.value.toLowerCase().match(/.(gif)$/i)) {
+		        swal({
+		            title: "중요!",
+		            text: "회원아이콘이 gif 파일이 아닙니다.",
+		            confirmButtonColor: "#FF9500",
+		            type: "warning",
+		            confirmButtonText: "확인"
+		        });
+                f.mb_icon.focus();
+                return false;
+            }
+        }
+    }
+
+    if (typeof(f.mb_recommend) != "undefined" && f.mb_recommend.value) {
+        if (f.mb_id.value == f.mb_recommend.value) {
+	        swal({
+	            title: "Oops...",
+	            text: "본인을 추천할 수 없습니다.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            f.mb_recommend.focus();
+            return false;
+        }
+
+        var msg = reg_mb_recommend_check();
+        if (msg) {
+	        swal({
+	            title: "중요!",
+	            text: msg,
+	            confirmButtonColor: "#FF9500",
+	            type: "warning",
+	            confirmButtonText: "확인"
+	        });
+            f.mb_recommend.select();
+            return false;
+        }
+    }
+
+    <!--{=chk_captcha_js()}-->
+
+    document.getElementById("btn_submit").disabled = "disabled";
+
+    return true;
+}
+
+function check_duplication(target) {
+	var mb_id = $('#reg_mb_id').val();
+
+	switch(target) {
+		case 'mb_id':
+			var msg = reg_mb_id_check();
+			if(msg) {
+		        swal({
+		            title: "Oops...",
+		            text: msg,
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+				$("#reg_mb_id").focus();
+				$("#reg_mb_id").select();
+				return false;
+			} else {
+		        swal({
+		            title: "OK!",
+		            text: "사용가능한 아이디입니다.",
+		            confirmButtonColor: "#87BA00",
+		            type: "success",
+		            confirmButtonText: "확인"
+		        });
+				$("#reg_mb_id").attr('readonly','true');
+				$("#mb_id_duplicated").val('y');
+				$("#reg_mb_id").css('background','#f5f5f5');
+			}
+			break;
+		case 'mb_nick':
+			var msg = reg_mb_nick_check();
+			if(msg) {
+		        swal({
+		            title: "Oops...",
+		            text: msg,
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+				$("#reg_mb_nick").focus();
+				$("#reg_mb_nick").select();
+				return false;
+			} else {
+		        swal({
+		            title: "OK!",
+		            text: "사용가능한 닉네임입니다.",
+		            confirmButtonColor: "#87BA00",
+		            type: "success",
+		            confirmButtonText: "확인"
+		        });
+				$("#reg_mb_nick").attr('readonly','true');
+				$("#mb_nick_duplicated").val('y');
+				$("#reg_mb_nick").css('background','#f5f5f5');
+			}
+			break;
+		case 'mb_email':
+			var msg = reg_mb_email_check();
+			if(msg) {
+		        swal({
+		            title: "Oops...",
+		            text: msg,
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+				$("#reg_mb_email").focus();
+				$("#reg_mb_email").select();
+				return false;
+			} else {
+		        swal({
+		            title: "OK!",
+		            text: "사용가능한 이메일입니다.",
+		            confirmButtonColor: "#87BA00",
+		            type: "success",
+		            confirmButtonText: "확인"
+		        });
+				$("#reg_mb_email").attr('readonly','true');
+				$("#mb_email_duplicated").val('y');
+				$("#reg_mb_email").css('background','#f5f5f5');
+			}
+			break;
+	}
+}
+<!--{?_w=='u'}-->
+function member_leave() {  // 회원 탈퇴 tto
+    swal({
+        html: true,
+        title: "중요!",
+        text: "<div class='alert alert-warning font-size-12'>회원 탈퇴를 하시면 모든 포인트와 경험치가 삭제되며, 복구할 수 없습니다.</div><strong>정말로 회원 탈퇴를 하시겠습니까?</strong>",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF9500",
+        confirmButtonText: "탈퇴",
+        cancelButtonText: "취소",
+        closeOnConfirm: true,
+        closeOnCancel: true
+    },
+    function(isConfirm){
+        if (isConfirm) {
+			location.href = '{C.G5_BBS_URL}/member_confirm.php?url=member_leave.php';
+        }
+    });
+}
+<!--{/}-->
+
+// 암호강도체크
+$(function() {
+	$("#reg_mb_password").keyup(function() {
+		initializeStrengthMeter();
+	});
+
+	$("#reg_mb_password_re").keyup(function() {
+		initializeStrengthMeter();
+	});
+});
+
+function initializeStrengthMeter() {
+	$("#pass_meter").PasswordStrengthManager({
+		password: $("#reg_mb_password").val(),
+		confirm_pass : $("#reg_mb_password_re").val(),
+		minChars : $("#reg_mb_password").attr("minlength"),
+		maxChars : $("#reg_mb_password").attr("maxlength"),
+		blackList : []
+	});
+}
+</script>

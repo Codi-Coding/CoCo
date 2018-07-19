@@ -1,0 +1,198 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+@media screen and (max-width:600px) {
+	.admin-boardgroupmember-list .eyoom-form .trans-col .col {width:inherit;float:left;margin-bottom:0}
+	.admin-boardgroupmember-list .eyoom-form .trans-col .col-2 {width:40%}
+	.admin-boardgroupmember-list .eyoom-form .trans-col .col-4 {width:60%}
+	.admin-boardgroupmember-list .eyoom-form .trans-col .col .sm-margin-bottom-10 {margin-bottom:0}
+}
+</style>
+
+<div class="admin-boardgroupmember-list">
+	<form id="fsearch" name="fsearch" class="eyoom-form" action="./" method="get">
+	<input type="hidden" name="gr_id" value="{_gr_id}">
+
+	<div class="headline">
+		<h4><strong>[{gr.gr_subject}] 그룹 접근가능회원 (그룹아이디 : {gr.gr_id})</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="admin-search-box trans-col">
+		<div class="row">
+			<div class="col col-2">
+				<label class="select margin-bottom-0">
+					<select name="sfl" id="sfl">
+						<option value="a.mb_id"{=get_selected(_GET.sfl, "a.mb_id")}>회원아이디</option>
+					</select><i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="stx" value="{_stx}" id="stx" required>
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-30"></div>
+
+	<form name="fboardgroupmember" id="fboardgroupmember" action="{_action_url}" method="post" onsubmit="return fboardgroupmember_submit(this);" class="eyoom-form">
+	<input type="hidden" name="sst" id="sst" value="{_sst}">
+	<input type="hidden" name="sod" id="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+	<input type="hidden" name="gr_id" value="{_gr_id}">
+	<input type="hidden" name="w" value="ld">
+
+	<div class="row">
+		<div class="col col-9">
+			<div class="padding-top-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>총 {=number_format(_total_count)}명
+			    </span>
+			</div>
+		</div>
+		<div class="col col-3">
+			<section>
+				<label for="sort_list" class="select">
+					<select name="sort_list" id="sort_list" onchange="sorting_list(this.form, this.value);">
+						<option value="">:: 정렬방식선택 ::</option>
+						<option value="b.mb_id|asc" {? _sst=='b.mb_id' && _sod=='asc'}selected{/}>회원아이디 정방향 (↓)</option>
+						<option value="b.mb_id|desc" {? _sst=='b.mb_id' && _sod=='desc'}selected{/}>회원아이디 역방향 (↑)</option>
+						<option value="b.mb_name|asc" {? _sst=='b.mb_name' && _sod=='asc'}selected{/}>이름 정방향 (↓)</option>
+						<option value="b.mb_name|desc" {? _sst=='b.mb_name' && _sod=='desc'}selected{/}>이름 역방향 (↑)</option>
+						<option value="b.mb_nick|asc" {? _sst=='b.mb_nick' && _sod=='asc'}selected{/}>닉네임 정방향 (↓)</option>
+						<option value="b.mb_nick|desc" {? _sst=='b.mb_nick' && _sod=='desc'}selected{/}>닉네임 역방향 (↑)</option>
+						<option value="b.mb_today_login|asc" {? _sst=='b.mb_today_login' && _sod=='asc'}selected{/}>최종접속 정방향 (↓)</option>
+						<option value="b.mb_today_login|desc" {? _sst=='b.mb_today_login' && _sod=='desc'}selected{/}>최종접속 역방향 (↑)</option>
+						<option value="a.gm_datetime|asc" {? _sst=='a.gm_datetime' && _sod=='asc'}selected{/}>처리일시 정방향 (↓)</option>
+						<option value="a.gm_datetime|desc" {? _sst=='a.gm_datetime' && _sod=='desc'}selected{/}>처리일시 역방향 (↑)</option>
+					</select><i></i>
+				</label>
+			</section>
+		</div>
+	</div>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="boardgroupmember-list"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="" value="선택삭제" class="btn-e btn-e-xs btn-e-dark">
+	</div>
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ group_member}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.gm_id}'><i></i></label>",
+	        그룹: "<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=boardgroupmember_form&amp;mb_id={.mb_id}'>{=number_format(.cnt)}</a>",
+	        회원아이디: "{.mb_id}",
+	        이름: "{=get_text(.mb_name)}",
+	        별명: "{.mb_nick}",
+	        최종접속: "{=substr(.mb_today_login, 2, 8)}",
+	        처리일시: "{.gm_datetime}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#boardgroupmember-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", align: "center", width: 40 },
+            { name: "그룹", type: "number", width: 60 },
+            { name: "회원아이디", type: "text", width: 100 },
+            { name: "이름", type: "text", width: 100 },
+            { name: "별명", type: "text", width: 100 },
+            { name: "최종접속", type: "text", width: 100 },
+            { name: "처리일시", type: "text", width: 100 },
+        ]
+    });
+
+	var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function sorting_list(f, str) {
+    var sort = str.split('|');
+
+	$("#sst").val(sort[0]);
+	$("#sod").val(sort[1]);
+
+	if (sort[0] && sort[1]) {
+		f.action = "{C.EYOOM_ADMIN_URL}/?dir={_dir}&pid={_pid}";
+		f.submit();
+	}
+}
+
+function fboardgroupmember_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert("선택삭제 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    return true;
+}
+
+function boardgroupmember_form_check(f) {
+    if (f.gr_id.value == '') {
+        alert('접근가능 그룹을 선택하세요.');
+        return false;
+    }
+
+    return true;
+}
+</script>

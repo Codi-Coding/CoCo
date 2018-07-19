@@ -1,90 +1,82 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-//Level Up
-if($member['mb_id']) { 
-	//Auto Grade
-	if($xp['xp_from'] > 1 && $xp['xp_to'] >= $xp['xp_from']) {
-		if($member['mb_level'] >= $xp['xp_from'] && $member['mb_level'] <= $xp['xp_to']) {
-			$level = $member['mb_level'];
-			$n = 1;
-			for($i = $xp['xp_from']; $i <= $xp['xp_to']; $i++) {
-				$g = 'xp_auto'.$n;
-				if($member['as_level'] < $xp[$g]) {
-					$level = $i;
-					break;
-				}
-				$n++;
-			}
-
-			if($level == $member['mb_level']) {
-				;
-			} else {
-				$member['as_msg'] = ($member['mb_level'] > $level) ? 4 : 3; //3 : 등업, 4 : 다운
-				$member['mb_level'] = $level;
-			}
-		}
-	}
-
-	switch($member['as_msg']) { //Message
-		case '1' : //레벨업
-			$levelup_msg = aslang('alert', 'level_up', array($member['as_level'])); 
-			break;
-		case '2' : //레벨다운
-			$levelup_msg = aslang('alert', 'level_down', array($member['as_level']));
-			break;
-		case '3' : //등업
-			$mg = 'xp_grade'.$member['mb_level']; 
-			$levelup_msg = aslang('alert', 'grade_up', array($xp[$mg], $member['mb_level'])); 
-			break;
-		case '4' : //등급다운	
-			$mg = 'xp_grade'.$member['mb_level']; 
-			$levelup_msg = aslang('alert', 'grade_down', array($xp[$mg], $member['mb_level'])); 
-			break;
-	}
-
-	if($member['as_msg']) {
-		// 회원정보 업데이트
-		sql_query(" update {$g5['member_table']} set mb_level = '{$member['mb_level']}', as_msg = '0' where mb_id = '{$member['mb_id']}' ", false);
-
-		// 회원자료 업데이트
-		change_xp($member['mb_id'], $member['as_level']);
-
-		echo "<script> alert('".$levelup_msg."');</script>";
-	}
-}
-
-if(IS_SHOP) echo '<script src="'.G5_JS_URL.'/sns.js"></script>'.PHP_EOL;
-
-if(USE_G5_THEME && defined('G5_THEME_PATH')) {
+if(defined('G5_THEME_PATH')) {
     require_once(G5_THEME_PATH.'/tail.php');
     return;
 }
 
-if (isset($config['cf_analytics']) && $config['cf_analytics']) {
+if (G5_IS_MOBILE) {
+    include_once(G5_MOBILE_PATH.'/tail.php');
+    return;
+}
+?>
+
+    </div>
+    <div id="aside">
+        <?php
+        //공지사항
+        // 이 함수가 바로 최신글을 추출하는 역할을 합니다.
+        // 사용방법 : latest(스킨, 게시판아이디, 출력라인, 글자수);
+        // 테마의 스킨을 사용하려면 theme/basic 과 같이 지정
+        echo latest('notice', 'notice', 4, 13);
+        ?>
+        <?php echo outlogin(); // 외부 로그인, 테마의 스킨을 사용하려면 스킨을 theme/basic 과 같이 지정 ?>
+        <?php echo poll(); // 설문조사, 테마의 스킨을 사용하려면 스킨을 theme/basic 과 같이 지정 ?>
+        <?php echo visit(); // 접속자집계, 테마의 스킨을 사용하려면 스킨을 theme/basic 과 같이 지정 ?>
+    </div>
+</div>
+
+</div>
+<!-- } 콘텐츠 끝 -->
+
+<hr>
+
+<!-- 하단 시작 { -->
+<div id="ft">
+
+    <div id="ft_wr">
+        <div id="ft_link">
+            <a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=company">회사소개</a>
+            <a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=privacy">개인정보처리방침</a>
+            <a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=provision">서비스이용약관</a>
+            <a href="<?php echo get_device_change_url(); ?>">모바일버전</a>
+        </div>
+        <div id="ft_catch"><img src="<?php echo G5_IMG_URL; ?>/ft_logo.png" alt="<?php echo G5_VERSION ?>"></div>
+        <div id="ft_copy">Copyright &copy; <b>소유하신 도메인.</b> All rights reserved.</div>
+    </div>
+    
+    <button type="button" id="top_btn"><i class="fa fa-arrow-up" aria-hidden="true"></i><span class="sound_only">상단으로</span></button>
+        <script>
+        
+        $(function() {
+            $("#top_btn").on("click", function() {
+                $("html, body").animate({scrollTop:0}, '500');
+                return false;
+            });
+        });
+        </script>
+</div>
+
+<?php
+if(G5_DEVICE_BUTTON_DISPLAY && !G5_IS_MOBILE) { ?>
+<?php
+}
+
+if ($config['cf_analytics']) {
     echo $config['cf_analytics'];
 }
+?>
 
-// Page Iframe Modal
-if(APMS_PIM || $is_layout_sub) {
-	@include_once(THEMA_PATH.'/tail.sub.php');
-	include_once(G5_PATH.'/tail.sub.php');
-	return;
-}
+<!-- } 하단 끝 -->
 
-if(IS_SHOP) {
-	if(file_exists(THEMA_PATH.'/shop.tail.php')) {
-		include_once(THEMA_PATH.'/shop.tail.php');
-	} else {
-		include_once(THEMA_PATH.'/tail.php');
-	}
-} else {
-	if(file_exists(THEMA_PATH.'/tail.php')) {
-		include_once(THEMA_PATH.'/tail.php');
-	} else {
-		include_once(THEMA_PATH.'/shop.tail.php');
-	}
-}	
+<script>
+$(function() {
+    // 폰트 리사이즈 쿠키있으면 실행
+    font_resize("container", get_cookie("ck_font_resize_rmv_class"), get_cookie("ck_font_resize_add_class"));
+});
+</script>
 
+<?php
 include_once(G5_PATH."/tail.sub.php");
 ?>

@@ -1,0 +1,260 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.board-view .board-view-info {position:relative;box-sizing:content-box;height:46px;border-top:3px solid #474A5E;border-bottom:1px solid #474A5E;padding:7px 0;margin-top:15px;background:#fbfbfb}
+.board-view .board-view-info .view-photo-box {position:absolute;top:7px;left:0}
+.board-view .board-view-info .view-info-box {position:relative;margin-left:56px}
+.board-view .board-view-info .view-photo .view-user-icon {width:46px;height:46px;font-size:30px;line-height:46px;text-align:center;background:#797b8a;color:#fff;margin-right:3px;-webkit-border-radius:2px !important;-moz-border-radius:2px !important;border-radius:2px !important;display:inline-block;white-space:nowrap;vertical-align:baseline}
+.board-view .board-view-info .info-box-top {display:block;margin:3px 0 5px}
+.board-view .board-view-info .info-box-top .view-nick {font-size:13px;margin-right:3px}
+.board-view .board-view-info .info-box-bottom {display:block;font-size:11px}
+.board-view .board-view-info .info-box-bottom span {margin-right:7px}
+.board-view .board-view-info .info-box-bottom i {color:#b5b5b5;margin-right:4px}
+.board-view .board-view-file {font-size:11px}
+.board-view .board-view-file ul {margin-bottom:0}
+.board-view .board-view-file li {padding:7px 0;border-bottom:1px dotted #e5e5e5}
+.board-view .board-view-file a:hover {text-decoration:underline}
+.board-view .board-view-contact {font-size:11px}
+.board-view .board-view-contact .contact-email {padding:7px 0;border-bottom:1px dotted #e5e5e5}
+.board-view .board-view-contact .contact-hp {padding:7px 0;border-bottom:1px dotted #e5e5e5}
+.board-view .view-top-btn {padding:20px 0 5px}
+.board-view .view-top-btn:after {display:block;visibility:hidden;clear:both;content:""}
+.board-view .view-top-btn .top-btn-left li {float:left;margin-right:5px}
+.board-view .view-top-btn .top-btn-right li {float:left;margin-left:5px;margin-bottom:5px}
+.board-view .board-view-atc {min-height:200px}
+.board-view .board-view-atc-title {position:absolute;font-size:0;line-height:0;overflow:hidden}
+.board-view .board-view-img {position:relative;overflow:hidden}
+.board-view .board-view-img img {display:block;width:100% \9;max-width:100%;height:auto;margin-bottom:10px}
+.board-view .board-view-con {position:relative;overflow:hidden;margin-bottom:30px;width:100%;word-break:break-all}
+.board-view .board-view-con img {max-width:100%;height:auto}
+.board-view-rel .txt_done {color:#b5b5b5}
+.board-view-rel .txt_rdy {color:#FF2900}
+.board-view-rel .table-list-eb .table thead > tr > th {border-bottom:1px solid #000;text-align:center;padding:10px 5px}
+.board-view-rel .table-list-eb .table tbody > tr > td {border-top:1px solid #ededed;padding:7px 5px}
+.board-view-rel .table-list-eb thead {border-top:1px solid #000;border-bottom:1px solid #000;background:#fff}
+.board-view-rel .table-list-eb th {color:#000;font-weight:bold;white-space:nowrap;font-size:13px}
+.board-view-rel .table-list-eb .td-subject {width:300px}
+.board-view-rel .table-list-eb .td-mobile td {border-top:1px solid #f0f0f0;padding:3px 5px !important;font-size:11px;color:#959595;background:#fcfcfc}
+.board-view-rel .table-list-eb .td-mobile td span {margin-right:5px}
+.draggable {display:block;width:100% \9;max-width:100%;height:auto;margin:0 auto}
+button.mfp-close {position:fixed;color:#fff !important}
+.mfp-figure .mfp-close {position:absolute}
+@media (max-width: 1199px) {
+	.board-view-rel .table-list-eb .td-subject {width:260px}
+}
+@media (max-width: 767px) {
+	.board-view-rel .table-list-eb .table tbody > tr > td.td-subj-wrap {padding:15px 5px}
+	.board-view-rel .table-list-eb .td-subject {width:250px}
+}
+</style>
+
+<article class="board-view">
+    <h4>
+	    <span class="color-grey margin-right-5">[{view.category}]</span>
+	    <strong>{view.subject}</strong>
+	</h4>
+    <div class="board-view-info">
+        <div class="view-photo-box">
+            <span class="view-photo margin-right-5"><span class="view-user-icon"><i class="fa fa-user"></i></span></span>
+        </div>
+        <div class="view-info-box">
+	        <div class="info-box-top">
+	        	<strong class="view-nick">{view.name}</strong>
+	        </div>
+		    <div class="info-box-bottom">
+	            <span class="color-black"><i class="fa fa-clock-o"></i>{view.datetime}</span>
+			</div>
+	    </div>
+	</div>
+
+    <!--{? view.download_count}-->
+    <!--{* 첨부파일 시작 *}-->
+    <div class="board-view-file">
+        <ul class="list-unstyled">
+        <!--{@ files}-->
+            <li>
+                - 첨부파일: <a href="{.download_href}"><strong>{.download_source}</strong></a>
+            </li>
+        <!--{/}-->
+        </ul>
+    </div>
+    <!--{* 첨부파일 끝 *}-->
+    <!--{/}-->
+
+    <!--{? view.email || view.hp}-->
+    <div class="board-view-contact">
+        <!--{? view.email}-->
+        <div class="contact-email">
+            - 이메일: <strong>{view.email}</strong>
+        </div>
+        <!--{/}-->
+        <!--{? view.hp}-->
+        <div class="contact-hp">
+            - 휴대폰: <strong>{view.hp}</strong>
+        </div>
+        <!--{/}-->
+    </div>
+    <!--{/}-->
+
+    <!--{* 게시물 상단 버튼 시작 *}-->
+    <div class="view-top-btn">
+        <!--{? _prev_href || next_href}-->
+        <ul class="top-btn-left list-unstyled pull-left">
+            <!--{? _prev_href}-->
+            <li><a href="{_prev_href}" class="btn-e btn-e-default rounded" type="button">이전글</a></li>
+            <!--{/}-->
+            <!--{? _next_href}-->
+            <li><a href="{_next_href}" class="btn-e btn-e-default rounded" type="button">다음글</a></li>
+            <!--{/}-->
+        </ul>
+        <!--{/}-->
+
+        <ul class="top-btn-right list-unstyled pull-right">
+            <!--{? _update_href}-->
+            <li><a href="{_update_href}" class="btn-e btn-e-dark rounded" type="button">수정</a></li>
+            <!--{/}-->
+            <!--{? _delete_href}-->
+            <li><a href="{_delete_href}" class="btn-e btn-e-dark rounded" type="button" onclick="del(this.href); return false;">삭제</a></li>
+            <!--{/}-->
+            <li><a href="{_list_href}" class="btn-e btn-e-dark rounded" type="button">목록</a></li>
+            <!--{? _write_href}-->
+            <li><a href="{_write_href}" class="btn-e btn-e-red rounded" type="button">글쓰기</a></li>
+            <!--{/}-->
+        </ul>
+    </div>
+    <!--{* 게시물 상단 버튼 끝 *}-->
+
+    <div class="board-view-atc">
+        <h2 class="board-view-atc-title">본문</h2>
+
+        <!--{? view.img_count}-->
+        <div class="board-view-img">
+        	<!--{@ thumbs}-->
+        	{.value_}
+        	<!--{/}-->
+        </div>
+        <!--{/}-->
+
+        <!--{* 본문 내용 시작 *}-->
+        <div class="board-view-con view-content">{=get_view_thumbnail(view.content, qaconfig.qa_image_width)}</div>
+        <!--{* 본문 내용 끝 *}-->
+
+        <!--{? view.qa_type}-->
+        <div class="board-view-addq"><a href="{_rewrite_href}" class="btn-e btn-e-yellow rounded">추가질문</a></div>
+        <!--{/}-->
+    </div>
+
+    <!--{? !view.qa_type}-->
+        <!--{? view.qa_status && answer.qa_id}-->
+        {# answer_bs}
+        <!--{:}-->
+        {# answerform_bs}
+        <!--{/}-->
+    <!--{/}-->
+
+    <!--{? view.rel_count}-->
+    <div class="board-view-rel">
+        <h4 class="margin-bottom-20"><strong>연관질문</strong></h4>
+        <div class="table-list-eb margin-bottom-20">
+            <div class="board-list-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>제목</th>
+                            <th class="hidden-xs">상태</th>
+                            <th class="hidden-xs">등록일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--{@ rel_list}-->
+                        <tr>
+                            <td class="td-subj-wrap">
+	                            <div class="td-subject ellipsis">
+		                            <span class="color-grey">[{.category}]</span>
+	                                <a href="{.view_href}">
+	                                    {.subject}
+	                                </a>
+	                            </div>
+                            </td>
+                            <td class="{? .qa_status}txt_done{:}txt_rdy{/} text-center hidden-xs"><!--{? .qa_status}-->답변완료<!--{:}-->답변대기<!--{/}--></td>
+                            <td class="text-center hidden-xs">{.date}</td>
+                        </tr>
+				        <tr class="td-mobile visible-xs"><!--{* 767px 이하에서만 보임 *}-->
+					        <td colspan="{colspan}">
+						        <span><i class="fa fa-clock-o"></i> {.date}</span>
+						        <span class="{? .qa_status}txt_done{:}txt_rdy{/}"><!--{? .qa_status}-->답변완료<!--{:}-->답변대기<!--{/}--></span>
+					        </td>
+				        </tr>
+                        <!--{/}-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--{/}-->
+
+   <!--{* 게시물 하단 버튼 시작 *}-->
+    <div class="view-top-btn">
+        <!--{? _prev_href || next_href}-->
+        <ul class="top-btn-left list-unstyled pull-left">
+            <!--{? _prev_href}-->
+            <li><a href="{_prev_href}" class="btn-e btn-e-default rounded" type="button">이전글</a></li>
+            <!--{/}-->
+            <!--{? _next_href}-->
+            <li><a href="{_next_href}" class="btn-e btn-e-default rounded" type="button">다음글</a></li>
+            <!--{/}-->
+        </ul>
+        <!--{/}-->
+        <ul class="top-btn-right list-unstyled pull-right">
+            <!--{? _update_href}-->
+            <li><a href="{_update_href}" class="btn-e btn-e-dark rounded" type="button">수정</a></li>
+            <!--{/}-->
+            <!--{? _delete_href}-->
+            <li><a href="{_delete_href}" class="btn-e btn-e-dark rounded" type="button" onclick="del(this.href); return false;">삭제</a></li>
+            <!--{/}-->
+            <li><a href="{_list_href}" class="btn-e btn-e-dark rounded" type="button">목록</a></li>
+            <!--{? _write_href}-->
+            <li><a href="{_write_href}" class="btn-e btn-e-red rounded" type="button">글쓰기</a></li>
+            <!--{/}-->
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <!--{* 게시물 하단 버튼 끝 *}-->
+</article>
+
+<script src="../../../../../../js/viewimageresize.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script>
+$(function() {
+	$('.board-view-img img').parent().attr('class', 'view-img-popup').removeAttr('target');
+	$('.view-img-popup').magnificPopup({
+		type: 'ajax'
+	});
+
+	if($('.board-view-con img').parent().hasClass('view_image')) {
+		$('.board-view-con img').parent().attr('class', 'view-image-popup').removeAttr('target');
+		$('.view-image-popup').magnificPopup({
+			type: 'ajax'
+		});
+	} else {
+		$('.board-view-con img').wrap('<a class="view-image-popup">');
+		$('.board-view-con img').each(function() {
+			var imgURL = $(this).attr('src');
+			$(this).parent().attr('href', imgURL);
+		});
+		$('.view-image-popup').magnificPopup({
+			type: 'image',
+			closeOnContentClick: true,
+			mainClass: 'mfp-img-mobile',
+			image: {
+				verticalFit: true
+			}
+		});
+	}
+
+    // 이미지 리사이즈
+    $(".board-view-atc").viewimageresize();
+});
+</script>

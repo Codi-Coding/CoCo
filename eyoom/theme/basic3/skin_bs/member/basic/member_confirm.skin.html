@@ -1,0 +1,81 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.member-confirm {position:relative;width:320px;padding:15px;background:#fff;margin:30px auto;border:1px solid #d5d5d5}
+.member-confirm input {vertical-align:inherit}
+@media (max-width:500px) {
+	.member-confirm {width:inherit;margin:30px 10px 0}
+}
+</style>
+
+<div class="member-confirm">
+	<h4 class="margin-bottom-30"><strong>{g5.title}</strong></h4>
+	<div class="alert alert-warning">
+		<h6><strong>비밀번호를 한번 더 입력해주세요.</strong></h6>
+	    <p><i class="fa fa-exclamation-circle"></i> <!--{? _url == 'member_leave.php'}-->비밀번호를 입력하시면 회원탈퇴가 완료됩니다.<!--{:}-->회원님의 정보를 안전하게 보호하기 위해 비밀번호를 한번 더 확인합니다.<!--{/}--></p>
+	</div>
+
+    <form name="fmemberconfirm" action="{_url}" onsubmit="return fmemberconfirm_submit(this);" method="post" class="eyoom-form">
+    <input type="hidden" name="mb_id" value="{member.mb_id}">
+    <input type="hidden" name="w" value="u">
+    <div class="margin-hr-10"></div>
+    <h5 class="font-bold">회원아이디: <span class="color-blue">{member.mb_id}</span></h5>
+	<div class="margin-hr-10"></div>
+    <section>
+		<label for="confirm_mb_password" class="label">비밀번호<strong class="sound_only"> 필수</strong></label>
+        <label class="input">
+        	<i class="icon-append fa fa-lock"></i>
+        	<input type="password" name="mb_password" id="confirm_mb_password" required size="15" maxLength="20">
+        </label>
+    </section>
+    <div class="text-center margin-top-20 margin-bottom-20">
+    	<input type="submit" value="확인" id="btn_submit" class="btn-e btn-e-red btn-e-lg btn-e-block">
+    </div>
+
+    <!--{? social_oauth_url}-->
+    {# oauth_bs}
+    <!--{/}-->
+
+    </form>
+</div>
+
+<div class="margin-bottom-20"></div>
+<div class="text-center">
+    <a href="{C.G5_URL}"><u>메인으로 돌아가기</u></a>
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script>
+function fmemberconfirm_submit(f) {
+    document.getElementById("btn_submit").disabled = true;
+    return true;
+}
+
+$("input, textarea, select").on({ 'touchstart' : function() {
+	zoomDisable();
+}});
+$("input, textarea, select").on({ 'touchend' : function() {
+	setTimeout(zoomEnable, 500);
+}});
+function zoomDisable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">');
+}
+function zoomEnable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1">');
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->

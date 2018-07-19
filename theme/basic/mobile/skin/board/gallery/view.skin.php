@@ -153,8 +153,17 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 0
     </section>
     <?php } ?>
 
-    <?php if(isset($view['link'][1]) && $view['link'][1]) { ?>
-    <!-- 관련링크 시작 { -->
+    <?php
+    if ($view['link']['count']) {
+        $cnt = 0;
+        for ($i=0; $i<count($view['link']); $i++) {
+            if (isset($view['link'][$i]['source']) && $view['link'][$i]['source'] && !$view['link'][$i]['view'])
+                $cnt++;
+        }
+    }
+     ?>
+
+    <?php if($cnt) { ?>
     <section id="bo_v_link">
         <h2>관련링크</h2>
         <ul>
@@ -179,7 +188,6 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 0
          ?>
         </ul>
     </section>
-    <!-- } 관련링크 끝 -->
     <?php } ?>
 
     <?php if ($prev_href || $next_href) { ?>

@@ -1,0 +1,25 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+?>
+
+<section id="sit_compact_fields">
+	<!--{@ itinfo}-->
+	<div class="row" style="margin:10px 0; {? .index_+1 != .size_}border-bottom:1px solid #eee;{/}">
+        <div class="col col-4">
+            <section>
+                <label for="ii_article_{.el_name}">{.el_title}</label>
+            </section>
+        </div>
+        <div class="col col-8">
+            <section>
+				<label class="input">
+					<input type="text" name="ii_value[]" value="{.el_value}" id="ii_article_{.el_name}" required>
+				</label>
+				<!--{? .el_example}-->
+				<div class="note margin-bottom-10"><strong>Note:</strong> {.el_example}</div>
+				<!--{/}-->
+            </section>
+            <input type="hidden" name="ii_article[]" value="{.el_name}">
+        </div>
+	</div>
+	<!--{/}-->
+</section>

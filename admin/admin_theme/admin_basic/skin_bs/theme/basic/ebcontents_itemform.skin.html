@@ -1,0 +1,290 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-ebcontents-form .ebcontents-image {max-width:300px}
+</style>
+
+<div class="admin-ebcontents-form">
+
+	<form name="febcontentsform" method="post" action="{_action_url}" onsubmit="return febcontentsform_submit(this);" enctype="multipart/form-data" class="eyoom-form">
+	<input type="hidden" name="iw" value="{? _ci_no}u{:}{_iw}{/}">
+	<input type="hidden" name="theme" id="theme" value="{? this_theme}{this_theme}{:}{_theme}{/}">
+	<input type="hidden" name="ci_no" id="ci_no" value="{ec_item.ci_no}">
+	<input type="hidden" name="ec_code" id="ec_code" value="{? ec_item.ec_code}{ec_item.ec_code}{:}{_ec_code}{/}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div id="ebcontents-config">
+		<div class="adm-form-wrap">
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">게시여부</label>
+							<div class="inline-group">
+								<label for="ci_state_1" class="radio"><input type="radio" name="ci_state" id="ci_state_1" value="1" {? ec_item.ci_state == '1' || !ec_item.ci_state}checked{/}><i></i> 보이기</label>
+								<label for="ci_state_2" class="radio"><input type="radio" name="ci_state" id="ci_state_2" value="2" {? ec_item.ci_state == '2'}checked{/}><i></i> 숨기기</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">출력순서</label>
+							<label for="ci_sort" class="input">
+								<i class="icon-append fa fa-sort-numeric-asc"></i>
+						        <input type="text" name="ci_sort" id="ci_sort" value="{? ec_item.ci_sort}{ec_item.ci_sort}{:}{_ec_max_sort}{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">보기권한 설정</label>
+							<label for="ci_view_level" class="select">
+								{=get_member_level_select('ci_view_level', 1, 10, ec_item.ci_view_level)}<i></i>
+							</label>
+							<div class="note"><strong>Note:</strong> 그누레벨 이상 회원에게 표시</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">노출 방식</label>
+							<div class="inline-group">
+								<label for="ci_period_1" class="radio"><input type="radio" name="ci_period" id="ci_period_1" value="1" class="period-type" {? ec_item.ci_period == '1' || !ec_item.ci_period}checked{/}><i></i> 무제한 방식</label>
+								<label for="ci_period_2" class="radio"><input type="radio" name="ci_period" id="ci_period_2" value="2" class="period-type" {? ec_item.ci_period == '2'}checked{/}><i></i> 기간제 방식</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-8" id="date-period">
+						<div class="row">
+							<div class="col col-6">
+								<section>
+									<label class="label">시작일</label>
+									<label for="ci_start" class="input">
+										<i class="icon-append fa fa-calendar-o"></i>
+								        <input type="text" name="ci_start" id="ci_start" value="{ec_item.ci_start}">
+									</label>
+								</section>
+							</div>
+							<div class="col col-6">
+								<section>
+									<label class="label">종료일</label>
+									<label for="ci_end" class="input">
+										<i class="icon-append fa fa-calendar-o"></i>
+								        <input type="text" name="ci_end" id="ci_end" value="{ec_item.ci_end}">
+									</label>
+								</section>
+							</div>
+							<section>
+								<div class="note"><strong>Note:</strong> 노출 시작일과 종료일은 기간제 방식에만 적용됩니다.</div>
+							</section>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">대표 타이틀</label>
+							<label for="ci_title" class="input">
+						        <input type="text" name="ci_title" id="ci_title" value="{ec_item.ci_title}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">서브 타이틀</label>
+							<label for="ci_subtitle" class="input">
+						        <input type="text" name="ci_subtitle" id="ci_subtitle" value="{ec_item.ci_subtitle}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">설명문구</label>
+							<label for="ci_text" class="textarea">
+						        <textarea name="ci_text" id="ci_text" style="height:80px;">{ec_item.ci_text}</textarea>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">내용</label>
+							<label for="ci_content" class="textarea">
+						        {_editor_content_html}
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset class="intra_item">
+				<!--{@ array_fill(0,ec.ec_link_cnt,1)}-->
+				<div class="row">
+					<div class="col col-9">
+						<section>
+							<label class="label">연결주소 [링크] #{.index_+1}</label>
+							<label for="ci_link_{.index_}" class="input">
+						        <input type="text" name="ci_link[{.index_}]" id="ci_link_{.index_}" value="{ci_link[.index_]}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">링크 타겟 #{.index_+1}</label>
+							<label for="ci_target_{.index_}" class="select">
+						        <select name="ci_target[{.index_}]" id="ci_target_{.index_}" required>
+							        <option value="">타겟을 선택하세요.</option>
+							        <option value="_blank" {? ci_target[.index_] == '_blank'}selected{/}>새창</option>
+									<option value="_self" {? ci_target[.index_] == '_self' || !ci_target[.index_]}selected{/}>현재창</option>
+						        </select><i></i>
+							</label>
+						</section>
+					</div>
+				</div>
+				<!--{/}-->
+			</fieldset>
+
+			<fieldset class="intra_item">
+				<!--{@ array_fill(0,ec.ec_image_cnt,1)}-->
+				<div class="row">
+					<div class="col col-9">
+						<section>
+							<label class="label">이미지 #{.index_+1}</label>
+							<span class="input input-file">
+								<div class="button"><input type="file" name="ci_img[{.index_}]" id="ci_img_{.index_}" onchange="this.parentNode.nextSibling.value = this.value">이미지파일 찾기</div><input type="text" readonly="">
+							</span>
+							<!--{? ci_img[.index_]}-->
+							<div class="ci_img_info">
+								<label for="del_ci_img_{.index_}" class="checkbox"><input type="checkbox" id="del_ci_img_{.index_}" name="del_ci_img[{.index_}]" value="1"><i></i>{ci_img[.index_]} 파일삭제</label>
+								<input type="hidden" name="del_ci_img_name[{.index_}]" value="{ci_img[.index_]}">
+								<div class="thumbnail ebcontents-image">
+									<div class="thumb">
+										<img src="{ci_url[.index_]}">
+										<div class="caption-overflow">
+											<span>
+												<a href="{ci_url[.index_]}" class="btn-e btn-e-default btn-e-lg btn-e-brd"><i class="fa fa-plus color-white"></i></a>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--{/}-->
+						</section>
+					</div>
+				</div>
+				<!--{/}-->
+			</fieldset>
+		</div>
+	</div>
+
+	{ frm_submit }
+
+	</form>
+</div>
+
+<script src="../../../plugins/eyoom-form/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script>
+/*--------------------------------------
+	Datepicker
+--------------------------------------*/
+$(document).ready(function(){
+    $('#ci_start').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#ci_end').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    $('#ci_end').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#ci_start').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+});
+
+$(function() {
+	var ptype = '{ec_item.ci_period}';
+	if (!ptype) ptype = '1';
+	period_showhide(ptype);
+
+	$(".period-type").click(function() {
+		var type = $(this).val();
+		period_showhide(type);
+	});
+});
+
+function period_showhide(type) {
+	switch(type) {
+		case '1': $("#date-period").hide(); break;
+		case '2': $("#date-period").show(); break;
+	}
+}
+
+function febcontentsform_submit(f) {
+
+    if ($(':radio[name="ci_period"]:checked').val() == '2') {
+	    if ( !($('#ci_start').val() && $('#ci_end').val()) ) {
+		    alert('기간제로 선택할 경우, 시작일과 종료일은 필수항목입니다.');
+		    if (!$('#ci_start').val()) {
+			    $('#ci_start').focus();
+		    } else if (!$('#ci_end').val()) {
+			    $('#ci_end').focus();
+		    }
+		    return false;
+	    }
+    }
+    
+    <!--{=get_editor_js('ci_content')}-->
+    
+    return true;
+}
+
+$(document).ready(function() {
+	$('.ebcontents-image').magnificPopup({
+		delegate: 'a',
+		type: 'image',
+		tLoading: '로딩중...',
+		mainClass: 'mfp-img-mobile',
+		image: {
+			tError: '이미지를 불러올수 없습니다.'
+		}
+	});
+});
+</script>

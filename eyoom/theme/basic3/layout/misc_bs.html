@@ -1,0 +1,706 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<!--{* 전체 게시판 검색 모달 시작 *}-->
+<div class="modal fade all-search-modal eb-search-modal" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h4 class="modal-title"><i class="fa fa-search color-grey"></i> <strong>전체 게시판 검색</strong></h4>
+			</div>
+			<div class="modal-body margin-bottom-20">
+				<form name="fsearchbox" method="get" action="{C.G5_BBS_URL}/search.php" onsubmit="return fsearchbox_submit(this);" class="eyoom-form">
+				<input type="hidden" name="sfl" value="wr_subject||wr_content">
+				<input type="hidden" name="sop" value="and">
+				<label for="modal_sch_stx" class="sound_only"><strong>검색어 입력 필수</strong></label>
+				<div class="input input-button">
+					<input type="text" name="stx" id="modal_sch_stx" class="sch_stx" maxlength="20" placeholder="검색어 입력">
+					<div class="button"><input type="submit">검색</div>
+				</div>
+				</form>
+				<script>
+				function fsearchbox_submit(f) {
+					if (f.stx.value.length < 2 || f.stx.value == $(".sch_stx").attr("placeholder")) {
+						alert("검색어는 두글자 이상 입력하십시오.");
+						f.stx.select();
+						f.stx.focus();
+						return false;
+					}
+					var cnt = 0;
+					for (var i=0; i<f.stx.value.length; i++) {
+						if (f.stx.value.charAt(i) == ' ') cnt++;
+					}
+					if (cnt > 1) {
+						alert("빠른 검색을 위하여 검색어에 공백은 한개만 입력할 수 있습니다.");
+						f.stx.select();
+						f.stx.focus();
+						return false;
+					}
+					return true;
+				}
+				</script>
+			</div>
+		</div>
+	</div>
+</div>
+<!--{* 전체 게시판 검색 모달 끝 *}-->
+
+<!--{? _is_member //회원일때 사용되는 모달 창}-->
+<!--{* 프로필 사진 모달 시작 *}-->
+<div class="modal fade profile-modal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form name="profile_photo" method="post" action="{C.EYOOM_CORE_URL}/member/photo_update.php" enctype="multipart/form-data" class="eyoom-form">
+			<input type="hidden" name="old_photo" value="{eyoomer.photo}">
+			<input type="hidden" name="back_url" value="{_SERVER.REQUEST_URI}">
+			<div class="modal-header">
+				<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+				<h4 class="modal-title"><i class="fa fa-user-circle-o color-grey"></i> <strong>프로필 사진변경</strong></h4>
+			</div>
+			<div class="modal-body">
+				<div class="profile-photo"><!--{? eyoomer.mb_photo}-->{eyoomer.mb_photo}<!--{:}--><img src="../image/user.jpg"><!--{/}--></div>
+				<div class="alert alert-info">
+				    <p>프로필 사진은 이미지(gif/jpg/png) 파일만 등록가능하며, 정사각형 비율로 업로드하여 주세요. (300x300픽셀 사이즈 권장)</p>
+				</div>
+                <label class="label">사진 선택</label>
+                <label for="file" class="input input-file">
+                    <div class="button bg-color-light-grey"><input type="file" id="file" name="photo" value="사진선택" onchange="this.parentNode.nextSibling.value = this.value">파일선택</div><input type="text" readonly>
+                </label>
+				<!--{? eyoomer.photo}--><label class="checkbox"><input type="checkbox" name="del_photo" value="1"><i></i>프로필사진 삭제</label><!--{/}-->
+			</div>
+            <div class="modal-footer">
+	            <button class="btn-e btn-e-lg btn-e-indigo" type="submit" value="저장하기">저장하기</button>
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+			</form>
+		</div>
+	</div>
+</div>
+<!--{* 프로필 사진 모달 끝 *}-->
+
+<!--{* 회원 정보수정 비밀번호 확인 시작 *}-->
+<div class="modal fade" id="infoCheckModal" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+		    <form name="fmemberconfirm" action="{C.G5_URL}/bbs/register_form.php" onsubmit="return fmemberconfirm_submit(this);" method="post" class="eyoom-form">
+		    <input type="hidden" name="mb_id" value="{member.mb_id}">
+		    <input type="hidden" name="w" value="u">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h4 class="modal-title"><i class="fa fa-unlock-alt color-grey"></i> <strong>정보수정</strong></h4>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-warning">
+				    <p><i class="fa fa-exclamation-circle"></i> 비밀번호를 입력 해 주세요.</p>
+				</div>
+			    <h6 class="font-bold">회원아이디 : <span class="color-yellow">{member.mb_id}</span></h6>
+				<div class="margin-hr-10"></div>
+	            <section>
+					<label for="confirm_mb_password" class="label">비밀번호<strong class="sound_only">필수</strong></label>
+			        <label class="input">
+			        	<i class="icon-prepend fa fa-lock"></i>
+			        	<input type="password" name="mb_password" id="confirm_mb_password" required size="15" maxLength="20">
+			        </label>
+	            </section>
+			</div>
+            <div class="modal-footer">
+	            <button class="btn-e btn-e-lg btn-e-indigo" type="submit" id="btn_confirm_submit" value="확인">확인</button>
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+<script>
+function fmemberconfirm_submit(f) {
+    document.getElementById("btn_confirm_submit").disabled = true;
+    return true;
+}
+</script>
+<!--{* 회원 정보수정 비밀번호 확인 끝 *}-->
+
+<!--{* 회원 자기소개 모달 시작 *}-->
+<div class="modal fade member-profile-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong><i class="fa fa-user-circle color-grey"></i> 회원 프로필</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="member-profile-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 회원 자기소개 모달 끝 *}-->
+
+<!--{* 스크랩 목록 모달 시작 *}-->
+<div class="modal fade scrap-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>스크랩 목록</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="scrap-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 스크랩 목록 모달 끝 *}-->
+
+<!--{* 포인트 모달 시작 *}-->
+<div class="modal fade point-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>포인트 내역</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="point-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 포인트 모달 끝 *}-->
+
+<!--{* 쪽지 모달 시작 *}-->
+<div class="modal fade memo-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>내 쪽지함</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="memo-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 쪽지 모달 끝 *}-->
+
+<!--{* 쪽지 보내기 모달 시작 *}-->
+<div class="modal fade memo-send-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>내 쪽지함</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="memo-send-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 쪽지 보내기 모달 끝 *}-->
+
+<!--{* 쪽지 보기  모달 시작 *}-->
+<div class="modal fade memo-view-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>내 쪽지함</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="memo-view-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 쪽지 보기 모달 끝 *}-->
+
+<script>
+function member_profile_modal(href) {
+    $('.member-profile-iframe-modal').modal('show').on('hidden.bs.modal', function() {
+        $("#member-profile-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.member-profile-iframe-modal').modal('show').on('shown.bs.modal', function() {
+        $("#member-profile-iframe").attr("src", href);
+        $('#member-profile-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+function scrap_modal() {
+    $('.scrap-iframe-modal').modal('show').on('hidden.bs.modal', function() {
+        $("#scrap-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.scrap-iframe-modal').modal('show').on('shown.bs.modal', function() {
+        $("#scrap-iframe").attr("src", "{C.G5_BBS_URL}/scrap.php");
+        $('#scrap-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+function point_modal() {
+    $('.point-iframe-modal').modal('show').on('hidden.bs.modal', function() {
+        $("#point-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.point-iframe-modal').modal('show').on('shown.bs.modal', function() {
+        $("#point-iframe").attr("src", "{C.G5_BBS_URL}/point.php");
+        $('#point-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+function memo_modal() {
+    $('.memo-iframe-modal').modal('show').on('hidden.bs.modal', function() {
+        $("#memo-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.memo-iframe-modal').modal('show').on('shown.bs.modal', function() {
+        $("#memo-iframe").attr("src", "{C.G5_BBS_URL}/memo.php");
+        $('#memo-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+function memo_send_modal(mb_id) {
+    $('.memo-send-iframe-modal').modal('show').on('hidden.bs.modal', function() {
+        $("#memo-send-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.memo-send-iframe-modal').modal('show').on('shown.bs.modal', function() {
+        $("#memo-send-iframe").attr("src", "{C.G5_BBS_URL}/memo_form.php?me_recv_mb_id="+mb_id);
+        $('#memo-send-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+function memo_view_modal(href) {
+    $('.memo-view-iframe-modal').modal('show').on('hidden.bs.modal', function() {
+        $("#memo-view-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.memo-view-iframe-modal').modal('show').on('shown.bs.modal', function() {
+        $("#memo-view-iframe").attr("src", href);
+        $('#memo-view-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+</script>
+<!--{/}-->
+
+<!--{* 사이드바 (게시판 설정, 테마 정보) 시작 *}-->
+<!--{? _is_admin && !C.G5_IS_MOBILE && !_GET.wmode //관리자일때, 모바일이 아닐때, wmode가 아닐때 - 모두 만족하면 출력}-->
+<!--{? (eyoom.use_board_control == 'y' && _bo_table) || eyoom.use_theme_info == 'y' //'관리자용 게시판 패널 사용' 또는 '관리자용 테마 정보 패널 사용' 일때 출력}-->
+
+<style>
+.sidebar.right .sidebar-right-trigger {position:absolute;top:60px;left:-40px;display:inline-block;width:40px;height:40px;line-height:40px;background:#454545;color:#fff;text-align:center;font-size:15px;cursor:pointer;border-radius:3px 0 0 3px !important}
+.sidebar.right {z-index:1000;display:none;position:fixed;top:0;right:0;bottom:0;width:280px;background:#f8f8f8}
+.sidebar-right-mask {display:none}
+.sidebar-right-mask.active {display:block;position:fixed;top:0;bottom:0;left:0;right:0;z-index:999;background:#000;opacity:0.5}
+.sidebar.right .nav-tabs {border-bottom:0;background:#353535}
+.sidebar.right .nav-tabs > li {width:50%;background:#353535}
+.sidebar.right .nav-tabs > li > a {height:40px;line-height:40px;border:0;padding:0 15px;margin-right:0;color:#959595;font-weight:bold;text-align:left}
+.sidebar.right .nav-tabs > li > a:hover {background:#454545}
+.sidebar.right .nav-tabs > li.active > a {border:0;background-color:#151515;color:#fff;font-weight:bold}
+.sidebar.right .sidebar-right-content {position:relative;height:100%;width:100%;overflow-y:auto}
+.sidebar.right .sidebar-right-content .sidebar-title-wrap {position:fixed;top:39px;width:280px;z-index:1}
+.sidebar.right .sidebar-right-content .sidebar-title {background:#151515;height:48px;line-height:48px;padding:0 15px;font-size:14px;color:#fff;font-weight:bold;margin-top:0;margin-bottom:0}
+.sidebar.right .sidebar-config-wrap {position:relative;overflow:hidden;padding:70px 15px 100px}
+</style>
+<!--{? eyoom.use_board_control == 'y' && _bo_table}-->
+<style>
+.sidebar.right .sidebar-btn-wrap {position:fixed;bottom:0;width:280px;background:#FF2900;z-index:1}
+.sidebar.right .btn_confirm {position:relative;overflow:hidden}
+.sidebar.right .btn_confirm .btn-e-lg {width:100%;padding:13px 0;border-radius:0 !important}
+.sidebar.right .line-height-30 {line-height:30px}
+</style>
+<!--{/}-->
+<!--{? eyoom.use_theme_info == 'y'}-->
+<style>
+.sidebar.right .sidebar-info-wrap {position:relative;overflow:hidden;padding:70px 15px 100px}
+.sidebar.right .sidebar-info-wrap a {text-decoration:underline}
+</style>
+<!--{/}-->
+
+<div class="sidebar right">
+	<a href="#" id="sidebar-misc-trigger" class="sidebar-right-trigger" data-action="toggle" data-side="right"><i class="fa fa-cog"></i></a>
+    <ul class="nav nav-tabs">
+	    <!--{? eyoom.use_board_control == 'y' && eyoom.use_theme_info == 'y' && _bo_table}-->
+        <li class="active"><a href="#tab-board-setting" data-toggle="tab">게시판 설정</a></li>
+        <li><a href="#tab-theme-info" data-toggle="tab">테마 정보</a></li>
+	    <!--{: eyoom.use_board_control == 'y' && eyoom.use_theme_info == 'y' && !_bo_table || eyoom.use_board_control == 'y' && eyoom.use_theme_info == 'y' && defined('_INDEX_')}-->
+        <li><a href="#tab-board-setting" data-toggle="tab">게시판 설정</a></li>
+        <li class="active"><a href="#tab-theme-info" data-toggle="tab">테마 정보</a></li>
+        <!--{: eyoom.use_board_control == 'y' && _bo_table}-->
+        <li class="active"><a href="#tab-board-setting" data-toggle="tab">게시판 설정</a></li>
+        <!--{: eyoom.use_theme_info == 'y'}-->
+        <li class="active"><a href="#tab-theme-info" data-toggle="tab">테마 정보</a></li>
+        <!--{/}-->
+    </ul>
+    <div class="tab-content sidebar-right-content">
+		<!--{? eyoom.use_board_control == 'y' && _bo_table}-->
+		<div class="tab-pane in {? eyoom.use_board_control == 'y' && _bo_table && !defined('_INDEX_')}active{/}" id="tab-board-setting">
+	    	<form name="config_form" method="post" action="{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=board_form_update&amp;smode=1" class="eyoom-form" target="boardHiddenfrm">
+		    <input type="hidden" name="theme" id="theme" value="{_theme}">
+		    <input type="hidden" name="bo_table" id="bo_table" value="{_bo_table}">
+		    <input type="hidden" name="wmode" value="1">
+		    <input type="hidden" name="bo_use_summernote_mo" id="bo_use_summernote_mo" value="{eyoom_board.bo_use_summernote_mo}">
+
+	    	<div class="sidebar-title-wrap">
+	    		<h3 class="sidebar-title ellipsis"><span class="color-yellow">[{board.bo_subject}]</span> 게시판 옵션 설정</h3>
+	    	</div>
+	    	<div class="sidebar-config-wrap">
+		    	<h5 class="color-black margin-bottom-15"><strong>01. 공통 설정</strong></h5>
+		    	<section>
+			    	<!--{? preg_match('/shop/i', _theme) }-->
+					<label class="label"><strong>레이아웃 디자인</strong></label>
+					<label class="toggle small-toggle red-toggle"><input type="radio" name="use_shop_skin" id="use_shop_skin_1" value="n" {? eyoom_board.use_shop_skin=='n' || !eyoom_board.use_shop_skin}checked{/}><i></i>- 커뮤니티 레이아웃</label>
+					<label class="toggle small-toggle red-toggle"><input type="radio" name="use_shop_skin" id="use_shop_skin_2" value="y" {? eyoom_board.use_shop_skin=='y'}checked{/}><i></i>- 쇼핑몰 레이아웃</label>
+
+					<div class="margin-hr-10"></div>
+					<!--{/}-->
+
+					<label class="label"><strong>날짜표현</strong></label>
+					<label class="toggle small-toggle red-toggle"><input type="radio" name="bo_sel_date_type" value="1" id="bo_sel_date_type1" {? eyoom_board.bo_sel_date_type == '1'}checked{/}><i></i>- 시분초 형식</label>
+					<label class="toggle small-toggle red-toggle"><input type="radio" name="bo_sel_date_type" value="2" id="bo_sel_date_type2" {? eyoom_board.bo_sel_date_type == '2'}checked{/}><i></i>- 날짜 형식</label>
+
+					<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_profile_photo" value="1" id="bo_use_profile_photo" {? eyoom_board.bo_use_profile_photo}checked{/}><i></i>- 프로필사진</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_hotgul" value="1" id="bo_use_hotgul" {? eyoom_board.bo_use_hotgul}checked{/}><i></i>- 월간 베스트</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_anonymous" value="1" id="bo_use_anonymous" {? eyoom_board.bo_use_anonymous}checked{/}><i></i>- 익명글쓰기</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_infinite_scroll" value="1" id="bo_use_infinite_scroll" {? eyoom_board.bo_use_infinite_scroll}checked{/}><i></i>- 목록 무한스크롤</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_cmt_infinite" value="1" id="bo_use_cmt_infinite" {? eyoom_board.bo_use_cmt_infinite}checked{/}><i></i>- 댓글 무한스크롤</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_list_image" value="1" id="bo_use_list_image" {? eyoom_board.bo_use_list_image}checked{/}><i></i>- 목록 이미지</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_video_photo" value="1" id="bo_use_video_photo" {? eyoom_board.bo_use_video_photo}checked{/}><i></i>- 목록 동영상이미지</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_extimg" value="1" id="bo_use_extimg" {? eyoom_board.bo_use_extimg}checked{/}><i></i>- 외부이미지 썸네일</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="label"><strong>다운로드 수수료율</strong></label>
+					<label class="input">
+						<i class="icon-append fa fa-percent font-style-normal"></i>
+						<input type="text" name="download_fee_ratio" value="{eyoom_board.download_fee_ratio}" id="download_fee_ratio" size="5">
+					</label>
+		    	</section>
+
+		    	<h5 class="color-black margin-top-20 margin-bottom-15"><strong>02. 게시물 신고/블라인드</strong></h5>
+		    	<section>
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_yellow_card" value="1" id="bo_use_yellow_card" {? eyoom_board.bo_use_yellow_card}checked{/}><i></i>- 신고/블라인드 기능</label>
+
+			    	<div class="margin-hr-10"></div>
+
+			    	<label class="label"><strong>블라인드 조건</strong></label>
+					<div class="row">
+						<div class="col col-6">
+							<label class="input">
+								<input type="text" name="bo_blind_limit" value="{eyoom_board.bo_blind_limit}" id="bo_blind_limit" size="5">
+							</label>
+						</div>
+						<div class="col col-6 line-height-30">
+							명 이상 신고 시
+						</div>
+					</div>
+
+					<div class="margin-hr-10"></div>
+
+					<label class="label"><strong>블라인드 보기권한</strong></label>
+					<div class="row">
+						<div class="col col-6">
+							<label class="select">
+								<select name="bo_blind_view" id="bo_blind_view">
+									<option value="">선택</option>
+									<!--{@ range(1,10) }-->
+									<option value="{.key_+1}" {? eyoom_board.bo_blind_view == .key_+1}selected{/}>{.key_+1}</option>
+									<!--{/}-->
+								</select>
+								<i></i>
+							</label>
+						</div>
+						<div class="col col-6 line-height-30">
+							레벨 이상
+						</div>
+					</div>
+
+					<div class="margin-hr-10"></div>
+
+					<label class="label"><strong>블라인드 설정권한</strong></label>
+					<div class="row">
+						<div class="col col-6">
+							<label class="select">
+								<select name="bo_blind_direct" id="bo_blind_direct">
+									<option value="">선택</option>
+									<!--{@ range(1,10) }-->
+									<option value="{.key_+1}" {? eyoom_board.bo_blind_direct == .key_+1}selected{/}>{.key_+1}</option>
+									<!--{/}-->
+								</select>
+								<i></i>
+							</label>
+						</div>
+						<div class="col col-6 line-height-30">
+							레벨 이상
+						</div>
+					</div>
+		    	</section>
+
+		    	<h5 class="color-black margin-top-20 margin-bottom-15"><strong>03. 게시물 별점 기능</strong></h5>
+		    	<section>
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_rating" value="1" id="bo_use_rating" {? eyoom_board.bo_use_rating}checked{/}><i></i>- 게시물 별점 기능</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_rating_list" value="1" id="bo_use_rating_list" {? eyoom_board.bo_use_rating_list}checked{/}><i></i>- 목록 별점 표시</label>
+		    	</section>
+
+		    	<h5 class="color-black margin-top-20 margin-bottom-15"><strong>04. 게시물 태그 기능</strong></h5>
+		    	<section>
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_tag" value="1" id="bo_use_tag" {? eyoom_board.bo_use_tag}checked{/}><i></i>- 게시물 태그 기능</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="label"><strong>태그 작성 권한</strong></label>
+					<div class="row">
+						<div class="col col-6">
+							<label class="select">
+								<select name="bo_tag_level" id="bo_tag_level">
+									<option value="">선택</option>
+									<!--{@ range(1,10) }-->
+									<option value="{.key_+1}" {? eyoom_board.bo_tag_level == .key_+1}selected{/}>{.key_+1}</option>
+									<!--{/}-->
+								</select>
+								<i></i>
+							</label>
+						</div>
+						<div class="col col-6 line-height-30">
+							레벨 이상
+						</div>
+					</div>
+
+					<div class="margin-hr-10"></div>
+
+					<label class="label"><strong>입력가능한 태그수</strong></label>
+					<label class="input">
+						<i class="icon-append font-style-normal">개</i>
+						<input type="text" name="bo_tag_limit" id="bo_tag_limit" value="{eyoom_board.bo_tag_limit}" size="5">
+					</label>
+		    	</section>
+
+		    	<h5 class="color-black margin-top-20 margin-bottom-15"><strong>05. 게시물 자동 이동/복사</strong></h5>
+		    	<section>
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_automove" value="1" id="bo_use_automove" {? eyoom_board.bo_use_automove}checked{/}><i></i>- 자동 이동/복사</label>
+
+			    	<div class="margin-hr-10"></div>
+
+			    	<label class="label"><strong>이동/복사 조건</strong></label>
+			    	<section>
+						<div class="row">
+							<div class="col col-5">
+								<label class="select">
+									<select name="bo_automove[type]" id="bo_automove_type">
+										<option value="hit" {? _bo_automove.type == 'hit'}selected{/}>조회수</option>
+										<option value="good" {? _bo_automove.type == 'good'}selected{/}>추천수</option>
+										<option value="nogood" {? _bo_automove.type == 'nogood'}selected{/}>비추천수</option>
+									</select>
+									<i></i>
+								</label>
+							</div>
+							<div class="col col-1 line-height-30">
+								가
+							</div>
+							<div class="col col-3">
+								<label class="input">
+									<input type="text" name="bo_automove[count]" value="{? _bo_automove.count}{_bo_automove.count}{:}100{/}" size="5">
+								</label>
+							</div>
+							<div class="col col-3 line-height-30">
+								이상이면
+							</div>
+						</div>
+			    	</section>
+			    	<section>
+						<div class="row">
+							<div class="col col-7">
+								<label class="select">
+									<select name="bo_automove[target]" id="bo_automove_target">
+										<option value="">::게시판선택::</option>
+										<!--{@_binfo}-->
+										<option value="{.bo_table}" {? _bo_automove.target == .bo_table}selected{/}>{.bo_subject}</option>
+										<!--{/}-->
+									</select>
+									<i></i>
+								</label>
+							</div>
+							<div class="col col-5 line-height-30">
+								게시판으로
+							</div>
+						</div>
+			    	</section>
+					<div class="row">
+						<div class="col col-7">
+							<label class="select">
+								<select name="bo_automove[action]" id="bo_automove_action">
+									<option value="move" {? _bo_automove.action == 'move'}selected{/}>이동</option>
+									<option value="copy" {? _bo_automove.action == 'copy'}selected{/}>복사</option>
+								</select>
+								<i></i>
+							</label>
+						</div>
+						<div class="col col-5 line-height-30">
+							합니다.
+						</div>
+					</div>
+		    	</section>
+
+		    	<h5 class="color-black margin-top-20 margin-bottom-15"><strong>06. 애드온 기능</strong></h5>
+		    	<section>
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_addon_emoticon" value="1" id="bo_use_addon_emoticon" {? eyoom_board.bo_use_addon_emoticon}checked{/}><i></i>- 이모티콘 입력</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_addon_video" value="1" id="bo_use_addon_video" {? eyoom_board.bo_use_addon_video}checked{/}><i></i>- 동영상 입력</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_addon_coding" value="1" id="bo_use_addon_coding" {? eyoom_board.bo_use_addon_coding}checked{/}><i></i>- 코드 표시</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_addon_soundcloud" value="1" id="bo_use_addon_soundcloud" {? eyoom_board.bo_use_addon_soundcloud}checked{/}><i></i>- 사운드클라우드 입력</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_addon_map" value="1" id="bo_use_addon_map" {? eyoom_board.bo_use_addon_map}checked{/}><i></i>- 지도 입력</label>
+
+			    	<div class="margin-hr-10"></div>
+
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_addon_cmtimg" value="1" id="bo_use_addon_cmtimg" {? eyoom_board.bo_use_addon_cmtimg}checked{/}><i></i>- 댓글에서 이미지</label>
+		    	</section>
+
+		    	<h5 class="color-black margin-top-20 margin-bottom-15"><strong>07. 댓글 베스트 기능</strong></h5>
+		    	<section>
+					<label class="toggle small-toggle"><input type="checkbox" name="bo_use_cmt_best" value="1" id="bo_use_cmt_best" {? eyoom_board.bo_use_cmt_best}checked{/}><i></i>- 댓글 베스트 기능</label>
+
+			    	<div class="margin-hr-10"></div>
+
+			    	<label class="label"><strong>베스트글 조건</strong></label>
+					<div class="row">
+						<div class="col col-6">
+							<label class="input">
+								<input type="text" name="bo_cmt_best_min" value="{eyoom_board.bo_cmt_best_min}" id="bo_cmt_best_min" size="5">
+							</label>
+						</div>
+						<div class="col col-6 line-height-30">
+							명 이상 추천
+						</div>
+					</div>
+
+					<div class="margin-hr-10"></div>
+
+			    	<label class="label"><strong>노출 베스트 댓글수</strong></label>
+					<div class="row">
+						<div class="col col-6">
+							<label class="input">
+								<input type="text" name="bo_cmt_best_limit" value="{eyoom_board.bo_cmt_best_limit}" id="bo_cmt_best_limit" size="5">
+							</label>
+						</div>
+						<div class="col col-6 line-height-30">
+							순위까지 노출
+						</div>
+					</div>
+		    	</section>
+	    	</div>
+	    	<div class="sidebar-btn-wrap">
+				<div class="btn_confirm01 btn_confirm">
+				    <input type="submit" value="설정저장" class="btn-e btn-e-red btn-e-lg" accesskey="s">
+				</div>
+	    	</div>
+
+	    	</form>
+		</div>
+		<iframe name="boardHiddenfrm" id="boardHiddenfrm" style="visibility: hidden; display: none;"></iframe>
+		<!--{: eyoom.use_board_control == 'y' && !_bo_table}-->
+		<div class="tab-pane in" id="tab-board-setting">
+	    	<div class="sidebar-title-wrap">
+	    		<h3 class="sidebar-title ellipsis">게시판 옵션 설정</h3>
+	    	</div>
+	    	<div class="sidebar-config-wrap">
+				<div class="alert alert-danger">
+				    <p><i class="fa fa-exclamation-circle"></i> 현재 페이지는 설정 가능한 게시판이 아닙니다.</p>
+				</div>
+	    	</div>
+		</div>
+		<!--{/}-->
+		<!--{? eyoom.use_theme_info == 'y'}-->
+		<div class="tab-pane in {? eyoom.use_theme_info == 'y' && !_bo_table || eyoom.use_board_control == 'n' || defined('_INDEX_')}active{/}" id="tab-theme-info">
+	    	<div class="sidebar-title-wrap">
+	    		<h3 class="sidebar-title">관리자용 테마 정보</h3>
+	    	</div>
+		    <div class="sidebar-info-wrap">
+			    <h5 class="color-black font-size-14 margin-bottom-15"><strong>01. 사용중 테마명 [오픈된 홈테마]</strong></h5>
+			    - <a href="{C.G5_URL}/?theme={_eyoom_basic.theme}">{_eyoom_basic.theme}</a>
+			    <div class="margin-hr-15"></div>
+			    <h5 class="color-black font-size-14 margin-bottom-15"><strong>02. 작업중 테마명 [현재 테마]</strong></h5>
+			    - <a href="{C.G5_URL}/?theme={_theme}">{_theme}</a>
+			    <div class="margin-hr-15"></div>
+			    <h5 class="color-black font-size-14 margin-bottom-15"><strong>03. 설치된 {? C.G5_YOUNGCART_VER}영카트{:}그누보드{/} 버전</strong></h5>
+			    - <span class="color-red">{? C.G5_YOUNGCART_VER}영카트 {C.G5_YOUNGCART_VER}{:}그누보드 {C.G5_GNUBOARD_VER}{/}</span>
+			    <div class="margin-hr-15"></div>
+			    <h5 class="color-black font-size-14 margin-bottom-15"><strong>04. 설치된 이윰빌더 버전</strong></h5>
+			    - <span class="color-red">{C._EYOOM_VESION_}</span>
+		    </div>
+		</div>
+		<!--{/}-->
+    </div>
+</div>
+
+<!--{/}-->
+<!--{/}-->
+<!--{* 사이드바 (게시판 설정, 테마 정보) 끝 *}-->

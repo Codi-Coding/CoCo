@@ -1,0 +1,132 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-product-qa-list .qalist-search-box {position:relative;padding:15px;margin-bottom:30px;border:1px solid #e5e5e5;background:#fff;border-radius:3px !important}
+.shop-product-qa-list .search-input input {height:42px;background:#f8f8f8;font-size:13px;font-weight:bold;border-radius:3px !important}
+.shop-product-qa-list .search-input .icon-prepend {background-color:transparent;width:42px;height:40px;line-height:40px;border:0;color:#959595;font-size:14px}
+.shop-product-qa-list .input-button .button {height:40px;line-height:40px;background:#fff;padding:0 30px;font-size:13px;border-radius:0 3px 3px 0 !important}
+.shop-product-qa-list .panel-heading {min-height:62px;padding:15px}
+.shop-product-qa-list .panel-heading .label {display:inline-block;width:64px;text-align:center}
+.shop-product-qa-list .panel-heading .sit_qaa_yet {background:#FF5721}
+.shop-product-qa-list .product-qa-img {position:absolute;top:7px;left:10px;width:54px;height:54px;overflow:hidden}
+.shop-product-qa-list .product-qa-img img {display:block;width:100% \9;max-width:100%;height:auto}
+.shop-product-qa-list .heading-content {margin-left:64px}
+.shop-product-qa-list .panel-title {font-size:12px;font-weight:bold}
+.shop-product-qa-list .panel-title > a:before {top:12px;margin-top:inherit;font-size:14px}
+.shop-product-qa-list .panel-body img {width:inherit !important;max-width:100%;height:auto}
+.draggable {display:block;width:100% \9;max-width:100%;height:auto;margin:0 auto}
+button.mfp-close {position:fixed;color:#fff !important}
+.mfp-figure .mfp-close {position:absolute}
+</style>
+
+<div class="shop-product-qa-list">
+    <form method="get" action="{_SERVER['PHP_SELF']}" class="eyoom-form">
+	<div class="qalist-search-box">
+		<div class="row">
+		    <section class="col col-3">
+			    <label for="sfl" class="sound_only">검색항목<strong class="sound_only"> 필수</strong></label>
+			    <lavel class="select">
+				    <select name="sfl" id="sfl" required class="form-control">
+				        <option value="">선택</option>
+				        <option value="b.it_name"    {=get_selected(_sfl, "b.it_name", true)}>상품명</option>
+				        <option value="a.it_id"      {=get_selected(_sfl, "a.it_id")}>상품코드</option>
+				        <option value="a.iq_subject" {=get_selected(_sfl, "a.is_subject")}>문의제목</option>
+				        <option value="a.iq_question"{=get_selected(_sfl, "a.iq_question")}>문의내용</option>
+				        <option value="a.iq_name"    {=get_selected(_sfl, "a.iq_name")}>작성자명</option>
+				        <option value="a.mb_id"      {=get_selected(_sfl, "a.mb_id")}>작성자아이디</option>
+				    </select>
+				    <i></i>
+			    </lavel>
+		    </section>
+		    <section class="col col-9 text-right">
+			    <a href="{_SERVER['PHP_SELF']}" class="btn-e btn-e-xs btn-e-dark rounded">전체보기</a>
+		    </section>
+		    <div class="clearfix"></div>
+		    <section class="col col-12 margin-bottom-0">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<div class="input input-button search-input">
+					<i class="icon-prepend fa fa-search"></i>
+					<input type="text" name="stx" value="{_stx}" id="stx" required>
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</div>
+		    </section>
+		</div>
+	</div>
+    </form>
+
+    <p class="font-size-11 color-grey"><i class="fa fa-info-circle"></i> 타이틀 이미지를 클릭하시면 해당상품으로 이동됩니다.</p>
+	<div class="panel-group accordion-default panel-group-control panel-group-control-right" id="porduct-qa">
+		<!--{@ list}-->
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+                <div class="product-qa-img tooltips" data-toggle="tooltip" data-placement="top" data-original-title="{.it_name}">
+					<a href="{.it_href}">
+						{=get_it_image(.it_id, 200)}
+					</a>
+                </div>
+                <div class="heading-content">
+		            <h4 class="panel-title">
+		                <a class="collapsed" data-toggle="collapse" data-parent="#porduct-qa" href="#product_qa_{.key_}">
+		                    {.iq_subject}
+		                </a>
+		            </h4>
+		            <div class="margin-top-5">
+		                <div class="pull-left">
+		                    <span class="font-size-11 color-grey">
+		                    	<span class="margin-right-10">{.iq_name}</span>
+		                    	<span>{=substr(.iq_time,0,10)}</span>
+		                    </span>
+		                </div>
+			            <span class="pull-right">
+				            <span class="label label-default rounded {.iq_style}">{.iq_stats}</span>
+			            </span>
+			            <div class="clearfix"></div>
+		            </div>
+	            </div>
+	        </div>
+	        <div id="product_qa_{.key_}" class="panel-collapse collapse">
+	            <div class="panel-body">
+	                <p>
+		                <strong class="color-black margin-right-5">문의</strong> <span class="color-black">----------</span>
+		                <span class="font-size-12 display-block">
+		                	{.iq_question}
+		                </span>
+		            </p>
+	                <div class="margin-hr-15"></div>
+                    <p>
+	                    <strong class="color-red margin-right-5">답변</strong> <span class="color-red">----------</span>
+	                    <span class="font-size-12 display-block margin-top-10">
+	                    	<!--{? !.is_secret}-->
+	                    	{.iq_answer}
+	                    	<!--{:}-->
+	                    	비밀글로 보호된 답변입니다.
+	                    	<!--{/}-->
+	                    </span>
+	                </p>
+	            </div>
+	        </div>
+	    </div>
+		<!--{:}-->
+		<div class="text-center font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 상품문의가 없습니다.</div>
+		<!--{/}-->
+    </div>
+</div>
+
+{=eb_paging('basic')}
+
+<script src="../../../../../../js/viewimageresize.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script>
+$(function() {
+	$('.shop-product-qa-list .panel-body img').parent().attr('class', 'view-img-popup').removeAttr('target');
+	$('.view-img-popup').magnificPopup({
+		type: 'ajax'
+	});
+});
+
+$(window).on("load", function() {
+    $(".shop-product-qa-list .panel-body").viewimageresize2();
+});
+</script>

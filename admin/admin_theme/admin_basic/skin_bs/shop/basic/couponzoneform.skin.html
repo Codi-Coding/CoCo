@@ -1,0 +1,421 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-shop-couponform .inline-group > span {display:inline-block}
+.admin-shop-couponform .border-top-1 {border-top:1px solid #d5d5d5}
+.admin-shop-couponform .no-coupon-img {width:100%;min-height:80px;border:1px dotted #ddd}
+</style>
+
+<div class="admin-shop-couponform">
+	<form name="fcouponform" method="post" action="{_action_url}" onsubmit="return form_check(this);" enctype="multipart/form-data" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="cz_id" value="{_cz_id}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+
+	<div class="headline">
+		<h4><strong>쿠폰존 쿠폰관리 - {_html_title}</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="adm-form-wrap margin-bottom-30">
+		<header>
+			<strong><i class="fa fa-caret-right"></i> 쿠폰 정보</strong>
+		</header>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<section>
+						<label for="cz_type" class="label">발행쿠폰타입</label>
+						<label class="select">
+							<select name="cz_type" id="cz_type">
+				                <option value="0" {? cp.cz_type== '0'}selected{/}>다운로드쿠폰</option>
+				                <option value="1" {? cp.cz_type== '1'}selected{/}>포인트쿠폰</option>
+							</select><i></i>
+						</label>
+				        <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 발행 쿠폰의 타입을 설정합니다.<br>포인트쿠폰은 회원의 포인트를 쿠폰으로 교환하는 쿠폰이며 다운로드 쿠폰은 회원이 다운로드하여 사용할 수 있는 쿠폰입니다.
+			            </div>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+				<div class="col col-12">
+					<section>
+						<label for="cz_subject" class="label">쿠폰이름</label>
+				        <label class="input">
+				            <input type="text" name="cz_subject" id="cz_subject" value="{=stripslashes(cp.cz_subject)}" required>
+				        </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<section>
+						<label for="cz_start" class="label">사용시작일</label>
+				        <label class="input">
+				        	<i class="icon-append fa fa-calendar-o"></i>
+				            <input type="text" name="cz_start" id="cz_start" value="{=stripslashes(cp.cz_start)}" required>
+				        </label>
+				        <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 입력 예: {=date('Y-m-d')}
+			            </div>
+					</section>
+				</div>
+				<div class="col col-6">
+					<section>
+						<label for="cz_end" class="label">사용종료일</label>
+				        <label class="input">
+				        	<i class="icon-append fa fa-calendar-o"></i>
+				            <input type="text" name="cz_end" id="cz_end" value="{=stripslashes(cp.cz_end)}" required>
+				        </label>
+				        <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 입력 예: {=date('Y-m-d')}
+			            </div>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-6" id="tr_cz_point">
+					<section>
+						<label for="cz_point" class="label">쿠폰교환 포인트</label>
+				        <label class="input">
+				            <input type="text" name="cz_point" id="cz_point" value="{=get_text(cp.cz_point)}">
+				        </label>
+				        <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 쿠폰으로 교환할 회원의 포인트를 지정합니다. 쿠폰 다운로드 때 설정한 값만큼 회원의 포인트를 차감합니다.
+			            </div>
+					</section>
+				</div>
+				<div class="col col-6">
+					<section>
+						<label for="cz_period" class="label">쿠폰사용기한</label>
+				        <label class="input">
+				        	<i class="icon-append">일</i>
+				            <input type="text" name="cz_period" id="cz_period" value="{=stripslashes(cp.cz_period)}" required>
+				        </label>
+				        <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 쿠폰 다운로드 후 사용할 수 있는 기간을 설정합니다.
+			            </div>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+                <div class="col col-2">
+	                <!--{? is_file(_cpimg) && cp.cz_id}-->
+	                <div class="coupon-img">
+	                	<img class="img-responsive" src="{C.G5_DATA_URL}/coupon/{cp.cz_file}" width="{_width}">
+	                </div>
+	                <!--{:}-->
+	                <div class="no-coupon-img"></div>
+	                <!--{/}-->
+                </div>
+				<div class="col col-10">
+					<section>
+						<label for="cp_img" class="label">쿠폰이미지</label>
+						<div class="input input-file">
+							<div class="button"><input type="file" name="cp_img" id="cp_img" onchange="this.parentNode.nextSibling.value = this.value">파일선택</div><input type="text" readonly="">
+						</div>
+					</section>
+					<!--{? is_file(_cpimg) && cp.cz_id}-->
+					<label class="checkbox"><input type="checkbox" name="cp_img_del" id="cp_img_del" value="1"><i></i>삭제</label>
+					<!--{/}-->
+				</div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<section>
+						<label for="cp_method" class="label">발급쿠폰종류</label>
+				        <label class="select">
+				        	<select name="cp_method" id="cp_method">
+								<option value="0" {? cp.cp_method== '0'}selected{/}>개별상품할인</option>
+								<option value="1" {? cp.cp_method== '1'}selected{/}>카테고리할인</option>
+								<option value="2" {? cp.cp_method== '2'}selected{/}>주문금액할인</option>
+								<option value="3" {? cp.cp_method== '3'}selected{/}>배송비할인</option>
+				        	</select><i></i>
+				        </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-3" id="tr_cp_target">
+					<section>
+						<label for="cp_target" class="label">{_cp_target_label}</label>
+				        <label class="input input-button">
+				            <input type="text" name="cp_target" id="cp_target" value="{=stripslashes(cp.cp_target)}" required>
+				            <div class="button"><input type="button" id="sch_target"><i class="fa fa-search"></i> <span id="sch_text">{_cp_target_btn}</span></div>
+				        </label>
+					</section>
+				</div>
+				<div class="col col-3">
+					<section>
+						<label for="cp_type" class="label">쿠폰타입</label>
+				        <label class="select">
+				            <select name="cp_type" id="cp_type">
+				                <option value="0" {? cp.cp_type== '0'}selected{/}>정액할인(원)</option>
+				                <option value="1" {? cp.cp_type== '1'}selected{/}>정률할인(%)</option>
+				            </select><i></i>
+				        </label>
+				        <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 쿠폰 타입을 변경하시면 입력 서식도 일부 변경됩니다.
+			            </div>
+					</section>
+				</div>
+				<div class="col col-3">
+					<section>
+						<label for="cp_price" class="label"><span id="cp_price_title">{? cp.cp_type}할인비율{:}할인금액{/}</span></label>
+				        <label class="input">
+				        	<i class="icon-append" id="cp_price_unit">{? cp.cp_type}%{:}원{/}</i>
+				            <input type="text" name="cp_price" id="cp_price" value="{=stripslashes(cp.cp_price)}" required>
+				        </label>
+					</section>
+				</div>
+
+				<div class="col col-3" id="tr_cp_trunc">
+					<section>
+						<label for="cp_trunc" class="label">절사금액</label>
+				        <label class="select">
+				        	<select name="cp_trunc" id="cp_trunc">
+								<option value="1" {? cp.cp_trunc== '1'}selected{/}>1원단위</option>
+								<option value="10" {? cp.cp_trunc== '10'}selected{/}>10원단위</option>
+								<option value="100" {? cp.cp_trunc== '100'}selected{/}>100원단위</option>
+								<option value="1000" {? cp.cp_trunc== '1000'}selected{/}>1,000원단위</option>
+				        	</select><i></i>
+				        </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<section>
+						<label for="cp_minimum" class="label">최소주문금액</label>
+				        <label class="input">
+				        	<i class="icon-append">원</i>
+				            <input type="text" name="cp_minimum" id="cp_minimum" value="{=stripslashes(cp.cp_minimum)}">
+				        </label>
+					</section>
+				</div>
+				<div class="col col-3" id="tr_cp_maximum">
+					<section>
+						<label for="cp_maximum" class="label">최대할인금액</label>
+				        <label class="input">
+				        	<i class="icon-append">원</i>
+				            <input type="text" name="cp_maximum" id="cp_maximum" value="{=stripslashes(cp.cp_maximum)}">
+				        </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+	</div>
+
+	{frm_submit}
+
+	</form>
+</div>
+
+<div class="modal fade coupon-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title"></span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="coupon-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/eyoom-form/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script>
+function coupon_modal(href) {
+    $('.coupon-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#product-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.coupon-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#coupon-iframe").attr("src", href);
+        $('#coupon-iframe').height(600);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('.coupon-iframe-modal').modal('hide');
+};
+
+$(document).ready(function(){
+    $('#cz_start').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#cz_end').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    $('#cz_end').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#cz_start').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+});
+</script>
+
+<script>
+$(function() {
+    <!--{? !cp.cz_type}-->
+    $("#tr_cz_point").hide();
+    <!--{/}-->
+    <!--{? cp.cp_method == 2 || cp.cp_method == 3}-->
+    $("#tr_cp_target").hide();
+    $("#tr_cp_target").find("input").attr("required", false).removeClass("required");
+    <!--{/}-->
+    <!--{? cp.cp_type != 1}-->
+    $("#tr_cp_maximum").hide();
+    $("#tr_cp_trunc").hide();
+    <!--{/}-->
+    $("#cz_type").change(function() {
+        if($(this).val() == "1") {
+            $("#tr_cz_point").find("input").attr("required", true).addClass("required");
+            $("#tr_cz_point").show();
+        } else {
+            $("#tr_cz_point").find("input").attr("required", false).removeClass("required");
+            $("#tr_cz_point").hide();
+        }
+    });
+    $("#cp_method").change(function() {
+        var cp_method = $(this).val();
+        change_method(cp_method);
+    });
+
+    $("#cp_type").change(function() {
+        var cp_type = $(this).val();
+        change_type(cp_type);
+    });
+
+    $("#sch_target").click(function() {
+        var cp_method = $("#cp_method").val();
+        var url = "{C.EYOOM_ADMIN_URL}/?dir=shop&pid=coupontarget&wmode=1&sch_target=";
+
+        if(cp_method == "0") {
+            coupon_modal(url+'0');
+            $('#modal-title').text('쿠폰적용 상품검색');
+        } else if(cp_method == "1") {
+            coupon_modal(url+'1');
+            $('#modal-title').text('쿠폰적용 분류검색');
+        } else {
+            return false;
+        }
+    });
+
+	/*
+    $("#cz_start, #cz_end").datepicker(
+        { changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99" }
+    );
+    */
+});
+
+function change_method(cp_method)
+{
+    if(cp_method == "0") {
+        $("#sch_text").text("상품검색");
+        $("#tr_cp_target").find("label.label").text("적용상품");
+        $("#tr_cp_target").find("input").attr("required", true);
+        $("#tr_cp_target").show();
+    } else if(cp_method == "1") {
+        $("#sch_text").text("분류검색");
+        $("#tr_cp_target").find("label.label").text("적용분류");
+        $("#tr_cp_target").find("input").attr("required", true);
+        $("#tr_cp_target").show();
+    } else {
+        $("#tr_cp_target").hide();
+        $("#tr_cp_target").find("input").attr("required", false);
+    }
+}
+
+function change_type(cp_type)
+{
+    if(cp_type == "0") {
+        $("#cp_price_unit").text("원");
+        $("#cp_price_title").text("할인금액");
+        $("#tr_cp_maximum").hide();
+        $("#tr_cp_trunc").hide();
+    } else {
+        $("#cp_price_unit").text("%");
+        $("#cp_price_title").text("할인비율");
+        $("#tr_cp_maximum").show();
+        $("#tr_cp_trunc").show();
+    }
+}
+
+function form_check(f)
+{
+    var sel_type = f.cp_type;
+    var cp_type = sel_type.options[sel_type.selectedIndex].value;
+    var cp_price = f.cp_price.value;
+
+    <!--{? !_cpimg_str}-->
+    if(f.cp_img.value == "") {
+        alert("쿠폰이미지를 업로드해 주십시오.");
+        return false;
+    }
+    <!--{/}-->
+
+    if(isNaN(cp_price)) {
+        if(cp_type == "1")
+            alert("할인비율을 숫자로 입력해 주십시오.");
+        else
+            alert("할인금액을 숫자로 입력해 주십시오.");
+
+        return false;
+    }
+
+    cp_price = parseInt(cp_price);
+
+    if(cp_type == "1" && (cp_price < 1 || cp_price > 99)) {
+        alert("할인비율을 1과 99 사이의 숫자로 입력해 주십시오.");
+        return false;
+    }
+
+    return true;
+}
+</script>

@@ -1,0 +1,41 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.new-post {position:relative;overflow:hidden;padding:6px 0;border-top:1px dotted #e5e5e5}
+.new-post:first-child{border-top:0}
+.new-post .post-subject {font-size:12px}
+.new-post a:hover .post-subject {text-decoration:underline}
+.new-post .post-comment {display:inline-block;white-space:nowrap;vertical-align:baseline;text-align:center;min-width:35px;padding:1px 2px;font-size:10px;line-height:1;color:#fff;background-color:#757575;margin-right:5px}
+.new-post .post-photo {display:inline-block;width:26px;height:26px;margin-right:2px;border:1px solid #e5e5e5;padding:1px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.new-post .post-photo img {width:100%;height:auto;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.new-post .post-photo .post-user-icon {width:22px;height:22px;font-size:14px;line-height:22px;text-align:center;background:#959595;color:#fff;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:inline-block;white-space:nowrap;vertical-align:baseline;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.new-post .post-nick {font-size:11px;color:#757575}
+.new-post .post-time {font-size:11px;color:#757575;margin-left:5px}
+.new-post .post-time .i-color {color:#b5b5b5}
+</style>
+
+<div class="tab-newpost">
+	<!--{@ write}-->
+    <div class="new-post">
+		<a href="{.href}">
+			<div class="post-subject ellipsis">
+				<!--{? .wr_comment}-->
+				<span class="post-comment">+{=number_format(.wr_comment)}</span>
+				<!--{/}-->
+				{.wr_subject}
+			</div>
+			<span class="post-photo">
+				<!--{? .mb_photo}-->
+				{.mb_photo}
+				<!--{:}-->
+				<span class="post-user-icon"><i class="fa fa-user"></i></span>
+				<!--{/}-->
+			</span>
+			<span class="post-nick">{.mb_nick}</span>
+			<span class="post-time"><i class="fa fa-clock-o {? .new}color-red{:}i-color{/}"></i> {eb->date_time('Y-m-d',.datetime)}</span>
+		</a>
+    </div>
+    <!--{:}-->
+    <p class="text-center color-grey font-size-13 margin-top-10"><i class="fa fa-exclamation-circle"></i> 최신글이 없습니다.</p>
+	<!--{/}-->
+</div>

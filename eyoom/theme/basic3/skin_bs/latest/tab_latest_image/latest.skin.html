@@ -1,0 +1,77 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.tab-latest-image .img-item-wrap {position:relative;width:20%;float:left}
+.tab-latest-image .img-item {position:relative;overflow:hidden;margin:3px}
+.tab-latest-image .img-box {position:relative;overflow:hidden;height:98px;background:#353535;line-height:98px;text-align:center}
+.tab-latest-image .img-box .no-image {color:#858585;font-size:11px}
+.tab-latest-image .img-comment {position:absolute;top:8px;left:8px;display:inline-block;min-width:35px;padding:0px 3px;font-size:10px;font-weight:300;line-height:13px;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;background:#757575}
+.tab-latest-image .img-box .video-icon {position:absolute;top:5px;right:5px;color:#fff;font-size:20px;line-height:20px}
+.tab-latest-image .img-caption {color:#fff;font-size:11px;position:absolute;left:0;bottom:-26px;display:block;z-index:1;background:rgba(0, 0, 0, 0.7);text-align:left;width:100%;height:26px;line-height:20px;margin-bottom:0;padding:3px 5px}
+.tab-latest-image .img-photo img {width:20px;height:20px;margin-right:7px;float:left}
+.tab-latest-image .img-photo .img-user-icon {width:20px;height:20px;font-size:14px;line-height:20px;text-align:center;background:#858585;color:#fff;margin-right:7px;float:left}
+.tab-latest-image .img-nick {font-size:11px;color:#fff;display:block;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;overflow:hidden;float:left}
+.tab-latest-image .img-subj h5 {color:#000;font-size:12px;display:block;overflow:hidden;white-space:nowrap;word-wrap:normal;text-overflow:ellipsis}
+.tab-latest-image a:hover .img-subj h5 {color:#FF2900;text-decoration:underline}
+@media (max-width: 1199px) {
+	.tab-latest-image .img-item-wrap {width:25%}
+}
+@media (max-width: 767px) {
+	.tab-latest-image .img-item-wrap {width:33.33333%}
+}
+@media (max-width: 540px) {
+	.tab-latest-image .img-item-wrap {width:50%}
+}
+</style>
+
+<div class="tab-latest-image">
+	<!--{@ loop}-->
+	<div class="img-item-wrap">
+		<div class="img-item">
+			<a href="{.href}">
+				<div class="img-box">
+					<!--{? .image}-->
+					<img class="img-responsive" src="{.image}">
+					<!--{? .wr_comment}--><span class="img-comment">+{=number_format(.wr_comment)}</span><!--{/}-->
+					<!--{? .is_video}--><span class="video-icon"><i class="fa fa-play-circle-o"></i></span><!--{/}-->
+					<!--{:}-->
+					<span class="no-image">No Image</span>
+					<!--{/}-->
+					<div class="img-caption">
+						<!--{? photo == 'y'}-->
+						<div class="img-photo">
+							<!--{? .mb_photo}-->
+							{.mb_photo}
+							<!--{:}-->
+							<span class="img-user-icon"><i class="fa fa-user"></i></span>
+							<!--{/}-->
+						</div>
+						<!--{/}-->
+						<div class="img-nick">{.mb_nick}</div>
+					</div>
+				</div>
+				<div class="img-subj">
+					<h5><!--{? .new}--><i class="fa fa-check-circle color-red"></i><!--{/}-->{.wr_subject}</h5>
+				</div>
+			</a>
+		</div>
+	</div>
+	<!--{:}-->
+	<p class="text-center color-grey font-size-13 margin-top-30"><i class="fa fa-exclamation-circle"></i> 최신글이 없습니다.</p>
+	<!--{/}-->
+	<div class="clearfix"></div>
+</div>
+
+<script>
+$(function(){
+    var duration = 120;
+    var $img_cap = $('.tab-latest-image .img-item');
+    $img_cap.find('.img-box')
+        .on('mouseover', function(){
+            $(this).find('.img-caption').stop(true).animate({bottom: '0px'}, duration);
+        })
+        .on('mouseout', function(){
+            $(this).find('.img-caption').stop(true).animate({bottom: '-26px'}, duration);
+        });
+});
+</script>

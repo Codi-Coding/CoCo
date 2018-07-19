@@ -1,0 +1,190 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-order-adress {padding:15px}
+.shop-order-adress input {vertical-align:inherit}
+.shop-order-adress input.btn-e-lg {padding:7px 16px;font-size:14px}
+.shop-order-adress .eyoom-form .radio i,.shop-order-adress .eyoom-form .checkbox i {top:2px}
+.shop-order-adress .table-list-eb thead {border-top:2px solid #454545}
+.shop-order-adress .table-list-eb .table>thead>tr>th {padding:10px;text-align:center}
+.shop-order-adress .table-list-eb .table>tbody>tr>td {padding:10px}
+.shop-order-adress .table-list-eb .table>tfoot>tr>td {padding:15px 10px}
+.shop-order-adress .table-list-eb .td-border-right {border-right:1px solid #e5e5e5}
+.shop-order-adress .table-list-eb .td-bg-color {background:#fcfcfc}
+.shop-order-adress .table-list-eb .td-width-100px {width:100px}
+</style>
+
+<div class="shop-order-adress">
+	<h4 class="margin-bottom-20"><strong>배송지 목록</strong></h4>
+	<form name="forderaddress" method="post" action="{_order_action_url}" autocomplete="off" class="eyoom-form">
+	<div class="table-list-eb">
+	    <div class="table-responsive">
+	        <table class="table">
+		        <thead>
+			        <tr>
+			            <th>
+			                <label for="chk_all" class="sound_only">전체선택</label>
+			                <label class="checkbox">
+			                	<input type="checkbox" name="chk_all" id="chk_all"><i></i>
+			                </label>
+			            </th>
+			            <th>배송지명</th>
+			            <th width="60" >기본배송지</th>
+			            <th>이름</th>
+			            <th>전화번호</th>
+			            <th>주소</th>
+			            <th>관리</th>
+			        </tr>
+		        </thead>
+		        <tbody>
+					<!--{@ list}-->
+			        <tr>
+			            <td>
+			                <input type="hidden" name="ad_id[{.key_}]" value="{.ad_id}">
+			                <label for="chk_{.key_}" class="sound_only">배송지선택</label>
+			                <label class="checkbox">
+			                	<input type="checkbox" name="chk[]" value="{.key_}" id="chk_{.key_}"><i></i>
+			                </label>
+			            </td>
+			            <td class="td-border-right td-width-100px">
+			                <label for="ad_subject{.key_}" class="sound_only">배송지명</label>
+							<label class="input">
+                                <input type="text" name="ad_subject[{.key_}]" id="ad_subject{.key_}" class="frm_input td-width-100px" size="12" maxlength="20" value="{.ad_subject}">
+                            </label>
+			            </td>
+			            <td class="td-border-right">
+							<label for="ad_default{.key_}" class="radio"><input type="radio" name="ad_default" value="{.ad_id}" id="ad_default{.key_}" {? .ad_default}checked="checked"{/}><i class="rounded-x"></i></label>
+			            </td>
+			            <td class="td-border-right td-width-100px td-bg-color">{.ad_name}</td>
+			            <td class="td-border-right td-width-100px">{.ad_tel}<br>{.ad_hp}</td>
+			            <td class="td-border-right td-bg-color">{=print_address(.ad_addr1, .ad_addr2, .ad_addr3, .ad_jibeon)}</td>
+			            <td class="td-width-100px text-center">
+			                <input type="hidden" value="{.addr}">
+			                <button type="button" class="sel_address btn-e btn-e-red btn-e-xs rounded"><i class="fa fa-check"></i> 선택</button>
+			                <a href="{.del_href}" class="del_address btn-e btn-e-dark btn-e-xs rounded color-white">삭제</a>
+			            </td>
+			        </tr>
+			        <!--{/}-->
+		        </tbody>
+	        </table>
+	    </div>
+	</div>
+    <div class="">
+        <input type="submit" name="act_button" value="선택수정" class="btn_submit btn-e btn-e-blue rounded">
+    </div>
+	</form>
+
+	{=eb_paging('basic')}
+	
+	<div class="text-center margin-top-40 margin-bottom-30">
+		<button type="button" onclick="self.close();" class="btn-e btn-e-lg btn-e-dark"><i class="fa fa-close"></i> 닫기</button>
+	</div>
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+$(function() {
+    $(".sel_address").on("click", function() {
+        var addr = $(this).siblings("input").val().split(String.fromCharCode(30));
+
+        var f = window.opener.forderform;
+        f.od_b_name.value        = addr[0];
+        f.od_b_tel.value         = addr[1];
+        f.od_b_hp.value          = addr[2];
+        f.od_b_zip.value         = addr[3] + addr[4];
+        f.od_b_addr1.value       = addr[5];
+        f.od_b_addr2.value       = addr[6];
+        f.od_b_addr3.value       = addr[7];
+        f.od_b_addr_jibeon.value = addr[8];
+        f.ad_subject.value       = addr[9];
+
+        var zip1 = addr[3].replace(/[^0-9]/g, "");
+        var zip2 = addr[4].replace(/[^0-9]/g, "");
+
+        if(zip1 != "" && zip2 != "") {
+            var code = String(zip1) + String(zip2);
+
+            if(window.opener.zipcode != code) {
+                window.opener.zipcode = code;
+                window.opener.calculate_sendcost(code);
+            }
+        }
+
+        window.close();
+    });
+
+	$('.del_address').on("click", function(e){
+		e.preventDefault();
+	    var linkURL = $(this).attr("href");
+	    del_address_link(linkURL);
+	});
+	function del_address_link(linkURL) {
+	    swal({
+	        title: "배송지 삭제",
+	        text: "배송지 목록을 삭제하시겠습니까?",
+	        type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#FF9500",
+	        confirmButtonText: "삭제",
+	        cancelButtonText: "취소",
+	        closeOnConfirm: true,
+	        closeOnCancel: true
+	    },
+	    function(){
+			window.location.href = linkURL;
+	    });
+	}
+
+    // 전체선택 부분
+    $("#chk_all").on("click", function() {
+        if($(this).is(":checked")) {
+            $("input[name^='chk[']").attr("checked", true);
+        } else {
+            $("input[name^='chk[']").attr("checked", false);
+        }
+    });
+
+    $(".btn_submit").on("click", function() {
+        if($("input[name^='chk[']:checked").length==0 ){
+	        swal({
+	            title: "Oops...",
+	            text: "수정하실 항목을 하나 이상 선택하세요.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            return false;
+        }
+    });
+});
+
+$("input, textarea, select").on({ 'touchstart' : function() {
+	zoomDisable();
+}});
+$("input, textarea, select").on({ 'touchend' : function() {
+	setTimeout(zoomEnable, 500);
+}});
+function zoomDisable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">');
+}
+function zoomEnable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1">');
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->

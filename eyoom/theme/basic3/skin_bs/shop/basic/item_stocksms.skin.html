@@ -1,0 +1,112 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/perfect-scrollbar/perfect-scrollbar.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-item-stocksms {padding:15px}
+.shop-item-stocksms input {vertical-align:inherit}
+.shop-item-stocksms input.btn-e-lg {padding:7px 16px;font-size:14px}
+.shop-item-stocksms .member-agree {position:relative;border:1px solid #d5d5d5;padding:10px;margin-bottom:10px}
+.shop-item-stocksms .contentHolder {position:relative;overflow:hidden;height:150px}
+</style>
+
+<div class="shop-item-stocksms">
+	<div class="headline"><h4><strong>{g5.title}</strong></h4></div>
+	<div class="margin-bottom-30"></div>
+    <form name="fstocksms" method="post" action="#" onsubmit="return fstocksms_submit(this);"  autocomplete="off" class="eyoom-form">
+    <input type="hidden" name="it_id" value="{_it_id}">
+    <div class="row">
+	    <section class="col col-12">
+		    <span class="font-size-14">상품명 : <strong class="color-blue">{it.it_name}</strong></span>
+	    </section>
+	    <div class="col col-12">
+	    	<div class="margin-hr-15"></div>
+	    </div>
+	    <section class="col col-12">
+            <label for="ss_hp" class="label">휴대폰번호<strong class="sound_only"> 필수</strong></label>
+	        <label class="input">
+	        	<i class="icon-append fa fa-tablet"></i>
+	            <input type="text" name="ss_hp" value="{member.mb_hp}" id="ss_hp" required>
+	        </label>
+	        <div class="note"><strong>Note: </strong> ' - ' 없이 연결하여 입력 해 주세요.</div>
+	    </section>
+	    <div class="col col-12">
+	    	<div class="margin-hr-15"></div>
+	    </div>
+	    <section class="col col-12">
+            <label class="label">개인정보처리방침안내</label>
+			<div class="member-agree">
+		        <div class="panel-body contentHolder">
+					{=get_text(config.cf_privacy)}
+		        </div>
+			</div>
+			<label class="checkbox" for="agree">
+				<input type="checkbox" name="agree" value="1" id="agree"><i></i><span class="font-size-12">개인정보처리방침안내의 내용에 동의합니다.</span>
+			</label>
+	    </section>
+	    <div class="clearfix"></div>
+    </div>
+    <div class="text-center margin-top-30">
+        <input type="submit" value="확인" class="btn-e btn-e-lg btn-e-red">
+        <button type="button" onclick="window.close();" class="btn-e btn-e-lg btn-e-dark"><i class="fa fa-close"></i> 닫기</button>
+    </div>
+    </form>
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../plugins/perfect-scrollbar/perfect-scrollbar.jquery.min.js"></script>
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('.contentHolder').height(150).perfectScrollbar();
+});
+
+function fstocksms_submit(f) {
+    if(!f.agree.checked) {
+        swal({
+            title: "Oops...",
+            text: "개인정보처리방침안내에 동의해 주십시오.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    swal({
+        title: "재입고 알림 신청",
+        text: "재입고 SMS 알림 요청을 등록하시겠습니까?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF9500",
+        confirmButtonText: "확인",
+        cancelButtonText: "닫기",
+        closeOnConfirm: true,
+        closeOnCancel: true
+    },
+    function(isConfirm){
+        if (isConfirm) {
+		    f.action = "{C.G5_HTTPS_SHOP_URL}/itemstocksmsupdate.php";
+		    f.submit();
+		    return true;
+        } else {
+	        window.close();
+	        return false;
+        }
+    });
+    return false;
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->

@@ -1,0 +1,58 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.basic-latest {position:relative;overflow:hidden}
+.basic-latest ul {margin-bottom:0}
+.basic-latest li {position:relative;overflow:hidden;padding:2px 0;font-size:12px}
+.basic-latest .basic-subj {position:relative;width:70%;padding-right:0;padding-left:0;float:left}
+.basic-latest .basic-comment {display: inline-block;min-width:38px;padding:1px 3px;font-size:10px;font-weight:300;line-height:11px;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;background-color:#757575}
+.basic-latest .basic-time {position:relative;overflow:hidden;width:30%;font-size:12px;text-align:right;color:#555555;float:right}
+.basic-latest .basic-time .i-color {color:#b5b5b5}
+.basic-latest .basic-member {position:relative;overflow:hidden;display:inline-block;width:30%;float:right}
+.basic-latest .basic-photo img {width:17px;height:17px;margin-left:7px;float:right}
+.basic-latest .basic-photo .basic-user-icon {width:17px;height:17px;font-size:11px;line-height:17px;text-align:center;background:#858585;color:#fff;margin-left:7px;float:right}
+.basic-latest .basic-nick {font-size:12px;color:#858585;display:block;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;overflow:hidden;float:right}
+.basic-latest a:hover .basic-subj {text-decoration:underline}
+.basic-latest a:hover .basic-nick {color:#000}
+.basic-latest a:hover .basic-time i {color:#FF2900}
+</style>
+
+<div class="headline">
+	<h5><strong>{title}</strong></h5>
+</div>
+
+<div class="basic-latest">
+	<ul class="list-unstyled">
+	<!--{@ loop}-->
+		<li>
+			<a href="{.href}">
+				<div class="basic-subj ellipsis">
+					- <!--{? .wr_comment}--><span class="basic-comment">+{=number_format(.wr_comment)}</span> <!--{/}-->{.wr_subject}
+				</div>
+				<!--{? 1 // ---------------------------------------------
+					위 숫자설정 - 1:포스팅 시간 출력, 0:회원포토와 닉네임 출력
+				---------------------------------------------------//}-->
+				<div class="basic-time">
+					<i class="fa fa-clock-o {? .new}color-red{:}i-color{/}"></i> {eb->date_time('m-d',.datetime)}
+				</div>
+				<!--{:}-->
+				<div class="basic-member">
+					<!--{? photo == 'y'}-->
+					<div class="basic-photo">
+						<!--{? .mb_photo}-->
+						{.mb_photo}
+						<!--{:}-->
+						<span class="basic-user-icon"><i class="fa fa-user"></i></span>
+						<!--{/}-->
+					</div>
+					<!--{/}-->
+					<div class="basic-nick">{.mb_nick}</div>
+				</div>
+				<!--{/}-->
+			</a>
+		</li>
+	<!--{:}-->
+		<li><p class="text-center color-grey font-size-13 margin-top-30"><i class="fa fa-exclamation-circle"></i> 최신글이 없습니다.</p></li>
+	<!--{/}-->
+	</ul>
+</div>

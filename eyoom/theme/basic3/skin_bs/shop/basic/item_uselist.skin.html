@@ -1,0 +1,134 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-product-use-list .uselist-search-box {position:relative;padding:15px;margin-bottom:30px;border:1px solid #e5e5e5;background:#fff;border-radius:3px !important}
+.shop-product-use-list .search-input input {height:42px;background:#f8f8f8;font-size:13px;font-weight:bold;border-radius:3px !important}
+.shop-product-use-list .search-input .icon-prepend {background-color:transparent;width:42px;height:40px;line-height:40px;border:0;color:#959595;font-size:14px}
+.shop-product-use-list .input-button .button {height:40px;line-height:40px;background:#fff;padding:0 30px;font-size:13px;border-radius:0 3px 3px 0 !important}
+.shop-product-use-list .panel-heading {min-height:62px;padding:15px}
+.shop-product-use-list .product-use-img {position:absolute;top:7px;left:10px;width:54px;height:54px;overflow:hidden}
+.shop-product-use-list .product-use-img img {display:block;width:100% \9;max-width:100%;height:auto}
+.shop-product-use-list .heading-content {margin-left:64px}
+.shop-product-use-list .panel-title {font-size:12px;font-weight:bold}
+.shop-product-use-list .panel-title > a:before {top:12px;margin-top:inherit;font-size:14px}
+.shop-product-use-list .product-ratings {margin-bottom:0}
+.shop-product-use-list .product-ratings > li {padding-left:0;padding-right:0;margin-right:-2px}
+.shop-product-use-list .product-ratings > li i {color:#b5b5b5;font-size:11px}
+.shop-product-use-list .product-ratings > li .rating-selected {color:#FF2900}
+.shop-product-use-list .product-ratings > li.ratings-average {margin-right:5px;color:#757575;font-size:11px}
+.shop-product-use-list .panel-body img {width:inherit !important;max-width:100%;height:auto}
+</style>
+
+<div class="shop-product-use-list">
+    <form method="get" action="{_SERVER['PHP_SELF']}" class="eyoom-form">
+	<div class="uselist-search-box">
+		<div class="row">
+		    <section class="col col-3">
+			    <label for="sfl" class="sound_only">검색항목<strong class="sound_only"> 필수</strong></label>
+			    <lavel class="select">
+				    <select name="sfl" id="sfl" required class="form-control">
+				        <option value="">선택</option>
+				        <option value="b.it_name"   {=get_selected(_sfl, "b.it_name")}>상품명</option>
+				        <option value="a.it_id"     {=get_selected(_sfl, "a.it_id")}>상품코드</option>
+				        <option value="a.is_subject"{=get_selected(_sfl, "a.is_subject")}>후기제목</option>
+				        <option value="a.is_content"{=get_selected(_sfl, "a.is_content")}>후기내용</option>
+				        <option value="a.is_name"   {=get_selected(_sfl, "a.is_name")}>작성자명</option>
+				        <option value="a.mb_id"     {=get_selected(_sfl, "a.mb_id")}>작성자아이디</option>
+				    </select>
+				    <i></i>
+			    </lavel>
+		    </section>
+		    <section class="col col-9 text-right">
+			    <a href="{_SERVER['PHP_SELF']}" class="btn-e btn-e-xs btn-e-dark rounded">전체보기</a>
+		    </section>
+		    <div class="clearfix"></div>
+		    <section class="col col-12 margin-bottom-0">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<div class="input input-button search-input">
+					<i class="icon-prepend fa fa-search"></i>
+					<input type="text" name="stx" value="{_stx}" id="stx" required>
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</div>
+		    </section>
+		</div>
+	</div>
+    </form>
+
+    <p class="font-size-11 color-grey"><i class="fa fa-info-circle"></i> 타이틀 이미지를 클릭하시면 해당상품으로 이동됩니다.</p>
+	<div class="panel-group accordion-default panel-group-control panel-group-control-right" id="porduct-review">
+		<!--{@ list}-->
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+                <div class="product-use-img tooltips" data-toggle="tooltip" data-placement="top" data-original-title="{.it_name}">
+					<a href="{.it_href}">
+						{=get_itemuselist_thumbnail(.it_id, .is_content, 200, '')}
+					</a>
+                </div>
+                <div class="heading-content">
+		            <h4 class="panel-title">
+		                <a class="collapsed" data-toggle="collapse" data-parent="#porduct-review" href="#review_{.key_}">
+		                    {.is_subject}
+		                </a>
+		            </h4>
+		            <div class="margin-top-5">
+		                <div class="pull-left">
+		                    <span class="font-size-11 color-grey">
+		                    	<span class="margin-right-10">{.is_name}</span>
+		                    	<span>{=substr(.is_time,0,10)}</span>
+		                    </span>
+		                </div>
+		                <!--{? .star > 0}-->
+			            <ul class="list-inline product-ratings pull-right">
+				            <li class="ratings-average">별 {.star}개</li>
+							<li><i class="rating{? .star > 0}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+							<li><i class="rating{? .star > 1}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+							<li><i class="rating{? .star > 2}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+							<li><i class="rating{? .star > 3}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+							<li><i class="rating{? .star > 4}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+			            </ul>
+			            <!--{:}-->
+			            <div class="pull-right font-size-11 color-grey"><i class="fa fa-exclamation-circle"></i> 별점 평가 미등록</div>
+			            <!--{/}-->
+			            <div class="clearfix"></div>
+		            </div>
+	            </div>
+	        </div>
+	        <div id="review_{.key_}" class="panel-collapse collapse">
+	            <div class="panel-body">
+					{.is_content}
+	            </div>
+	        </div>
+	    </div>
+		<!--{:}-->
+		<div class="text-center font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 사용후기가 없습니다.</div>
+		<!--{/}-->
+    </div>
+</div>
+
+{=eb_paging('basic')}
+
+<script src="../../../../../../js/viewimageresize.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script>
+$(function() {
+	$('.shop-product-use-list .panel-body img').wrap('<a class="view-image-popup">');
+	$('.shop-product-use-list .panel-body img').each(function() {
+		var imgURL = $(this).attr('src');
+		$(this).parent().attr('href', imgURL);
+	});
+	$('.view-image-popup').magnificPopup({
+		type: 'image',
+		closeOnContentClick: true,
+		mainClass: 'mfp-img-mobile',
+		image: {
+			verticalFit: true
+		}
+	});
+});
+	
+$(window).on("load", function() {
+    $(".shop-product-use-list .panel-body").viewimageresize();
+});
+</script>

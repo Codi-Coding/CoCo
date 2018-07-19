@@ -1,0 +1,163 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-popular-rank">
+	<div class="headline">
+		<h4><strong>인기검색어순위</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<form id="form" name="form" class="eyoom-form" action="./" method="post">
+	<input type="hidden" name="dir" id="dir" value="{_dir}">
+	<input type="hidden" name="pid" id="pid" value="{_pid}">
+	<h5 class="margin-bottom-10"><strong class="color-indigo">기간별 검색</strong></h5>
+	<div class="admin-search-box margin-bottom-30">
+		<div class="row">
+			<div class="col col-3">
+				<section>
+					<label for="fr_date" class="label">시작일</label>
+					<label class="input">
+						<i class="icon-append fa fa-calendar-o"></i>
+						<input type="text" name="fr_date" id="fr_date" value="{_fr_date}" required>
+					</label>
+				</section>
+			</div>
+			<div class="col col-3">
+				<section>
+					<label for="to_date" class="label">종료일</label>
+					<label class="input">
+						<i class="icon-append fa fa-calendar-o"></i>
+						<input type="text" name="to_date" id="to_date" value="{_to_date}" required>
+					</label>
+				</section>
+			</div>
+			<div class="col col-3">
+				<section class="label-height">
+					<input type="submit" value="검색" class="btn-e btn-e-dark">
+				</section>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-30"></div>
+
+	<form name="fpopularlist" id="fpopularlist" method="post" class="eyoom-form">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+	<input type="hidden" name="dir" value="{_dir}" id="dir">
+	<input type="hidden" name="pid" value="{_pid}" id="pid">
+
+	<div class="local_ov01 local_ov margin-bottom-5">
+	    <span class="font-size-12 color-grey">
+	    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>건수 {=number_format(_total_count)}개
+	    </span>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="popular-list"></div>
+
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script src="../../../plugins/eyoom-form/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script>
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.No && !(client.No.indexOf(filter.No) > -1) || filter.회원구분 && !(client.회원구분.indexOf(filter.회원구분) > -1) || filter.아이디 && !(client.아이디.indexOf(filter.아이디) > -1) || filter.이름 && !(client.이름.indexOf(filter.이름) > -1) || filter.휴대전화 && !(client.휴대전화.indexOf(filter.휴대전화) > -1) || filter.전화번호 && !(client.전화번호.indexOf(filter.전화번호) > -1) || filter.이메일 && !(client.이메일.indexOf(filter.이메일) > -1) || filter.가입일 && !(client.가입일.indexOf(filter.가입일) > -1) || filter.최신로그인 && !(client.최신로그인.indexOf(filter.최신로그인) > -1) || filter.상태 && !(client.상태.indexOf(filter.상태) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ popular_list}-->
+        {
+	        순위: "{=number_format(.rank)}",
+	        검색어: "{.word}",
+	        검색회수: "{=number_format(.cnt)}",
+	        등록일: "{.pp_date}",
+	        등록IP: "{.pp_ip}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function() {
+    $("#popular-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "순위", type: "number", width: 40 },
+            { name: "검색어", type: "text", width: 200 },
+            { name: "검색회수", type: "number", width: 100 },
+            { name: "등록일", type: "text", width: 200 },
+            { name: "등록IP", type: "text", width: 100 },
+        ]
+    });
+});
+
+/*--------------------------------------
+	Datepicker
+--------------------------------------*/
+$(document).ready(function() {
+    $('#fr_date').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#to_date').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    $('#to_date').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#fr_date').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+})
+</script>

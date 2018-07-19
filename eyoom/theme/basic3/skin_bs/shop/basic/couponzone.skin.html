@@ -1,0 +1,76 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.shop-couponzone .couponzone-box {position:relative;border:1px solid #dadada;padding:10px;background:#fff;margin-bottom:10px}
+.shop-couponzone .couponzone-box .couponzone-img {margin-bottom:15px}
+.shop-couponzone .couponzone-box h5 {font-size:14px}
+.shop-couponzone .couponzone-box .couponzone-desc {font-size:12px;color:#757575}
+.shop-couponzone .couponzone-btn {position:relative;text-align:center;margin-bottom:30px}
+.shop-couponzone .couponzone-btn button {display:inline-block;margin:0;padding:5px 20px;background:#353535;border:1px solid #151515;color:#fff}
+.shop-couponzone .couponzone-btn button:hover {background:#151515}
+.shop-couponzone .couponzone-btn button.disabled {background:#959595;border:1px solid #757575;cursor: not-allowed}
+.shop-couponzone .couponzone-btn button.disabled:hover {background:#959595}
+</style>
+
+<div class="shop-couponzone">
+	<div class="margin-bottom-30">
+		<div class="headline">
+			<h3><strong>다운로드 쿠폰</strong></h3>
+		</div>
+		<div class="cont-text-bg margin-bottom-20">
+		    <p class="bg-info"><i class="fa fa-info-circle"></i> {default.de_admin_company_name} 회원이시라면 쿠폰 다운로드 후 바로 사용하실 수 있습니다.</p>
+		</div>
+
+		<!--{? dcoupon.size_ > 0}-->
+		<div class="row">
+			<!--{@ dcoupon}-->
+		    <div class="col-sm-4">
+			    <div class="couponzone-box">
+			        <div class="couponzone-img"><img class="img-responsive" src="{.image}" alt="{.coupon_tit}"></div>
+			        <h5><strong>{.coupon_tit}</strong></h5>
+			        <div class="couponzone-desc">기한 : 다운로드 후 {=number_format(.cz_period)}일</div>
+			        <div class="couponzone-desc">적용 : {.cp_target}</div>
+			    </div>
+		        <div class="couponzone-btn"><button type="button" class="coupon_download {.disabled}" data-cid="{.cz_id}">쿠폰다운로드</button></div>
+		    </div>
+		    <!--{? .key_%3==2}-->
+		    <div class="clearfix"></div>
+		    <!--{/}-->
+			<!--{:}-->
+			<p class="text-center font-size-14 color-grey margin-top-20"><i class="fa fa-exclamation-circle"></i> 사용할 수 있는 쿠폰이 없습니다.</p>
+			<!--{/}-->
+		</div>
+		<!--{/}-->
+	</div>
+
+	<div id="point_coupon">
+		<div class="headline">
+			<h3><strong>포인트 쿠폰</strong></h3>
+		</div>
+		<div class="cont-text-bg margin-bottom-20">
+		    <p class="bg-info"><i class="fa fa-info-circle"></i> 보유하신 {default.de_admin_company_name} 회원 포인트를 쿠폰으로 교환하실 수 있습니다.</p>
+		</div>
+
+		<!--{? pcoupon.size_ > 0}-->
+		<div class="row">
+			<!--{@ pcoupon}-->
+		    <div class="col-sm-4">
+			    <div class="couponzone-box">
+			        <div class="couponzone-img"><img class="img-responsive" src="{.image}" alt="{.coupon_tit}"></div>
+			        <h5><strong>{.coupon_tit}</strong></h5>
+			        <div class="couponzone-desc">기한 : 다운로드 후 {=number_format(.cz_period)}일</div>
+			        <div class="couponzone-desc">적용 : {.cp_target}</div>
+			        <div class="couponzone-desc">포인트 {=number_format(.cz_point)}점 차감</div>
+			    </div>
+		        <div class="couponzone-btn"><button type="button" class="coupon_download {.disabled}" data-cid="{.cz_id}">쿠폰다운로드</button></div>
+		    </div>
+		    <!--{? .key_%3==2}-->
+		    <div class="clearfix"></div>
+		    <!--{/}-->
+			<!--{:}-->
+			<p class="text-center font-size-14 color-grey margin-top-20"><i class="fa fa-exclamation-circle"></i> 사용할 수 있는 쿠폰이 없습니다.</p>
+			<!--{/}-->
+		</div>
+		<!--{/}-->
+	</div>
+</div>

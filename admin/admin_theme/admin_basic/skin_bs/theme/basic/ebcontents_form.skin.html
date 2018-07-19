@@ -1,0 +1,328 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-ebcontents-form .ebcontents-image {max-width:300px}
+</style>
+
+<div class="admin-ebcontents-form">
+	<div class="headline">
+		<h4><strong>EB 컨텐츠 - 마스터 관리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	{# theme_manager // 테마 매니저 }
+
+	<form name="febcontentsform" method="post" action="{_action_url1}" onsubmit="return febcontentsform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="theme" id="theme" value="{? this_theme}{this_theme}{:}{_theme}{/}">
+	<input type="hidden" name="ec_no" id="ec_no" value="{ec.ec_no}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{this_theme}</span>] EB 컨텐츠 마스터 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="ebcontents-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 설정정보</strong></header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label class="label">코드</label>
+							<label for="ec_code" class="input">
+						        <input type="text" name="ec_code" id="ec_code" value="{? ec.ec_code}{ec.ec_code}{:}{=time()}{/}" readonly required>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 자동생성되며, 수정하실 수 없습니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">상태</label>
+							<div class="inline-group">
+								<label for="ec_state_1" class="radio"><input type="radio" name="ec_state" id="ec_state_1" value="1" {? ec.ec_state == '1' || !ec.ec_state}checked{/}><i></i> 활성</label>
+								<label for="ec_state_2" class="radio"><input type="radio" name="ec_state" id="ec_state_2" value="2" {? ec.ec_state == '2'}checked{/}><i></i> 비활성</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-9">
+						<section>
+							<label class="label">컨텐츠 마스터 제목</label>
+							<label for="ec_subject" class="input">
+						        <input type="text" name="ec_subject" id="ec_subject" value="{=get_text(ec.ec_subject)}" required>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 예) 회사소개, CEO인사말, 메인 포트폴리오, etc
+							</div>
+						</section>
+					</div>
+
+					<div class="col col-3">
+						<section>
+							<label class="label">스킨선택</label>
+							<label for="ec_skin" class="select">
+						        <select name="ec_skin" id="ec_skin">
+							    	<option value="">::선택::</option>
+							    	<!--{@ skins.ebcontents}-->
+							    	<option value="{.value_}" {=get_selected(ec.ec_skin, .value_)}>{.value_}</option>
+							    	<!--{/}-->
+						        </select><i></i>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> EB 컨텐츠용 스킨을 선택해 주세요.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">컨텐츠 마스터 설명글</label>
+							<label for="ec_text" class="textarea">
+						        <textarea name="ec_text" id="ec_text" style="height:80px;">{ec.ec_text}</textarea>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label class="label">컨텐츠 아이템에서 사용할 링크수</label>
+							<label for="ec_link_cnt" class="input">
+								<i class="icon-append">개</i>
+						        <input type="text" name="ec_link_cnt" id="ec_link_cnt" value="{? ec.ec_link_cnt}{ec.ec_link_cnt}{:}2{/}" required maxlength="2">
+							</label>
+						</section>
+					</div>
+
+					<div class="col col-3">
+						<section>
+							<label class="label">컨텐츠 아이템에서 사용할 이미지수</label>
+							<label for="ec_image_cnt" class="input">
+								<i class="icon-append">개</i>
+						        <input type="text" name="ec_image_cnt" id="ec_image_cnt" value="{? ec.ec_image_cnt}{ec.ec_image_cnt}{:}5{/}" required maxlength="2">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{ frm_submit }
+
+	</form>
+</div>
+
+<script>
+function febcontentsform_submit(f) {
+	if (f.ec_code.value == '') {
+		alert("코드는 자동생성되며 빈값을 입력하실 수 없습니다.");
+		document.location.reload();
+		return false;
+	}
+	if (f.ec_subject.value.length < 2) {
+		alert("컨텐츠 마스터의 제목을 2자이상으로 입력해 주세요.");
+		f.ec_subject.focus();
+		return false;
+	}
+	if (!f.ec_skin.value) {
+		alert("컨텐츠 마스터의 스킨을 선택해 주세요.");
+		f.ec_skin.focus();
+		return false;
+	}
+    return true;
+}
+</script>
+
+<!--{? _w == 'u' && _ec_code}-->
+<div class="admin-ebcontents-itemlist">
+
+	<form name="febcontentsitemlist" id="febcontentsitemlist" action="{_action_url2}" method="post" onsubmit="return febcontentsitemlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="theme" id="theme" value="{this_theme}">
+	<input type="hidden" name="ec_code" id="ec_code" value="{ec.ec_code}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="headline">
+		<h4><strong>EB 컨텐츠 - 아이템 관리</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&pid=ebcontents_itemform&amp;ec_code={ec.ec_code}&amp;thema={this_theme}&amp;wmode=1" onclick="ebcontentsitem_modal(this.href); return false;" class="btn-e btn-e-purple btn-e-xs  pull-right margin-top-5"><i class="fa fa-plus"></i> EB 컨텐츠 아이템 추가</a>
+		<div class="clearfix"></div>
+		<!--{/}-->
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="ebcontents-itemlist"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <!--{? _is_admin == 'super'}-->
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	    <!--{/}-->
+	</div>
+	</form>
+
+</div>
+
+<div class="modal fade ebcontentsitem-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title">EB컨텐츠 아이템 관리</span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="ebcontentsitem-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="ebcontents-close-btn btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function ebcontentsitem_modal(href) {
+    $('.ebcontentsitem-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#ebcontentsitem-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+        $('html').css({overflow: ''});
+    });
+    $('.ebcontentsitem-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#ebcontentsitem-iframe").attr("src", href);
+        $('#ebcontentsitem-iframe').height(700);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('.ebcontentsitem-iframe-modal').modal('hide');
+    window.location.reload();
+};
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+	// EB컨텐츠 이미지 아이템
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1)  )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label><input type='hidden' name='ci_no[{.index_}]' value='{.ci_no}'>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=ebcontents_itemform&amp;thema={this_theme}&amp;ec_code={.ec_code}&amp;ci_no={.ci_no}&amp;w=u&amp;iw=u&amp;page={_page}&amp;wmode=1' onclick='ebcontentsitem_modal(this.href); return false;'><u>수정</u></a>",
+	        대표이미지: "{.ci_image}",
+	        타이틀: "{? .ci_title}{=get_text(.ci_title)}{:}없음{/}",
+	        순서: "<label for='ci_sort_{.index}' class='input'><input type='text' name='ci_sort[{.index_}]' id='ci_sort_{.index_}' value='{.ci_sort}'></label>",
+	        상태: "<label for='ci_state_{.index_}' class='select'><select name='ci_state[{.index_}]' id='ci_state_{.index_}'><option value=''>선택</option><option value='1' {? .ci_state == '1'}selected{/}>보이기</option><option value='2' {? .ci_state == '2'}selected{/}>숨기기</option></select><i></i></label>",
+	        보기권한: "<label class='select'>{.view_level}<i></i></label>",
+	        시작일: "{.ci_start}",
+	        종료일: "{.ci_end}",
+	        등록일: "{=substr(.ci_regdt, 0, 10)}",
+        },
+        <!--{/}-->
+    ];
+}();
+
+$(function() {
+    $("#ebcontents-itemlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 60, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "대표이미지", type: "text", align: "center", width: 180 },
+            { name: "타이틀", type: "text", width: 250 },
+            { name: "순서", type: "number",width: 60 },
+            { name: "상태", type: "text", align: "center", width: 120 },
+            { name: "보기권한", type: "text", align: "center", width: 80 },
+            { name: "시작일", type: "text", align: "center", width: 80 },
+            { name: "종료일", type: "text", align: "center", width: 80 },
+            { name: "등록일", type: "text", align: "center", width: 80 },
+        ]
+    });
+
+    var $chk = $("#ebcontents-itemlist .jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function febcontentsitemlist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function del_confirm() {
+	if (confirm('EB컨텐츠 아이템을 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>
+<!--{/}-->

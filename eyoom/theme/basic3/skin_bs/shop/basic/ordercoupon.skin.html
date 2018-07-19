@@ -1,0 +1,54 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+#od_coupon_frm {position:fixed;top:0;left:0;width:100%;height:100% !important;padding:0;border:0;background:transparent;overflow:hidden;z-index:10000}
+.od-coupon-frm-bg {position:fixed;top:0;left:0;width:100%;height:100%;background:#000;opacity:0.7;padding:0}
+.od-coupon-frm-box {position:relative;width:600px;height:auto;margin:50px auto}
+.od-coupon-frm-box-in {position:relative;padding:20px 15px;background:#fff}
+@media (max-width:660px) {
+	.od-coupon-frm-box {width:100%}
+	.od-coupon-frm-box-in {padding:20px 10px;margin:0 10px}
+}
+</style>
+
+<div id="od_coupon_frm">
+	<div class="od-coupon-frm-bg"></div>
+	<div class="od-coupon-frm-box">
+		<div class="od-coupon-frm-box-in">
+		    <!--{? _count > 0}-->
+			<div class="table-list-eb">
+			    <div class="table-responsive">
+			        <table id="sod_list" class="table table-hover">
+			            <thead>
+				            <tr>
+					            <th>쿠폰명</th>
+					            <th>할인금액</th>
+					            <th>적용</th>
+				            </tr>
+			            </thead>
+			            <tbody>
+				            <!--{@ list}-->
+				            <tr>
+					            <td class="text-center">
+					                <input type="hidden" name="o_cp_id[]" value="{.cp_id}">
+					                <input type="hidden" name="o_cp_prc[]" value="{.dc}">
+					                <input type="hidden" name="o_cp_subj[]" value="{.cp_subject}">
+									{=get_text(.cp_subject)}
+					            </td>
+					            <td class="td-border td-bg-color text-center"><span class="color-red">{=number_format(.dc)}</span></td>
+					            <td class="text-center"><button type="button" class="od_cp_apply btn-e btn-e-xs btn-e-red rounded"><i class="fa fa-check"></i> 적용</button></td>
+				            </tr>
+				            <!--{/}-->
+			            </tbody>
+			        </table>
+			    </div>
+			</div>
+			<!--{:}-->
+			<div class="text-center font-size-13 color-grey margin-top-20 margin-bottom-30"><i class="fa fa-exclamation-circle"></i> 사용할 수 있는 쿠폰이 없습니다.</div>
+			<!--{/}-->
+		    <div class="text-center">
+		        <button type="button" id="od_coupon_close" class="btn-e btn-e-lg btn-e-dark">닫기</button>
+		    </div>
+	    </div>
+    </div>
+</div>

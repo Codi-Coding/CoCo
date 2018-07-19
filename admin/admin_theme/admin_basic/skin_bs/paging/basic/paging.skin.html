@@ -1,0 +1,28 @@
+<?php if (!defined("_GNUBOARD_")) exit; ?>
+
+<style>
+.eb-pagination-wrap {position:relative;text-align:center;padding:7px;margin-top:30px}
+.eb-pagination {position:relative;list-style:none;display:inline-block;padding:0;margin:0}
+.eb-pagination li {display:inline}
+.eb-pagination a {display:inline-block;font-size:12px;text-decoration:none;min-width:28px;height:30px;padding:0 5px;color:#fff;border:1px solid transparent;line-height:28px;text-align:center;color:#656565;margin:0 3px;position:relative;z-index:1}
+.eb-pagination a:active {outline:none}
+.eb-pagination a:hover {color:#000;background:#e5e5e5}
+.eb-pagination a.active {cursor:default;background:#656565;color:#fff}
+.eb-pagination a.active:hover {color:#fff;background:#656565}
+.eb-pagination a.next,.eb-pagination a.prev {color:#959595}
+.eb-pagination a.next:hover,.eb-pagination a.prev:hover {color:#000}
+</style>
+
+<div class="eb-pagination-wrap">
+	<ul class="eb-pagination">
+		<li><a href="{url}1{add}"><i class="fa fa-step-backward"></i></a></li>
+		<li><a href="{url}{?(cur_page-1)<=0}1{:}{(cur_page-1)}{/}{add}" class="prev"><i class="fa fa-caret-left"></i></a></li>
+		<!--{@ paging}-->
+		<li><a href="{.url}" {?.on}class="active"{/}>{.key_}<span class="sound_only">페이지</span></a></li>
+		<!--{:}-->
+		<li><a href="{url}1{add}" class="active">1<span class="sound_only">페이지</span></a></li>
+		<!--{/}-->
+		<li><a href="{url}{?(cur_page+1) > total_page}{total_page}{:}{(cur_page+1)}{/}{add}" class="next"><i class="fa fa-caret-right"></i></a></li>
+		<li><a href="{url}{total_page}{add}"><i class="fa fa-step-forward"></i></a></li>
+	</ul>
+</div>

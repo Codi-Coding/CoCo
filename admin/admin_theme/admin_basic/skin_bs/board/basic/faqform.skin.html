@@ -1,0 +1,98 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-faqform">
+	<form name="frmfaqform" id="frmfaqform" method="post" action="{_action_url}" onsubmit="return frmfaqform_check(this)" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="fm_id" value="{_fm_id}">
+	<input type="hidden" name="fa_id" value="{_fa_id}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>FAQ {fm.fm_subject} {_html_title}</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="qa-config-form">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> FAQ {fm.fm_subject} 관리</strong></header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="fa_order" class="label">출력순서</label>
+					        <label class="input">
+					            <input type="text" name="fa_order" value="{fa.fa_order}" id="fa_order" maxlength="10">
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 숫자가 작을수록 FAQ 페이지에서 먼저 출력됩니다.</div>
+						</section>
+					</div>
+					<!--{? _w=='u'}-->
+					<div class="col col-6">
+						<section class="label-height">
+							<a href="{C.G5_BBS_URL}/faq.php?fm_id={_fm_id}" class="btn-e btn-e-md btn-e-dark">내용보기</a>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="fa_subject" class="label">질문</label>
+					        <label class="textarea">
+					            {=editor_html("fa_subject", get_text(fa.fa_subject, 0))}
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="fa_content" class="label">답변</label>
+					        <label class="textarea">
+					            {=editor_html("fa_content", get_text(fa.fa_content, 0))}
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" value="확인" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=faqlist&amp;fm_id={_fm_id}" class="btn-e btn-e-lg btn-e-dark">목록</a>
+	</div>
+
+	</form>
+</div>
+
+<script>
+function frmfaqform_check(f) {
+    errmsg = "";
+    errfld = "";
+
+    //check_field(f.fa_subject, "제목을 입력하세요.");
+    //check_field(f.fa_content, "내용을 입력하세요.");
+
+    if (errmsg != "")
+    {
+        alert(errmsg);
+        errfld.focus();
+        return false;
+    }
+
+    <!--{=get_editor_js('fa_subject')}-->
+    <!--{=get_editor_js('fa_content')}-->
+
+    return true;
+}
+
+// document.getElementById('fa_order').focus(); 포커스 해제
+</script>

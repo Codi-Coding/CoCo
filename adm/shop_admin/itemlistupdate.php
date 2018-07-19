@@ -27,16 +27,13 @@ if ($_POST['act_button'] == "선택수정") {
                        it_cust_price  = '{$_POST['it_cust_price'][$k]}',
                        it_price       = '{$_POST['it_price'][$k]}',
                        it_stock_qty   = '{$_POST['it_stock_qty'][$k]}',
+                       it_skin        = '{$_POST['it_skin'][$k]}',
+                       it_mobile_skin = '{$_POST['it_mobile_skin'][$k]}',
                        it_use         = '{$_POST['it_use'][$k]}',
                        it_soldout     = '{$_POST['it_soldout'][$k]}',
                        it_order       = '{$_POST['it_order'][$k]}',
-                       pt_commission  = '{$_POST['pt_commission'][$k]}',
-					   pt_incentive   = '{$_POST['pt_incentive'][$k]}',
-					   pt_it		  = '{$_POST['pt_it'][$k]}',
-					   pt_main		  = '{$_POST['pt_main'][$k]}',
-					   pt_comment_use = '{$_POST['pt_comment_use'][$k]}',
-					   it_update_time = '".G5_TIME_YMDHIS."'
-                 where it_id   = '{$_POST['it_id'][$k]}' "; // APMS - 2014.07.20
+                       it_update_time = '".G5_TIME_YMDHIS."'
+                 where it_id   = '{$_POST['it_id'][$k]}' ";
         sql_query($sql);
     }
 } else if ($_POST['act_button'] == "선택삭제") {
@@ -48,9 +45,6 @@ if ($_POST['act_button'] == "선택수정") {
 
     // _ITEM_DELETE_ 상수를 선언해야 itemdelete.inc.php 가 정상 작동함
     define('_ITEM_DELETE_', true);
-
-	// APMS - 2014.07.20
-	include_once('../apms_admin/apms.config.php');
 
     for ($i=0; $i<count($_POST['chk']); $i++) {
         // 실제 번호를 넘김

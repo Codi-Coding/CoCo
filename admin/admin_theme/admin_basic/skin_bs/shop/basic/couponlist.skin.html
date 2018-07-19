@@ -1,0 +1,165 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-shop-couponlist">
+	<form name="fsearch" id="fsearch" action="./" class="eyoom-form" method="get">
+
+	<div class="headline">
+		<h4><strong>쿠폰관리</strong></h4>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=couponform" class="btn-e btn-e-purple btn-e-xs pull-right margin-top-5"><i class="fa fa-plus"></i> 쿠폰 추가</a>
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="admin-search-box trans-col">
+		<div class="row">
+			<div class="col col-2">
+				<label for="sfl" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-0">
+					<select name="sfl" id="sfl">
+					    <option value="mb_id" {? _GET.sfl == 'mb_id'}selected{/}>회원아이디</option>
+					    <option value="cp_subject" {? _GET.sfl == 'cp_subject'}selected{/}>쿠폰이름</option>
+					    <option value="cp_id" {? _GET.sfl == 'pp_id'}selected{/}>쿠폰코드</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="stx" value="{_stx}" id="stx" required autocomplete="off">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-20"></div>
+
+	<form name="fcouponlist" id="fcouponlist" action="{_action_url}" onsubmit="return fcouponlist_submit(this);" method="post" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="sst" id="sst" value="{_sst}">
+	<input type="hidden" name="sod" id="sod" value="{_sod}">
+	<input type="hidden" name="sfl" id="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" id="stx" value="{_stx}">
+	<input type="hidden" name="page" id="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="margin-bottom-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>전체 {=number_format(_total_count)}개
+			    </span>
+			</div>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="admin-shop-couponlist"></div>
+
+	<!--{? !_wmode}-->
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	</div>
+	<!--{/}-->
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+
+<script>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        체크: "<input type='hidden' name='cp_id[{.index_}]' value='{.cp_id}' id='cp_id_{.index_}'><label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' value='{.index_}' id='chk_{.index_}'><i></i></label>",
+	        관리: "<span class='text-center grid-buttons'><a href='{C.EYOOM_ADMIN_URL}/?dir=shop&pid=couponform&w=u&cp_id={.cp_id}{?_qstr}&{_qstr}{/}'><u>수정</u></a></span>",
+	        쿠폰종류: "{.cp_method}",
+	        쿠폰코드: "{.cp_id}",
+	        쿠폰이름: "{.cp_subject}",
+	        적용대상: "{.cp_target}",
+	        회원아이디: "{.mb_id}",
+	        사용기한: "{=substr(.cp_start, 2, 8)} ~ {=substr(.cp_end, 2, 8)}",
+	        사용회수: "{=number_format(.used_count)}"
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function(){
+    $("#admin-shop-couponlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 70, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "쿠폰종류", type: "text", width: 80 },
+            { name: "쿠폰코드", type: "text", align: "center", width: 120 },
+            { name: "쿠폰이름", type: "text", width: 200 },
+            { name: "적용대상", type: "text", width: 150 },
+            { name: "회원아이디", type: "text", width: 100 },
+            { name: "사용기한", type: "text", align: "center", width: 150 },
+            { name: "사용회수", type: "number", width: 80 }
+        ]
+    });
+
+    var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+</script>
+
+<script>
+function fcouponlist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+</script>

@@ -1,0 +1,46 @@
+<?php if (!defined('_EYOOM_IS_ADMIN_')) exit; ?>
+
+<!--{? !_wmode }-->
+	        </div>
+	        <div class="footer">
+	            <div class="copyright">
+	                Copyright &copy; {config.cf_title}. All Rights Reserved. {_print_version}
+	            </div>
+	            <div class="clearfix"></div>
+	        </div>
+	    </div>
+	</div>
+	<div class="back-to-top">
+        <i class="fa fa-angle-up"></i>
+    </div>
+</div>
+<!--{/}-->
+
+<script>var g5_admin_url = "{C.G5_ADMIN_URL}";</script>
+<script src="{C.G5_ADMIN_URL}/admin.js?ver={C.G5_JS_VER}"></script>
+<script src="../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../plugins/malihu-custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="../plugins/screenfull/screenfull.min.js"></script>
+<script src="../plugins/waves/waves.min.js"></script>
+<script src="../js/app.js"></script>
+<script>
+$(document).ready(function() {
+	App.init();
+});
+</script>
+<!--{? _sub_menu}-->
+<script>
+$(function() {
+	var submenu_id = 'submenu_{_sub_menu}';
+	$("#"+submenu_id).addClass('active');
+});
+</script>
+<!--{/}-->
+<!--[if lt IE 9]>
+	<script src="../plugins/respond.min.js"></script>
+	<script src="../plugins/html5shiv.min.js"></script>
+	<script src="../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->
+
+{# tail_sub}

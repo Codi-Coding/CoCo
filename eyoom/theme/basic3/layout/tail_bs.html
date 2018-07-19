@@ -1,0 +1,144 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<!--{? !_wmode }-->
+				</section>
+				<!--{? side_layout.use == 'yes'}-->
+				<!--{? side_layout.pos == 'right'}-->
+				{# side_bs}
+				<!--{/}-->
+				<!--{/}-->
+				<div class="clearfix"></div>
+			</div><!--{* End row *}-->
+		    <!--{? !defined('_INDEX_')}-->
+		    </div>
+			<!--{/}-->
+	    </div><!--{* End container *}-->
+	    <!--{* End Basic Body *}-->
+
+	    <!--{? footer_top == 'yes'}-->
+	    <!--{* Footer Top *}-->
+	    <div class="footer-top">
+		    <div class="container">
+			    <div class="footer-top-content">
+				    <div class="footer-top-logo">
+			            <a href="{C.G5_URL}">
+							<!--{? logo == 'text'}-->
+							<h2>{config.cf_title}</h2>
+							<!--{: logo == 'image' //로고 이미지 크기는 360x80픽셀 권장}-->
+							<img src="../image/site_logo.png" class="img-responsive">
+							<!--{/}-->
+						</a>
+				    </div>
+				    <div class="footer-top-info">
+						<strong>{config.cf_title}</strong>
+						<span class="info-divider">|</span>
+						<span>대표 : OOO</span>
+						<span class="info-divider">|</span>
+						<span>사업자등록번호 : 000-00-00000</span>
+						<span class="info-divider">|</span>
+						<span>주소 : OOO OOO OOO 000-000<a href="{C.G5_URL}/page/?pid=contactus" class="btn-e btn-e-xs btn-e-dark margin-left-5">상세지도</a></span>
+						<span class="info-divider">|</span>
+						<span>E-mail : <a href="mailto:webmaster@site.name">webmaster@site.name</a></span><br>
+						<span>T. 000-000-0000</span>
+						<span class="info-divider">|</span>
+						<span>F. 000-000-0000</span>
+				    </div>
+			    </div>
+		    </div>
+		</div>
+	    <!--{* End Footer Top *}-->
+	    <!--{/}-->
+
+	    <!--{* Footer *}-->
+	    <footer class="footer footer-dark">
+		    <div class="footer-left">
+			    <ul class="list-unstyled list-inline">
+				    <li>
+				    	<span class="footer-site-name hidden-xs">{config.cf_title}</span>
+						<div class="btn-group dropup visible-xs">
+							<span data-toggle="dropdown" class="footer-info-btn dropdown-toggle">{config.cf_title} 정보<i class="fa fa-caret-up margin-left-5"></i></span>
+							<ul role="menu" class="dropdown-menu">
+								<li><a href="{C.G5_URL}/page/?pid=aboutus">회사소개</a></li>
+								<li class="divider"></li>
+								<li><a href="{C.G5_URL}/page/?pid=provision">이용약관</a></li>
+								<li><a href="{C.G5_URL}/page/?pid=privacy">개인정보처리방침</a></li>
+								<li><a href="{C.G5_URL}/page/?pid=noemail">이메일무단수집거부</a></li>
+							</ul>
+						</div>
+				    </li>
+				    <li class="hidden-xs"><a href="{C.G5_URL}/page/?pid=aboutus">회사소개</a><a href="{C.G5_URL}/page/?pid=provision">이용약관</a><a href="{C.G5_URL}/page/?pid=privacy">개인정보처리방침</a><a href="{C.G5_URL}/page/?pid=noemail">이메일무단수집거부</a></li>
+			    </ul>
+		    </div>
+		    <div class="footer-right">
+			    <p><span class="hidden-xs">Copyright </span>&copy; {config.cf_title}. All Rights Reserved.</p>
+		    </div>
+	    </footer>
+	    <!--{* End Footer *}-->
+    </div><!--{* End Header Fixed *}-->
+
+	<div class="back-to-top">
+        <i class="fa fa-angle-up"></i>
+    </div>
+</div><!--{* End wrapper *}-->
+<!--{/}-->
+
+<div class="sidebar-left-mask sidebar-left-trigger" data-action="toggle" data-side="left"></div>
+<div class="sidebar-right-mask sidebar-right-trigger" data-action="toggle" data-side="right"></div>
+
+{# misc_bs}
+
+<!--{? _is_member && eyoomer.onoff_push == 'on' && eyoom.is_community_theme == 'y'}-->
+{# push_bs}
+<!--{/}-->
+
+<script src="../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../plugins/jquery.bootstrap-hover-dropdown.min.js"></script>
+<script src="../plugins/sidebar/jquery.sidebar.min.js"></script>
+<!--{? eyoom.use_shop_itemtype == 'y'}-->
+<script src="../plugins/sticky-kit/sticky-kit.min.js"></script>
+<!--{/}-->
+<script src="../js/app.js"></script>
+<script>
+$(document).ready(function() {
+    App.init();
+});
+
+<!--{? eyoom.use_shop_itemtype == 'y'}-->
+function item_wish_for_list(it_id) {
+	var f = document.fitem_for_list;
+	f.url.value = "{C.G5_SHOP_URL}/wishupdate.php?it_id="+it_id;
+	f.it_id.value = it_id;
+	f.action = "{C.G5_SHOP_URL}/wishupdate.php";
+	f.submit();
+}
+
+// 쇼핑몰 퀵메뉴
+$(document).ready(function() {
+	$(".quick-menu-wrap").stick_in_parent({
+		<!--{? sticky == 'yes'}--> // 메뉴바 sticky 적용
+
+			<!--{? defined('_INDEX_')}--> // 메뉴바 sticky 적용 메인일때
+				offset_top:93
+			<!--{:}--> // 메뉴바 sticky 적용 메인이 아닐때
+				offset_top:118
+			<!--{/}-->
+
+		<!--{:}--> // 메뉴바 sticky 미적용
+			<!--{? defined('_INDEX_')}--> // 메뉴바 sticky 미적용 메인일때
+				offset_top:32
+			<!--{:}--> // 메뉴바 sticky 미적용 메인이 아닐때
+				offset_top:58
+			<!--{/}-->
+		<!--{/}-->
+	});
+});
+<!--{/}-->
+</script>
+<!--[if lt IE 9]>
+	<script src="../plugins/respond.min.js"></script>
+	<script src="../plugins/html5shiv.min.js"></script>
+	<script src="../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->
+
+{# tail_sub}

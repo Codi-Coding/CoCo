@@ -1,0 +1,77 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/slick/slick.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-mainbanner-10 {position:relative;margin-bottom:30px}
+.shop-mainbanner-10 img {display:block;width:100% \9;max-width:100%;height:auto}
+.shop-mainbanner-10 .shop-mainbanner-nav {position:absolute;bottom:20px;left:50%;width:200px;margin-left:-100px}
+.shop-mainbanner-10 .shop-mainbanner-nav .nav-box {background:RGBA(214, 214, 214, 0.5);padding:2px;margin:0 4px;outline:none}
+.shop-mainbanner-10 .shop-mainbanner-nav .nav-box img {opacity:1}
+.shop-mainbanner-10 .shop-mainbanner-nav .slick-center img {opacity:0.7}
+.shop-mainbanner-10 .slick-next, .shop-mainbanner-10 .slick-prev {width:30px;height:100%;background:RGBA(214, 214, 214, 0.5)}
+.shop-mainbanner-10 .slick-next {right:-30px}
+.shop-mainbanner-10 .slick-prev {left:-30px}
+.shop-mainbanner-10 .slick-next:hover, .shop-mainbanner-10 .slick-prev:hover {background:RGBA(255, 255, 255, 0.5)}
+.shop-mainbanner-10 .slick-next:before, .shop-mainbanner-10 .slick-prev:before {font-family:FontAwesome;color:#000;font-size:12px}
+.shop-mainbanner-10 .slick-next:before {content:"\f054"}
+.shop-mainbanner-10 .slick-prev:before {content:"\f053"}
+@media (max-width:767px) {
+	.shop-mainbanner-10 .shop-mainbanner-nav {position:relative;bottom:inherit;left:inherit;margin-left:inherit;margin:10px auto}
+	.shop-mainbanner-10 .shop-mainbanner-nav .nav-box {background:#fff}
+	.shop-mainbanner-10 .slick-next, .shop-mainbanner-10 .slick-prev {background:#fff}
+	.shop-mainbanner-10 .slick-next:hover, .shop-mainbanner-10 .slick-prev:hover {background:#fff}
+}
+</style>
+
+<div class="shop-mainbanner-10">
+    <div class="shop-mainbanner-content">
+	<!--{@ list}-->
+        <!--{? (.bn_url_0 == '#') || (.bn_url && .bn_url != 'http://')}-->
+        <a href="{.bn_href}" {.bn_new_win}>
+        <!--{/}-->
+			<img src="{C.G5_DATA_URL}/banner/{.bn_id}" alt="{.bn_alt}" {.bn_border}>
+        <!--{? .bn_href}-->
+        </a>
+        <!--{/}-->
+	<!--{/}-->
+    </div>
+    <!--{? count > 1}-->
+    <div class="shop-mainbanner-nav">
+		<!--{@ list}-->
+		<div class="nav-box">
+			<img src="{C.G5_DATA_URL}/banner/{.bn_id}">
+		</div>
+		<!--{/}-->
+    </div>
+    <!--{/}-->
+</div>
+
+<script src="../../../plugins/slick/slick.min.js"></script>
+<script>
+$(function() {
+	$('.shop-mainbanner-nav').on('click', '.slick-slide', function(e){
+		e.stopPropagation();
+		var index = $(this).data('slick-index');
+		if ($('.shop-mainbanner-nav').slick('slickCurrentSlide') !== index){
+			$('.shop-mainbanner-nav').slick('slickGoTo', index);
+		}
+	});
+	$('.shop-mainbanner-content').slick({
+		slidesToShow: 1,
+		infinite: true,
+		arrows: false,
+		asNavFor: '.shop-mainbanner-nav'
+	});
+	$('.shop-mainbanner-nav').slick({
+		centerMode: true,
+		centerPadding: '46px',
+		slidesToShow: 1,
+		asNavFor: '.shop-mainbanner-content',
+		infinite: true,
+		autoplay: true,
+		autoplaySpeed: 5000,
+		arrows: true,
+	});
+});
+</script>

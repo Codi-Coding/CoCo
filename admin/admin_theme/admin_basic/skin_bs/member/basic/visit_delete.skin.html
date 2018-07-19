@@ -1,0 +1,108 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-visit-delete">
+	<form name="fvisitdelete" method="post" action="{_action_url}" onsubmit="return form_submit(this);" class="eyoom-form">
+
+	<div class="headline">
+		<h4><strong>접속자 로그삭제</strong></h4>
+	</div>
+	<div class="cont-text-bg">
+		<p class="bg-info font-size-12"><i class="fa fa-info-circle"></i> 접속자 로그를 삭제할 년도와 방법을 선택해주십시오.</p>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="adm-form-wrap margin-bottom-30">
+		<header><strong><i class="fa fa-caret-right"></i> 삭제 구간 설정</strong></header>
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<section>
+						<label for="year" class="label">년도선택</label>
+						<label class="select">
+							<select name="year" id="year">
+								<!--{@ yearinfo}-->
+								<option value="{.year}">{.year}</option>
+								<!--{/}-->
+							</select><i></i>
+						</label>
+					</section>
+				</div>
+				<div class="col col-3">
+					<section>
+						<label for="month" class="label">월선택</label>
+						<label class="select">
+							<select name="month" id="month">
+								<!--{@ monthinfo}-->
+								<option value="{.month}">{.month}</option>
+								<!--{/}-->
+							</select><i></i>
+						</label>
+					</section>
+				</div>
+				<div class="col col-3">
+					<section>
+						<label for="method" class="label">삭제방법선택</label>
+						<label class="select">
+							<select name="method" id="method">
+								<option value="before">선택년월 이전 자료삭제</option>
+								<option value="specific">선택년월의 자료삭제</option>
+							</select><i></i>
+						</label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<section>
+						<label for="pass" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 관리자 비밀번호</label>
+						<label class="input">
+							<input type="password" name="pass" id="pass" required>
+						</label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" value="로그삭제" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+	</div>
+	</form>
+</div>
+
+<script>
+function form_submit(f) {
+    var year = $("#year").val();
+    var month = $("#month").val();
+    var method = $("#method").val();
+    var pass = $("#pass").val();
+
+    if(!year) {
+        alert("년도를 선택해 주십시오.");
+        return false;
+    }
+
+    if(!month) {
+        alert("월을 선택해 주십시오.");
+        return false;
+    }
+
+    if(!pass) {
+        alert("관리자 비밀번호를 입력해 주십시오.");
+        return false;
+    }
+
+    var msg = year+"년 "+month+"월";
+    if(method == "before")
+        msg += " 이전";
+    else
+        msg += "의";
+    msg += " 자료를 삭제하시겠습니까?";
+
+    return confirm(msg);
+}
+</script>

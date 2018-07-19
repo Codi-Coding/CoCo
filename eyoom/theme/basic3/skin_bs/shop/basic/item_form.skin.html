@@ -1,0 +1,640 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/slick/slick.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="./plugins/fotorama/fotorama.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+/*----- Shop Detail Product -----*/
+.shop-product {padding:10px 0}
+.shop-product .color-red {color:#DE2600}
+.shop-product h2 {float:left;color:#687074;font-size:26px;text-transform:uppercase}
+.shop-product .list-inline {margin:0}
+.shop-different-product {padding:10px 0}
+.shop-different-product .btn-default {padding:5px 14px}
+.shop-product .sct_here {color:crimson}
+.shop-product .sct_here:before {content:"\f105";font-family:FontAwesome;padding-right:5px;color:#888}
+.shop-product .sct_bg {padding-right:5px;color:#888;background:none}
+.shop-product-img {position:relative;overflow:hidden}
+/*Shop Product Img*/
+.zoomLens {cursor:pointer !important}
+.product-img-big {position:relative;padding:2px;margin:0 0 1px}
+.product-img-big a {display:none}
+.product-img-big a.visible {display:block}
+.product-img-big img {display:block;width:100% \9;max-width:100%;height:auto}
+.product-img-big i {width:100%;background:#e5e5e5;text-align:center;color:#757575;height:408px;line-height:408px;font-size:70px}
+.product-img-big .fotorama__thumb-border {border-color:#474A5E}
+@media (max-width: 500px) {
+	.product-img-big i {height:300px;line-height:300px}
+}
+.product-thumb {position:relative;overflow:hidden;margin-top:3px;display:none}
+.product-thumb .thumb-img {position:relative;outline:none;cursor:pointer;margin:2px;border:1px solid #d5d5d5;padding:2px}
+.product-thumb .thumb-img img {display:block;width:100% \9;max-width:100%;height:auto}
+.product-thumb .slick-prev, .product-thumb .slick-next {z-index:1;width:16px;height:100%;background:rgba(71, 74, 94, 0.7)}
+.product-thumb .slick-next.slick-disabled, .product-thumb .slick-prev.slick-disabled {background:transparent}
+.product-thumb .slick-next.slick-disabled:before, .product-thumb .slick-prev.slick-disabled:before {opacity:0}
+.product-thumb .slick-prev {left:0}
+.product-thumb .slick-next {right:0}
+.product-thumb .slick-prev:before {font-family:FontAwesome;content:"\f0d9";font-size:16px}
+.product-thumb .slick-next:before {font-family:FontAwesome;content:"\f0da";font-size:16px}
+/*Shop Product Img Modal*/
+.shop-img-modal .fotorama__thumb-border {border-color:#FF2900}
+@media (min-width: 992px) {
+	.shop-img-modal .modal-dialog {width:820px}
+}
+/*Shp Product Title*/
+.shop-product .shop-product-heading {overflow:hidden;margin-bottom:0}
+.shop-product .shop-product-heading h3 {color:#000;font-size:20px}
+/*Product Ratings*/
+.shop-product .product-ratings {margin-bottom:10px}
+.shop-product .product-ratings > li {padding-left:0;padding-right:0;margin-right:-2px}
+.shop-product .product-ratings > li i {color:#b5b5b5;font-size:12px}
+.shop-product .product-ratings > li .rating-selected {color:#FF2900}
+.shop-product .product-ratings > li.ratings-average {margin-left:10px;color:#757575;font-size:12px}
+/*Shp Product Social*/
+.shop-product .shop-product-social {text-align:right}
+.shop-product .shop-product-social li {display:inline-block;margin-right:10px}
+.shop-product .shop-product-social li i {color:#aaa;font-size:16px;display:inline-block}
+.shop-product .shop-product-social li i:hover {color:#FF2900;text-decoration:none}
+/*Shop Product Prices*/
+.shop-product .shop-product-prices li {font-size:18px}
+.shop-product .shop-product-prices .prices {color:#E52700;font-weight:bold;padding-left:0}
+.shop-product .line-through {color:#959595;text-decoration:line-through}
+.shop-product #sit_tot_price {font-weight:bold;font-size:18px;color:#000}
+/*Badge*/
+.shop-product .time-day-left {top:-6px;color:#fff;font-size:12px;padding:3px 8px;margin-left:40px;position:relative}
+/*Shop Product Description*/
+.shop-product .shop-intro-box {position:relative;font-size:12px;color:#000;border-top:1px solid #e5e5e5;padding-top:10px}
+.shop-product .shop-description-box {position:relative;padding:10px 0;background:none;border-width:1px 0 0;border-style:solid;border-color:#e5e5e5;margin:0}
+.shop-product .shop-product-description {color:#000;font-size:12px;border-bottom:1px dotted #e5e5e5;padding-bottom:6px;margin-bottom:6px;clear:both}
+.shop-product .shop-product-description:last-child {border-bottom:0;padding-bottom:0;margin-bottom:0}
+.shop-product .sit_ov_tbl label {font-size:12px;color:#000}
+.shop-product .shop-soldout {position:relative;font-size:12px;color:#DE2600;border-top:1px solid #e5e5e5;padding-top:10px;padding-bottom:10px}
+/*Shop Product Select Opition*/
+.shop-product .sit_ov_tbl tr {line-height:36px}
+.shop-product .select {position:absolute;right:0;margin-top:-15px}
+.shop-product .select select {min-width:200px}
+/*Product Quantity*/
+.shop-product .shop-product-quantity {position:relative;border-top:1px solid #e5e5e5;padding-top:10px}
+.shop-product .product-quantity {float:left;border:1px solid #c5c5c5;border-left:0 none}
+.shop-product #sit_opt_added .quantity-button {float:none;color:#f2f2f2;width:46px;height:32px;padding:5px;border:none;outline:none;cursor:pointer;font-size:12px;background:#f2f2f2;text-align:center;font-weight:normal;white-space:nowrap;display:inline-block;background-image:none;position:relative;vertical-align:top;border-left:1px solid #c5c5c5}
+.shop-product .quantity-field {width:46px;height:32px;outline:none;margin:0 0 0 -3px;font-size:12px;text-align:center;border-width:0 0 0 1px;border-color:#c5c5c5;border-style:solid;background:#fff;font-weight:bold}
+.shop-product .quantity-button i  {position:absolute;top:10px;left:18px;color:#656565}
+.shop-product .frm_input {height:26px;line-height:26px;border:1px solid #90929c;padding:0 10px;margin-left:2px}
+.shop-product button.btn_frmline {height:26px;line-height:26px;font-size:12px;padding:0 15px;background:#90929c}
+.shop-product button.btn_frmline:hover {background:#FF2900}
+.shop-product #sit_opt_added li {padding:10px 0}
+.shop-product #sit_opt_added li div {margin:0}
+.shop-product #sit_opt_added button {margin-left:2px;height:26px;width:auto;color:#fff;background:#999;border:0 none;font-size:12px}
+.shop-product #sit_opt_added button.quantity-button {margin-left:0}
+/*product select*/
+.shop-product #sit_opt_added {border-width:1px 0 0;border-style:solid;border-color:#e5e5e5;font-size:12px;background:none}
+.shop-product #sit_opt_added li {border-top:1px dotted #e5e5e5;border-bottom:0 none}
+.shop-product #sit_opt_added li:first-child {border:0 none}
+.shop-product #sit_opt_added .sit_opt_list span, .shop-product #sit_opt_added .sit_spl_list span {color:#007AFF}
+#sit_opt_added .sit_opt_prc {display:inline;float:none;margin-left:5px}
+/*product btn*/
+.shop-product .shop-product-button {position:relative;border-top:1px solid #e5e5e5;padding:10px 0 0}
+.shop-product .shop-product-button .btn-purchase {height:42px;line-height: 2px;vertical-align:middle;font-weight:bold;background:#FF4948;border:1px solid #ed1717;color:#fff;width:34%;float:left;margin-right:1%}
+.shop-product .shop-product-button .btn-purchase:hover {background:#ed1717;border:1px solid #ed1717}
+.shop-product .shop-product-button .btn-cart {height:42px;line-height:42px;vertical-align:middle;font-weight:bold;background:#2E3340;border:1px solid #242630;color:#fff;width:34%;float:left;margin-right:1%}
+.shop-product .shop-product-button .btn-cart:hover {background:#242630;border:1px solid #1C1C26}
+.shop-product .shop-product-button a {display:inline-block;padding:0;text-align:center;vertical-align:middle;text-decoration:none;line-height:42px;height:42px;border:1px solid #a5a5a5;color:#474A5E;font-size:1.2em;font-weight:bold;background:#e5e5e5}
+.shop-product .shop-product-button a.btn-wish {float:left;width:14.5%}
+.shop-product .shop-product-button a.btn-recommend {float:left;width:14.5%;margin-left:1%}
+.shop-product .shop-product-button a:hover {background:#d5d5d5;border-color:#959595}
+</style>
+
+<!--{? C.G5_IS_MOBILE}-->
+<style>
+/* 영카트 모바일 기본 CSS 수정 */
+.shop-product #sit_tot_price {text-align:left;margin:0}
+.shop-product #sit_tot_price span {position:relative;margin-right:10px;top:0;left:0}
+.shop-product .sit_ov_tbl tbody th {height:35px}
+.shop-product .it_option, .shop-product .it_supply {width:inherit;padding-right:10px;min-width:80px}
+a.btn-item {height:32px}
+#sit_opt_added .sit_opt_list span, #sit_opt_added .sit_spl_list span {line-height:24px;color:#007AFF;font-weight:bold}
+#sit_opt_added li {margin:0}
+#sit_opt_added li .product-quantity {height:32px;margin:0;text-align:left;position:relative;overflow:hidden;width:140px !important;float:left}
+#sit_opt_added li .quantity-field {margin:0 -3px 0 -2px}
+.shop-product #sit_opt_added li div {display:block;width:100%;float:none}
+.shop-product #sit_opt_added li div .frm_input {height:26px;line-height:26px;border:1px solid #90929c;padding:0 10px !important;margin-right:10px;position:relative}
+.shop-product #sit_opt_added li div .frm_input, .shop-product #sit_opt_added li div .sit_qty_plus, .shop-product #sit_opt_added li div .sit_qty_minus, .shop-product #sit_opt_added li div .sit_opt_del {position:relative;top:inherit;left:inherit;right:inherit;text-indent:0;background:none}
+.shop-product #sit_opt_added li div .sit_qty_plus, .shop-product #sit_opt_added li div .sit_qty_minus, .shop-product #sit_opt_added li div .sit_opt_del {height:26px;width:auto;background:#90929c;padding:0 15px}
+</style>
+<!--{/}-->
+
+<form name="fitem" method="post" action="{_action_url}" onsubmit="return fitem_submit(this);">
+<input type="hidden" name="it_id[]" value="{_it_id}">
+<input type="hidden" name="sw_direct">
+<input type="hidden" name="url">
+
+<div class="shop-product">
+    <div class="row">
+        <div class="col-sm-6 md-margin-bottom-20">
+			<!--{* 상품이미지 미리보기 시작 *}-->
+		    <!--{? item_view == 'zoom' //상품이미지 미리보기 종류 - 줌}-->
+		    <div class="shop-product-img">
+		        <div class="product-img-big">
+					<!--{@ _thumb_big}-->
+					<a {? !C.G5_IS_MOBILE}class="elevaterzoom_item" data-toggle="modal" data-target=".shop-img-modal"{/}>{.img}</a>
+					<!--{:}-->
+					<i class="fa fa-picture-o"></i>
+					<!--{/}-->
+		        </div>
+		        <!--{? _total_img_count > 1}-->
+				<div class="product-thumb">
+					<!--{@ _thumb_info}-->
+					<div class="thumb-img">
+						{.img}<span class="sound_only"> {.cnt}번째 이미지 새창</span>
+					</div>
+					<!--{/}-->
+				</div>
+				<!--{/}-->
+			</div>
+		    <!--{: item_view == 'slider' //상품이미지 미리보기 종류 - 슬라이더}-->
+		    <div class="shop-product-img">
+		        <div class="product-img-big fotorama" data-nav="thumbs" data-max-width="100%" data-loop="true" data-allowfullscreen="true">
+					<!--{@ _thumb_big}-->
+					{.img}
+					<!--{:}-->
+					<i class="fa fa-picture-o"></i>
+					<!--{/}-->
+		        </div>
+		    </div>
+		    <!--{/}-->
+		    <!--{* 상품이미지 미리보기 끝 *}-->
+        </div>
+
+		<!--{* 상품 요약정보 및 구매 시작 *}-->
+        <div class="col-sm-6">
+            <div class="shop-product-heading">
+                <h3><strong>{=stripslashes(it.it_name)}</strong></h3>
+                <ul class="list-inline product-ratings">
+					<li><i class="rating{? _star_score > 0}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+					<li><i class="rating{? _star_score > 1}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+					<li><i class="rating{? _star_score > 2}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+					<li><i class="rating{? _star_score > 3}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+					<li><i class="rating{? _star_score > 4}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+	                <li class="ratings-average">평점 별 {_star_score}개</li>
+	            </ul>
+	            <div class="shop-description-box1">
+		            <!--{? !it.it_use // 판매가능이 아닐 경우}-->
+		            <ul class="list-inline shop-product-prices pull-left">
+		                <li class="color-red"><strong>판매중지</strong></li>
+		            </ul>
+		            <!--{: it.it_tel_inq // 전화문의일 경우}-->
+		            <ul class="list-inline shop-product-prices pull-left">
+		                <li class="color-red"><strong>전화문의</strong></li>
+		            </ul>
+					<!--{: // 전화문의가 아닐 경우}-->
+		            <ul class="list-inline shop-product-prices pull-left">
+		                <li class="prices"><span>{=display_price(_sell_price)}</span><input type="hidden" id="it_price" value="{_sell_price}"></li>
+		                <!--{? it.it_cust_price}-->
+		                <li class="line-through"><span class="font-size-14">{=display_price(it.it_cust_price)}</span></li>
+		                <!--{/ // 시중가격 끝}-->
+		            </ul>
+		            <!--{/}-->
+		            <ul class="social-icons pull-right">
+		                <li><a href="https://www.facebook.com/sharer/sharer.php?u={_sns_url}&amp;p={_sns_title}" target="_blank" data-original-title="Facebook" class="social_facebook"></a></li>
+		                <li><a href="https://twitter.com/share?url={_sns_url}&amp;text={_sns_title}" target="_blank" data-original-title="Twitter" class="social_twitter"></a></li>
+		                <li><a href="https://plus.google.com/share?url={_sns_url}" target="_blank" data-original-title="Google Plus" class="social_google"></a></li>
+		            </ul>
+				</div>
+				<div class="clearfix"></div>
+				<!--{? it.it_basic}-->
+				<div class="shop-intro-box">
+					<p>{it.it_basic}</p>
+            	</div>
+            	<!--{/}-->
+            	<!--{? it.it_buy_min_qty || it.it_buy_max_qty}-->
+            	<div class="shop-intro-box">
+	            	<p class="font-size-11 color-grey">
+						<!--{? it.it_buy_min_qty}-->
+						<span>최소 구매수량은 <strong class="color-red">{=number_format(it.it_buy_min_qty)}개</strong> </span>
+						<!--{/}-->
+						<!--{? it.it_buy_max_qty}-->
+						<span>최대 구매수량은 <strong class="color-red">{=number_format(it.it_buy_max_qty)}개</strong></span>
+						<!--{/}-->
+						입니다.
+					</p>
+				</div>
+				<!--{/}-->
+            </div>
+
+            <div class="shop-description-box">
+				<!--{? it.it_maker}-->
+	            <div class="shop-product-description">- 제조사<strong class="pull-right">{it.it_maker}</strong></div>
+	            <!--{/}-->
+	            <!--{? it.it_origin}-->
+	            <div class="shop-product-description ellipsis">- 원산지<strong class="pull-right">{it.it_origin}</strong></div>
+	            <!--{/}-->
+	            <!--{? it.it_brand}-->
+	            <div class="shop-product-description">- 브랜드<strong class="pull-right">{it.it_brand}</strong></div>
+	            <!--{/}-->
+	            <!--{? it.it_model}-->
+	            <div class="shop-product-description">- 모델<strong class="pull-right">{it.it_model}</strong></div>
+	            <!--{/}-->
+	            <!--{? 0 //재고 표시하는 경우 주석 해제 : 0을 1로수정}-->
+	            <div class="shop-product-description">- 재고수량<strong class="pull-right">{=number_format(get_it_stock_qty(_it_id))} 개</strong></div>
+	            <!--{/}-->
+	            <!--{? config.cf_use_point // 포인트 사용한다면}-->
+	            <div class="shop-product-description">- 포인트<strong class="pull-right">{_point_calc}</strong></div>
+				<!--{/}-->
+				<div class="shop-product-description">- {_ct_send_cost_label}<strong class="pull-right">{_sc_method}</strong></div>
+            </div>
+			<!--{? _option_item}-->
+	        <!--{* 선택옵션 시작 *}-->
+	        <div class="shop-description-box">
+	            <p class="color-blue font-size-12"><strong>선택옵션</strong></p>
+	            <table class="sit_ov_tbl eyoom-form">
+		            <tbody>
+						{_option_item}
+		            </tbody>
+	            </table>
+	        </div>
+	        <!--{* 선택옵션 끝 *}-->
+	        <!--{/}-->
+
+			<!--{? _supply_item}-->
+	        <!--{* 추가옵션 시작 *}-->
+	        <div class="shop-description-box">
+	            <p class="color-red font-size-12"><strong>추가옵션</strong></p>
+	            <table class="sit_ov_tbl eyoom-form">
+		            <tbody>
+		            	{_supply_item}
+		            </tbody>
+	            </table>
+	        </div>
+	        <!--{* 추가옵션 끝 *}-->
+	        <!--{/}-->
+
+			<!--{* 선택 옵션이 없을 때 출력 되는 부분 *}-->
+			<!--{? _is_orderable}-->
+            <div id="sit_sel_option">
+	            <!--{? !_option_item}-->
+	            <!--{* <div class="shop-product-quantity"> *}-->
+		            <ul id="sit_opt_added" class="list-unstyled">
+			            <li class="sit_opt_list">
+		                    <input type="hidden" name="io_type[{_it_id}][]" value="0">
+		                    <input type="hidden" name="io_id[{_it_id}][]" value="">
+		                    <input type="hidden" name="io_value[{_it_id}][]" value="{it.it_name}">
+		                    <input type="hidden" class="io_price" value="0">
+		                    <input type="hidden" class="io_stock" value="{it.it_stock_qty}">
+		                    <div class="clearfix"></div>
+			                <div class="product-quantity">
+			                    <button type="button" class="quantity-button">감소<i class="fa fa-minus"></i></button>
+		                        <label for="ct_qty_{_i}" class="sound_only">수량</label>
+		                        <input type="text" name="ct_qty[{_it_id}][]" value="{it.it_buy_min_qty_sel}" id="ct_qty_{_i}" class="quantity-field" size="5">
+		                        <button type="button" class="quantity-button">증가<i class="fa fa-plus"></i></button>
+			                </div>
+			                <div class="clearfix"></div>
+			            </li>
+		            </ul>
+	            <!--{* </div> *}-->
+
+	            <script>
+	            $(function() {
+	                price_calculate();
+	            });
+	            </script>
+	            <!--{/}-->
+            </div>
+            <!--{/}-->
+            <!--{* 선택 옵션이 없을 때 출력 되는 부분 끝 *}-->
+			<!--{? _is_soldout}-->
+	        <div class="shop-soldout"><i class="fa fa-exclamation-circle"></i> 상품의 재고가 부족하여 구매할 수 없습니다.</div>
+	        <!--{/}-->
+
+	        <div class="clearfix"></div>
+
+			<!--{* 구매버튼 출력 되는 부분 *}-->
+	        <div class="shop-product-button margin-bottom-10">
+				<!--{? _is_orderable}-->
+	            <input type="submit" onclick="document.pressed=this.value;" value="바로구매" class="btn-purchase">
+	            <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn-cart">
+	            <a href="javascript:item_wish(document.fitem, '{it.it_id}');" class="btn-wish tooltips" data-placement="top" data-toggle="tooltip" data-original-title="위시리스트"><i class="fa fa-heart"></i></a>
+		        <a href="javascript:popup_item_recommend('{it.it_id}');" class="btn-recommend tooltips" data-placement="top" data-toggle="tooltip" data-original-title="추천"><i class="fa fa-envelope"></i></a>
+		        <!--{? _naverpay_button_js}-->
+	            <div class="itemform-naverpay">{_naverpay_request_js}{_naverpay_button_js}</div>
+	            <!--{/}-->
+		        <div class="clearfix"></div>
+	            <!--{/}-->
+	        </div>
+            <!--{* 구매버튼 출력 되는 끝 *}-->
+
+	        <div class="margin-hr-10"></div>
+
+	        <div class="margin-bottom-10">
+		        <div id="sit_tot_price" class="pull-left"></div>
+		        <div class="pull-right">
+					<!--{? !_is_orderable && it.it_soldout && it.it_stock_sms}-->
+		            <a href="javascript:popup_stocksms('<!--{it.it_id}-->');" class="btn-e btn-e-dark rounded">재입고 알림 신청</a>
+		            <!--{/}-->
+		        </div>
+		        <div class="clearfix"></div>
+	        </div>
+
+			<!--{* 다른 상품 보기 시작 *}-->
+			<div class="shop-different-product">
+				<!--{? _prev_href || _next_href}-->
+				<a href="{_prev_href}" class="btn btn-default pull-left"><i class="fa fa-arrow-left"> 이전상품</i><span class="sound_only">{_prev_title}</span></a>
+				<a href="{_next_href}" class="btn btn-default pull-right">다음상품 <i class="fa fa-arrow-right"></i><span class="sound_only">{_next_title}</span></a>
+				<!--{:}-->
+				<span class="sound_only">이 분류에 등록된 다른 상품이 없습니다.</span>
+				<!--{/}-->
+				<div class="clearfix"></div>
+			</div>
+			<!--{* 다른 상품 보기 끝 *}-->
+        </div>
+        <!--{* 상품 요약정보 및 구매 끝 *}-->
+    </div>
+</div>
+</form>
+
+<!--{* 상품이미지 크게 보기 시작 *}-->
+<div class="modal fade shop-img-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>{=stripslashes(it.it_name)}</strong></h4>
+            </div>
+            <div class="modal-body">
+		        <div class="fotorama" data-nav="thumbs" data-max-width="100%" data-loop="true">
+					<!--{@ bigimg}-->
+					<img src="{.imageurl}" class="full-width img-responsive" alt="{.it_name}" id="largeimage_{.key_}">
+					<!--{/}-->
+		        </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 상품이미지 크게 보기 끝 *}-->
+
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../../plugins/slick/slick.min.js"></script>
+<script src="plugins/fotorama/fotorama.js"></script>
+<!--{? item_view == 'zoom' //상품이미지 미리보기 종류 - 줌}-->
+<!--{? !C.G5_IS_MOBILE //PC버전의 경우에만 줌적용}-->
+<script src="plugins/jquery-elevateZoom/jquery.elevateZoom.min.js"></script>
+<!--{/}-->
+<script>
+jQuery(document).ready(function(){
+	<!--{? !C.G5_IS_MOBILE}-->//PC버전의 경우에만 줌적용
+	$('.elevaterzoom_item img').elevateZoom({
+		zoomWindowWidth: 377,
+		zoomWindowHeight: 377,
+		borderSize: 0,
+		borderColour: "#000"
+	});
+	<!--{/}-->
+	$(function(){
+	    // 상품이미지 첫번째 링크
+	    $(".product-img-big a:first").addClass("visible");
+		// 상품이미지 미리보기 (썸네일에 마우스 오버시)
+	    $(".product-thumb .thumb-img").bind("mouseover focus", function(){
+	        var idx = $(".product-thumb .thumb-img").index($(this));
+	        $(".product-img-big a.visible").removeClass("visible");
+	        $(".product-img-big a:eq("+idx+")").addClass("visible");
+	    });
+	});
+});
+</script>
+<!--{/}-->
+
+<script>
+// 상품보관
+function item_wish(f, it_id) {
+    f.url.value = "{C.G5_SHOP_URL}/wishupdate.php?it_id="+it_id;
+    f.action = "{C.G5_SHOP_URL}/wishupdate.php";
+    f.submit();
+}
+// 추천메일
+function popup_item_recommend(it_id) {
+    if (!g5_is_member) {
+	    swal({
+	        html: true,
+	        title: "알림",
+	        text: "<div class='alert alert-warning font-size-12'>회원만 추천하실 수 있습니다.</div><strong>로그인 하시겠습니까?</strong>",
+	        type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#FF9500",
+	        confirmButtonText: "로그인 하기",
+	        cancelButtonText: "취소",
+	        closeOnConfirm: true,
+	        closeOnCancel: true
+	    },
+	    function(){
+			document.location.href = "{C.G5_BBS_URL}/login.php?url={_encoded_url}";
+	    });
+    } else {
+        url = "./itemrecommend.php?it_id=" + it_id;
+        opt = "scrollbars=yes,width=616,height=420,top=10,left=10";
+        popup_window(url, "itemrecommend", opt);
+    }
+}
+
+// 재입고SMS 알림
+function popup_stocksms(it_id) {
+    url = "{C.G5_SHOP_URL}/itemstocksms.php?it_id=" + it_id;
+    opt = "scrollbars=yes,width=616,height=420,top=10,left=10";
+    popup_window(url, "itemstocksms", opt);
+}
+</script>
+
+<script>
+// 셀렉트 이윰폼 적용
+$(document).ready(function() {
+	$(".shop-description-box .it_option, .shop-description-box .it_supply").wrap('<label class="select" />');
+	$(".shop-description-box .it_option, .shop-description-box .it_supply").after('<i></i>');
+});
+
+$(window).load(function(){
+	$('.product-thumb').fadeIn(300);
+});
+
+$(function(){
+	$('.product-thumb').slick({
+		arrows: true,
+		infinite: false,
+		slidesToShow: 5,
+		slidesToScroll: 5,
+		autoplay: false
+	});
+});
+
+function fsubmit_check(f)
+{
+    // 판매가격이 0 보다 작다면
+    if (document.getElementById("it_price").value < 0) {
+        alert("전화로 문의해 주시면 감사하겠습니다.");
+        return false;
+    }
+
+    if($(".sit_opt_list").size() < 1) {
+        alert("상품의 선택옵션을 선택해 주십시오.");
+        return false;
+    }
+
+    var val, io_type, result = true;
+    var sum_qty = 0;
+    var min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);
+    var max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
+    var $el_type = $("input[name^=io_type]");
+
+    $("input[name^=ct_qty]").each(function(index) {
+        val = $(this).val();
+
+        if(val.length < 1) {
+            alert("수량을 입력해 주십시오.");
+            result = false;
+            return false;
+        }
+
+        if(val.replace(/[0-9]/g, "").length > 0) {
+            alert("수량은 숫자로 입력해 주십시오.");
+            result = false;
+            return false;
+        }
+
+        if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
+            alert("수량은 1이상 입력해 주십시오.");
+            result = false;
+            return false;
+        }
+
+        io_type = $el_type.eq(index).val();
+        if(io_type == "0")
+            sum_qty += parseInt(val);
+    });
+
+    if(!result) {
+        return false;
+    }
+
+    if(min_qty > 0 && sum_qty < min_qty) {
+        alert("선택옵션 개수 총합 "+number_format(String(min_qty))+"개 이상 주문해 주십시오.");
+        return false;
+    }
+
+    if(max_qty > 0 && sum_qty > max_qty) {
+        alert("선택옵션 개수 총합 "+number_format(String(max_qty))+"개 이하로 주문해 주십시오.");
+        return false;
+    }
+
+    return true;
+}
+
+// 바로구매, 장바구니 폼 전송
+function fitem_submit(f) {
+    f.action = "{_action_url}";
+    f.target = "";
+
+    if (document.pressed == "장바구니") {
+        f.sw_direct.value = 0;
+    } else { // 바로구매
+        f.sw_direct.value = 1;
+    }
+
+    // 판매가격이 0 보다 작다면
+    if (document.getElementById("it_price").value < 0) {
+        swal({
+            title: "알림!",
+            text: "전화로 문의해 주시면 감사하겠습니다.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    if ($(".sit_opt_list").size() < 1) {
+        swal({
+            title: "Oops...",
+            text: "상품의 선택옵션을 선택해 주십시오.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    var val, io_type, result = true;
+    var sum_qty = 0;
+    var min_qty = parseInt({it.it_buy_min_qty});
+    var max_qty = parseInt({it.it_buy_max_qty});
+    var $el_type = $("input[name^=io_type]");
+
+    $("input[name^=ct_qty]").each(function(index) {
+        val = $(this).val();
+
+        if (val.length < 1) {
+	        swal({
+	            title: "Oops...",
+	            text: "수량을 입력해 주십시오.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            result = false;
+            return false;
+        }
+
+        if (val.replace(/[0-9]/g, "").length > 0) {
+	        swal({
+	            title: "Oops...",
+	            text: "수량은 숫자로 입력해 주십시오.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            result = false;
+            return false;
+        }
+
+        if (parseInt(val.replace(/[^0-9]/g, "")) < 1) {
+	        swal({
+	            title: "Oops...",
+	            text: "수량은 1이상 입력해 주십시오.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            result = false;
+            return false;
+        }
+
+        io_type = $el_type.eq(index).val();
+        if (io_type == "0")
+            sum_qty += parseInt(val);
+    });
+
+    if (!result) {
+        return false;
+    }
+
+    if (min_qty > 0 && sum_qty < min_qty) {
+        swal({
+            title: "알림!",
+            text: "선택옵션 개수 총합 " + number_format(String(min_qty)) + "개 이상 주문해 주십시오.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    if (max_qty > 0 && sum_qty > max_qty) {
+        swal({
+            title: "알림!",
+            text: "선택옵션 개수 총합 " + number_format(String(max_qty)) + "개 이하로 주문해 주십시오.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+    return true;
+}
+</script>

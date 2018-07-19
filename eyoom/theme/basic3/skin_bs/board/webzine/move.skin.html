@@ -1,0 +1,126 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.copy-move {position:relative;padding:15px;font-size:12px}
+.copy-move .table-list-eb thead {border-top:2px solid #000;border-bottom:1px solid #000}
+.copy-move .table-list-eb .table thead > tr > th {border-bottom:1px solid #000}
+.copy-move .eyoom-form {border:0}
+.copy-move .eyoom-form label {margin-bottom:0}
+.copy-move .eyoom-form .win-btn input {vertical-align:inherit;padding:7px 16px;font-size:14px}
+.copy-move .eyoom-form .checkbox i {top:1px}
+.copy-move .copymove_current {padding:0;color:#FF2900;background:none}
+.copy-move .copy-move-list label span {margin-right:10px}
+</style>
+
+<div class="copy-move">
+    <form name="fboardmoveall" method="post" action="./move_update.php" onsubmit="return fboardmoveall_submit(this);" class="eyoom-form">
+    <input type="hidden" name="sw" value="{_sw}">
+    <input type="hidden" name="bo_table" value="{_bo_table}">
+    <input type="hidden" name="wr_id_list" value="{_wr_id_list}">
+    <input type="hidden" name="sfl" value="{_sfl}">
+    <input type="hidden" name="stx" value="{_stx}">
+    <input type="hidden" name="spt" value="{_spt}">
+    <input type="hidden" name="page" value="{_page}">
+    <input type="hidden" name="act" value="{_act}">
+    <input type="hidden" name="url" value="{_SERVER.HTTP_REFERER}">
+    <input type="hidden" name="wmode" value="{_wmode}">
+	<h4 class="margin-bottom-20"><strong>{g5.title}</strong></h4>
+	<div class="table-list-eb">
+	    <div class="board-list-body">
+	        <table class="table table-hover">
+		        <thead>
+			        <tr>
+			            <th>
+			                <label for="chkall" class="sound_only">현재 페이지 게시판 전체</label>
+			                <label class="checkbox">
+			                	<input type="checkbox" id="chkall" onclick="if (this.checked) all_checked(true); else all_checked(false);"><i></i>
+			                </label>
+			            </th>
+			            <th>게시판</th>
+			        </tr>
+		        </thead>
+		        <tbody>
+					<!--{@ list}-->
+			        <tr class="{.atc_bg}">
+			            <td>
+			                <label for="chk{.key_}" class="sound_only">{.bo_table}</label>
+			                <label class="checkbox">
+			                	<input type="checkbox" value="{.bo_table}" id="chk{.key_}" name="chk_bo_table[]"><i></i>
+			                </label>
+			            </td>
+			            <td class="copy-move-list">
+			                <label for="chk{.key_}">
+								<span>{.gr_subject} / {.bo_subject}</span><span class="color-grey">({.bo_table})</span><span>{.atc_mark}</span>
+			                </label>
+			            </td>
+			        </tr>
+			        <!--{/}-->
+		        </tbody>
+	        </table>
+	    </div>
+	</div>
+    <div class="win-btn text-center">
+        <input type="submit" value="{_act}" id="btn_submit" class="btn-e btn-e-lg btn-e-red">
+    </div>
+    <div class="margin-bottom-20"></div>
+    </form>
+</div>
+
+<script type="text/javascript" src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script>
+$(function() {
+    $(".win-btn").append("<button type=\"button\" class=\"btn-e btn-e-lg btn-e-dark\">창닫기</button>");
+    $(".win-btn button").click(function() {
+        window.close();
+    });
+});
+
+function all_checked(sw) {
+    var f = document.fboardmoveall;
+    for (var i=0; i<f.length; i++) {
+        if (f.elements[i].name == "chk_bo_table[]")
+            f.elements[i].checked = sw;
+    }
+}
+
+function fboardmoveall_submit(f) {
+    var check = false;
+    if (typeof(f.elements['chk_bo_table[]']) == 'undefined')
+        ;
+    else {
+        if (typeof(f.elements['chk_bo_table[]'].length) == 'undefined') {
+            if (f.elements['chk_bo_table[]'].checked)
+                check = true;
+        } else {
+            for (i=0; i<f.elements['chk_bo_table[]'].length; i++) {
+                if (f.elements['chk_bo_table[]'][i].checked) {
+                    check = true;
+                    break;
+                }
+            }
+        }
+    }
+    if (!check) {
+        alert('게시물을 '+f.act.value+'할 게시판을 한개 이상 선택해 주십시오.');
+        return false;
+    }
+    document.getElementById('btn_submit').disabled = true;
+    f.action = './move_update.php';
+    return true;
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->
+
+{# tail_sub}

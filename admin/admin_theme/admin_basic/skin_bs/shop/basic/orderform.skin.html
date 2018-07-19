@@ -1,0 +1,1181 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-shop-orderform .table-list-eb {background:#fff}
+.admin-shop-orderform .table-list-eb img {display:block;width:100% \9;max-width:100%;height:auto}
+.admin-shop-orderform .checkbox-lineheight .checkbox {line-height:16px}
+.admin-shop-orderform .checkbox-lineheight .checkbox i {top:0;line-height:26px}
+.admin-shop-orderform .orderform-btns .btn-e {margin-bottom:3px}
+.admin-shop-orderform .alert-padding-trans {padding:3px 10px 4px}
+.admin-shop-orderform .orderform-box {position:relative;border:1px solid #d5d5d5;padding:10px;background:#fff}
+@media screen and (max-width: 600px){
+	.admin-shop-orderform .orderform-box .col {margin-bottom:5px}
+}
+.admin-shop-orderform .orderform-box .row {padding:5px}
+.admin-shop-orderform .orderform-box .row .col-3 {font-weight:bold}
+.admin-shop-orderform .orderform-box .row .col-4 {font-weight:bold}
+.admin-shop-orderform .od_test_caution {color:#E52700}
+@media (min-width: 1100px) {
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:14px;font-weight:bold;padding:8px 17px}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {z-index:1;border:1px solid #000;border-top:1px solid #DE2600;color:#DE2600}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {position:relative;display:block;height:1px;background:#000;margin-bottom:20px}
+}
+@media (max-width: 1099px) {
+	.pg-anchor-in {position:relative;overflow:hidden;margin-bottom:20px;border:1px solid #757575}
+	.pg-anchor-in.tab-e2 .nav-tabs li {width:33.33333%;margin:0}
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:11px;padding:6px 0;text-align:center;border-bottom:1px solid #d5d5d5;margin-right:0;font-weight:bold;background:#fff}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {border:0;border-bottom:1px solid #d5d5d5 !important;color:#DE2600;background:#fff1f0}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(1) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(2) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(4) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(5) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {display:none}
+}
+</style>
+
+<div class="admin-shop-orderform">
+	<div class="headline">
+		<h4><strong>주문 상세내역</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="anc_sodr_list">
+		<div class="pg-anchor">
+			{# anc_sodr_list}
+		</div>
+
+		<form name="frmorderform" id="frmorderform" action="{_action_url1}" onsubmit="return form_submit(this);" method="post" autocomplete="off" class="eyoom-form">
+	    <input type="hidden" name="od_id" value="{_od_id}">
+	    <input type="hidden" name="mb_id" value="{od.mb_id}">
+	    <input type="hidden" name="od_email" value="{od.od_email}">
+	    <input type="hidden" name="sort1" value="{_sort1}">
+	    <input type="hidden" name="sort2" value="{_sort2}">
+	    <input type="hidden" name="sel_field" value="{_sel_field}">
+	    <input type="hidden" name="search" value="{_search}">
+	    <input type="hidden" name="page" value="{_page}">
+	    <input type="hidden" name="pg_cancel" value="0">
+
+		<!--{? C.G5_IS_MOBILE}-->
+		<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+		<!--{/}-->
+
+	    <p>
+	        현재 주문상태 <strong class="color-red">{od.od_status}</strong><span class="margin-left-5 margin-right-5 color-light-grey">|</span>주문일시 <strong>{=substr(od.od_time,0,16)} ({=get_yoil(od.od_time)})</strong><span class="margin-left-5 margin-right-5 color-light-grey">|</span>주문총액 <strong>{=number_format(od.od_cart_price + od.od_send_cost + od.od_send_cost2)}</strong>원
+	    </p>
+	    <!--{? default.de_hope_date_use}-->
+	    <p>희망배송일은 {od.od_hope_date} ({=get_yoil(od.od_hope_date)}) 입니다.</p>
+	    <!--{/}-->
+	    <!--{? default.od_mobile}-->
+	    <p>모바일 쇼핑몰의 주문입니다.</p>
+	    <!--{/}-->
+
+		<div class="table-list-eb">
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th class="width-100px">상품이미지</th>
+							<th class="width-200px">주문번호 / 상품명</th>
+							<th>
+								<label for="sit_select_all" class="checkbox">
+									<input type="checkbox" id="sit_select_all"><i></i>
+								</label>
+							</th>
+							<th class="width-200px">옵션항목</th>
+							<th class="width-50px">상태</th>
+							<th class="width-50px">수량</th>
+							<th>판매가</th>
+							<th>소계</th>
+							<th class="width-50px">쿠폰</th>
+							<th class="width-50px">포인트</th>
+							<th class="width-50px">배송비</th>
+							<th class="width-50px">포인트<br>반영</th>
+							<th class="width-50px">재고<br>반영</th>
+						</tr>
+					</thead>
+					<tbody>
+					<!--{@ list}-->
+						<!--{@ opt}-->
+						<tr>
+							<!--{? ..index_ == 0}-->
+							<td rowspan="{..size_}">
+								<a href="{.href}" target="_blank">{.image}</a>
+							</td>
+							<td rowspan="{..size_}">
+								<span class="color-grey">{od.od_id}</span><br>
+								<a href="{.href}" target="_blank"><strong>{=get_text(.it_name)}</strong></a>
+								<!--{? od.od_tax_flag && .ct_notax}--><br>[비과세상품]<!--{/}-->
+							</td>
+							<td rowspan="{..size_}">
+								<label for="sit_sel_{.index_}" class="checkbox">
+									<input type="checkbox" id="sit_sel_{.index_}" name="it_sel[]"><i></i>
+								</label>
+							</td>
+							<!--{/}-->
+							<td class="checkbox-lineheight">
+								<label for="ct_chk_{..chk_cnt}" class="checkbox">
+									<input type="checkbox" name="ct_chk[{..chk_cnt}]" id="ct_chk_{..chk_cnt}" value="{..chk_cnt}" class="sct_sel_{.index_}"><i></i> {=get_text(..ct_option)}
+									<input type="hidden" name="ct_id[{..chk_cnt}]" value="{..ct_id}">
+								</label>
+							</td>
+							<td>{..ct_status}</td>
+							<td>
+								<label class="sound_only">{=get_text(..ct_option)} 수량</label>
+								<label for="ct_qty_{..chk_cnt}" class="input">
+			                    	<input type="text" name="ct_qty[{..chk_cnt}]" id="ct_qty_{..chk_cnt}" value="{..ct_qty}" required>
+			                    </label>
+							</td>
+			                <td class="text-right">{=number_format(..opt_price)}</td>
+			                <td class="text-right">{=number_format(..ct_price)}</td>
+			                <td class="text-right">{=number_format(..cp_price)}</td>
+			                <td class="text-right">{=number_format(..ct_point)}</td>
+			                <td>{.ct_send_cost}</td>
+			                <td>{=get_yn(..ct_point_use)}</td>
+			                <td>{=get_yn(..ct_stock_use)}</td>
+						</tr>
+						<!--{/}-->
+					<!--{/}-->
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	    <div class="btn_list02 btn_list">
+		    <div class="margin-bottom-5">
+		    	<strong>주문 및 장바구니 상태 변경</strong>
+		    </div>
+	        <div class="orderform-btns">
+	            <input type="hidden" name="chk_cnt" value="{_chk_cnt}">
+	            <input type="submit" name="ct_status" value="주문" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '주문'}yellow{:}default{/}">
+	            <input type="submit" name="ct_status" value="입금" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '입금'}yellow{:}default{/}">
+	            <input type="submit" name="ct_status" value="준비" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '준비'}yellow{:}default{/}">
+	            <input type="submit" name="ct_status" value="배송" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '배송'}yellow{:}default{/}">
+	            <input type="submit" name="ct_status" value="완료" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '완료'}yellow{:}default{/}">
+	            <input type="submit" name="ct_status" value="취소" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '취소'}yellow{:}default{/}">
+	            <input type="submit" name="ct_status" value="반품" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '반품'}yellow{:}default{/}">
+	            <input type="submit" name="ct_status" value="품절" onclick="document.pressed=this.value" class="btn-e btn-e-{? od.od_status == '품절'}yellow{:}default{/}">
+	        </div>
+	    </div>
+	    <div class="margin-bottom-20"></div>
+
+		<div class="alert alert-warning">
+		    <p>주문, 입금, 준비, 배송, 완료는 장바구니와 주문서 상태를 모두 변경하지만, 취소, 반품, 품절은 장바구니의 상태만 변경하며, 주문서 상태는 변경하지 않습니다.<br>개별적인(이곳에서의) 상태 변경은 모든 작업을 수동으로 처리합니다. 예를 들어 주문에서 입금으로 상태 변경시 입금액(결제금액)을 포함한 모든 정보는 수동 입력으로 처리하셔야 합니다.</p>
+		</div>
+
+		<div class="alert alert-danger">
+			<p><strong class="font-size-13"><i class="fa fa-exclamation-circle"></i> 무통장 입금의 경우</strong><br><span>입금확인 후 반드시 아래 결제상세정보 수정에서 <strong>무통장입금액</strong>과 <strong>입금확인일시</strong>를 수동으로 체크 또는 입력 후 <strong>결제내역 수정</strong> 버튼을 클릭하여야 합니다.</span></p>
+		</div>
+
+		</form>
+
+		<!--{? od.od_test}-->
+		<div class="margin-bottom-10"></div>
+		<blockquote class="hero-bg-red od_test_caution">
+			<p><strong>주의! 이 주문은 테스트용으로 실제 결제가 이루어지지 않은 주문입니다.</strong></p>
+		</blockquote>
+		<!--{/}-->
+	</div>
+
+	<div class="margin-bottom-30"></div>
+
+	<div id="anc_sodr_pay">
+		<div class="pg-anchor">
+			{# anc_sodr_pay}
+		</div>
+
+		<div id="order-info"></div>
+
+		<div class="margin-bottom-20"></div>
+
+		<div class="text-center margin-top-30 margin-bottom-30">
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlist&qstr={_qstr}" id="btn_list" class="btn-e btn-e-lg btn-e-dark">목록보기</a>
+		</div>
+	</div>
+
+	<div id="anc_sodr_chk">
+		<div class="pg-anchor">
+			{# anc_sodr_chk}
+		</div>
+
+		<form name="frmorderreceiptform" action="{_action_url2}" method="post" autocomplete="off"  class="eyoom-form">
+	    <input type="hidden" name="od_id" value="{_od_id}">
+	    <input type="hidden" name="sort1" value="{_sort1}">
+	    <input type="hidden" name="sort2" value="{_sort2}">
+	    <input type="hidden" name="sel_field" value="{_sel_field}">
+	    <input type="hidden" name="search" value="{_search}">
+	    <input type="hidden" name="page" value="{_page}">
+	    <input type="hidden" name="od_name" value="{od.od_name}">
+	    <input type="hidden" name="od_hp" value="{od.od_hp}">
+	    <input type="hidden" name="od_tno" value="{od.od_tno}">
+	    <input type="hidden" name="od_escrow" value="{od.od_escrow}">
+	    <input type="hidden" name="od_pg" value="{od.od_pg}">
+
+		<div class="orderform-box">
+			<div class="row">
+				<div class="col col-6">
+					<h4><strong class="color-purple">결제상세정보 확인</strong></h4>
+					<div class="margin-bottom-10"></div>
+
+					<!--{? od.od_settle_case == '무통장' || od.od_settle_case == '가상계좌' || od.od_settle_case == '계좌이체'}-->
+					<!--{? od.od_settle_case == '무통장' || od.od_settle_case == '가상계좌'}-->
+					<div class="row">
+						<div class="col col-4">계좌번호</div>
+						<div class="col col-8">{=get_text(od.od_bank_account)}</div>
+					</div>
+					<!--{/}-->
+					<div class="row">
+						<div class="col col-4">{od.od_settle_case} 입금액</div>
+						<div class="col col-8">{=display_price(od.od_receipt_price)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">입금자</div>
+						<div class="col col-8">{=get_text(od.od_deposit_name)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">입금확인일시</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == 0}-->
+							입금 확인일시를 체크해 주세요.
+							<!--{:}-->
+							{od.od_receipt_time} ({=get_yoil(od.od_receipt_time)})
+							<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == '휴대폰'}-->
+					<div class="row">
+						<div class="col col-4">휴대폰번호</div>
+						<div class="col col-8">{=get_text(od.od_bank_account)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">{od.od_settle_case} 결제액</div>
+						<div class="col col-8">{=display_price(od.od_receipt_price)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">결제 확인일시</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == 0}-->
+							결제 확인일시를 체크해 주세요.
+							<!--{:}-->
+							{od.od_receipt_time} ({=get_yoil(od.od_receipt_time)})
+							<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == '신용카드'}-->
+					<div class="row">
+						<div class="col col-4">신용카드 결제금액</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == '0000-00-00 00:00:00'}-->
+							0원
+							<!--{:}-->
+							{=display_price(od.od_receipt_price)}
+							<!--{/}-->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">카드 승인일시</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == '0000-00-00 00:00:00'}-->
+							신용카드 결제 일시 정보가 없습니다.
+							<!--{:}-->
+							{=substr(od.od_receipt_time, 0, 20)}
+							<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == 'KAKAOPAY'}-->
+					<div class="row">
+						<div class="col col-4">KAKOPAY 결제금액</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == '0000-00-00 00:00:00'}-->
+							0원
+							<!--{:}-->
+							{=display_price(od.od_receipt_price)}
+							<!--{/}-->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">KAKAOPAY 승인일시</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == '0000-00-00 00:00:00'}-->
+							KAKAOPAY 결제 일시 정보가 없습니다.
+							<!--{:}-->
+							{=substr(od.od_receipt_time, 0, 20)}
+							<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == '간편결제' || (od.od_pg == 'inicis' && is_inicis_order_pay(od.od_settle_case))}-->
+					<div class="row">
+						<div class="col col-4">{_s_receipt_way} 결제금액</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == '0000-00-00 00:00:00'}-->
+							0원
+							<!--{:}-->
+							{=display_price(od.od_receipt_price)}
+							<!--{/}-->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">{_s_receipt_way} 승인일시</div>
+						<div class="col col-8">
+							<!--{? od.od_receipt_time == '0000-00-00 00:00:00'}-->
+							{_s_receipt_way} 결제 일시 정보가 없습니다.
+							<!--{:}-->
+							{=substr(od.od_receipt_time, 0, 20)}
+							<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case != '무통장'}-->
+					<div class="row">
+						<div class="col col-4">결제대행사 링크</div>
+						<div class="col col-8">
+							<!--{? od.od_pg == 'lg'}-->
+							<a href="{? default.de_card_test}http://pgweb.uplus.co.kr/tmert{:}http://pgweb.uplus.co.kr{/}" target="_blank">{? default.de_card_test}테스트{:}LG유플러스{/} 바로가기</a><br>
+							<!--{: od.od_pg == 'inicis'}-->
+							<a href="https://iniweb.inicis.com/" target="_blank">KG이니시스 바로가기</a><br>
+							<!--{: od.od_pg == 'KAKAOPAY'}-->
+							<a href="https://mms.cnspay.co.kr" target="_blank">KAKAOPAY 바로가기</a><br>
+							<!--{:}-->
+							<a href="{? default.de_card_test}http://testadmin8.kcp.co.kr{:}http://admin8.kcp.co.kr{/}" target="_blank">{? default.de_card_test}테스트{:}KCP{/} 바로가기</a><br>
+							<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_tax_flag}-->
+					<div class="row">
+						<div class="col col-4">과세공급가액</div>
+						<div class="col col-8">{=display_price(od.od_tax_mny)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">과세부가세액</div>
+						<div class="col col-8">{=display_price(od.od_vat_mny)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">비과세공급가액</div>
+						<div class="col col-8">{=display_price(od.od_free_mny)}</div>
+					</div>
+					<!--{/}-->
+
+					<div class="row">
+						<div class="col col-4">주문금액할인</div>
+						<div class="col col-8">{=display_price(od.od_coupon)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">포인트</div>
+						<div class="col col-8">{=display_price(od.od_receipt_point)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">결제취소/환불액</div>
+						<div class="col col-8">{=display_price(od.od_refund_price)}</div>
+					</div>
+
+					<!--{? od.od_invoice}-->
+					<div class="row">
+						<div class="col col-4">배송회사</div>
+						<div class="col col-8">{od.od_delivery_company} {=get_delivery_inquiry(od.od_delivery_company, od.od_invoice, 'dvr_link')}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">운송장번호</div>
+						<div class="col col-8">{od.od_invoice}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">배송일시</div>
+						<div class="col col-8">
+							<!--{? !is_null_time(od.od_invoice_time)}-->
+							{od.od_invoice_time}
+							<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+
+					<div class="row">
+						<div class="col col-4">배송비</div>
+						<div class="col col-6">
+							<label class="input" for="od_send_cost">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_send_cost" id="od_send_cost" value="{od.od_send_cost}">
+							</label>
+						</div>
+						<div class="col col-2"></div>
+					</div>
+
+					<!--{? od.od_send_coupon}-->
+					<div class="row">
+						<div class="col col-4">배송비할인</div>
+						<div class="col col-8">{=display_price(od.od_send_coupon)}</div>
+					</div>
+					<!--{/}-->
+
+					<div class="row">
+						<div class="col col-4">추가배송비</div>
+						<div class="col col-6">
+							<label class="input" for="od_send_cost2">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_send_cost2" id="od_send_cost2" value="{od.od_send_cost2}">
+							</label>
+						</div>
+						<div class="col col-2"></div>
+					</div>
+
+					<!--{? od.od_misu == 0 && od.od_receipt_price && (od.od_settle_case == '무통장' || od.od_settle_case == '가상계좌' || od.od_settle_case == '계좌이체')}-->
+					<div class="row">
+						<div class="col col-4">현금영수증</div>
+						<div class="col col-8">
+						<!--{? od.od_cash}-->
+							<a href="javascript:;" onclick="{_cash_receipt_script}">현금영수증 확인</a>
+						<!--{:}-->
+							<a href="javascript:;" onclick="window.open('{C.G5_SHOP_URL}/taxsave.php?od_id={_od_id}', 'taxsave', 'width=550,height=400,scrollbars=1,menus=0');">현금영수증 발급</a>
+						<!--{/}-->
+						</div>
+					</div>
+					<!--{/}-->
+				</div>
+
+				<div class="col col-6">
+					<h4><strong class="color-purple">결제상세정보 수정</strong></h4>
+					<div class="margin-bottom-10"></div>
+
+					<!--{? od.od_settle_case == '무통장' || od.od_settle_case == '가상계좌' || od.od_settle_case == '계좌이체'}-->
+					<!--{? od.od_settle_case == '무통장' || od.od_settle_case == '가상계좌'}-->
+					<div class="row">
+						<div class="col col-4">계좌번호</div>
+						<div class="col col-8">{_bank_account}</div>
+					</div>
+					<!--{/}-->
+					<div class="row">
+						<div class="col col-4">{od.od_settle_case} 입금액</div>
+						<div class="col col-8">
+							{_html_receipt_chk}
+							<label class="input" for="od_receipt_price">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_receipt_price" value="{od.od_receipt_price}" id="od_receipt_price">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">입금자명</div>
+						<div class="col col-8">
+							<!--{? config.cf_sms_use && default.de_sms_use4}-->
+							<label class="checkbox" for="od_sms_ipgum_check">
+								<input type="checkbox" name="od_sms_ipgum_check" id="od_sms_ipgum_check"><i></i> SMS 입금 문자전송
+							</label>
+							<!--{/}-->
+							<label class="input" for="od_deposit_name">
+								<input type="text" name="od_deposit_name" value="{=get_text(od.od_deposit_name)}" id="od_deposit_name">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">입금 확인일시</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_bank_chk">
+								<input type="checkbox" name="od_bank_chk" id="od_bank_chk" value="{=date('Y-m-d H:i:s', C.G5_SERVER_TIME)}" onclick="if (this.checked == true) this.form.od_receipt_time.value=this.form.od_bank_chk.value; else this.form.od_receipt_time.value = this.form.od_receipt_time.defaultValue;"><i></i> 현재 시간으로 설정
+							</label>
+							<label class="input" for="od_receipt_time">
+								<input type="text" name="od_receipt_time" value="{? !is_null_time(od.od_receipt_time)}{od.od_receipt_time}{/}" id="od_receipt_time" maxlength="19">
+							</label>
+							<div class="note">형식 : 0000-00-00 00:00:00</div>
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == '휴대폰'}-->
+					<div class="row">
+						<div class="col col-4">휴대폰번호</div>
+						<div class="col col-8">{=get_text(od.od_bank_account)}</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">{od.od_settle_case} 결제액</div>
+						<div class="col col-8">
+							{_html_receipt_chk}
+							<label class="input" for="od_receipt_price">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_receipt_price" value="{od.od_receipt_price}" id="od_receipt_price">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">휴대폰 결제일시</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_hp_chk">
+								<input type="checkbox" name="od_hp_chk" id="od_hp_chk" value="{=date('Y-m-d H:i:s', C.G5_SERVER_TIME)}" onclick="if (this.checked == true) this.form.od_receipt_time.value=this.form.od_bank_chk.value; else this.form.od_receipt_time.value = this.form.od_receipt_time.defaultValue;"><i></i> 현재 시간으로 설정
+							</label>
+							<label class="input" for="od_receipt_time">
+								<input type="text" name="od_receipt_time" value="{? !is_null_time(od.od_receipt_time)}{od.od_receipt_time}{/}" id="od_receipt_time" maxlength="19">
+							</label>
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == '신용카드'}-->
+					<div class="row">
+						<div class="col col-4">신용카드 결제금액</div>
+						<div class="col col-8">
+							{_html_receipt_chk}
+							<label class="input" for="od_receipt_price">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_receipt_price" value="{od.od_receipt_price}" id="od_receipt_price">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">카드 승인일시</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_hp_chk">
+								<input type="checkbox" name="od_card_chk" id="od_card_chk" value="{=date('Y-m-d H:i:s', C.G5_SERVER_TIME)}" onclick="if (this.checked == true) this.form.od_receipt_time.value=this.form.od_bank_chk.value; else this.form.od_receipt_time.value = this.form.od_receipt_time.defaultValue;"><i></i> 현재 시간으로 설정
+							</label>
+							<label class="input" for="od_receipt_time">
+								<input type="text" name="od_receipt_time" value="{? !is_null_time(od.od_receipt_time)}{od.od_receipt_time}{/}" id="od_receipt_time" maxlength="19">
+							</label>
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == 'KAKAOPAY'}-->
+					<div class="row">
+						<div class="col col-4">KAKAOPAY 결제금액</div>
+						<div class="col col-8">
+							{_html_receipt_chk}
+							<label class="input" for="od_receipt_price">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_receipt_price" value="{od.od_receipt_price}" id="od_receipt_price">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">KAKAOPAY 승인일시</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_hp_chk">
+								<input type="checkbox" name="od_card_chk" id="od_card_chk" value="{=date('Y-m-d H:i:s', C.G5_SERVER_TIME)}" onclick="if (this.checked == true) this.form.od_receipt_time.value=this.form.od_bank_chk.value; else this.form.od_receipt_time.value = this.form.od_receipt_time.defaultValue;"><i></i> 현재 시간으로 설정
+							</label>
+							<label class="input" for="od_receipt_time">
+								<input type="text" name="od_receipt_time" value="{? !is_null_time(od.od_receipt_time)}{od.od_receipt_time}{/}" id="od_receipt_time" maxlength="19">
+							</label>
+						</div>
+					</div>
+					<!--{/}-->
+
+					<!--{? od.od_settle_case == '간편결제' || (od.od_pg == 'inicis' && is_inicis_order_pay(od.od_settle_case))}-->
+					<div class="row">
+						<div class="col col-4">{_s_receipt_way} 결제금액</div>
+						<div class="col col-8">
+							{_html_receipt_chk}
+							<label class="input" for="od_receipt_price">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_receipt_price" value="{od.od_receipt_price}" id="od_receipt_price">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-4">{_s_receipt_way} 승인일시</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_hp_chk">
+								<input type="checkbox" name="od_card_chk" id="od_card_chk" value="{=date('Y-m-d H:i:s', C.G5_SERVER_TIME)}" onclick="if (this.checked == true) this.form.od_receipt_time.value=this.form.od_bank_chk.value; else this.form.od_receipt_time.value = this.form.od_receipt_time.defaultValue;"><i></i> 현재 시간으로 설정
+							</label>
+							<label class="input" for="od_receipt_time">
+								<input type="text" name="od_receipt_time" value="{? !is_null_time(od.od_receipt_time)}{od.od_receipt_time}{/}" id="od_receipt_time" maxlength="19">
+							</label>
+						</div>
+					</div>
+					<!--{/}-->
+
+					<div class="row">
+						<div class="col col-4">포인트 결제액</div>
+						<div class="col col-8">
+							<label class="input" for="od_receipt_point">
+								<i class="icon-append">점</i>
+								<input type="text" name="od_receipt_point" value="{od.od_receipt_point}" id="od_receipt_point">
+							</label>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col col-4">결제취소/환불 금액</div>
+						<div class="col col-8">
+							<label class="input" for="od_refund_price">
+								<i class="icon-append">원</i>
+								<input type="text" name="od_refund_price" value="{od.od_refund_price}" id="od_refund_price">
+							</label>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col col-4">운송장번호</div>
+						<div class="col col-8">
+							<!--{? config.cf_sms_use && default.de_sms_use5}-->
+							<label class="checkbox" for="od_sms_baesong_check">
+								<input type="checkbox" name="od_sms_baesong_check" id="od_sms_baesong_check"><i></i> SMS 배송 문자전송
+							</label>
+							<!--{/}-->
+							<label class="input" for="od_invoice">
+								<input type="text" name="od_invoice" value="{od.od_invoice}" id="od_invoice">
+							</label>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col col-4">배송회사</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_delivery_chk">
+								<input type="checkbox" name="od_delivery_chk" id="od_delivery_chk" value="{default.de_delivery_company}" onclick="chk_delivery_company();"><i></i> 기본 배송회사로 설정
+							</label>
+							<label class="input" for="od_delivery_company">
+								<input type="text" name="od_delivery_company" value="{od.od_delivery_company}" id="od_delivery_company">
+							</label>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col col-4">배송일시</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_invoice_chk">
+								<input type="checkbox" name="od_invoice_chk" id="od_invoice_chk" value="{=date('Y-m-d H:i:s', C.G5_SERVER_TIME)}" onclick="chk_invoice_time();"><i></i> 현재 시간으로 설정
+							</label>
+							<label class="input" for="od_invoice_time">
+								<input type="text" name="od_invoice_time" value="{? !is_null_time(od.od_invoice_time)}{od.od_invoice_time}{/}" id="od_invoice_time">
+							</label>
+						</div>
+					</div>
+
+					<!--{? config.cf_email_use}-->
+					<div class="row">
+						<div class="col col-4">메일발송</div>
+						<div class="col col-8">
+							<label class="checkbox" for="od_refund_price">
+								<input type="checkbox" name="od_send_mail" value="1" id="od_send_mail"><i></i> 메일발송
+							</label>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 주문자님께 입금, 배송내역을 메일로 발송합니다. 메일발송시 상점메모에 기록됩니다.</div>
+						</div>
+					</div>
+					<!--{/}-->
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center margin-top-30 margin-bottom-30">
+			<input type="submit" value="결제내역 수정" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+			<!--{? od.od_status == '주문' && od.od_misu > 0}-->
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=personalpayform&amp;wmode=1&amp;od_id={_od_id}" id="personalpay_add" onclick="personalpay_modal(this.href); return false;" class="btn-e btn-e-lg btn-e-dark">개인결제추가</a>
+			<!--{/}-->
+			<!--{? od.od_misu < 0 && (od.od_receipt_price - od.od_refund_price) > 0 && (od.od_settle_case == '신용카드' || od.od_settle_case == '계좌이체' || od.od_settle_case == 'KAKAOPAY')}-->
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=orderpartcancel&amp;wmode=1&amp;od_id={_od_id}" id="orderpartcancel" onclick="orderpartcancel_modal(this.href); return false;" class="btn-e btn-e-lg btn-e-dark">{od.od_settle_case} 부분취소</a>
+			<!--{/}-->
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=orderlist&amp;qstr={_qstr}" id="btn_list" class="btn-e btn-e-lg btn-e-dark">목록보기</a>
+		</div>
+
+		</form>
+	</div>
+
+	<div id="anc_sodr_memo">
+		<div class="pg-anchor">
+			{# anc_sodr_memo}
+		</div>
+
+	    <form name="frmorderform2" action="{_action_url3}" method="post" autocomplete="off"  class="eyoom-form">
+	    <input type="hidden" name="od_id" value="{_od_id}">
+	    <input type="hidden" name="sort1" value="{_sort1}">
+	    <input type="hidden" name="sort2" value="{_sort2}">
+	    <input type="hidden" name="sel_field" value="{_sel_field}">
+	    <input type="hidden" name="search" value="{_search}">
+	    <input type="hidden" name="page" value="{_page}">
+	    <input type="hidden" name="mod_type" value="memo">
+
+		<div class="alert alert-info">
+		    <p>현재 열람 중인 주문에 대한 내용을 메모하는곳입니다. 입금, 배송 내역을 메일로 발송할 경우 함께 기록됩니다.</p>
+		</div>
+
+		<label for="od_shop_memo" class="textarea textarea-resizable">
+			<textarea name="od_shop_memo" id="od_shop_memo" rows="8">{=stripslashes(od.od_shop_memo)}</textarea>
+		</label>
+
+		<div class="text-center margin-top-30 margin-bottom-30">
+			<input type="submit" value="메모 수정" id="btn_submit" class="btn-e btn-e-lg btn-e-red">
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlist&qstr={_qstr}" id="btn_list" class="btn-e btn-e-lg btn-e-dark">목록보기</a>
+		</div>
+	    </form>
+	</div>
+
+	<div id="anc_sodr_orderer">
+		<div class="pg-anchor">
+			{# anc_sodr_orderer}
+		</div>
+
+	    <form name="frmorderform3" action="{_action_url3}" method="post" autocomplete="off"  class="eyoom-form">
+	    <input type="hidden" name="od_id" value="{_od_id}">
+	    <input type="hidden" name="sort1" value="{_sort1}">
+	    <input type="hidden" name="sort2" value="{_sort2}">
+	    <input type="hidden" name="sel_field" value="{_sel_field}">
+	    <input type="hidden" name="search" value="{_search}">
+	    <input type="hidden" name="page" value="{_page}">
+	    <input type="hidden" name="mod_type" value="info">
+
+		<div class="orderform-box">
+			<div class="row">
+				<div class="col col-6">
+					<h4><strong class="color-purple">주문하신 분</strong></h4>
+					<div class="margin-bottom-10"></div>
+
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">주문하신 분 </span>이름</div>
+						<div class="col col-9">
+							<label for="od_name" class="input">
+								<input type="text" name="od_name" value="{=get_text(od.od_name)}" id="od_name" required>
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">주문하신 분 </span>전화번호</div>
+						<div class="col col-9">
+							<label for="od_tel" class="input">
+								<input type="text" name="od_tel" value="{=get_text(od.od_tel)}" id="od_tel" required>
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">주문하신 분 </span>핸드폰</div>
+						<div class="col col-9">
+							<label for="od_hp" class="input">
+								<input type="text" name="od_hp" value="{=get_text(od.od_hp)}" id="od_hp">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">주문하신 분 </span>주소</div>
+						<div class="col col-9">
+							<div class="row">
+								<div class="col col-6">
+									<section>
+										<label for="od_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
+										<label class="input">
+											<i class="icon-append fa fa-question-circle"></i>
+					                    	<input type="text" name="od_zip" value="{od.od_zip1}{od.od_zip2}" id="od_zip" maxlength="6" readonly="readonly">
+					                    	<b class="tooltip tooltip-top-right">우편번호</b>
+										</label>
+									</section>
+								</div>
+								<div class="col col-4">
+									<section>
+										<button type="button" onclick="win_zip('frmorderform3', 'od_zip', 'od_addr1', 'od_addr2', 'od_addr3', 'od_addr_jibeon');" class="btn-e btn-e-purple">주소 검색</button>
+									</section>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-12">
+									<section>
+						                <label class="input">
+						                	<input type="text" name="od_addr1" value="{od.od_addr1}" id="od_addr1">
+						                </label>
+						                <div class="note margin-bottom-10"><strong>Note:</strong> 기본주소</div>
+									</section>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-6">
+									<section>
+						                <label class="input">
+						                	<input type="text" name="od_addr2" value="{od.od_addr2}" id="od_addr2">
+						                </label>
+						                <div class="note margin-bottom-10"><strong>Note:</strong> 상세주소</div>
+									</section>
+								</div>
+								<div class="col col-6">
+									<section>
+						                <label class="input">
+						                	<input type="text" name="od_addr3" value="{od.od_addr3}" id="od_addr3">
+						                </label>
+						                <div class="note margin-bottom-10"><strong>Note:</strong> 참고항목</div>
+									</section>
+								</div>
+								<input type="hidden" name="od_addr_jibeon" value="{od.od_addr_jibeon}">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">주문하신 분 </span>E-mail</div>
+						<div class="col col-9">
+							<label for="od_email" class="input">
+								<input type="text" name="od_email" value="{od.od_email}" id="od_hp" required class="email">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">주문하신 분 </span>IP Address</div>
+						<div class="col col-9">
+							{od.od_ip}
+						</div>
+					</div>
+				</div>
+
+				<div class="col col-6">
+					<h4><strong class="color-purple">받으시는 분</strong></h4>
+					<div class="margin-bottom-10"></div>
+
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">받으시는 분 </span>이름</div>
+						<div class="col col-9">
+							<label for="od_b_name" class="input">
+								<input type="text" name="od_b_name" value="{=get_text(od.od_b_name)}" id="od_b_name" required>
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">받으시는 분 </span>전화번호</div>
+						<div class="col col-9">
+							<label for="od_b_tel" class="input">
+								<input type="text" name="od_b_tel" value="{=get_text(od.od_b_tel)}" id="od_b_tel" required>
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">받으시는 분 </span>핸드폰</div>
+						<div class="col col-9">
+							<label for="od_b_hp" class="input">
+								<input type="text" name="od_b_hp" value="{=get_text(od.od_b_hp)}" id="od_b_hp">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-3"><span class="sound_only">받으시는 분 </span>주소</div>
+						<div class="col col-9" style="padding:0 5px;">
+							<div class="row">
+								<div class="col col-6">
+									<section>
+										<label for="od_b_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
+										<label class="input">
+											<i class="icon-append fa fa-question-circle"></i>
+					                    	<input type="text" name="od_b_zip" value="{od.od_b_zip1}{od.od_b_zip2}" id="od_b_zip" maxlength="6" readonly="readonly">
+					                    	<b class="tooltip tooltip-top-right">우편번호</b>
+										</label>
+									</section>
+								</div>
+								<div class="col col-4">
+									<section>
+										<button type="button" onclick="win_zip('frmorderform3', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');" class="btn-e btn-e-purple">주소 검색</button>
+									</section>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-12">
+									<section>
+						                <label class="input">
+						                	<input type="text" name="od_b_addr1" value="{od.od_b_addr1}" id="od_b_addr1">
+						                </label>
+						                <div class="note margin-bottom-10"><strong>Note:</strong> 기본주소</div>
+									</section>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-6">
+									<section>
+						                <label class="input">
+						                	<input type="text" name="od_b_addr2" value="{od.od_b_addr2}" id="od_b_addr2">
+						                </label>
+						                <div class="note margin-bottom-10"><strong>Note:</strong> 상세주소</div>
+									</section>
+								</div>
+								<div class="col col-6">
+									<section>
+						                <label class="input">
+						                	<input type="text" name="od_b_addr3" value="{od.od_b_addr3}" id="od_b_addr3">
+						                </label>
+						                <div class="note margin-bottom-10"><strong>Note:</strong> 참고항목</div>
+									</section>
+								</div>
+								<input type="hidden" name="od_b_addr_jibeon" value="{od.od_b_addr_jibeon}">
+							</div>
+						</div>
+					</div>
+					<!--{? default.de_hope_date_use}-->
+					<div class="row">
+						<div class="col col-3">희망배송일</div>
+						<div class="col col-9">
+							<label for="od_hope_date" class="input">
+								<i class="icon-append">{=get_yoil(od.od_hope_date)}</i>
+								<input type="text" name="od_hope_date" value="{od.od_hope_date}" id="od_hope_date" required minlength="10">
+							</label>
+						</div>
+					</div>
+					<!--{/}-->
+					<div class="row">
+						<div class="col col-3">전달 메세지</div>
+						<div class="col col-9">
+							<div class="alert alert-info alert-padding-trans">
+								<!--{? od.od_memo}-->
+								<p>{=get_text(od.od_memo, 1)}</p>
+								<!--{:}-->
+								<p>없음</p>
+								<!--{/}-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center margin-top-30 margin-bottom-30">
+			<input type="submit" value="주문자/배송지 정보 수정" id="btn_submit" class="btn-e btn-e-lg btn-e-red">
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlist&qstr={_qstr}" id="btn_list" class="btn-e btn-e-lg btn-e-dark">목록보기</a>
+		</div>
+
+	    </form>
+	</div>
+</div>
+
+<div class="modal fade orderfrom-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title"></span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="orderfrom-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<!--{? od.od_pg == 'lg'}-->
+	<!--{? default.de_card_test}-->
+<script src="http://pgweb.uplus.co.kr:7085/WEB_SERVER/js/receipt_link.js"></script>
+	<!--{:}-->
+<script src="http://pgweb.uplus.co.kr/WEB_SERVER/js/receipt_link.js"></script>
+	<!--{/}-->
+<!--{/}-->
+<script>
+function orderfrom_modal(href) {
+    $('.orderfrom-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#product-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.orderfrom-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#orderfrom-iframe").attr("src", href);
+        $('#orderfrom-iframe').height(650);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('.orderfrom-iframe-modal').modal('hide');
+};
+
+function personalpay_modal (href) {
+	$("#modal-title").text("개인결제추가");
+	orderfrom_modal(href);
+}
+
+function orderpartcancel_modal (href) {
+	$("#modal-title").text("{od.od_settle_case} 부분취소");
+	orderfrom_modal(href);
+}
+
+$('.pg-anchor a').on('click', function(e) {
+	e.stopPropagation();
+	var scrollTopSpace;
+	if (window.innerWidth >= 1100) {
+		scrollTopSpace = 70;
+	} else {
+		scrollTopSpace = 70;
+	}
+	var tabLink = $(this).attr('href');
+	var offset = $(tabLink).offset().top;
+	$('html, body').animate({scrollTop : offset - scrollTopSpace}, 500);
+	return false;
+});
+
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.No && !(client.No.indexOf(filter.No) > -1) || filter.회원아이디 && !(client.회원아이디.indexOf(filter.회원아이디) > -1) || filter.이름 && !(client.이름.indexOf(filter.이름) > -1) || filter.영문이름 && !(client.영문이름.indexOf(filter.영문이름) > -1) || filter.이니셜 && !(client.이니셜.indexOf(filter.이니셜) > -1) || filter.키 && !(client.키.indexOf(filter.키) > -1) || filter.몸무게 && !(client.몸무게.indexOf(filter.몸무게) > -1) || filter.성별 && !(client.성별.indexOf(filter.성별) > -1) || filter.등록일 && !(client.등록일.indexOf(filter.등록일) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+        {
+	        주문번호: "{od.od_id}",
+	        결제방법: "{_s_receipt_way}",
+	        주문총액: "{=display_price(_amount.order)}",
+	        배송비: "{=display_price(od.od_send_cost + od.od_send_cost2)}",
+	        포인트결제: "{=display_point(od.od_receipt_point)}",
+	        총결제액: "{=number_format(_amount.receipt)}원",
+	        쿠폰: "{=display_price(_amount.coupon)}",
+	        주문취소: "{=number_format(_amount.cancel)}원",
+        },
+    ]
+}();
+
+$(document).ready(function(){
+    $("#order-info").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "주문번호", type: "text", width: 120 },
+            { name: "결제방법", type: "text", width: 80 },
+            { name: "주문총액", type: "number", width: 100 },
+            { name: "배송비", type: "number", width: 80 },
+            { name: "포인트결제", type: "number", width: 100 },
+            { name: "총결제액", type: "number", width: 100 },
+            { name: "쿠폰", type: "number", width: 100 },
+            { name: "주문취소", type: "number", width: 100 },
+            //{ type: "control" }
+        ]
+    })
+
+});
+
+
+$(document).ready(function(){
+    $("#od_status").change(function() {
+	    $("#ct_status").val($(this).val());
+	    var $form = $("#forderform");
+	    $form.submit();
+    });
+});
+
+$(function() {
+    // 전체 옵션선택
+    $("#sit_select_all").click(function() {
+        if($(this).is(":checked")) {
+            $("input[name='it_sel[]']").attr("checked", true);
+            $("input[name^=ct_chk]").attr("checked", true);
+        } else {
+            $("input[name='it_sel[]']").attr("checked", false);
+            $("input[name^=ct_chk]").attr("checked", false);
+        }
+    });
+
+    // 상품의 옵션선택
+    $("input[name='it_sel[]']").click(function() {
+        var cls = $(this).attr("id").replace("sit_", "sct_");
+        var $chk = $("input[name^=ct_chk]."+cls);
+        if($(this).is(":checked"))
+            $chk.attr("checked", true);
+        else
+            $chk.attr("checked", false);
+    });
+
+    // 부분취소창
+    $("#orderpartcancel").on("click", function() {
+        var href = this.href;
+        window.open(href, "partcancelwin", "left=100, top=100, width=600, height=350, scrollbars=yes");
+        return false;
+    });
+});
+
+function form_submit(f)
+{
+    var check = false;
+    var status = document.pressed;
+
+    for (i=0; i<f.chk_cnt.value; i++) {
+        if (document.getElementById('ct_chk_'+i).checked == true)
+            check = true;
+    }
+
+    if (check == false) {
+        alert("처리할 자료를 하나 이상 선택해 주십시오.");
+        return false;
+    }
+
+    var msg = "";
+
+	<!--{? od.od_settle_case == '신용카드' || od.od_settle_case == 'KAKAOPAY' || od.od_settle_case == '간편결제' || (od.od_pg == 'inicis' && is_inicis_order_pay(od.od_settle_case))}-->
+    if(status == "취소" || status == "반품" || status == "품절") {
+        var $ct_chk = $("input[name^=ct_chk]");
+        var chk_cnt = $ct_chk.size();
+        var chked_cnt = $ct_chk.filter(":checked").size();
+	    <!--{? od.od_pg == 'KAKAOPAY'}-->
+        var cancel_pg = "카카오페이";
+        <!--{:}-->
+        var cancel_pg = "PG사의 {od.od_settle_case}";
+        <!--{/}-->
+
+        if(chk_cnt == chked_cnt) {
+            if(confirm(cancel_pg+" 결제를 함께 취소하시겠습니까?\n\n한번 취소한 결제는 다시 복구할 수 없습니다.")) {
+                f.pg_cancel.value = 1;
+                msg = cancel_pg+" 결제 취소와 함께 ";
+            } else {
+                f.pg_cancel.value = 0;
+                msg = "";
+            }
+        }
+    }
+    <!--{/}-->
+
+    if (confirm(msg+"\'" + status + "\' 상태를 선택하셨습니다.\n\n선택하신대로 처리하시겠습니까?")) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function del_confirm()
+{
+    if(confirm("주문서를 삭제하시겠습니까?")) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// 기본 배송회사로 설정
+function chk_delivery_company()
+{
+    var chk = document.getElementById("od_delivery_chk");
+    var company = document.getElementById("od_delivery_company");
+    company.value = chk.checked ? chk.value : company.defaultValue;
+}
+
+// 현재 시간으로 배송일시 설정
+function chk_invoice_time()
+{
+    var chk = document.getElementById("od_invoice_chk");
+    var time = document.getElementById("od_invoice_time");
+    time.value = chk.checked ? chk.value : time.defaultValue;
+}
+
+// 결제금액 수동 설정
+function chk_receipt_price()
+{
+    var chk = document.getElementById("od_receipt_chk");
+    var price = document.getElementById("od_receipt_price");
+    price.value = chk.checked ? (parseInt(chk.value) + parseInt(price.defaultValue)) : price.defaultValue;
+}
+</script>

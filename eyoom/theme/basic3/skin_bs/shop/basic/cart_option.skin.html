@@ -1,0 +1,190 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-option input.btn-e-lg {padding:7px 16px;font-size:14px}
+.shop-option input.frm_input {height:24px;line-height:24px;border:1px solid #90929c;padding:0 10px;margin-right:10px}
+.shop-option button.btn_frmline {height:26px;line-height:26px;font-size:12px;padding:0 15px;background:#90929c}
+.shop-option button.btn_frmline:hover {background:#FF2900}
+.shop-option #sit_opt_added li {padding:10px}
+.shop-option #sit_opt_added button {margin-left:2px}
+.shop-option #sit_tot_price {margin-top:10px;font-size:16px;color:#0078FF;font-weight:bold}
+</style>
+
+<!--{? C.G5_IS_MOBILE}-->
+<style>
+.shop-option #sit_opt_added .sit_opt_list span, #sit_opt_added .sit_spl_list span {line-height:24px;font-weight:bold}
+.shop-option #sit_opt_added li div {height:28px;margin:5px 0 0 10px;text-align:right;position:relative;width:160px;float:right}
+.shop-option #sit_opt_added li div .frm_input {width:46px;border:1px solid #d5d5d5;height:28px;padding:0 !important;line-height:28px;text-align:center;background:#fff;position:absolute;top:0;left:40px
+}
+.shop-option #sit_opt_added li div .sit_qty_minus {overflow:hidden;position:absolute;top:0;left:0;background:none;background-color:#f2f2f2;text-indent:0;color:#f2f2f2;border:1px solid #d5d5d5;width:40px;height:28px}
+.shop-option #sit_opt_added li div .sit_qty_minus:after {content:"\f068";color:#5a5a5a;font-family:FontAwesome;font-size:12px;position:absolute;top:50%;left:50%;margin-top:-10px;margin-left:-4px}
+.shop-option #sit_opt_added li div .sit_qty_plus {overflow:hidden;position:absolute;top:0;left:81px;background:none;background-color:#f2f2f2;text-indent:0;color:#f2f2f2;border:1px solid #d5d5d5;width:40px;height:28px}
+.shop-option #sit_opt_added li div .sit_qty_plus:after {content:"\f067";color:#5a5a5a;font-family:FontAwesome;font-size:12px;position:absolute;top:50%;left:50%;margin-top:-10px;margin-left:-4px}
+</style>
+<!--{/}-->
+
+<div class="shop-option">
+	<form name="foption" method="post" action="{C.G5_SHOP_URL}/cartupdate.php" onsubmit="return formcheck(this);" class="eyoom-form">
+	<input type="hidden" name="act" value="optionmod">
+	<input type="hidden" name="it_id[]" value="{it.it_id}">
+	<input type="hidden" id="it_price" value="{row2.ct_price}">
+	<input type="hidden" name="ct_send_cost" value="{row2.ct_send_cost}">
+	<input type="hidden" name="sw_direct">
+
+	<!--{? _option_1}-->
+	<h6><strong>선택옵션</strong></h6>
+	<div class="margin-hr-10"></div>
+	<div class="row">
+		<div class="col col-6">
+			{_option_1}
+		</div>
+	</div>
+	<div class="margin-hr-10"></div>
+	<!--{/}-->
+
+	<!--{? _option_2}-->
+	<h6><strong>추가옵션</strong></h6>
+	<div class="margin-hr-10"></div>
+	<div class="row">
+		<div class="col col-6">
+			{_option_2}
+		</div>
+	</div>
+	<div class="margin-hr-10"></div>
+	<!--{/}-->
+
+	<div id="sit_sel_option">
+	    <ul id="sit_opt_added">
+	        <!--{@ list}-->
+	        <li class="sit_{.cls}_list">
+	            <input type="hidden" name="io_type[{it.it_id}][]" value="{.io_type}">
+	            <input type="hidden" name="io_id[{it.it_id}][]" value="{.io_id}">
+	            <input type="hidden" name="io_value[{it.it_id}][]" value="{.ct_option}">
+	            <input type="hidden" class="io_price" value="{.io_price}">
+	            <input type="hidden" class="io_stock" value="{.it_stock_qty}">
+	            <span class="sit_opt_subj">{.ct_option}</span>
+	            <span class="sit_opt_prc"><!--{? .io_price < 0}-->({=number_format(.io_price)})<!--{:}-->(+{=number_format(.io_price)})<!--{/}--></span>
+	            <div>
+	                <label for="ct_qty_{.key_}" class="sound_only">수량</label>
+	                <input type="text" name="ct_qty[{it.it_id}][]" value="{.ct_qty}" id="ct_qty_{.key_}" class="frm_input" size="5">
+	                <button type="button" class="sit_qty_plus btn_frmline">증가</button>
+	                <button type="button" class="sit_qty_minus btn_frmline">감소</button>
+	                <button type="button" class="btn_frmline">삭제</button>
+	            </div>
+	        </li>
+	        <!--{/}-->
+	    </ul>
+	</div>
+
+	<div id="sit_tot_price"></div>
+
+	<div class="text-center margin-top-20">
+	    <input type="submit" value="선택사항적용" class="btn-e btn-e-lg btn-e-green">
+	</div>
+	</form>
+</div>
+
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+// 셀렉트 이윰폼 적용
+$(document).ready(function(){
+	$(".shop-option .it_option, .shop-option .it_supply").wrap('<label class="select" />');
+	$(".shop-option .it_option, .shop-option .it_supply").after('<i></i>');
+});
+
+function formcheck(f) {
+    var val, io_type, result = true;
+    var sum_qty = 0;
+    var min_qty = parseInt({it.it_buy_min_qty});
+    var max_qty = parseInt({it.it_buy_max_qty});
+    var $el_type = $("input[name^=io_type]");
+
+    $("input[name^=ct_qty]").each(function(index) {
+        val = $(this).val();
+
+        if(val.length < 1) {
+	        swal({
+	            title: "Oops...",
+	            text: "수량을 입력해 주십시오.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            result = false;
+            return false;
+        }
+
+        if(val.replace(/[0-9]/g, "").length > 0) {
+	        swal({
+	            title: "Oops...",
+	            text: "수량은 숫자로 입력해 주십시오.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            result = false;
+            return false;
+        }
+
+        if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
+	        swal({
+	            title: "Oops...",
+	            text: "수량은 1이상 입력해 주십시오.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+            result = false;
+            return false;
+        }
+        io_type = $el_type.eq(index).val();
+        if(io_type == "0")
+            sum_qty += parseInt(val);
+    });
+
+    if(!result) {
+        return false;
+    }
+
+    if(min_qty > 0 && sum_qty < min_qty) {
+        swal({
+            title: "알림!",
+            text: "선택옵션 개수 총합 " + number_format(String(min_qty)) + "개 이상 주문해 주십시오.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    if(max_qty > 0 && sum_qty > max_qty) {
+        swal({
+            title: "알림!",
+            text: "선택옵션 개수 총합 " + number_format(String(max_qty)) + "개 이하로 주문해 주십시오.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+
+    return true;
+}
+
+$("input, textarea, select").on({ 'touchstart' : function() {
+	zoomDisable();
+}});
+$("input, textarea, select").on({ 'touchend' : function() {
+	setTimeout(zoomEnable, 500);
+}});
+function zoomDisable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">');
+}
+function zoomEnable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1">');
+}
+</script>

@@ -1,0 +1,3 @@
+INSERT INTO `g5_eyoom_ebslider` SET `es_code` = '1501911378' ,`es_subject` = 'basic3 테마 헤더 슬라이더' ,`es_theme` = 'basic3' ,`es_skin` = 'basic' ,`es_ytplay` = '1' ,`es_ytmauto` = '1' ,`es_state` = '1' , `es_regdt` = '2018-06-28 11:21:25';
+INSERT INTO `g5_eyoom_ebslider` SET `es_code` = '1512522175' ,`es_subject` = 'EB슬라이더 비디오 01' ,`es_theme` = 'basic3' ,`es_skin` = 'ebslider_video_01' ,`es_ytplay` = '2' ,`es_ytmauto` = '1' ,`es_state` = '1' , `es_regdt` = '2018-06-28 11:21:25';
+INSERT INTO `g5_eyoom_ebslider` SET `es_code` = '1513841606' ,`es_subject` = 'testaaa' ,`es_theme` = 'basic3' ,`es_skin` = 'ebslider_video_01' ,`es_ytplay` = '1' ,`es_ytmauto` = '2' ,`es_state` = '1' , `es_regdt` = '2018-06-28 11:21:25';

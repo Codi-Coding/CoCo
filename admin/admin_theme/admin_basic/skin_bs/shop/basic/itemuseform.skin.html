@@ -1,0 +1,124 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-shop-itemuseform .input-fake {padding:4px 10px;border:1px solid #d5d5d5;margin-bottom:10px}
+</style>
+
+<div class="admin-shop-itemuseform">
+	<form name="fitemuseform" method="post" action="{_action_url}" onsubmit="return fitemuseform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="is_id" value="{_is_id}">
+	<input type="hidden" name="it_id" value="{is.it_id}">
+	<input type="hidden" name="sca" value="{_sca}">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod"  value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx"  value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="uploading" id="uploading" value="">
+
+	<div class="headline">
+		<h4><strong>사용후기 수정</strong></h4>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemuselist&qstr={_qstr}" class="btn-e btn-e-xs btn-e-purple pull-right"><i class="fa fa-list"></i> 목록</a>
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="adm-form-wrap margin-bottom-30">
+		<header>
+			<strong><i class="fa fa-caret-right"></i> 사용후기</strong>
+		</header>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">상품명</label>
+					<div class="input-fake ellipsis">
+						<a href="{C.G5_SHOP_URL}/item.php?it_id={is.it_id}" target="_blank">{=get_text(is.it_name)}</a>
+					</div>
+				</div>
+				<div class="col col-3">
+					<label class="label">이름</label>
+					<div class="input-fake">
+						{_name}
+					</div>
+				</div>
+				<div class="col col-3">
+					<label class="label">평점</label>
+					<div class="margin-bottom-10">
+						<img src="../../../../../../shop/img/s_star{is.is_score}.png"> ({is.is_score} 점)
+					</div>
+				</div>
+				<div class="col col-3">
+					<label class="label">확인</label>
+					<div class="inline-group">
+						<label for="is_confirm_yes" class="radio"><input type="radio" name="is_confirm" value="1" id="is_confirm_yes" {? is.is_confirm}checked{/}><i></i> 예</label>
+						<label for="is_confirm_no" class="radio"><input type="radio" name="is_confirm" value="0" id="is_confirm_no" {? !is.is_confirm}checked{/}><i></i> 아니오</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-12">
+					<section>
+						<label for="is_subject" class="label">제목</label>
+		                <label class="input">
+		                	<input type="text" name="is_subject" value="{=get_text(is.is_subject)}" id="is_subject" required>
+		                </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+                <div class="col col-12">
+	                <section>
+		                <label for="is_content" class="label">내용</label>
+		                {_editor_content_html}
+	                </section>
+                </div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+				<div class="col col-12">
+					<section>
+						<label for="is_reply_subject" class="label">답변 제목</label>
+		                <label class="input">
+		                	<input type="text" name="is_reply_subject" value="{=get_text(is.is_reply_subject)}" id="is_reply_subject">
+		                </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+                <div class="col col-12">
+	                <section>
+		                <label for="is_content" class="label">답변 내용</label>
+		                {_editor_reply_content_html}
+	                </section>
+                </div>
+			</div>
+		</fieldset>
+
+	</div>
+
+	<div class='text-center margin-top-30 margin-bottom-30'>{buttons}</div>
+
+	</form>
+</div>
+
+<script>
+function fitemuseform_submit(f) {
+    <!--{=get_editor_js('is_content')}-->
+    <!--{=get_editor_js('is_reply_content')}-->
+
+    return true;
+}
+</script>

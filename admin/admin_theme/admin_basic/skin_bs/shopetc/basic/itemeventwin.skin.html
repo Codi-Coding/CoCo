@@ -1,0 +1,55 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+?>
+
+<div class="ac-order-print-list">
+	<div class="headline">
+		<h4><strong><i class="fa fa-genderless color-red"></i> [{ev.ev_subject}] 이벤트상품</strong></h4>
+	</div>
+	<div class="margin-bottom-20"></div>
+
+	<form class="eyoom-form">
+	<div class="margin-bottom-30">
+
+		<div class="table-list-eb">
+			<table class="table table-hover">
+		        <thead>
+			        <tr>
+			            <th scope="col">이미지</th>
+			            <th scope="col">상품명</th>
+			            <th scope="col">사용</th>
+			            <th scope="col">삭제</th>
+			        </tr>
+		        </thead>
+		        <tbody>
+			        <!--{@ eventwin_list}-->
+					<tr>
+		                <td><a href="{.href}" target="_blank">{.image}</a></td>
+		                <td>{=cut_str(stripslashes(.it_name), 60, "&#133")}</td>
+		                <td>{? .it_use}사용{:}미사용{/}</td>
+		                <td><a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&amp;pid=itemeventwindel&amp;smode=1&amp;ev_id={_ev_id}&amp;it_id={.it_id}" onclick="return delete_confirm();" class="btn-e btn-e-xs btn-e-yellow">삭제</a></td>
+					</tr>
+					<!--{:}-->
+					<tr>
+						<td colspan="4" class="text-center">자료가 없습니다.</td>
+					</tr>
+					<!--{/}-->
+		        </tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<button type="button" onclick="javascript:window.close()" class="btn-e btn-e-lg btn-e-red">창 닫기</button>
+	</div>
+	</form>
+</div>
+
+<script>
+function delete_confirm() {
+	if(confirm('정말로 선택한 상품을 이벤트에서 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>

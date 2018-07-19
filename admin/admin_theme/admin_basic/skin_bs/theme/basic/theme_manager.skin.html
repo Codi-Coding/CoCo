@@ -1,0 +1,265 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-theme-manager .function-btns	.btn-e-sm {margin-bottom:5px}
+.admin-theme-manager .admin-divider {position:relative;height:1px;border-top:1px solid #c5c5c5;margin:40px 0}
+.admin-theme-manager .admin-divider .divider-circle {position:absolute;top:-16px;left:50%;margin-left:-16px;width:32px;height:32px;border:2px solid #b5b5b5;background:#fff;text-align:center;line-height:28px;color:#959595;font-size:16px;z-index:1px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+</style>
+
+<div class="admin-theme-manager">
+	<form name="fthemeform" method="post" action="{_theme_action_url}" class="eyoom-form">
+	<input type="hidden" name="w" id="w" value="{_w}">
+	<input type="hidden" name="theme" id="theme" value="">
+	<input type="hidden" name="shop_theme" id="shop_theme" value="">
+	<input type="hidden" name="back_theme" id="back_theme" value="{this_theme}">
+	<input type="hidden" name="back_pid" id="back_pid" value="{_pid}">
+	<input type="hidden" name="page" id="page" value="{_page}">
+	<input type="hidden" name="bo_table" id="bo_table" value="{_GET.bo_table}">
+
+	<div class="function-btns margin-bottom-20">
+		<a href="javascript:;" class="btn-e btn-e-sm btn-e-dark" onclick="eyoom_optimization('latest'); return false;">최신글 정리</a>
+		<a href="javascript:;" class="btn-e btn-e-sm btn-e-dark" onclick="eyoom_optimization('respond'); return false;">내글반응정리</a>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=compress_gpoint&amp;wmode=1" class="btn-e btn-e-sm btn-e-dark" onclick="theme_modal(this.href, '그누포인트 압축하기'); return false;">그누포인트 압축하기</a>
+		<!--{? is_array(countdown_skin)}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=countdown_setup&amp;wmode=1" class="btn-e btn-e-sm btn-e-{? is_countdown}orange{:}dark{/}" onclick="theme_modal(this.href, '공사중 설정'); return false;">공사중 설정</a>
+		<!--{:}-->
+		<a href="javascript:;" onclick="alert('이윰넷에서 countdown 테마를 다운로드받아 세팅하신 후, 공사중설정을 사용하실 수 있습니다.'); return false;" class="btn-e btn-e-sm btn-e-{? is_countdown}orange{:}dark{/}">공사중 설정</a>
+		<!--{/}-->
+	</div>
+
+	<div class="alert alert-primary">
+	    <p class="font-size-12"><strong>테마 매니저</strong> (보유중인 테마 리스트입니다.)</p>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="theme-list"></div>
+
+	</form>
+
+	<div class="admin-divider">
+		<span class="divider-circle"><i class="fa fa-caret-down"></i></span>
+	</div>
+</div>
+
+<div class="modal fade theme-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title">테마 매니저</span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="theme-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+function theme_modal(href, title) {
+    $('.theme-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#product-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.theme-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#theme-iframe").attr("src", href);
+        $('#theme-iframe').height(500);
+        $('html').css({overflow: 'hidden'});
+    });
+    $("#modal-title").text(title);
+    return false;
+}
+
+!function () {
+    var tm_db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.tm_db    = tm_db,
+    tm_db.clients   = [
+	    <!--{@ tlist}-->
+        {
+	        테마명: "<strong>{.theme_name} {? .theme_alias}({.theme_alias}){/}</strong>",
+	        홈페이지테마적용: "{? .is_setup}<a href='javascript:;' data-theme='{.theme_name}' class='set_theme'>{? .theme_name == _theme}<i class='fa fa-check'></i> <strong class='color-red'>적용중</strong>{:}<u>적용하기</u>{/}</a>{:}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=theme_form&amp;thema={.theme_name}&amp;wmode=1' onclick='theme_modal(this.href, \"테마설치\"); return false;' class='btn-e btn-e-xs btn-e-red'>테마설치하기</a>{/}",
+	        <!--{? _is_youngcart}-->
+	        쇼핑몰테마적용: "{? defined('G5_USE_SHOP') && .shop_theme && .is_setup}<a href='javascript:;' data-theme='{.theme_name}' class='set_shop_theme'>{? .theme_name == shop_theme || .is_shopping_theme}<i class='fa fa-check'></i> <strong class='color-red'>적용중</strong>{:}<u>적용하기</u>{/}</a>{/}",
+	        <!--{/}-->
+	        기본설정: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=config_form&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '100'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        게시판설정: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=board_list&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '200'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        홈페이지메뉴: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=menu_list&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '300'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        <!--{? _is_youngcart}-->
+	        쇼핑몰메뉴: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=shopmenu_list&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '400'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        <!--{/}-->
+	        배너_광고: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=banner_list&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '500'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        EB_슬라이더: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=ebslider_list&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '600'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        EB_컨텐츠: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=ebcontents_list&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '610'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        태그설정: "{? .is_setup}<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=tag_list&amp;thema={.theme_name}'>{? .theme_name == this_theme && _sub_key == '700'}<i class='fa fa-check'></i> <strong class='color-red'>설정중</strong>{:}<u>설정하기</u>{/}</a>{/}",
+	        홈페이지: "{? .is_setup}<a href='{C.G5_URL}/?theme={? .theme_alias}{.theme_alias}{:}{.theme_name}{/}' target='_blank'><u>미리보기</u></a>{/}",
+	        <!--{? _is_youngcart}-->
+	        쇼핑몰: "{? defined('G5_USE_SHOP') && .shop_theme && .is_setup}<a href='{C.G5_SHOP_URL}/?shop_theme={? .theme_alias}{.theme_alias}{:}{.theme_name}{/}' target='_blank'><u>미리보기</u></a>{/}"
+	        <!--{/}-->
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#theme-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : tm_db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 30,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "테마명", type: "text", width: 110, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "홈페이지테마적용", type: "text", align: "center", width: 100 },
+            <!--{? _is_youngcart}-->
+            { name: "쇼핑몰테마적용", type: "text", align: "center", width: 90 },
+            <!--{/}-->
+            { name: "기본설정", type: "text", align: "center", width: 70 },
+            { name: "게시판설정", type: "text", align: "center", width: 80 },
+            { name: "홈페이지메뉴", type: "text", align: "center", width: 90 },
+            <!--{? _is_youngcart}-->
+            { name: "쇼핑몰메뉴", type: "text", align: "center", width: 80 },
+            <!--{/}-->
+            { name: "배너_광고", type: "text", align: "center", width: 70 },
+            { name: "EB_슬라이더", type: "text", align: "center", width: 80 },
+            { name: "EB_컨텐츠", type: "text", align: "center", width: 80 },
+            { name: "태그설정", type: "text", align: "center", width: 70 },
+            { name: "홈페이지", type: "text", align: "center", width: 70 },
+            <!--{? _is_youngcart}-->
+            { name: "쇼핑몰", type: "text", align: "center", width: 70 }
+            <!--{/}-->
+        ]
+    });
+
+    $(".set_theme").click(function() {
+        var theme = $(this).attr('data-theme');
+        set_theme(theme, 'c');
+    });
+
+    $(".set_shop_theme").click(function() {
+        var theme = $(this).attr('data-theme');
+        set_theme(theme, 's');
+    });
+});
+
+function set_theme(theme,type) {
+	$("#mode").val('theme');
+	switch(type) {
+		case 'c':
+		    swal({
+			    html: true,
+		        title: "홈페이지 적용",
+		        text: "정말로 [<strong class='color-red'>" + theme + "</strong>]테마를 홈페이지 홈으로 사용하시겠습니까?",
+		        type: "warning",
+		        showCancelButton: true,
+		        confirmButtonColor: "#FF9500",
+		        confirmButtonText: "확인",
+		        cancelButtonText: "취소",
+		        closeOnConfirm: true,
+		        closeOnCancel: true
+		    },
+		    function(isConfirm){
+		        if (isConfirm) {
+					$("#theme").val(theme);
+					document.fthemeform.submit();
+		        } else {
+			        return;
+		        }
+		    });
+			break;
+		case 's':
+		    swal({
+			    html: true,
+		        title: "쇼핑몰 적용",
+		        text: "정말로 [<strong class='color-red'>" + theme + "</strong>]테마를 쇼핑몰 홈으로 사용하시겠습니까?",
+		        type: "warning",
+		        showCancelButton: true,
+		        confirmButtonColor: "#FF9500",
+		        confirmButtonText: "확인",
+		        cancelButtonText: "취소",
+		        closeOnConfirm: true,
+		        closeOnCancel: true
+		    },
+		    function(isConfirm){
+		        if (isConfirm) {
+					$("#shop_theme").val(theme);
+					document.fthemeform.submit();
+		        } else {
+			        return;
+		        }
+		    });
+		    break;
+	}
+}
+
+function eyoom_optimization(target) {
+	var msg='';
+	switch(target) {
+		case 'latest': msg = "이윰 최신글을 정리합니다.\n게시물의 수에 따라 시간이 소요될 수 있습니다.\n\n계속 진행하시겠습니까?"; break;
+		case 'respond': msg = "내글반응의 노출숫자를 실 데이타와 일치시킵니다.\n\n계속 진행하시겠습니까?";break;
+	}
+    swal({
+        title: "알림!",
+        text: msg,
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF9500",
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+        closeOnConfirm: true,
+        closeOnCancel: true
+    },
+    function(isConfirm){
+        if (isConfirm) {
+			var url = "{C.EYOOM_ADMIN_INC_URL}/eyoom_optimization.php";
+			$.ajax({
+				url: url,
+				type: "POST",
+				data: {'tg': target },
+				dataType: "json",
+				async: false,
+				cache: false,
+				success: function(data) {
+					if(data.result == 'yes'){
+						alert('정상적으로 처리하였습니다.');
+					}
+				}
+			});
+        } else {
+	        return false;
+        }
+    });
+}
+</script>

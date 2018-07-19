@@ -1,0 +1,86 @@
+<?php if (!defined('_EYOOM_IS_ADMIN_')) exit;
+
+add_stylesheet('<link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../plugins/malihu-custom-scrollbar/jquery.mCustomScrollbar.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../plugins/waves/waves.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen">',0);
+
+?>
+
+<!--{? !_wmode }-->
+<div class="wrapper sidebar-expand topbar-fixed">
+	<div class="wrapper-in">
+	    <div class="admin-container">
+	        <div class="col-md-3 left-area side-fixed">
+	            <div class="sidebar-wrap">
+	                <div class="navbar nav-title">
+	                    <a href="{C.EYOOM_ADMIN_URL}" class="nav-title-logo waves-effect waves-light">
+	                        <i class="fa fa-cogs"></i><span>관리자모드</span>
+	                    </a>
+	                </div>
+	                <div class="clearfix"></div>
+	                <div class="adm-member-box">
+		                <div class="adm-member-photo">
+			                <!--{? !member.photo_url}-->
+			                <i class="fa fa-user"></i>
+			                <!--{:}-->
+			                <img src="{member.photo_url}" class="img-responsive">
+			                <!--{/}-->
+		                </div>
+		                <div class="adm-member-info">
+			                <h5 class="ellipsis">{config.cf_title}</h5>
+			                <h6 class="ellipsis">{member.mb_name}</h6>
+			                <p class="info-left">Lv. <span>{eyoomer.level}</span></p>
+			                <p class="info-right">P. <span>{=number_format(eyoomer.level_point)}</span></p>
+			                <div class="clearfix"></div>
+		                </div>
+		                <div class="clearfix"></div>
+	                </div>
+	                <div id="sidebar-menu" class="admin-menu">
+	                    <div class="admin-menu-box">
+	                        <ul class="nav sidebar-menu">
+		                        <!--{@ admmenu}-->
+		                        <li {.active}>
+		                        	<a href="javascript:void(0)" class="waves-effect waves-light">
+			                        	<i class="fa {.fa_icon}"></i> {.menu} <span class="fa fa-caret-down"></span>
+			                        </a>
+		                        	<ul class="nav sidebar-submenu">
+			                        	<!--{@ submenu}-->
+			                        	<li class="waves-effect waves-light" id="submenu_{..skey}"><a href="{..href}" {..target}>{..menu}</a></li>
+			                        	<!--{/}-->
+		                        	</ul>
+		                        </li>
+		                        <!--{/}-->
+	                        </ul>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="topbar">
+	            <div class="topbar-nav">
+                    <div class="nav admin-toggle waves-effect">
+                        <a class="#" id="topbar-toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <div class="topbar-nav-menu">
+	                    <ul class="list-unstyled list-inline">
+		                    <li class="hidden-xs screenfull tooltips" data-placement="bottom" data-toggle="tooltip" data-original-title="전체화면 ON-OFF">전체화면</li>
+		                    <li class="hidden-xs"><a href="{C.EYOOM_ADMIN_URL}">관리자메인</a></li>
+		                    <li class="hidden-xs"><a href="{C.EYOOM_ADMIN_URL}/?dir=config&pid=config_form">기본환경설정</a></li>
+		                    <!--{? _is_youngcart}-->
+		                    <li class="hidden-xs"><a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=configform">쇼핑몰환경설정</a></li>
+		                    <!--{/}-->
+		                    <li><a href="{C.G5_URL}/?theme={eyoom_basic.theme}">홈페이지메인</a></li>
+		                    <!--{? _is_youngcart}-->
+		                    <li><a href="{C.G5_SHOP_URL}{? eyoom_basic.shop_theme}/?shop_theme={eyoom_basic.shop_theme}{/}">쇼핑몰메인</a></li>
+		                    <!--{/}-->
+		                    <li class="last-li"><a href="{C.G5_BBS_URL}/logout.php" class="btn-e btn-e-xs btn-e-dark"><i class="fa fa-sign-out"></i> 로그아웃</a></li>
+	                    </ul>
+                    </div>
+	            </div>
+	        </div>
+	        <div class="right-area" role="main">
+<!--{/}-->

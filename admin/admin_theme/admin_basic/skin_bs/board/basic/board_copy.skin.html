@@ -1,0 +1,88 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<script src="{C.G5_ADMIN_URL}/admin.js?ver={C.G5_JS_VER}"></script>
+
+<div class="admin-board-copy">
+	<form name="fboardcopy" id="fboardcopy" method="post" action="{_action_url}" onsubmit="return fboardcopy_check(this)" class="eyoom-form">
+	<input type="hidden" name="bo_table" id="bo_table" value="{_bo_table}">
+	<input type="hidden" name="token" value="">
+
+	<div id="board-copy">
+		<div class="adm-form-wrap margin-bottom-20">
+			<header><strong><i class="fa fa-caret-right"></i> [ <span class="color-red">{board.bo_subject}</span> ] 게시판 복사</strong></header>
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="bo_subject" class="label">원본 테이블명</label>
+							<label class="input">
+								<input type="text" value="{_bo_table}" disabled>
+							</label>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="target_table" class="label">복사 테이블명</label>
+					        <label class="input">
+					            <input type="text" name="target_table" id="target_table" value="{board.bo_mobile_subject}" required maxlength="20">
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 영문자, 숫자, _ 만 가능 (공백없이)</div>
+						</section>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="target_subject" class="label">게시판 제목</label>
+					        <label class="input">
+					            <input type="text" name="target_subject" id="target_subject" value="[복사본] {board.bo_subject}" required maxlength="120">
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 영문자, 숫자, _ 만 가능 (공백없이)</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label class="label">복사 유형</label>
+					        <div class="inline-group">
+								<label for="copy_case" class="radio"><input type="radio" name="copy_case" id="copy_case" value="schema_only" checked><i></i>구조만 복사</label>
+								<label for="copy_case2" class="radio"><input type="radio" name="copy_case" id="copy_case2" value="schema_data_both"><i></i>구조와 데이터 모두 복사</label>
+							</div>
+						</section>
+					</div>
+					<!--{? _eyoom_board.bo_table}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">이윰 게시판설정 복사</label>
+					        <div class="inline-group">
+								<label for="copy_config1" class="radio"><input type="radio" name="copy_config" id="copy_config1" value="0" checked><i></i>기본값 사용</label>
+								<label for="copy_config2" class="radio"><input type="radio" name="copy_config" id="copy_config2" value="1"><i></i>이윰 게시판설정 복사하기</label>
+							</div>
+						</section>
+					</div>
+				</div>
+				<!--{/}-->
+			</fieldset>
+		</div>
+
+		<div class="text-center margin-top-10">
+			<input type="submit" value="복사" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+		</div>
+	</div>
+	</form>
+</div>
+
+<script>
+function fboardcopy_check(f) {
+    if (f.bo_table.value == f.target_table.value) {
+        alert("원본 테이블명과 복사할 테이블명이 달라야 합니다.");
+        return false;
+    }
+
+    return true;
+}
+</script>

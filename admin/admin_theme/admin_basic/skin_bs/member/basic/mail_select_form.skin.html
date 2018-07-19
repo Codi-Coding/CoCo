@@ -1,0 +1,113 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.ex_input {padding:3px 10px;border:1px solid #d5d5d5}
+</style>
+
+<div class="admin-mail-select-form">
+	<form name="frmsendmailselectform" id="frmsendmailselectform" method="post" action="{_action_url}" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="ma_id" value="{_ma_id}">
+
+	<div class="headline">
+		<h4><strong>회원메일발송 대상선택</strong></h4>
+	</div>
+
+	<div class="cont-text-bg">
+		<p class="bg-info font-size-12"><i class="fa fa-info-circle"></i> 전체회원 {=number_format(_tot_cnt)}명 , 탈퇴대기회원 {=number_format(_finish_cnt)}명, 정상회원 {=number_format(_tot_cnt - _finish_cnt)}명 중 메일 발송 대상 선택</p>
+	</div>
+
+	<div class="margin-bottom-30"></div>
+
+	<div class="adm-form-wrap margin-bottom-30">
+		<header><strong><i class="fa fa-caret-right"></i> 대상선택</strong></header>
+		<fieldset>
+			<div class="row">
+				<div class="col col-12">
+					<section>
+						<label class="label">회원 ID</label>
+						<div class="inline-group">
+				        	<label for="mb_id1_all" class="radio"><input type="radio" name="mb_id1" value="1" id="mb_id1_all" {? _mb_id1}checked{/}><i></i> 전체</label>
+				        	<label for="mb_id1_section" class="radio input"><input type="radio" name="mb_id1" value="0" id="mb_id1_section" {? !_mb_id1}checked{/}><i></i> 구간
+				        	</label>
+				        	<input type="text" name="mb_id1_from" value="{_mb_id1_from}" id="mb_id1_from" title="시작구간" class="ex_input"> 에서 <input type="text" name="mb_id1_to" value="{_mb_id1_to}" id="mb_id1_to" title="종료구간" class="ex_input"> 까지
+						</div>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-9">
+					<section>
+						<label for="mb_email" class="label">E-mail</label>
+				        <label class="input">
+							<input type="text" name="mb_email" id="mb_email" value="{_mb_email}">
+						</label>
+						<div class="note margin-bottom-10"><strong>Note:</strong> 메일 주소에 단어 포함 (예 : @{=preg_replace("#^(www[^\.]*\.)#", "", _SERVER.HTTP_HOST)})</div>
+					</section>
+				</div>
+
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<section>
+						<label for="mb_mailling" class="label">메일링</label>
+				        <label class="select">
+				            <select name="mb_mailling" id="mb_mailling">
+				                <option value="1">수신동의한 회원만</option>
+				                <option value="">전체</option>
+				            </select><i></i>
+				        </label>
+					</section>
+				</div>
+				<div class="col col-3">
+					<section>
+						<label for="mb_level_from" class="label">최소권한</label>
+				        <label class="select">
+				            <select name="mb_level_from" id="mb_level_from">
+					            <!--{@ array_fill(1,10,1)}-->
+				                <option value="{.index_+1}">{.index_+1}</option>
+				                <!--{/}-->
+				            </select><i></i>
+				        </label>
+					</section>
+				</div>
+				<div class="col col-3">
+					<section>
+						<label for="mb_level_to" class="label">최대권한</label>
+				        <label class="select">
+				            <select name="mb_level_to" id="mb_level_to">
+					            <!--{@ array_fill(1,10,1)}-->
+				                <option value="{.index_+1}" {? .index_+1 == 10}selected{/}>{.index_+1}</option>
+				                <!--{/}-->
+				            </select><i></i>
+				        </label>
+					</section>
+				</div>
+				<div class="col col-3">
+					<section>
+						<label for="gr_id" class="label">게시판 그룹회원</label>
+				        <label class="select">
+				            <select name="gr_id" id="gr_id">
+					            <option value="">전체</option>
+					            <!--{@ gr_list}-->
+				                <option value="{.gr_id}">{.gr_subject}</option>
+				                <!--{/}-->
+				            </select><i></i>
+				        </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" id="btn_submit" value="메일발송 대상 확인" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+		<a href="./?dir=member&amp;pid=mail_list" class="btn-e btn-e-lg btn-e-dark">목록</a>
+	</div>
+	</form>
+</div>

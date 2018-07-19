@@ -1,0 +1,110 @@
+<?php if (!defined("_GNUBOARD_")) exit; ?>
+
+<style>
+.my-info {position:relative;margin-bottom:30px}
+.my-info .info-title {position:relative;margin-bottom:30px}
+.my-info .info-title-btn {text-align:right;padding-top:7px}
+@media (max-width: 767px) {
+	.my-info .info-title-name, .my-info .info-title-btn {text-align:center}
+}
+.my-info .info-box {position:relative;width:280px;margin:0 auto 30px;padding:15px 15px 30px;border:1px solid #e5e5e5;border-radius:3px !important}
+.my-info .info-photo {position:relative;overflow:hidden;width:90px;height:90px;margin:10px auto 20px;text-align:center;background-color:#abacb5;border:5px solid #fff;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important;box-shadow:0 0 1px rgba(0,0,0,.3)}
+.my-info .info-photo img {display:block;width:100% \9;max-width:100%;height:auto}
+.my-info .info-follow {border-top:1px dotted #e5e5e5;padding-top:20px;margin-top:20px}
+.my-info .info-follow p {padding:3px 0;font-size:12px}
+.my-info .info-follow span.badge {padding:3px 10px;min-width:80px;text-align:right}
+.my-info .info-box-bottom {position:relative;padding:15px;border:1px solid #e5e5e5;border-radius:3px !important;font-size:12px}
+</style>
+
+<div class="my-info">
+	<div class="info-title">
+		<div class="row">
+			<div class="col-sm-6 sm-margin-bottom-30">
+				<h4 class="info-title-name">
+					<strong><i class="fa fa-user-circle"></i> <!--{? eyoomer.mb_nick}-->{eyoomer.mb_nick}<!--{:}-->{eyoomer.mb_name}<!--{/}--></strong> <small>님의 페이지</small>
+				</h4>
+			</div>
+			<div class="col-sm-6">
+				<div class="info-title-btn">
+					<!--{? eyoom.is_community_theme == 'y'}-->
+					<a href="{C.G5_URL}/?{member.mb_id}" class="btn-e btn-e-dark rounded"><i class="fa fa-user-circle-o margin-right-5"></i>마이홈</a>
+					<!--{/}-->
+					<a href="{C.G5_BBS_URL}/member_confirm.php?url=register_form.php" class="btn-e btn-e-dark rounded"><i class="fa fa-info-circle margin-right-5"></i>정보수정</a>
+					<!--{? eyoom.use_shop_itemtype == 'y'}-->
+					<a href="{C.G5_SHOP_URL}/mypage.php" class="btn-e btn-e-red rounded"><i class="fa fa-shopping-cart margin-right-5"></i>쇼핑몰마이페이지</a>
+					<!--{/}-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="info-box">
+		<div class="info-photo">
+			<!--{? eyoomer.mb_photo}-->{eyoomer.mb_photo}<!--{:}--><img src="./img/user.jpg"><!--{/}-->
+		</div>
+		<a href="#" class="btn-e btn-e-lg btn-e-default btn-e-block" data-toggle="modal" data-target=".profile-modal">프로필 사진 변경</a>
+		<div class="info-content">
+	        <div class="info-point margin-top-20">
+	            <div class="width-50 pull-left font-size-12">
+	                <p class="margin-bottom-0">{levelset.gnu_name} - <a {? !C.G5_IS_MOBILE}href="javascript:void(0);" onclick="point_modal();"{:}href="{C.G5_BBS_URL}/point.php" target="_blank"{/}><u>내역보기</u></span></p>
+	                <p class="color-red font-size-13">{=number_format(member.mb_point)}</p></a>
+	            </div>
+	            <!--{? levelset.use_eyoom_level != 'n'}-->
+	            <div class="widht-50 pull-right font-size-12 text-right">
+	                <p class="margin-bottom-0">{levelset.eyoom_name}</p>
+	                <p class="color-red font-size-13">{=number_format(eyoomer.level_point)}</p>
+	            </div>
+	            <!--{/}-->
+	            <div class="clearfix"></div>
+	        </div>
+	        <!--{? levelset.use_eyoom_level != 'n'}-->
+	        <div class="info-statistics">
+				<span class="progress-info-left">[레벨 {eyoomer.level}] - 진행률</span>
+				<span class="progress-info-right">{lvinfo.ratio}%</span>
+				<div class="progress progress-e progress-xxs progress-striped active margin-top-5 margin-bottom-0">
+				    <div class="progress-bar progress-bar-yellow" role="progressbar" aria-valuenow="{lvinfo.ratio}" aria-valuemin="0" aria-valuemax="100" style="width:{lvinfo.ratio}%">
+				    </div>
+				</div>
+	        </div>
+	        <!--{/}-->
+			<div class="info-follow">
+				<p><span class="pull-left">&middot; 맞팔친구</span><a href="{C.G5_URL}/?{member.mb_id}&friends"><span class="badge badge-yellow pull-right tooltips" data-placement="left" data-toggle="tooltip" data-original-title="맞팔친구"><!--{? eyoomer.cnt_friends}-->{eyoomer.cnt_friends}명<!--{:}-->0명<!--{/}--></span></a></p>
+				<div class="clearfix"></div>
+				<p><span class="pull-left">&middot; 팔로워</span><a href="{C.G5_URL}/?{member.mb_id}&follower"><span class="badge badge-dark pull-right tooltips" data-placement="left" data-toggle="tooltip" data-original-title="팔로워"><!--{? eyoomer.cnt_follower}-->{eyoomer.cnt_follower}명<!--{:}-->0명<!--{/}--></span></a></p>
+				<div class="clearfix"></div>
+				<p><span class="pull-left">&middot; 팔로윙</span><a href="{C.G5_URL}/?{member.mb_id}&following"><span class="badge badge-dark pull-right tooltips" data-placement="left" data-toggle="tooltip" data-original-title="팔로윙"><!--{? eyoomer.cnt_following}-->{eyoomer.cnt_following}명<!--{:}-->0명<!--{/}--></span></a></p>
+				<div class="clearfix"></div>
+			</div>
+        </div>
+	</div>
+    <div class="info-box-bottom">
+		- <strong>가입일</strong> : {member.mb_datetime}
+		<div class="margin-hr-10"></div>
+		- <strong>이메일</strong> : {member.mb_email}
+		<!--{? member.mb_homepage}-->
+		<div class="margin-hr-10"></div>
+		- <strong>홈페이지</strong> : <a href="{member.mb_homepage}" target="_blank">{member.mb_homepage}</a>
+		<!--{/}-->
+		<!--{? member.mb_tel}-->
+		<div class="margin-hr-10"></div>
+		- <strong>전화번호</strong> : {member.mb_tel}
+		<!--{/}-->
+		<!--{? member.mb_hp}-->
+		<div class="margin-hr-10"></div>
+		- <strong>휴대폰</strong> : {member.mb_hp}
+		<!--{/}-->
+		<!--{? member.mb_signature}-->
+		<div class="margin-hr-10"></div>
+		- <strong>서명</strong>
+		<div class="alert alert-info rounded margin-top-10 margin-bottom-0">
+		    <p>{=stripslashes(member.mb_signature)}</p>
+		</div>
+		<!--{/}-->
+		<!--{? member.mb_profile}-->
+		<div class="margin-hr-10"></div>
+		- <strong>자기소개</strong>
+		<div class="alert alert-success rounded margin-top-10 margin-bottom-0">
+		    <p>{=stripslashes(member.mb_profile)}</p>
+		</div>
+		<!--{/}-->
+    </div>
+</div>

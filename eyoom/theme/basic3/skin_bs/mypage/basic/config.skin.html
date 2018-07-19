@@ -1,0 +1,210 @@
+<?php if (!defined("_GNUBOARD_")) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sly/tab_scroll_category.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.my-config .eyoom-form {border:1px solid #e5e5e5;border-top:0}
+.my-config .eyoom-form header {border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5;background:#f2f2f2;font-weight:bold}
+.my-config .eyoom-form header .btn-e-xs {font-size:11px}
+.my-config .eyoom-form footer {border-top:1px solid #e5e5e5}
+.my-config .board-select-box {position:relative;width:50%;float:left;padding:3px 15px 3px 0;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+@media (max-width:767px) {
+	.my-config .board-select-box {width:100%}
+}
+</style>
+
+<div class="tab-scroll-category">
+{# tab_category}
+</div>
+
+<div class="my-config">
+	<div class="cont-text-bg margin-bottom-30">
+	    <p class="bg-primary rounded">환경 설정</p>
+	</div>
+
+	<form name="myconfigform" id="myconfigform" method="post" action="{_action_url}" onsubmit="return check_config_form(this);" role="form" class="eyoom-form">
+
+	<header>기본설정<span class="pull-right"><input type="submit" class="btn-e btn-e-xs btn-e-indigo rounded" value="적용하기"></span></header>
+	<div class="clearfix"></div>
+	<fieldset>
+		<section>
+			<label class="label">홈설정</label>
+			<div class="inline-group">
+				<label for="main_index1" class="radio"><input type="radio" name="main_index" id="main_index1" value='index' {? eyoomer.main_index=='index'}checked="checked"{/}><i class="rounded-x"></i>기본</label>
+				<label for="main_index2" class="radio"><input type="radio" name="main_index" id="main_index2" value='mypage' {? eyoomer.main_index=='mypage'}checked="checked"{/}><i class="rounded-x"></i>마이페이지</label>
+				<label for="main_index3" class="radio"><input type="radio" name="main_index" id="main_index3" value='myhome' {? eyoomer.main_index=='myhome'}checked="checked"{/}><i class="rounded-x"></i>마이홈</label>
+			</div>
+			<div class="note"><strong>Note:</strong> {config.cf_title} 의 홈을 원하시는 페이지로 설정하실 수 있습니다.</div>
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="label">마이홈</label>
+			<div class="inline-group">
+				<label for="open_page1" class="radio"><input type="radio" name="open_page" id="open_page1" value='y' {? eyoomer.open_page=='y'}checked="checked"{/}><i class="rounded-x"></i>공개</label>
+				<label for="open_page2" class="radio"><input type="radio" name="open_page" id="open_page2" value='n' {? eyoomer.open_page=='n'}checked="checked"{/}><i class="rounded-x"></i>비공개</label>
+			</div>
+			<div class="note"><strong>Note:</strong> 마이홈의 공개여부를 설정합니다.</div>
+		</section>
+	</fieldset>
+
+	<header>On-Off 설정<span class="pull-right"><input type="submit" class="btn-e btn-e-xs btn-e-indigo rounded" value="적용하기"></span></header>
+	<div class="clearfix"></div>
+	<fieldset>
+		<section>
+			<label class="toggle yellow-toggle"><input type="checkbox" class="onoff_social" value="on" {? eyoomer.onoff_social=='on'}checked{/}><i class="rounded-4x"></i>소셜기능</label>
+			<input type="hidden" name="onoff_social" id="onoff_social" value="{eyoomer.onoff_social}">
+			<div class="note"><strong>Note:</strong> 팔로우/팔로윙/친구맺기 기능의 활성화 여부를 설정합니다.</div>
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="toggle yellow-toggle"><input type="checkbox" class="onoff_push" value="on" {? eyoomer.onoff_push=='on'}checked{/}><i class="rounded-4x"></i>알람 푸쉬기능</label>
+			<input type="hidden" name="onoff_push" id="onoff_push" value="{eyoomer.onoff_push}">
+			<div class="note"><strong>Note:</strong> 실시간 푸쉬 메세지를 받을지 설정합니다.</div>
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="toggle yellow-toggle"><input type="checkbox" class="onoff_push_respond" value="on" {? eyoomer.onoff_push_respond=='on'}checked{/}><i class="rounded-4x"></i>내글반응 알람</label>
+			<input type="hidden" name="onoff_push_respond" id="onoff_push_respond" value="{eyoomer.onoff_push_respond}">
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="toggle yellow-toggle"><input type="checkbox" class="onoff_push_memo" value="on" {? eyoomer.onoff_push_memo=='on'}checked{/}><i class="rounded-4x"></i>쪽지 알람</label>
+			<input type="hidden" name="onoff_push_memo" id="onoff_push_memo" value="{eyoomer.onoff_push_memo}">
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="toggle yellow-toggle"><input type="checkbox" class="onoff_push_social" value="on" {? eyoomer.onoff_push_social=='on'}checked{/}><i class="rounded-4x"></i>소셜 알람</label>
+			<input type="hidden" name="onoff_push_social" id="onoff_push_social" value="{eyoomer.onoff_push_social}">
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="toggle yellow-toggle"><input type="checkbox" class="onoff_push_likes" value="on" {? eyoomer.onoff_push_likes=='on'}checked{/}><i class="rounded-4x"></i>라이크 알람</label>
+			<input type="hidden" name="onoff_push_likes" id="onoff_push_likes" value="{eyoomer.onoff_push_likes}">
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="toggle yellow-toggle"><input type="checkbox" class="onoff_push_guest" value="on" {? eyoomer.onoff_push_guest=='on'}checked{/}><i class="rounded-4x"></i>방명록 알람</label>
+			<input type="hidden" name="onoff_push_guest" id="onoff_push_guest" value="{eyoomer.onoff_push_guest}">
+		</section>
+	</fieldset>
+
+	<header>게시글 출력설정<span class="pull-right"><input type="submit" class="btn-e btn-e-xs btn-e-indigo rounded" value="적용하기"></span></header>
+	<div class="clearfix"></div>
+	<fieldset>
+		<section>
+			<label class="label">내타임라인</label>
+			<div class="inline-group">
+				<label for="view_timeline1" class="radio"><input type="radio" name="view_timeline" id="view_timeline1" value='1' {? eyoomer.view_timeline=='1'}checked="checked"{/}><i class="rounded-x"></i>포스팅+댓글 모두보기</label>
+				<label for="view_timeline2" class="radio"><input type="radio" name="view_timeline" id="view_timeline2" value='2' {? eyoomer.view_timeline=='2'}checked="checked"{/}><i class="rounded-x"></i>포스팅글만 보기</label>
+				<label for="view_timeline3" class="radio"><input type="radio" name="view_timeline" id="view_timeline3" value='3' {? eyoomer.view_timeline=='3'}checked="checked"{/}><i class="rounded-x"></i>댓글만 보기</label>
+			</div>
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="label">관심게시판</label>
+			<div class="inline-group">
+				<label for="view_favorite1" class="radio"><input type="radio" name="view_favorite" id="view_favorite1" value='1' {? eyoomer.view_favorite=='1'}checked="checked"{/}><i class="rounded-x"></i>포스팅+댓글 모두보기</label>
+				<label for="view_favorite2" class="radio"><input type="radio" name="view_favorite" id="view_favorite2" value='2' {? eyoomer.view_favorite=='2'}checked="checked"{/}><i class="rounded-x"></i>포스팅글만 보기</label>
+				<label for="view_favorite3" class="radio"><input type="radio" name="view_favorite" id="view_favorite3" value='3' {? eyoomer.view_favorite=='3'}checked="checked"{/}><i class="rounded-x"></i>댓글만 보기</label>
+			</div>
+		</section>
+
+		<div class="margin-hr-10"></div>
+
+		<section>
+			<label class="label">팔로윙글</label>
+			<div class="inline-group">
+				<label for="view_followinggul1" class="radio"><input type="radio" name="view_followinggul" id="view_followinggul1" value='1' {? eyoomer.view_followinggul=='1'}checked="checked"{/}><i class="rounded-x"></i>포스팅+댓글 모두보기</label>
+				<label for="view_followinggul2" class="radio"><input type="radio" name="view_followinggul" id="view_followinggul2" value='2' {? eyoomer.view_followinggul=='2'}checked="checked"{/}><i class="rounded-x"></i>포스팅글만 보기</label>
+				<label for="view_followinggul3" class="radio"><input type="radio" name="view_followinggul" id="view_followinggul3" value='3' {? eyoomer.view_followinggul=='3'}checked="checked"{/}><i class="rounded-x"></i>댓글만 보기</label>
+			</div>
+		</section>
+	</fieldset>
+
+	<header>관심게시판 설정<span class="pull-right"><input type="submit" class="btn-e btn-e-xs btn-e-indigo rounded" value="적용하기"></span></header>
+	<div class="clearfix"></div>
+	<fieldset>
+		<section>
+			<label class="label">게시판 선택</label>
+			<div class="clearfix"></div>
+			<!--{@ list}-->
+			<div class="board-select-box">
+				<label for="favorite_{.key_}" class="checkbox">
+					<input type="checkbox" name="favorite[{.key_}]" id="favorite_{.key_}" value="{.bo_table}" {? .check}checked="checked"{/}><i></i>{.gr_subject} &gt; {.bo_subject}
+				</label>
+			</div>
+			<!--{/}-->
+		</section>
+	</fieldset>
+
+	<footer class="text-center">
+		<input type="submit" class="btn-e btn-e-xlg btn-e-indigo" value="적용하기">
+	</footer>
+
+	</form>
+</div>
+
+<script src="../../../plugins/sly/vendor_plugins.min.js"></script>
+<script src="../../../plugins/sly/sly.min.js"></script>
+<script>
+$(function() {
+	var $frame = $('#tab-category');
+	var $wrap  = $frame.parent();
+	$frame.sly({
+		horizontal: 1,
+		itemNav: 'centered',
+		smart: 1,
+		activateOn: 'click',
+		mouseDragging: 1,
+		touchDragging: 1,
+		releaseSwing: 1,
+		scrollBar: $wrap.find('.scrollbar'),
+		scrollBy: 1,
+		speed: 300,
+		elasticBounds: 1,
+		easing: 'easeOutExpo',
+		dragHandle: 1,
+		dynamicHandle: 1,
+		clickBar: 1,
+		prev: $wrap.find('.prev'),
+		next: $wrap.find('.next')
+	});
+	var tabWidth = $('#tab-category').width();
+	var categoryWidth = $('.category-list').width();
+	if (tabWidth < categoryWidth) {
+		$('.controls').show();
+	}
+});
+
+function check_config_form(f) {
+	return true;
+}
+$(function(){
+	$(".toggle input").click(function(){
+		var id = $(this).attr('class');
+		$("#"+id).is(':checked')
+
+		if($(this).is(':checked')) {
+			$('#'+id).val('on');
+		} else {
+			$('#'+id).val('off');
+		}
+	});
+});
+</script>

@@ -1,0 +1,552 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-eblatest-form .eblatest-image {max-width:300px}
+</style>
+
+<div class="admin-eblatest-form">
+
+	<form name="feblatestitemform" method="post" action="{_action_url}" onsubmit="return feblatestitemform_submit(this);" class="eyoom-form">	
+	<input type="hidden" name="iw" value="{? _li_no}u{:}{_iw}{/}">
+	<input type="hidden" name="theme" id="theme" value="{? this_theme}{this_theme}{:}{_theme}{/}">
+	<input type="hidden" name="li_no" id="li_no" value="{el_item.li_no}">
+	<input type="hidden" name="el_code" id="el_code" value="{? el_item.el_code}{el_item.el_code}{:}{_el_code}{/}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div id="eblatest-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label class="label">노출여부</label>
+							<div class="inline-group">
+								<label for="li_state_1" class="radio"><input type="radio" name="li_state" id="li_state_1" value="1" {? el_item.li_state == '1' || !el_item.li_state}checked{/}><i></i> 보이기</label>
+								<label for="li_state_2" class="radio"><input type="radio" name="li_state" id="li_state_2" value="2" {? el_item.li_state == '2'}checked{/}><i></i> 숨기기</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">출력순서</label>
+							<label for="li_sort" class="input">
+								<i class="icon-append fa fa-sort-numeric-asc"></i>
+						        <input type="text" name="li_sort" id="li_sort" value="{? el_item.li_sort}{el_item.li_sort}{:}{_li_max_sort}{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label class="label">최신글 제목</label>
+							<label for="li_title" class="input">
+						        <input type="text" name="li_title" id="li_title" value="{=get_text(el_item.li_title)}" required>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 예) 자유게시판, 질문과 답변
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label class="label">추출 게시판 (bo_table)</label>
+							<label for="li_bo_table" class="select">
+						        <select name="li_bo_table" id="li_bo_table">
+							        <option value="">::선택::</option>
+							        <!--{@ bo_info}-->
+							        <option value="{.bo_table}" {? el_item.li_bo_table == .bo_table}selected{/}>[{.bo_table}] {.bo_subject}</option>
+							        <!--{/}-->
+						        </select><i></i>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 단일 게시판에서 추출하고자 할 때 입력해 주세요.
+							</div>
+						</section>
+					</div>
+
+					<div class="col col-6">
+						<section>
+							<label class="label">게시판 그룹 (gr_id)</label>
+							<label for="li_gr_id" class="select">
+						        <select name="li_gr_id" id="li_gr_id">
+							        <option value="">::선택::</option>
+							        <!--{@ gr_info}-->
+							        <option value="{.gr_id}" {? el_item.li_gr_id == .gr_id}selected{/}>[{.gr_id}] {.gr_subject}</option>
+							        <!--{/}-->
+						        </select><i></i>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 특정 그룹에 속한 모든 게시판의 게시물을 추출하고자 할 때 그룹ID를 입력해 주세요.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">포함 게시판 (bo_table)</label>
+							<label for="li_include" class="input">
+						        <input type="text" name="li_include" id="li_include" value="{? el_item.li_include}{el_item.li_include}{/}">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 여러 게시판의 최신 게시물을 동시에 불러옵니다. 쉼표(,)로 구분하여 bo_table를 입력해 주세요.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">제외 게시판 (bo_table)</label>
+							<label for="li_exclude" class="input">
+						        <input type="text" name="li_exclude" id="li_exclude" value="{? el_item.li_exclude}{el_item.li_exclude}{/}">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 게시판 그룹을 일괄로 불러올 때 제외하고 싶은 게시판의 bo_table를 쉼표(,)로 구분하여 입력해 주세요.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">최신글 게시물수</label>
+							<label for="li_count" class="input">
+								<i class="icon-append">개</i>
+						        <input type="text" name="li_count" id="li_count" value="{? el_item.li_count}{el_item.li_count}{:}5{/}" required maxlength="2">
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">게시물 제목 길이</label>
+							<label for="li_cut_subject" class="input">
+								<i class="icon-append">글자</i>
+						        <input type="text" name="li_cut_subject" id="li_cut_subject" value="{? el_item.li_cut_subject}{el_item.li_cut_subject}{:}0{/}" required maxlength="2">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 입력한 길이 만큼 잘라서 표기합니다. 0으로 설정시 전체 제목이 출력됩니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">추출 대상 기간</label>
+							<label for="li_period" class="input">
+								<i class="icon-append">일</i>
+						        <input type="text" name="li_period" id="li_period" value="{? el_item.li_period}{el_item.li_period}{:}0{/}" required maxlength="3">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 오늘부터 설정한 날의 이전까지 등록한 게시물에 대하여 추출합니다. 0으로 설정시 제한이 없음
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">이미지 출력 여부</label>
+							<div class="inline-group">
+								<label for="li_img_view_1" class="radio"><input type="radio" name="li_img_view" id="li_img_view_1" value="y" {? el_item.li_img_view == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_img_view_2" class="radio"><input type="radio" name="li_img_view" id="li_img_view_2" value="n" {? el_item.li_img_view == 'n' || !el_item.li_img_view}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">이미지 가로 사이즈</label>
+							<label for="li_img_width" class="input">
+								<i class="icon-append">px</i>
+						        <input type="text" name="li_img_width" id="li_img_width" value="{? el_item.li_img_width}{el_item.li_img_width}{:}300{/}">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 목록에 출력할 이미지의 가로 사이즈
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">이미지 세로 사이즈</label>
+							<label for="li_img_height" class="input">
+								<i class="icon-append">px</i>
+						        <input type="text" name="li_img_height" id="li_img_height" value="{? el_item.li_img_height}{el_item.li_img_height}{:}200{/}">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 목록에 출력할 이미지의 세로 사이즈
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">게시물 내용 출력 여부</label>
+							<div class="inline-group">
+								<label for="li_content_1" class="radio"><input type="radio" name="li_content" id="li_content_1" value="y" {? el_item.li_content == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_content_2" class="radio"><input type="radio" name="li_content" id="li_content_2" value="n" {? el_item.li_content == 'n' || !el_item.li_content}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">게시물 내용 길이</label>
+							<label for="li_cut_content" class="input">
+								<i class="icon-append">글자</i>
+						        <input type="text" name="li_cut_content" id="li_cut_content" value="{? el_item.li_cut_content}{el_item.li_cut_content}{:}300{/}" required maxlength="2">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 입력한 길이 만큼 잘라서 표기합니다. 300자 이상으로 설정하여도 300자까지 출력됩니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">게시판 제목 출력 여부</label>
+							<div class="inline-group">
+								<label for="li_bo_subject_1" class="radio"><input type="radio" name="li_bo_subject" id="li_bo_subject_1" value="y" {? el_item.li_bo_subject == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_bo_subject_2" class="radio"><input type="radio" name="li_bo_subject" id="li_bo_subject_2" value="n" {? el_item.li_bo_subject == 'n' || !el_item.li_bo_subject}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 최신글 리스트에 게시판명의 출력 여부를 결정합니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">게시판 분류 출력여부</label>
+							<div class="inline-group">
+								<label for="li_ca_view_1" class="radio"><input type="radio" name="li_ca_view" id="li_ca_view_1" value="y" {? el_item.li_ca_view == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_ca_view_2" class="radio"><input type="radio" name="li_ca_view" id="li_ca_view_2" value="n" {? el_item.li_ca_view == 'n' || !el_item.li_ca_view}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 카테고리인 분류를 사용하는 게시판의 분류명을 출력할지 결정합니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">인기글 순서로 출력여부</label>
+							<div class="inline-group">
+								<label for="li_best_1" class="radio"><input type="radio" name="li_best" id="li_best_1" value="y" {? el_item.li_best == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_best_2" class="radio"><input type="radio" name="li_best" id="li_best_2" value="n" {? el_item.li_best == 'n' || !el_item.li_best}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 히트수가 많은 게시물부터 순서대로 추출합니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">게시물의 랜덤 출력여부</label>
+							<div class="inline-group">
+								<label for="li_random_1" class="radio"><input type="radio" name="li_random" id="li_random_1" value="y" {? el_item.li_random == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_random_2" class="radio"><input type="radio" name="li_random" id="li_random_2" value="n" {? el_item.li_random == 'n' || !el_item.li_random}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 사용시 최신글에 게시물을 랜덤하게 추출합니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">작성자 정보 출력여부</label>
+							<div class="inline-group">
+								<label for="li_mbname_view_1" class="radio"><input type="radio" name="li_mbname_view" id="li_mbname_view_1" value="y" {? el_item.li_mbname_view == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_mbname_view_2" class="radio"><input type="radio" name="li_mbname_view" id="li_mbname_view_2" value="n" {? el_item.li_mbname_view == 'n' || !el_item.li_mbname_view}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 작성자의 이름을 출력할지 결정합니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">회원 프로필 사진 출력여부</label>
+							<div class="inline-group">
+								<label for="li_photo_1" class="radio"><input type="radio" name="li_photo" id="li_photo_1" value="y" {? el_item.li_photo == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_photo_2" class="radio"><input type="radio" name="li_photo" id="li_photo_2" value="n" {? el_item.li_photo == 'n' || !el_item.li_photo}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 게시물 목록에서 작성자의 프로필 포토를 출력할지 결정합니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">날짜 출력 사용여부</label>
+							<div class="inline-group">
+								<label for="li_use_date_1" class="radio"><input type="radio" name="li_use_date" id="li_use_date_1" value="y" {? el_item.li_use_date == 'y'}checked{/}><i></i> 사용</label>
+								<label for="li_use_date_2" class="radio"><input type="radio" name="li_use_date" id="li_use_date_2" value="n" {? el_item.li_use_date == 'n' || !el_item.li_use_date}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 최신글에 날자를 출력할지 여부를 결정합니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">날짜 출력 형식</label>
+							<div class="inline-group">
+								<label for="li_date_type_1" class="radio"><input type="radio" name="li_date_type" id="li_date_type_1" value="1" {? el_item.li_date_type == '1'}checked{/}><i></i> 24시간 단위</label>
+								<label for="li_date_type_2" class="radio"><input type="radio" name="li_date_type" id="li_date_type_2" value="2" {? el_item.li_date_type == 'n' || !el_item.li_date_type}checked{/}><i></i> 년월일 방식</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">날짜 표기 방식</label>
+							<label for="li_date_kind" class="input">
+						        <input type="text" name="li_date_kind" id="li_date_kind" value="{? el_item.li_date_kind}{el_item.li_date_kind}{:}Y-m-d H:i:s{/}" required maxlength="2">
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 날짜 관련 표기 방식은 date() 함수 <a href="http://php.net/manual/en/function.date.php" target="_blank">[바로가기]</a>를 참고해 주세요.
+							</div>
+						</section>
+					</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{ frm_submit }
+
+	</form>
+</div>
+
+<script>
+function feblatestitemform_submit(f) {
+	if (f.li_code.value == '') {
+		alert("코드는 자동생성되며 빈값을 입력하실 수 없습니다.");
+		document.location.reload();
+		return false;
+	}
+	if (f.li_title.value.length < 2) {
+		alert("최신글의 타이틀을 입력해 주세요.");
+		f.li_title.focus();
+		return false;
+	}
+	if (!f.li_skin.value) {
+		alert("최신글 스킨을 선택해 주세요.");
+		f.li_skin.focus();
+		return false;
+	}
+    return true;
+}
+</script>
+
+<!--{? _w == 'u' && _li_code}-->
+<div class="admin-eblatest-itemlist">
+
+	<form name="feblatestitemlist" id="feblatestitemlist" action="{_action_url2}" method="post" onsubmit="return feblatestitemlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="theme" id="theme" value="{this_theme}">
+	<input type="hidden" name="li_code" id="li_code" value="{el_item.li_code}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="headline">
+		<h4><strong>EB 최신글 - 아이템 관리</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&pid=eblatest_itemform&amp;li_code={el_item.li_code}&amp;thema={this_theme}&amp;wmode=1" onclick="eblatestitem_modal(this.href); return false;" class="btn-e btn-e-purple btn-e-xs  pull-right margin-top-5"><i class="fa fa-plus"></i> EB 최신글 아이템 추가</a>
+		<div class="clearfix"></div>
+		<!--{/}-->
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="eblatest-itemlist"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <!--{? _is_admin == 'super'}-->
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	    <!--{/}-->
+	</div>
+	</form>
+
+</div>
+
+<div class="modal fade eblatestitem-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title">EB최신글 아이템 관리</span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="eblatestitem-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="eblatest-close-btn btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function eblatestitem_modal(href) {
+    $('.eblatestitem-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#eblatestitem-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+        $('html').css({overflow: ''});
+    });
+    $('.eblatestitem-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#eblatestitem-iframe").attr("src", href);
+        $('#eblatestitem-iframe').height(700);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('.eblatestitem-iframe-modal').modal('hide');
+    window.location.reload();
+};
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+	// EB최신글 아이템
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1)  )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label><input type='hidden' name='li_no[{.index_}]' value='{.li_no}'>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=eblatest_itemform&amp;thema={this_theme}&amp;li_code={.li_code}&amp;li_no={.li_no}&amp;w=u&amp;iw=u&amp;page={_page}&amp;wmode=1' onclick='eblatestitem_modal(this.href); return false;'><u>수정</u></a>",
+	        대표이미지: "{.li_image}",
+	        타이틀: "{? .li_title}{=get_text(.li_title)}{:}없음{/}",
+	        순서: "<label for='li_sort_{.index}' class='input'><input type='text' name='li_sort[{.index_}]' id='li_sort_{.index_}' value='{.li_sort}'></label>",
+	        상태: "<label for='li_state_{.index_}' class='select'><select name='li_state[{.index_}]' id='li_state_{.index_}'><option value=''>선택</option><option value='1' {? .li_state == '1'}selected{/}>보이기</option><option value='2' {? .li_state == '2'}selected{/}>숨기기</option></select><i></i></label>",
+	        보기권한: "<label class='select'>{.view_level}<i></i></label>",
+	        시작일: "{.li_start}",
+	        종료일: "{.li_end}",
+	        등록일: "{=substr(.li_regdt, 0, 10)}",
+        },
+        <!--{/}-->
+    ];
+}();
+
+$(function() {
+    $("#eblatest-itemlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 60, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "대표이미지", type: "text", align: "center", width: 180 },
+            { name: "타이틀", type: "text", width: 250 },
+            { name: "순서", type: "number",width: 60 },
+            { name: "상태", type: "text", align: "center", width: 120 },
+            { name: "보기권한", type: "text", align: "center", width: 80 },
+            { name: "시작일", type: "text", align: "center", width: 80 },
+            { name: "종료일", type: "text", align: "center", width: 80 },
+            { name: "등록일", type: "text", align: "center", width: 80 },
+        ]
+    });
+
+    var $chk = $("#eblatest-itemlist .jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function feblatestitemlist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function dli_confirm() {
+	if (confirm('EB최신글 아이템을 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>
+<!--{/}-->

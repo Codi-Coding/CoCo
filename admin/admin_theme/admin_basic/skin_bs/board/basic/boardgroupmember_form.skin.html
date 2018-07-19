@@ -1,0 +1,140 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-boardgroupmember-form">
+	<form id="fboardgroupmember_form" name="fboardgroupmember_form" action="{_action_url}" method="post" onsubmit="return boardgroupmember_form_check(this)" class="eyoom-form">
+	<input type="hidden" name="mb_id" value="{mb.mb_id}" id="mb_id">
+	<input type="hidden" name="token" value="" id="token">
+
+	<div class="headline">
+		<h4><strong>접근가능 그룹</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+	<div class="admin-search-box">
+		<div class="row">
+			<div class="col col-4">
+			    <p class="padding-top-5 margin-bottom-0 sm-margin-bottom-10">아이디 <b>{mb.mb_id}</b>, 이름 <b>{=get_text(mb.mb_name)}</b>, 닉네임 <b>{mb.mb_nick}</b></p>
+			</div>
+			<div class="col col-3">
+				<label class="select margin-bottom-0">
+					<select name="gr_id" id="gr_id">
+						<option value="">접근가능 그룹을 선택하세요.</option>
+						<!--{@ group}-->
+						<option value="{.gr_id}">{.gr_subject}</option>
+						<!--{/}-->
+					</select><i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<input type="submit" name="" value="선택" class="btn-e btn-e-dark">
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-30"></div>
+
+	<form name="fboardgroupmember" id="fboardgroupmember" action="{_action_url}" method="post" onsubmit="return fboardgroupmember_submit(this);" class="eyoom-form">
+	<input type="hidden" name="sst" id="sst" value="{_sst}">
+	<input type="hidden" name="sod" id="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+	<input type="hidden" name="mb_id" value="{mb.mb_id}" id="mb_id">
+	<input type="hidden" name="w" value="d" id="w">
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="boardgroupmember-list"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="" value="선택삭제" class="btn-e btn-e-xs btn-e-dark">
+	</div>
+	</form>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ group_member}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.gm_id}'><i></i></label>",
+	        그룹아이디: "<a href='{C.G5_BBS_URL}/group.php?gr_id={.gr_id}'>{.gr_id}</a>",
+	        그룹: "{.gr_subject}",
+	        처리일시: "{.gm_datetime}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#boardgroupmember-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", align: "center", width: 40 },
+            { name: "그룹아이디", type: "text", width: 100 },
+            { name: "그룹", type: "text", width: 300 },
+            { name: "처리일시", type: "text", width: 100 },
+        ]
+    });
+
+	var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function fboardgroupmember_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert("선택삭제 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    return true;
+}
+
+function boardgroupmember_form_check(f) {
+    if (f.gr_id.value == '') {
+        alert('접근가능 그룹을 선택하세요.');
+        return false;
+    }
+
+    return true;
+}
+</script>

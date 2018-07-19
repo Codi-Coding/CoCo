@@ -1,0 +1,62 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.shop-detail-view .headline {border-bottom:1px dotted #c5c5c5}
+.shop-detail-view .headline h5 {border-top:0;border-bottom:1px solid #DE2600}
+.shop-detail-view .headline i {color:#DE2600}
+.shop-detail-view .headline span {color:#959595}
+.shop-detail-view .sct_ct {position:relative;font-size:12px;margin-bottom:5px}
+.shop-detail-view .sct_ct strong {margin-right:10px}
+.shop-detail-view .sct_ct a {margin-right:5px;color:#959595}
+.shop-detail-view .sct_ct a:hover {text-decoration:underline}
+</style>
+
+<div class="shop-detail-view">
+	<!--{? 0 // 숨김 처리}-->
+	<!--{* 분류 위치 *}-->
+	<!--{? shop->get_navigation()}-->
+	<div id="sct_location">
+	    <a href='{C.G5_SHOP_URL}' class="sct_bg">Home</a>
+	    {shop->get_navigation()}
+	</div>
+	<!--{/}-->
+	<!--{/}-->
+
+	<div class="clearfix">
+		<div class="headline">
+			<h5><strong><i class="fa fa-ellipsis-v"></i> <span>카테고리 -</span> {shop->get_navigation()}</strong></h5>
+			<!--{? _is_admin}--><a href="{C.G5_ADMIN_URL}/shop_admin/itemform.php?w=u&amp;it_id={_it_id}" class="btn-e btn-e-xs btn-e-purple rounded pull-right">상품 관리</a><!--{/}-->
+		</div>
+		<!--{* 상품분류 1 시작 *}-->
+		<!--{? shop->listcategory()}-->
+		<aside id="sct_ct_1" class="sct_ct">
+			<strong><i class="fa fa-bars"></i> 관련 카테고리 :</strong>
+			<!--{@ shop->listcategory()}-->
+			<a href="{.href}">{.ca_name}({.cnt})</a>
+			<!--{/}-->
+		</aside>
+		<!--{/}-->
+		<!--{* 상품분류 1 끝 *}-->
+	</div>
+
+	<!--{* 상품 상세보기 시작 *}-->
+
+	<!--{* 상단 HTML *}-->
+	<div id="sit_hhtml">{=conv_content(it.it_head_html, 1)}</div>
+
+	<!--{? _is_orderable}-->
+	<script src="../../../../../../js/shop.js"></script>
+	<!--{/}-->
+
+	<div class="shop-product-wrap">
+		<div id="shop-product-form" class="shop-product-cont">
+		{# item_form_bs // 상품 대표이미지 및 주문관련 폼 : item_form.skin.html}
+		</div>
+		{# item_info_bs // 상품상세 내용 : item_info.skin.html}
+	</div>
+
+	<!--{* 하단 HTML *}-->
+	<div id="sit_thtml">{=conv_content(it.it_tail_html, 1)}</div>
+
+	<!--{* 상품 상세보기 끝 *}-->
+</div>

@@ -1,0 +1,33 @@
+<?php if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가  ?>
+
+<div id="comment_write_{.bo_table}_{.wr_id}" class="comment-textarea">
+	<form name="fviewcomment_{.bo_table}_{.wr_id}" action="{C.G5_BBS_URL}/write_comment_update.php" onsubmit="return fviewcomment_submit(this);" method="post" autocomplete="off" class="eyoom-form view-comment-write-box">
+	<input type="hidden" name="w" value="c" id="w">
+	<input type="hidden" name="goback" value="{goback}" id="goback">
+	<input type="hidden" name="bo_table" value="{.bo_table}">
+	<input type="hidden" name="wr_id" value="{.wr_id}">
+	<input type="hidden" name="comment_id" value="{.comment_id}" id="comment_id">
+	<input type="hidden" name="board_skin_path" value="{C.EYOOM_CORE_PATH}/board">
+	<fieldset>
+		<section>
+			<label class="textarea">
+				<textarea rows="1" id="wr_content" name="wr_content" maxlength="10000" required title="내용" {? comment_min || comment_max}onkeyup="check_byte('wr_content', 'char_count');"{/} placeholder="댓글을 입력하세요..."></textarea>
+				<!--{? comment_min || comment_max}--><script> check_byte('wr_content', 'char_count'); </script><!--{/}-->
+				<script>
+				$("textarea#wr_content[maxlength]").live("keyup change", function() {
+					var str = $(this).val()
+					var mx = parseInt($(this).attr("maxlength"))
+					if (str.length > mx) {
+						$(this).val(str.substr(0, mx));
+						return false;
+					}
+				});
+				</script>
+			</label>
+			<div class="note pull-left"><strong>Note:</strong> Please observe the manners!</div>
+			<div class="pull-right"><button class="btn-e btn-e-xs btn-e-red btn_submit" type="submit">등록</button></div>
+			<div class="clearfix"></div>
+		</section>
+	</fieldset>
+	</form>
+</div>

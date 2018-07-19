@@ -1,0 +1,94 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-contentlist">
+	<div class="headline">
+		<h4><strong>내용관리</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=contentform" class="btn-e btn-e-purple btn-e-xs pull-right margin-top-5"><i class="fa fa-plus"></i> 내용 추가</a>
+		<!--{/}-->
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="local_ov01 local_ov margin-bottom-5">
+	    <span class="font-size-12 color-grey">
+	    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>전체 내용 {=number_format(_total_count)}건
+	    </span>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="content-list"></div>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.ID && !(client.ID.indexOf(filter.ID) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ content_list}-->
+        {
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=contentform&amp;w=u&amp;co_id={.co_id}'><u>수정</u></a> <a href='{C.G5_BBS_URL}/content.php?co_id={.co_id}' target='_blank' class='margin-left-10'><u>보기</u></a> <a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=contentformupdate&amp;w=d&amp;co_id={.co_id}&amp;smode=1' class='margin-left-10' onclick='return delete_confirm(this);'><u>삭제</u></a>",
+	        ID: "{.co_id}",
+	        제목: "{=htmlspecialchars2(.co_subject)}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#content-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+	        { name: "관리", type: "text", width: 140, align: 'center', headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "ID", type: "text", width: 100 },
+            { name: "제목", type: "text", width: 400 },
+        ]
+    });
+});
+
+function delete_confirm(f) {
+	if (confirm('한번 삭제한 자료는 다시는 복구할 수 없습니다.\n\n정말로 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>

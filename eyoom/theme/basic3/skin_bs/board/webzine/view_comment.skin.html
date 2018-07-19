@@ -1,0 +1,1053 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/venobox/venobox.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.comment-area .comment-write-heading {position:relative;border-bottom:3px solid #454545;padding:10px 0;margin-bottom:15px}
+.comment-area .comment-write-heading .cmt-point-info-btn {position:absolute;top:9px;right:0}
+.comment-area .comment-write-wrap {position:relative}
+.comment-area .comment-write {margin-bottom:20px}
+.comment-area .comment-write .comment-write-option {position:relative;background:#f5f5f5;border:1px solid #b5b5b5;border-bottom:0}
+.comment-area .comment-write .comment-write-option .panel-default {border:0;margin-bottom:0;box-shadow:none;background:transparent}
+.comment-area .comment-write .comment-write-option .panel-in {padding:10px}
+.comment-area .comment-write .comment-write-option .comment-collapse-box {background:#fff;border-top:1px solid #b5b5b5;padding:10px}
+.comment-area .comment-write .comment-write-option .comment-collapse-box label {margin-bottom:0}
+.comment-area .comment-write .comment-write-option .comment-collapse-box .btn-e-input {padding:5px 16px}
+.comment-area .comment-write .comment-write-option .comment-option-btn {display:inline-block;width:30px;height:24px;line-height:24px;text-align:center;font-size:15px;color:#434343}
+.comment-area .comment-write .comment-write-option .comment-option-btn:hover {background:#c5c5c5}
+.comment-area .comment-write .comment-write-footer {position:relative;background:#f5f5f5;border:1px solid #b5b5b5;border-top:0;padding:7px 10px;color:#959595;font-size:11px}
+.comment-area .comment-write-submit {position:relative;text-align:right}
+.comment-area .view-comment-more {text-align:center;border-top:1px solid #e5e5e5;padding-top:30px;margin-bottom:40px}
+.comment-area .eyoom-form .textarea {margin-bottom:0}
+.comment-area .eyoom-form .textarea textarea {border:1px solid #b5b5b5}
+.comment-area .eyoom-form .textarea textarea:focus, .comment-area .eyoom-form .textarea textarea:hover {border-color:#75A5E4}
+.comment-area .vc-captcha fieldset {background:transparent}
+.view-comment {position:relative;margin-bottom:40px}
+.view-comment h2 {position:absolute;font-size:0;line-height:0;overflow:hidden}
+.view-comment .view-comment-heading {border-bottom:3px solid #454545;padding:10px 0;margin-bottom:30px}
+.view-comment .view-comment-item {position:relative;padding:15px 0 20px;border-top:1px solid #e5e5e5}
+.view-comment .view-comment-item .no-comment {text-align:center;padding:10px 0 20px}
+.view-comment .view-comment-no-item {position:relative;padding:20px 0;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5;text-align:center}
+.view-comment .view-comment-no-item .no-comment {color:#959595;font-size:13px}
+.view-comment .view-comment-item.cmt-best {background:#E3F2FD;border-color:#1E88E5}
+.view-comment .view-comment-depth {position:absolute;top:-40px;left:0;width:8px;height:123px;border-left:1px dotted #d5d5d5;border-bottom:1px dotted #d5d5d5}
+.view-comment .view-comment-depth i {position:absolute;top:116px;left:5px;color:#d5d5d5}
+.view-comment .view-comment-photo {position:absolute;overflow:hidden;top:15px;left:5px;width:48px;height:48px;background:#fff;border:1px solid #eaeaea;padding:2px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.view-comment .view-comment-photo img {width:42px;height:42px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.view-comment .view-comment-photo .comment-user-icon {width:42px;height:42px;background:#84848a;font-size:24px;line-height:42px;text-align:center;color:#fff;display:inline-block;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.view-comment .view-comment-photo.no-depth-photo {left:0}
+.view-comment .comment-item-info {position:relative;padding-left:60px;padding-right:15px;margin-top:15px;margin-bottom:25px}
+.view-comment .comment-item-info > span {margin-right:5px}
+.view-comment .comment-ip {font-size:11px;color:#959595}
+.view-comment .comment-time {font-size:12px;color:#959595}
+.view-comment .comment-dropdown {position:absolute;top:-3px;right:-15px;display:inline-block}
+.view-comment .comment-dropdown-btn {display:inline-block;width:22px;height:22px;line-height:24px;background:#fff;color:#b5b5b5;text-align:center;font-size:13px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.view-comment .comment-dropdown-btn:hover {background:#474A5E;color:#fff;cursor:pointer;-webkit-transition:all 0.2s linear;-moz-transition:all 0.2s linear;transition:all 0.2s linear}
+.view-comment .comment-dropdown .dropdown-menu {left:inherit;right:0}
+.view-comment .comment-dropdown .dropdown-menu a {font-size:12px}
+.view-comment .comment-dropdown .dropdown-menu a small {font-size:11px;color:#a5a5a5}
+.view-comment .comment-item-content {position:relative;padding-left:20px}
+.view-comment .comment-item-content .comment-image {max-width:270px;float:left;margin-right:15px;margin-bottom:15px}
+.view-comment .comment-item-content .comment-yello-card {position:relative;padding:10px;margin-bottom:20px;background:#ffbeaa;border:1px solid #ff9b79;opacity:0.45}
+.view-comment .comment-item-body-pn .comment-item-info {padding-left:10px}
+.view-comment-write {position:relative;margin-bottom:40px}
+.comment-area-divider {position:relative;height:1px;border-top:1px solid #d5d5d5;margin:30px 0}
+.comment-area-divider .divider-circle {position:absolute;top:-7px;left:50%;margin-left:-7px;width:14px;height:14px;border:2px solid #d5d5d5;background:#fff;z-index:1px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+#bo_vc_send_sns ul{padding:0;margin:-5px 0 20px;overflow:hidden}
+#bo_vc_send_sns li{float:left;margin-right:10px;list-style:none}
+#bo_vc_send_sns li input{margin:10px 25px 10px 5px}
+#infscr-loading {text-align:center;z-index:100;position:absolute;left:50%;bottom:0;width:200px;margin-left:-100px;padding:10px;background:#000;opacity:0.6;color:#fff}
+#map_canvas {width:1000px;height:400px;display:none}
+@media (max-width:767px) {
+	.view-comment .view-comment-depth {height:110px}
+	.view-comment .view-comment-depth i {top:104px}
+	.view-comment .view-comment-photo {width:34px;height:34px;padding:1px}
+	.view-comment .view-comment-photo img {width:30px;height:30px}
+	.view-comment .view-comment-photo .comment-user-icon {width:30px;height:30px;font-size:16px;line-height:30px}
+	.view-comment .comment-item-info {padding-left:45px;margin-top:8px;margin-bottom:20px}
+	.view-comment .comment-item-content {padding-left:17px}
+}
+@media (max-width:600px) {
+	.comment-area {font-size:12px}
+	.view-comment .comment-item-content .comment-image {max-width:100%;float:none;margin-right:inherit}
+}
+</style>
+
+<script>
+// 글자수 제한
+var char_min = parseInt({_comment_min}); // 최소
+var char_max = parseInt({_comment_max}); // 최대
+</script>
+
+<div class="comment-area">
+	<!--{* 댓글 목록 시작 *}-->
+	<div class="view-comment">
+		<h4 class="view-comment-heading"><strong>댓글목록 <span class="color-red">{=number_format(view.wr_comment)}</span></strong></h4>
+		<!--{@ cmt_list}-->
+		<h2>{.wr_name}님의 댓글</h2>
+		<div id="c_{.comment_id}" class="view-comment-item {? .is_cmt_best}cmt-best{/}" style="{? .cmt_depth && !.is_cmt_best}margin-left:{.cmt_depth}px;{/}">
+			<!--{? .cmt_depth}-->
+			<div class="view-comment-depth"><i class="fa fa-caret-right"></i></div>
+			<!--{/}-->
+			<!--{? eyoom_board.bo_use_profile_photo == 1}-->
+			<div class="view-comment-photo {? !.cmt_depth}no-depth-photo{/}">
+				<!--{? .mb_photo}-->
+				{.mb_photo}
+				<!--{:}-->
+				<span class="comment-user-icon"><i class="fa fa-user"></i></span>
+				<!--{/}-->
+			</div>
+			<div class="comment-item-body">
+			<!--{:}-->
+			<div class="comment-item-body-pn">
+			<!--{/}-->
+				<div class="comment-item-info">
+					<span class="comment-name">{=eb_nameview('basic', .mb_id, .wr_name, .wr_email, .wr_homepage)}</span>
+					<!--{? .gnu_icon}-->
+					<span class="comment-lv-icon"><img src="{.gnu_icon}" align="absmiddle"></span>
+					<!--{/}-->
+					<!--{? .eyoom_icon}-->
+					<span class="comment-lv-icon"><img src="{.eyoom_icon}" align="absmiddle"></span>
+					<!--{/}-->
+					<!--{? .is_cmt_best}-->
+					<span class="badge badge-purple rounded">베스트 댓글 {.index_+1}</span>
+					<!--{/}-->
+					<!--{? _is_ip_view}-->
+					<span class="comment-ip">{.ip}</span>
+					<!--{/}-->
+					<span class="comment-time">
+						<!--{? eyoom_board.bo_sel_date_type == '1'}-->
+						<i class="fa fa-clock-o color-grey"></i> {eb->date_time('Y.m.d H:i',.datetime)}
+						<!--{: eyoom_board.bo_sel_date_type == '2'}-->
+						<i class="fa fa-clock-o color-grey"></i> {eb->date_format('Y.m.d H:i',.datetime)}
+						<!--{/}-->
+					</span>
+					<!--{? eyoom_board.bo_use_yellow_card == '1' && _is_member}-->
+					<span class="comment-dropdown btn-group">
+						<span class="comment-dropdown-btn dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"><i class="fa fa-ellipsis-v"></i></span>
+					    <ul class="dropdown-menu" role="menu">
+				        <!--{? !.mb_ycard.mb_id }-->
+				            <li id="cmt_yellow_card_li_{.comment_id}">
+				            	<a href="javascript:void(0);" id="cmt_yellow_card_{.comment_id}" class="cmt_yellow_card" data-toggle="modal" data-target=".yellowcard-modal" data-cmt-id="{.comment_id}">
+					            	신고하기 <!--{? .yc_count}--><small>(누적 : <span class="color-red">{=number_format(.yc_count)}</span>)</small><!--{/}-->
+					            </a>
+				            </li>
+				        <!--{:}-->
+				            <li id="cancel_cmt_yellow_card_li_{.comment_id}">
+				            	<a href="javascript:void(0);" id="cancel_cmt_yellow_card_{.comment_id}" class="cancel_cmt_yellow_card" data-cmt-id="{.comment_id}">
+					            	신고취소 <small>(누적 : <span class="color-red">{=number_format(.yc_count)}</span>)</small>
+								</a>
+				            </li>
+						<!--{/}-->
+				        <!--{? _blind_direct}-->
+				            <!--{? .yc_blind != 'y'}-->
+				            <li>
+				            	<a href="javascript:void(0);" id="direct_cmt_blind_li_{.comment_id}" class="btn-cmt-blind" data-cmt-id="{.comment_id}">블라인드</a>
+				            </li>
+				            <!--{: .yc_blind == 'y'}-->
+				            <li>
+				            	<a href="javascript:void(0);" id="cancel_cmt_blind_li_{.comment_id}" class="btn-cmt-blind" data-cmt-id="{.comment_id}">블라인드 취소</a>
+				            </li>
+				            <!--{/}-->
+				        <!--{/}-->
+					    </ul>
+					</span>
+					<!--{/}-->
+				</div>
+				<div class="comment-item-content">
+					<!--{? .yc_blind && .yc_cannotsee}-->
+					<p class="margin-top-10 margin-bottom-10"><span class="color-orange">----- <i class="fa fa-exclamation-circle"></i> 블라인드 처리된 댓글입니다. -----</span></p>
+					<!--{:}-->
+					<p>
+						<!--{? .yc_blind}-->
+						<p class="margin-top-10 margin-bottom-10"><span class="color-orange">----- <i class="fa fa-exclamation-circle"></i> 블라인드 처리된 댓글입니다. -----</span></p>
+						<!--{/}-->
+						<!--{? strstr(.wr_option, 'secret')}--><i class="fa fa-lock color-red"></i> <!--{/}-->
+						<!--{? .imgsrc}-->
+						<div class="thumbnail comment-image">
+							<div class="thumb">
+								<img src="{.imgsrc}">
+								<div class="caption-overflow">
+									<span>
+										<a href="{.imgsrc}" class="btn-e btn-e-default btn-e-lg btn-e-brd"><i class="fa fa-plus color-white"></i></a>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!--{/}-->
+						<!--{? .yc_blind}-->
+						<div class="comment-yello-card">
+						<!--{/}-->
+						{.comment}
+						<!--{? .yc_blind}-->
+						</div>
+						<!--{/}-->
+					</p>
+					<!--{/}-->
+					<div class="margin-bottom-10"></div>
+					<!--{? .firstcmt_point}-->
+					<div class="alert alert-warning first-comment">
+						<p><i class="fa fa-comments-o font-size-18 margin-right-10"></i>축하합니다. <strong class="color-black">첫댓글 포인트</strong> <strong class="color-red">{.firstcmt_point}{levelset.gnu_name}</strong>를 획득하였습니다.</p>
+					</div>
+					<!--{/}-->
+					<!--{? .bomb_point}-->
+					<div class="alert alert-danger bomb-comment">
+						<p><i class="fa fa-bomb font-size-18 margin-right-10"></i>축하합니다. <strong class="color-black">지뢰폭탄 포인트</strong> <strong class="color-red">{.bomb_point}{levelset.gnu_name}</strong>를 획득하였습니다.</p>
+					</div>
+					<!--{/}-->
+					<!--{? .lucky_point}-->
+					<div class="alert alert-success lucky-comment">
+						<p><i class="fa fa-hand-peace-o font-size-18 margin-right-10"></i>축하합니다. <strong class="color-black">행운의 포인트</strong> <strong class="color-red">{.lucky_point}{levelset.gnu_name}</strong>를 획득하였습니다.</p>
+					</div>
+					<!--{/}-->
+				</div>
+				<div class="comment-btn">
+					<!--{? .is_reply || .is_edit || .is_del || .c_good_href || .c_nogood_href}-->
+					<div class="text-right">
+						<!--{? .is_reply}-->
+						<a href="{.c_reply_href}" onclick="comment_box('{.comment_id}', 'c'); return false;" class="btn-e btn-e-xs btn-e-red rounded">댓글쓰기</a>
+						<!--{/}-->
+						<!--{? .is_edit}-->
+						<a href="{.c_edit_href}" onclick="comment_box('{.comment_id}', 'cu'); return false;" class="btn-e btn-e-xs btn-e-dark rounded">수정</a>
+						<!--{/}-->
+						<!--{? .is_del}-->
+						<a href="{.del_link}" class="btn-e btn-e-xs btn-e-dark rounded comment_delete">삭제</a>
+						<!--{/}-->
+						<!--{? .c_good_href}-->
+						<a href="{.c_good_href}" id="goodcmt_button_{.comment_id}" class="goodcmt_button btn-e btn-e-dark btn-e-xs rounded" type="button" title="공감"><i class="fa fa-thumbs-up"></i> <strong class="board-cmt-act-good">{? .good}<span class="color-green">{.good}</span>{:}<span class="color-grey">0</span>{/}</strong></a>
+						<!--{/}-->
+						<!--{? .c_nogood_href}-->
+						<a href="{.c_nogood_href}" id="nogoodcmt_button_{.comment_id}" class="nogoodcmt_button btn-e btn-e-dark btn-e-xs rounded" type="button" title="비공감"><i class="fa fa-thumbs-down"></i> <strong class="board-cmt-act-nogood">{? .nogood}<span class="color-red">{.nogood}</span>{:}<span class="color-grey">0</span>{/}</strong></a>
+						<!--{/}-->
+					</div>
+					<!--{/}-->
+				</div>
+				<div class="clearfix"></div>
+
+				<span id="edit_{.comment_id}"></span><!--{* 수정 *}-->
+				<span id="reply_{.comment_id}"></span><!--{* 답변 *}-->
+
+				<input type="hidden" value="{=strstr(.wr_option,'secret')}" id="secret_comment_{.comment_id}">
+				<input type="hidden" value="{.anonymous_id}" id="anonymous_id_{.comment_id}">
+				<input type="hidden" value="{.imgname}" id="imgname_{.comment_id}">
+				<textarea id="save_comment_{.comment_id}" style="display:none">{.content1}</textarea>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<!--{:}-->
+		<div class="view-comment-no-item">
+			<span id="bo_vc_empty" class="no-comment"><i class="fa fa-exclamation-circle"></i> 등록된 댓글이 없습니다.</span>
+		</div>
+		<!--{/}-->
+	</div>
+	<!--{? eyoom_board.bo_use_cmt_infinite == '1'}-->
+	<div id="infinite_pagination">
+	    <a class="next" href="{C.G5_BBS_URL}/board.php?bo_table={_bo_table}&wr_id={_wr_id}&sca={_sca}&cpage={cpage+1}"></a>
+	</div>
+	<!--{? count(cmt_list) > 20 }-->
+	<div class="view-comment-more">
+		<a id="view-comment-more" href="#" class="btn-e btn-e-indigo btn-e-xlg">댓글 더보기</a>
+	</div>
+	<!--{/}-->
+	<!--{/}-->
+	<!--{* 댓글 목록 끝 *}-->
+
+	<!--{* 댓글 쓰기 시작 *}-->
+	<!--{? _is_comment_write}-->
+	<div id="view-comment-write" class="view-comment-write">
+		<form name="fviewcomment" action="./write_comment_update.php" onsubmit="return fviewcomment_submit(this);" method="post" autocomplete="off" class="eyoom-form view-comment-write-box" enctype="multipart/form-data">
+			<input type="hidden" name="w" value="{? !_w}c{:}{_w}{/}" id="w">
+			<input type="hidden" name="bo_table" value="{_bo_table}">
+			<input type="hidden" name="wr_id" value="{_wr_id}">
+			<input type="hidden" name="comment_id" value="{_c_id}" id="comment_id">
+			<input type="hidden" name="sca" value="{_sca}">
+			<input type="hidden" name="sfl" value="{_sfl}">
+			<input type="hidden" name="stx" value="{_stx}">
+			<input type="hidden" name="spt" value="{_spt}">
+			<input type="hidden" name="page" value="{_page}">
+			<input type="hidden" name="is_good" value="">
+			<input type="hidden" name="board_skin_path" value="{C.EYOOM_CORE_PATH}/board">
+			<input type="hidden" name="wr_1" value="{_wr_1}">
+			<input type="hidden" name="cmt_amt" value="{_cmt_amt}">
+			<input type="hidden" name="wmode" value="{_wmode}">
+
+			<h4 class="comment-write-heading">
+				<strong>댓글쓰기</strong>
+				<!--{? eyoom_board.bo_use_point_explain == 1}-->
+				<button type="button" class="btn-e btn-e-xs btn-e-default cmt-point-info-btn" data-toggle="modal" data-target=".cmt-point-info-modal"><i class="fa fa-info-circle"></i> 댓글 포인트 안내</button>
+				<!--{/}-->
+			</h4>
+			<div class="comment-write-wrap">
+				<div class="row">
+					<!--{? !_is_member}-->
+					<section class="col col-4">
+						<label for="wr_name" class="label">이름<strong class="sound_only"> 필수</strong></label>
+						<label class="input">
+							<i class="icon-append fa fa-user"></i>
+							<input type="text" name="wr_name" value="{=get_cookie('ck_sns_name')}" id="wr_name" required size="5" maxLength="20">
+						</label>
+					</section>
+					<section class="col col-4">
+						<label for="wr_password" class="label">비밀번호<strong class="sound_only"> 필수</strong></label>
+						<label class="input">
+							<i class="icon-append fa fa-lock"></i>
+							<input type="password" name="wr_password" id="wr_password" required size="10" maxLength="20">
+						</label>
+					</section>
+					<!--{/}-->
+					<section class="col col-4">
+						<div class="inline-group">
+							<label class="checkbox"><input type="checkbox" name="wr_secret" value="secret" id="wr_secret"><i></i>비밀글 사용</label>
+							<!--{? _is_anonymous}-->
+							<label class="checkbox"><input type="checkbox" name="anonymous" value="y" id="anonymous"><i></i>익명글 사용</label>
+							<!--{/}-->
+						</div>
+					</section>
+				</div>
+				<!--{? board.bo_use_sns && (config.cf_facebook_appid || config.cf_twitter_key)}-->
+				<label class="label">SNS 동시등록</label>
+				<div id="bo_vc_send_sns"></div>
+				<div class="clearfix"></div>
+				<!--{/}-->
+				<div class="comment-write">
+					<div id="comment-option" class="comment-write-option">
+						<div class="panel panel-default">
+							<div class="panel-in">
+								<!--{? eyoom_board.bo_use_addon_cmtimg == '1'}-->
+								<a class="comment-option-btn" data-toggle="collapse" data-parent="#comment-option" href="#collapse-image-cm" title="이미지첨부"><i class="fa fa-picture-o"></i></a>
+								<!--{/}-->
+								<!--{? eyoom_board.bo_use_addon_video == '1'}-->
+								<a class="comment-option-btn" data-toggle="collapse" data-parent="#comment-option" href="#collapse-video-cm" title="동영상"><i class="fa fa-video-camera"></i></a>
+								<!--{/}-->
+								<!--{? eyoom_board.bo_use_addon_soundcloud== '1'}-->
+								<a class="comment-option-btn" data-toggle="collapse" data-parent="#comment-option" href="#collapse-sound-cm" title="사운드클라우드"><i class="fa fa-soundcloud"></i></a>
+								<!--{/}-->
+								<!--{? eyoom_board.bo_use_addon_map== '1'}-->
+								<a class="comment-option-btn" data-toggle="collapse" data-parent="#comment-option" href="#collapse-map-cm" title="지도"><i class="fa fa-map-marker"></i></a>
+								<!--{/}-->
+								<!--{? eyoom_board.bo_use_addon_coding== '1'}-->
+								<a class="comment-option-btn" data-toggle="collapse" data-parent="#comment-option" href="#collapse-code-cm" title="코드"><i class="fa fa-code"></i></a>
+								<!--{/}-->
+								<!--{? eyoom_board.bo_use_addon_emoticon== '1'}-->
+								<a class="comment-option-btn pull-right emoticon" data-type="iframe" title="이모티콘" href="{C.EYOOM_CORE_URL}/board/emoticon.php"><i class="fa fa-smile-o"></i></a>
+								<!--{/}-->
+								<div class="clearfix"></div>
+							</div>
+							<div id="collapse-image-cm" class="panel-collapse collapse">
+								<div class="comment-collapse-box">
+									<label for="file" class="input input-file">
+		                                <div class="button bg-color-light-grey"><input type="file" name="cmt_file[]" value="이미지선택" title="파일첨부 : 용량 {_upload_max_filesize} 이하만 업로드 가능" onchange="this.parentNode.nextSibling.value = this.value">이미지 선택</div><input type="text" readonly>
+		                            </label>
+		                            <div id="del_cmtimg"></div>
+								</div>
+							</div>
+							<!--{? eyoom_board.bo_use_addon_video == '1'}-->
+							<div id="collapse-video-cm" class="panel-collapse collapse">
+								<div class="comment-collapse-box">
+									<div class="input input-button">
+										<input type="text" id="video_url" placeholder="동영상주소">
+										<div class="button"><input type="button" id="btn_video" onclick="return false;">확인</div>
+									</div>
+								</div>
+							</div>
+							<!--{/}-->
+							<!--{? eyoom_board.bo_use_addon_soundcloud == '1'}-->
+							<div id="collapse-sound-cm" class="panel-collapse collapse">
+								<div class="comment-collapse-box">
+									<div class="row">
+										<div class="col col-8">
+											<div class="input input-button">
+												<input type="text" id="scloud_url" placeholder="사운드클라우드 음원주소">
+												<div class="button"><input type="button" id="btn_scloud" onclick="return false;">확인</div>
+											</div>
+										</div>
+										<div class="col col-4 text-right">
+											<a href="https://soundcloud.com/" target="_blank" class="btn-e btn-e-xs btn-e-orange margin-top-5"><i class="fa fa-location-arrow"></i> 사운드클라우드 바로가기</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--{/}-->
+							<!--{? eyoom_board.bo_use_addon_map == '1'}-->
+							<div id="collapse-map-cm" class="panel-collapse collapse">
+								<!--{? config.cf_map_google_id || config.cf_map_naver_id || config.cf_map_daum_id}-->
+								<div class="comment-collapse-box">
+									<div class="row">
+					                    <div class="col col-6 md-margin-bottom-10">
+											<div class="input input-button">
+												<i class="icon-prepend fa fa-question-circle"></i>
+					                        	<input type="text" name="map_zip" id="map_zip" size="5" maxlength="6" readonly>
+					                        	<b class="tooltip tooltip-top-left">우편번호 - 우측 <span class="color-yellow">주소검색</span> 클릭하여 검색</b>
+												<div class="button"><input type="button" onclick="win_zip('fviewcomment', 'map_zip', 'map_addr1', 'map_addr2', 'map_addr3', 'map_addr_jibeon');"></i> 주소검색</div>
+											</div>
+					                    </div>
+					                    <div class="col col-6 inline-group">
+						                    <!--{? config.cf_map_google_id}-->
+							                <label class="radio" for="map_type_1">
+							                	<input type="radio" name="map_type" id="map_type_1" value="1" checked="checked"><i class="rounded-x"></i> Google지도
+							                </label>
+							                <!--{/}-->
+							                <!--{? config.cf_map_naver_id}-->
+							                <label class="radio" for="map_type_2">
+							                	<input type="radio" name="map_type" id="map_type_2" value="2" {? !config.cf_map_google_id}checked="checked"{/}><i class="rounded-x"></i> 네이버지도
+							                </label>
+							                <!--{/}-->
+							                <!--{? config.cf_map_daum_id}-->
+							                <label class="radio" for="map_type_3">
+							                	<input type="radio" name="map_type" id="map_type_3" value="3" {? !config.cf_map_google_id && !config.cf_map_naver_id}checked="checked"{/}><i class="rounded-x"></i> 다음지도
+							                </label>
+							                <!--{/}-->
+					                    </div>
+				                    </div>
+				                    <div class="margin-bottom-10"></div>
+				                    <div class="row">
+					                    <div class="col col-12">
+							                <label class="input">
+							                	<input type="text" name="map_addr1" id="map_addr1" size="50">
+							                </label>
+							                <div class="note margin-bottom-10"><strong>Note:</strong> 기본주소</div>
+					                    </div>
+				                    </div>
+				                    <div class="row">
+					                    <div class="col col-5">
+							                <label class="input">
+							                	<input type="text" name="map_addr2" id="map_addr2" size="50">
+							                </label>
+							                <div class="note margin-bottom-10"><strong>Note:</strong> 상세주소</div>
+
+					                    </div>
+					                    <div class="col col-5">
+							                <label class="input">
+							                	<input type="text" name="map_name" id="map_name" size="50">
+							                </label>
+							                <div class="note margin-bottom-10"><strong>Note:</strong> 장소명</div>
+					                    </div>
+					                    <input type="hidden" name="map_addr3" id="map_addr3" value="">
+					                    <input type="hidden" name="map_addr_jibeon" value="">
+					                    <div class="col col-2 text-right">
+						                    <button type="button" class="btn-e btn-e-red rounded btn-e-input" id="btn_map" onclick="return false;">적용하기</button>
+					                    </div>
+				                    </div>
+								</div>
+								<!--{:}-->
+								<div class="write-collapse-box text-center">
+									<p><i class="fa fa-exclamation-circle"></i> 먼저 지도 API ID를 신청 및 설정을 하셔야 합니다.</p>
+									<a href="{C.EYOOM_ADMIN_URL}/?dir=config&amp;pid=config_form#anc_cf_map" class="btn-e btn-e-xs btn-e-dark margin-left-5">지도 API 설정 바로가기</a>
+								</div>
+								<!--{/}-->
+							</div>
+							<!--{/}-->
+							<!--{? eyoom_board.bo_use_addon_coding == '1'}-->
+							<div id="collapse-code-cm" class="panel-collapse collapse">
+								<div class="comment-collapse-box">
+									<button type="button" class="ch_code btn-e btn-e-xs btn-e-default rounded" onclick="return false;">HTML</button>
+									<button type="button" class="ch_code btn-e btn-e-xs btn-e-default rounded" onclick="return false;">CSS</button>
+									<button type="button" class="ch_code btn-e btn-e-xs btn-e-default rounded" onclick="return false;">JS</button>
+									<button type="button" class="ch_code btn-e btn-e-xs btn-e-default rounded" onclick="return false;">PHP</button>
+								</div>
+							</div>
+							<!--{/}-->
+						</div>
+					</div>
+					<label class="textarea textarea-resizable">
+						<!--{? _comment_min || _comment_max}--><strong id="char_cnt"><span id="char_count"></span>글자</strong><!--{/}-->
+						<textarea rows="7" id="wr_content" name="wr_content" maxlength="10000" required title="내용" {? _comment_min || _comment_max}onkeyup="check_byte('wr_content', 'char_count');"{/}>{_c_wr_content}</textarea>
+						<!--{? _comment_min || _comment_max}--><script> check_byte('wr_content', 'char_count'); </script><!--{/}-->
+						<script>
+						$("textarea#wr_content[maxlength]").live("keyup change", function() {
+							var str = $(this).val()
+							var mx = parseInt($(this).attr("maxlength"))
+							if (str.length > mx) {
+								$(this).val(str.substr(0, mx));
+								return false;
+							}
+						});
+						</script>
+					</label>
+					<div class="comment-write-footer"><strong>Note:</strong> 댓글은 자신을 나타내는 얼굴입니다. 무분별한 댓글, 욕설, 비방 등을 삼가하여 주세요.</div>
+				</div>
+				<!--{? !_is_member}-->
+				<div class="margin-bottom-20">
+					<label class="label">자동등록방지</label>
+					<div class="vc-captcha">{_captcha_html}</div>
+				</div>
+				<!--{/}-->
+			</div>
+			<div class="comment-write-submit">
+				<button type="submit" id="btn_submit" class="btn-e btn-e-xlg btn-e-purple" value="댓글등록">댓글등록</button>
+			</div>
+		</form>
+	</div>
+	<!--{? eyoom_board.bo_use_point_explain == 1}-->
+	<div class="modal fade cmt-point-info-modal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					<h4 class="modal-title"><strong>댓글 포인트 안내</strong></h4>
+				</div>
+				<div class="modal-body">
+				<!--{? eyoom_board.bo_firstcmt_point > 0}-->
+					<div class="alert alert-warning">
+						<h5 class="font-bold font-size-15"><i class="fa fa-comments-o font-size-20"></i> 첫댓글 포인트</h5>
+						<!--{? eyoom_board.bo_firstcmt_point_type == 1}-->
+						<p>첫 댓글을 작성하는 회원에게 최대 <strong><u>{eyoom_board.bo_firstcmt_point}{levelset.gnu_name} 내 랜덤</u></strong> 지급합니다.</p>
+						<!--{:}-->
+						<p>첫 댓글을 작성하는 회원에게 첫 댓글 포인트 <strong class="color-red">{eyoom_board.bo_firstcmt_point}{levelset.gnu_name}</strong>를 지급합니다.</p>
+						<!--{/}-->
+					</div>
+				<!--{/}-->
+				<!--{? eyoom_board.bo_bomb_point > 0}-->
+					<div class="alert alert-danger">
+						<h5 class="font-bold font-size-15"><i class="fa fa-bomb font-size-20"></i> 지뢰폭탄 포인트</h5>
+						<p>지뢰폭탄이 <strong><u>{eyoom_board.bo_bomb_point_limit}</u></strong> 댓글 수 이내에 <strong><u>{eyoom_board.bo_bomb_point_cnt}</u></strong> 개 매설되어 있습니다.</p>
+						<!--{? eyoom_board.bo_bomb_point_type == 1}-->
+						<p>댓글을 작성한 자리에 지뢰폭탄이 숨겨져 있다면 최대 <strong><u>{eyoom_board.bo_bomb_point}{levelset.gnu_name} 내 랜덤</u></strong> 지급합니다.</p>
+						<!--{:}-->
+						<p>댓글을 작성한 자리에 지뢰폭탄이 숨겨져 있다면 지뢰 포인트 <strong><u>{eyoom_board.bo_bomb_point}{levelset.gnu_name}</u></strong>를 지급합니다.</p>
+						<!--{/}-->
+					</div>
+				<!--{/}-->
+				<!--{? eyoom_board.bo_lucky_point > 0}-->
+					<div class="alert alert-success">
+						<h5 class="font-bold font-size-15"><i class="fa fa-hand-peace-o font-size-20"></i> 행운 포인트</h5>
+						<!--{? eyoom_board.bo_lucky_point_type == 1}-->
+						<p>댓글을 작성하면 <strong><u>{=ceil((eyoom_board.bo_lucky_point_ratio/100)*100)}% 확률</u></strong>로 최대 <strong><u>{eyoom_board.bo_lucky_point}{levelset.gnu_name} 내 랜덤</u></strong> 지급합니다.</p>
+						<!--{:}-->
+						<p>댓글을 작성하면 <strong><u>{=ceil((eyoom_board.bo_lucky_point_ratio/100)*100)}% 확률</u></strong>로 행운 포인트 <strong><u>{eyoom_board.bo_lucky_point}{levelset.gnu_name}</u></strong>를 지급합니다.</p>
+						<!--{/}-->
+					</div>
+				<!--{/}-->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn-e btn-e-lg btn-e-dark" data-dismiss="modal">닫기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--{/}-->
+	<!--{/}-->
+	<!--{* 댓글 쓰기 끝 *}-->
+</div>
+
+<div class="comment-area-divider"><span class="divider-circle"></span></div>
+<div id="map_canvas"></div>
+
+<script src="../../../plugins/venobox/venobox.min.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<!--{? eyoom_board.bo_use_cmt_infinite == '1'}-->
+<script src="../../../plugins/masonry/jquery.masonry.min.js"></script>
+<script src="../../../plugins/infinite-scroll/jquery.infinitescroll.min.js"></script>
+<!--{/}-->
+<script>
+var save_before = '';
+var save_html = {? (_is_member && board.bo_comment_level <= member.mb_level) || (_is_guest && board.bo_comment_level == 1)}document.getElementById('view-comment-write').innerHTML{:}''{/};
+
+<!--{? eyoom_board.bo_use_addon_emoticon == '1'}-->
+function set_emoticon(emoticon) {
+	var type='emoticon';
+	set_textarea_contents(type,emoticon);
+}
+<!--{/}-->
+
+<!--{? eyoom_board.bo_use_addon_map == '1' && (config.cf_map_google_id || config.cf_map_naver_id || config.cf_map_daum_id)}-->
+function set_map_address(map_type, map_addr1, map_addr2, map_name) {
+    switch(map_type) {
+        case '1':
+	        <!--{? config.cf_map_google_id}-->
+            set_map_google_address(map_type, map_addr1, map_addr2, map_name);
+            <!--{/}-->
+            break;
+        case '2':
+	        <!--{? config.cf_map_naver_id}-->
+            set_map_naver_address(map_type, map_addr1, map_addr2, map_name);
+            <!--{/}-->
+            break;
+        case '3':
+        	<!--{? config.cf_map_daum_id}-->
+            set_map_daum_address(map_type, map_addr1, map_addr2, map_name);
+            <!--{/}-->
+            break;
+    }
+}
+
+<!--{? config.cf_map_google_id}-->
+function set_map_google_address(map_type, map_addr1, map_addr2, map_name) {
+	var map = new google.maps.Map(document.getElementById('map_canvas'), {
+		zoom: 8,
+		center: {lat: -34.397, lng: 150.644}
+	});
+	var geocoder = new google.maps.Geocoder();
+
+	var address = map_addr1 + " " + map_addr2;
+	geocoder.geocode({'address': map_addr1}, function(results, status) {
+		if (status === 'OK') {
+			map.setCenter(results[0].geometry.location);
+			var latlng = map.getCenter();
+			set_textarea_contents('map', map_type+'^|^'+address+'^|^'+map_name+'^|^'+latlng);
+		} else {
+	        swal({
+	            title: "Oops...",
+	            text: "잘못된 주소입니다.",
+	            confirmButtonColor: "#FF4848",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+		}
+	});
+}
+<!--{/}-->
+
+<!--{? config.cf_map_naver_id}-->
+function set_map_naver_address(map_type, map_addr1, map_addr2, map_name) {
+	var address = map_addr1 + " " + map_addr2;
+
+	naver.maps.Service.geocode({
+	    address: map_addr1
+	}, function(status, response) {
+	    if (status !== naver.maps.Service.Status.OK) {
+	        swal({
+	            title: "Oops...",
+	            text: "잘못된 주소입니다.",
+	            confirmButtonColor: "#FF4848",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+	    }
+
+        var item = response.result.items[0],
+            point = new naver.maps.Point(item.point.x, item.point.y);
+
+		var latlng = '('+point.y+', '+point.x+')';
+	    set_textarea_contents('map', map_type+'^|^'+address+'^|^'+map_name+'^|^'+latlng);
+	});
+}
+<!--{/}-->
+
+<!--{? config.cf_map_daum_id}-->
+function set_map_daum_address(map_type, map_addr1, map_addr2, map_name) {
+	var address = map_addr1 + " " + map_addr2;
+
+	var mapContainer = document.getElementById('map_canvas'), // 지도를 표시할 div
+	    mapOption = {
+	        center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+	        level: 3 // 지도의 확대 레벨
+	    };
+
+	// 지도를 생성합니다
+	var map = new daum.maps.Map(mapContainer, mapOption);
+
+	// 주소-좌표 변환 객체를 생성합니다
+	var geocoder = new daum.maps.services.Geocoder();
+
+	// 주소로 좌표를 검색합니다
+	geocoder.addressSearch(map_addr1, function(result, status) {
+	    // 정상적으로 검색이 완료됐으면
+	    if (status === daum.maps.services.Status.OK) {
+	        var latlng = new daum.maps.LatLng(result[0].y, result[0].x);
+			set_textarea_contents('map', map_type+'^|^'+address+'^|^'+map_name+'^|^'+latlng);
+	    }
+	});
+}
+<!--{/}-->
+
+<!--{/}-->
+
+function set_textarea_contents(type,value) {
+	var type_text = '';
+	var content = '';
+	var mobile = {? C.G5_IS_MOBILE}true{:}false{/};
+	switch(type) {
+		case 'emoticon': type_text = '이모티콘'; break;
+		case 'video': type_text = '동영상'; break;
+		case 'code': type_text = 'code'; break;
+		case 'sound': type_text = 'soundcloud'; break;
+		case 'map': type_text = '지도'; break;
+	}
+	if(type_text != 'code') {
+		content = '{'+type_text+':'+value+'}';
+	} else {
+		content = '{code:'+value+'}\n\n{/code}\n'
+	}
+	var wr_html = $("#wr_content").val();
+	var wr_emo = content;
+	wr_html += wr_emo;
+	$("#wr_content").val(wr_html);
+}
+
+function good_and_write() {
+	var f = document.fviewcomment;
+	if (fviewcomment_submit(f)) {
+		f.is_good.value = 1;
+		f.submit();
+	} else {
+		f.is_good.value = 0;
+	}
+}
+
+function fviewcomment_submit(f) {
+	var pattern = /(^\s*)|(\s*$)/g; // \s 공백 문자
+
+	f.is_good.value = 0;
+
+	<!--{? _is_anonymous}-->
+	var wr_1 = '{_wr_1}';
+	if($("#anonymous").is(':checked')) {
+		wr_1 = wr_1+'|y';
+		f.wr_1.value=wr_1;
+	}
+	<!--{/}-->
+
+	var subject = "";
+	var content = "";
+	$.ajax({
+		url: g5_bbs_url+"/ajax.filter.php",
+		type: "POST",
+		data: {
+			"subject": "",
+			"content": f.wr_content.value
+		},
+		dataType: "json",
+		async: false,
+		cache: false,
+		success: function(data, textStatus) {
+			subject = data.subject;
+			content = data.content;
+		}
+	});
+
+	if (content) {
+        swal({
+	        html: true,
+            title: "Oops...",
+            text: "내용에 금지단어 '<strong class='color-red'>"+content+"</strong>' 단어가 포함되어있습니다.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+		f.wr_content.focus();
+		return false;
+	}
+
+	// 양쪽 공백 없애기
+	var pattern = /(^\s*)|(\s*$)/g; // \s 공백 문자
+	document.getElementById('wr_content').value = document.getElementById('wr_content').value.replace(pattern, "");
+	if (char_min > 0 || char_max > 0) {
+		check_byte('wr_content', 'char_count');
+		var cnt = parseInt(document.getElementById('char_count').innerHTML);
+		if (char_min > 0 && char_min > cnt) {
+	        swal({
+		        html: true,
+	            title: "Oops...",
+	            text: "댓글은 <strong class='color-red'>"+char_min+"</strong> 글자 이상 쓰셔야 합니다.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+			return false;
+		} else if (char_max > 0 && char_max < cnt) {
+	        swal({
+		        html: true,
+	            title: "Oops...",
+	            text: "댓글은 <strong class='color-red'>"+char_max+"</strong> 글자 이하로 쓰셔야 합니다.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+			return false;
+		}
+	}
+	else if (!document.getElementById('wr_content').value) {
+        swal({
+            title: "Oops...",
+            text: "댓글을 입력하여 주십시오.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+		return false;
+	}
+
+	if (typeof(f.wr_name) != 'undefined') {
+		f.wr_name.value = f.wr_name.value.replace(pattern, "");
+		if (f.wr_name.value == '') {
+	        swal({
+	            title: "Oops...",
+	            text: "이름이 입력되지 않았습니다.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+			f.wr_name.focus();
+			return false;
+		}
+	}
+
+	if (typeof(f.wr_password) != 'undefined') {
+		f.wr_password.value = f.wr_password.value.replace(pattern, "");
+		if (f.wr_password.value == '') {
+	        swal({
+	            title: "Oops...",
+	            text: "비밀번호가 입력되지 않았습니다.",
+	            confirmButtonColor: "#FF2900",
+	            type: "error",
+	            confirmButtonText: "확인"
+	        });
+			f.wr_password.focus();
+			return false;
+		}
+	}
+
+	<?php if($is_guest) echo chk_captcha_js();  ?>
+
+	set_comment_token(f);
+
+	document.getElementById("btn_submit").disabled = "disabled";
+
+	return true;
+}
+
+function comment_box(comment_id, work) {
+	var el_id;
+	// 댓글 아이디가 넘어오면 답변, 수정
+	if (comment_id) {
+		if (work == 'c')
+			el_id = 'reply_' + comment_id;
+		else
+			el_id = 'edit_' + comment_id;
+	}
+	else
+		el_id = 'view-comment-write';
+
+	if (save_before != el_id) {
+		if (save_before) {
+			document.getElementById(save_before).style.display = 'none';
+			document.getElementById(save_before).innerHTML = '';
+		}
+
+		document.getElementById(el_id).style.display = '';
+		document.getElementById(el_id).innerHTML = save_html;
+		// 댓글 수정
+		if (work == 'cu') {
+			document.getElementById('wr_content').value = document.getElementById('save_comment_' + comment_id).value;
+			if (typeof char_count != 'undefined')
+				check_byte('wr_content', 'char_count');
+			if (document.getElementById('secret_comment_'+comment_id).value)
+				document.getElementById('wr_secret').checked = true;
+			else
+				document.getElementById('wr_secret').checked = false;
+			<!--{? _is_anonymous}-->
+			if (document.getElementById('anonymous_id_'+comment_id).value)
+				document.getElementById('anonymous').checked = true;
+			else
+				document.getElementById('anonymous').checked = false;
+			<!--{/}-->
+			var imgname = document.getElementById('imgname_' + comment_id).value;
+			if(imgname) {
+				var delchk_str = '<label class="checkbox"><input type="checkbox" name="del_cmtimg" value="1"><i></i><span class="font-size-12">파일삭제 ('+imgname+')</span></label>';
+				$("#del_cmtimg").html('');
+				$("#del_cmtimg").html(delchk_str);
+			}
+		}
+
+		document.getElementById('comment_id').value = comment_id;
+		document.getElementById('w').value = work;
+
+		<!--{? eyoom_board.bo_use_addon_emoticon == '1'}-->
+		$(".emoticon").venobox({border:'3px'});
+		<!--{/}-->
+
+		<!--{? eyoom_board.bo_use_addon_video == '1'}-->
+		//동영상 추가
+		$("#btn_video").click(function(){
+			var v_url = $("#video_url").val();
+			if(!v_url) {
+		        swal({
+		            title: "Oops...",
+		            text: "동영상 주소를 입력해 주세요.",
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+			}
+			else set_textarea_contents('video',v_url);
+			$("#video_url").val('');
+		});
+		<!--{/}-->
+
+		<!--{? eyoom_board.bo_use_addon_coding == '1'}-->
+		//코드 추가
+		$(".ch_code").click(function(){
+			var ch = $(this).text();
+			var val = ch.toLowerCase();
+			set_textarea_contents('code',val);
+		});
+		<!--{/}-->
+
+		<!--{? eyoom_board.bo_use_addon_soundcloud == '1'}-->
+		//사운드크라우드 추가
+		$("#btn_scloud").click(function(){
+			var s_url = $("#scloud_url").val();
+			if(!s_url) {
+		        swal({
+		            title: "Oops...",
+		            text: "사운드클라우드 음원주소를 입력해 주세요.",
+		            confirmButtonColor: "#FF2900",
+		            type: "error",
+		            confirmButtonText: "확인"
+		        });
+			}
+			else set_textarea_contents('sound',s_url);
+			$("#scloud_url").val('');
+		});
+		<!--{/}-->
+
+		<!--{? eyoom_board.bo_use_addon_map == '1'}-->
+		//지도 추가
+		$("#btn_map").click(function(){
+			var map_type = $("input[name='map_type']:checked").val();
+			var map_addr1 = $("#map_addr1").val();
+			var map_addr2 = $("#map_addr2").val();
+			var map_name = $("#map_name").val();
+
+			set_map_address(map_type, map_addr1, map_addr2, map_name);
+		});
+		<!--{/}-->
+
+		if(save_before)
+			$("#captcha_reload").trigger("click");
+
+		save_before = el_id;
+	}
+}
+
+//댓글 삭제
+$(function() {
+	$('.comment_delete').click(function(e){
+		e.preventDefault();
+	    var linkURL = $(this).attr("href");
+	    comment_delete_link(linkURL);
+	});
+	function comment_delete_link(linkURL) {
+	    swal({
+	        title: "댓글삭제!",
+	        text: "정말로 이 댓글을 삭제하시겠습니까?",
+	        type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#FF9500",
+	        confirmButtonText: "삭제",
+	        cancelButtonText: "취소",
+	        closeOnConfirm: true,
+	        closeOnCancel: true
+	    },
+	    function(){
+			window.location.href = linkURL;
+	    });
+	}
+});
+
+<!--{? (_is_member && board.bo_comment_level <= member.mb_level) || (_is_guest && board.bo_comment_level == 1)}-->
+comment_box('', 'c'); // 댓글 입력폼이 보이도록 처리하기위해서 추가 (root님)
+<!--{/}-->
+
+<!--{? board.bo_use_sns && (config.cf_facebook_appid || config.cf_twitter_key)}-->
+// sns 등록
+$(function() {
+	$("#bo_vc_send_sns").load(
+		"{C.G5_SNS_URL}/view_comment_write.sns.skin.php?bo_table={_bo_table}",
+		function() {
+			save_html = document.getElementById('view-comment-write').innerHTML;
+		}
+	);
+});
+<!--{/}-->
+
+$(function() {
+	// 댓글 추천, 비추천
+	$(".goodcmt_button, .nogoodcmt_button").click(function() {
+		var $tx;
+		if($(this).attr('title') == "goodcmt")
+			$tx = $(".board-cmt-act-good");
+		else
+			$tx = $(".board-cmt-act-nogood");
+
+		excute_goodcmt(this.href, $(this), $tx);
+		return false;
+	});
+
+	<!--{? eyoom_board.bo_use_yellow_card == '1'}-->
+	// 신고버튼 클릭시, 댓글 cmt_id 설정
+	$(".cmt_yellow_card, .cancel_cmt_yellow_card").click(function() {
+		var cmt_id = $(this).attr('data-cmt-id');
+		$(".yellowcard-modal #modal_cmt_id").val(cmt_id);
+	});
+	<!--{/}-->
+});
+
+function excute_goodcmt(href, $el, $tx) {
+	$.post(
+		href,
+		{ js: "on" },
+		function(data) {
+			if(data.error) {
+				alert(data.error);
+				return false;
+			}
+
+			if(data.count) {
+				$el.find("strong").text(number_format(String(data.count)));
+				if($tx.attr("id").search("nogood") > -1) {
+					$tx.text("이 글을 비추천하셨습니다.");
+					$tx.fadeIn(200).delay(2500).fadeOut(200);
+				} else {
+					$tx.text("이 글을 추천하셨습니다.");
+					$tx.fadeIn(200).delay(2500).fadeOut(200);
+				}
+			}
+		}, "json"
+	);
+}
+
+$(document).ready(function() {
+	$('.comment-image').magnificPopup({
+		delegate: 'a',
+		type: 'image',
+		tLoading: '로딩중...',
+		mainClass: 'mfp-img-mobile',
+		image: {
+			tError: '이미지를 불러올수 없습니다.'
+		}
+	});
+});
+</script>
+<!--{? eyoom_board.bo_use_cmt_infinite == '1'}-->
+<script>
+$(function(){
+    var $container = $('.view-comment');
+	$container.infinitescroll({
+		navSelector  : "#infinite_pagination",
+		nextSelector : "#infinite_pagination .next",
+		itemSelector : ".view-comment-item",
+		loading: {
+			finishedMsg: 'END',
+			img: '../../../image/loading.gif'
+		}
+	},
+	function( newElements ) {
+		var $newElems = $( newElements ).css({ opacity: 0 });
+		$newElems.imagesLoaded(function(){
+			$newElems.animate({ opacity: 1 });
+		});
+	});
+	$(window).unbind('.infscr');
+	$('#view-comment-more').click(function(){
+		$container.infinitescroll('retrieve');
+		$('#infinite_pagination').show();
+		return false;
+	});
+});
+</script>
+<!--{/}-->

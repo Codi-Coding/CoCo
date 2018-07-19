@@ -1,0 +1,156 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/easyui/themes/default/easyui.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-shopmenu-list .easyui-panel {padding:10px 0}
+.admin-shopmenu-list #ctrl-btns a {padding:2px 5px}
+.admin-shopmenu-list .panel {border-right:1px solid #95B8E7;margin-top:-2px}
+</style>
+
+<div class="admin-shopmenu-list">
+	<div class="headline">
+		<h4><strong>쇼핑몰 메뉴 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	{# theme_manager // 테마 매니저 }
+
+	<form name="fshopmenuform" method="post" action="{_action_url}" class="eyoom-form">
+	<input type="hidden" name="theme" value="{this_theme}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{this_theme}</span>] 쇼핑몰 메뉴</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="menutree-box">
+		<div class="row">
+			<div class="col col-4">
+				<div class="row">
+					<div class="col col-5" id="ctrl-btns">
+						<a href="javascript:;" class="btn-e btn-e-sm btn-e-dark" onclick="collapseAll()">전체닫기</a>
+						<a href="javascript:;" class="btn-e btn-e-sm btn-e-indigo" onclick="expandAll()">전체열기</a>
+					</div>
+					<div class="col col-7">
+						<label for="target_theme" class="select" onchange="if(this.value!='') return clone_menu();">
+							<select id="target_theme" name="target_theme">
+								<option value="">:: 메뉴복사 테마선택 ::</option>
+								<!--{@ exist_theme}-->
+								<option value="{.value_}">[{.value_}]테마로 메뉴복사</option>
+								<!--{/}-->
+							</select><i></i>
+						</label>
+					</div>
+				</div>
+				<div class="margin-bottom-5"></div>
+				<div class="easyui-panel">
+					<ul id="menutree" class="easyui-tree" data-options="url:'{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=menu_json&amp;thema={this_theme}&amp;me_shop=1{? _GET.id}&amp;id={_GET.id}{/}&amp;smode=1',method:'get',animate:true,lines:true"></ul>
+				</div>
+				<div class="margin-bottom-20"></div>
+			</div>
+			<div class="col col-8">
+				<h4 class="margin-top-0 margin-bottom-15"><strong class="color-indigo"><strong>쇼핑몰 메뉴 설정</strong></h4>
+				<iframe id="ifrm_menuform" name="ifrm_menuform" src="{C.EYOOM_ADMIN_URL}/?dir=theme&pid=shopmenu_form&wmode=1&thema={this_theme}&me_shop=1{?_me_id}&id={_me_id}{/}" scrolling="yes" style="overflow-x:hidden;overflow:auto;width:100%;min-height:1350px" frameborder=0></iframe>
+			</div>
+		</div>
+	</div>
+
+	</form>
+</div>
+
+<!--{* 폰트어썸 모달 시작 *}-->
+<div class="modal fade shopmenuform-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>폰트어썸</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="shopmenuform-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 폰트어썸 모달 끝 *}-->
+
+<script src="../../../plugins/easyui/jquery.easyui.min.js"></script>
+<script>
+$(function(){
+	$('#menutree').tree('expandAll');
+	$('#menutree').tree({
+		dnd: false,
+		onDrop: function(targetNode, source, point){
+			var targetId = $('#menutree').tree('getNode', targetNode).id;
+			var targetOrder = $('#menutree').tree('getNode', targetNode).order;
+			$.ajax({
+				url: '...',
+				type: 'post',
+				dataType: 'json',
+				data: {
+					id: source.id,
+					targetId: targetId,
+					point: point
+				}
+			});
+		},
+		onClick: function(source){
+			var url='{C.EYOOM_ADMIN_URL}/?dir=theme&pid=shopmenu_form&thema={this_theme}&wmode=1&id='+source.id;
+			document.getElementById("ifrm_menuform").contentWindow.location.href = url;
+		}
+	});
+});
+
+function collapseAll(){
+	$('#menutree').tree('collapseAll');
+}
+
+function expandAll(){
+	$('#menutree').tree('expandAll');
+}
+
+function clone_menu() {
+	var theme = '{this_theme}';
+	var target = $("#target_theme option:selected").val();
+	if(!target) {
+		alert('메뉴를 복사할 테마를 선택해 주세요.');
+		return false;
+	}
+	if(confirm("선택한 ["+target+"]테마의 기존 설정 메뉴는 모두 사라집니다.\n\n계속 진행할까요?")) {
+		var url = "{C.EYOOM_ADMIN_URL}/?dir=theme&pid=menu_copy&smode=1";
+		$.post(url, {'theme':theme,'target':target,'me_shop':1}, function(data) {
+			if(data.result == 'ok') {
+				alert('정상적으로 메뉴를 복사하였습니다.\n['+target+']테마 메뉴로 이동합니다.');
+				document.location.href = "{C.EYOOM_ADMIN_URL}/?dir=theme&pid=shopmenu_list&thema="+target;
+			} else if (data.result == 'no') {
+				alert('쇼핑몰 테마의 메뉴는 쇼핑몰 테마가 아닌 일반 커뮤니티 테마로 복사할 수 없습니다.');
+				document.location.href = "{C.EYOOM_ADMIN_URL}/?dir=theme&pid=shopmenu_list&thema="+theme;
+			}
+		},"json");
+	} else {
+		$("#target_theme option:eq(0)").attr("selected", "selected");
+	}
+}
+
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function shopmenuform_modal(href) {
+    $('.shopmenuform-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#shopmenuform-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.shopmenuform-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#shopmenuform-iframe").attr("src", href);
+        $('#shopmenuform-iframe').height(700);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+</script>

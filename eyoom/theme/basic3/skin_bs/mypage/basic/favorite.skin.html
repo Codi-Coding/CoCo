@@ -1,0 +1,238 @@
+<?php if (!defined("_GNUBOARD_")) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/slick/slick.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.favorite-box {position:relative;font-size:12px;margin-bottom:30px;border:1px solid #d5d5d5;-webkit-border-radius:3px !important;-moz-border-radius:3px !important;border-radius:3px !important;background:#fff;width:100%}
+.favorite-box .favorite-list {position:relative}
+.favorite-box .favorite-marker {float:left;line-height:26px;font-size:13px;margin-right:15px}
+.favorite-box .favorite-member {float:right;line-height:26px;font-size:13px}
+.favorite-box .favorite-photo {float:left;position:relative;overflow:hidden;width:26px;height:26px;margin-right:10px;;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.favorite-box .favorite-photo img {display:block;width:100% \9;max-width:100%;height:auto}
+.favorite-box .favorite-nick {float:left;font-weight:bold}
+.favorite-box .favorite-heading {position:relative;padding:8px 15px;border-bottom:1px solid #e5e5e5;background:#f8f8f8;-webkit-border-radius:3px 3px 0 0 !important;-moz-border-radius:3px 3px 0 0 !important;border-radius:3px 3px 0 0 !important}
+.favorite-box .favorite-body {position:relative;overflow:hidden;padding:15px}
+.favorite-box .favorite-body .favorite-subj {display:block;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;overflow:hidden;font-size:15px;line-height:22px;font-weight:bold}
+.favorite-box .favorite-body:hover .favorite-subj {text-decoration:underline}
+.favorite-box .favorite-img {position:relative;overflow:hidden;max-height:180px;border:1px solid #e5e5e5;padding:5px;border-radius:2px !important}
+.favorite-box .favorite-img img {display:block;width:100% \9;max-width:100%;height:auto}
+.favorite-box .favorite-info {border-top:1px dotted #e5e5e5;border-bottom:1px dotted #e5e5e5;padding:5px 0;margin:15px 0}
+.favorite-box .favorite-info span {color:#959595;margin-right:10px}
+.favorite-box .favorite-comment {padding:0px}
+.favorite-box .comment-list {position:relative;border-top:1px solid #f2f2f2;padding:10px 15px}
+.favorite-box .comment-list:last-child {border-bottom:0}
+.favorite-box .comment-photo {position:absolute;overflow:hidden;width:26px;height:26px;margin-right:15px;;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.favorite-box .comment-photo img {display:block;width:100% \9;max-width:100%;height:auto}
+.favorite-box .comment-con {position:relative;margin-left:40px}
+.favorite-box .comment-con p {margin-bottom:0}
+.favorite-box .favorite-comment-solo {position:relative}
+.favorite-box .comment-solo-heading {padding:8px 15px;border-bottom:1px solid #e5e5e5;background:#f8f8f8}
+.favorite-box .comment-solo-body {padding:15px}
+.favorite-box .comment-solo-body:hover a {text-decoration:underline}
+#infscr-loading {text-align:center;z-index:100;position:absolute;left:50%;bottom:0;width:200px;margin-left:-100px;padding:10px;background:#000;opacity:0.6;color:#fff}
+.my-favorite .view-infinite-more .btn-e-lg {padding:10px 50px;font-size:17px;font-weight:bold;border:1px solid #959595}
+.favorite-box .dropdown-menu {left:inherit;right:0}
+@media (min-width: 768px) {
+	.my-favorite-modal {width:750px;margin:10px auto}
+	.my-favorite-modal .modal-header, .my-favorite-modal .modal-body, .my-favorite-modal .modal-footer {padding:10px 20px}
+}
+@media (min-width: 992px) {
+	.my-favorite-modal {width:970px}
+}
+@media (min-width: 1200px) {
+	.my-favorite-modal {width:1170px}
+}
+</style>
+
+<div class="my-favorite">
+	<div class="cont-text-bg margin-bottom-30">
+	    <p class="bg-primary rounded">관심게시판</p>
+	</div>
+	<!--{? favorite}-->
+	<div class="infinite-container">
+		<!--{@ list}-->
+		<article class="favorite-box">
+		    <!--{? .wr_id == .wr_parent}-->
+		    <div class="favorite-list">
+			    <div class="favorite-heading">
+				    <div class="favorite-marker">
+					    <strong class="color-black  margin-right-10">
+					    	<i class="fa fa-map-marker color-grey margin-right-5"></i><u class="color-blue">{.bo_info.gr_name} / {.bo_info.bo_name}</u>
+					    </strong>
+					    <strong><i class="fa fa-info-circle color-grey margin-right-5"></i>포스트</strong>
+				    </div>
+				    <div class="favorite-member">
+					    <div class="favorite-photo">
+					    	<!--{? .mb_photo}-->{.mb_photo}<!--{:}--><img src="./img/user.jpg"><!--{/}-->
+					    </div>
+					    <div class="favorite-nick">{=eb_nameview('basic', .mb_id, .mb_nick, .mb_email, .mb_homepage)}</div>
+				    </div>
+				    <div class="clearfix"></div>
+			    </div>
+			    <div class="favorite-body">
+				    <div class="row">
+					    <!--{? .img_src}-->
+					    <div class="col-sm-4 sm-margin-bottom-10">
+					        <div class="favorite-img">
+			                    <a href="{.href}" {? !C.G5_IS_MOBILE}onclick="favorite_modal(this.href); return false;"{:}target="_blank"{/}><img class="img-responsive" src="{.img_src}"></a>
+					        </div>
+					    </div>
+					    <div class="col-sm-8">
+					    <!--{:}-->
+					    <div class="col-sm-12">
+					    <!--{/}-->
+							<h5 class="favorite-subj"><a href="{.href}" {? !C.G5_IS_MOBILE}onclick="favorite_modal(this.href); return false;"{:}target="_blank"{/}>{=get_text(.wr_subject)}</a></h5>
+				            <div class="favorite-info">
+				                <span><i class="fa fa-comments margin-right-5"></i>{=number_format(.wr_comment)}</span>
+				                <span><i class="fa fa-eye margin-right-5"></i> {.wr_hit}</span>
+				                <span><i class="fa fa-clock-o margin-right-5"></i> {eb->date_time('Y-m-d H:i',.datetime)}</span>
+				            </div>
+					        <div class="wr_contents" id="wr_content_{.bo_table}_{.wr_id}">
+					            <p class="color-grey">{=conv_subject(.wr_content,150,'…')}</p>
+								<!--{@ video}-->
+								<p>{..value_}</p>
+								<!--{/}-->
+								<!--{@ sound}-->
+								<p>{..value_}</p>
+								<!--{/}-->
+					        </div>
+					        <div class="clearfix"></div>
+					    </div>
+			        </div>
+			    </div>
+		    </div>
+
+			<!--{? !.secret}-->
+	        <div class="favorite-comment">
+				<!--{@ comment}-->
+	            <section class="comment-list" id="cmt_list_{.bo_table}_{.wr_id}_{..comment_id}" style="{? ..cmt_depth}margin-left:{..cmt_depth}px;{/}">
+					<div class="comment-photo">
+						<!--{? ..mb_photo}-->{..mb_photo}<!--{:}--><img src="./img/user.jpg"><!--{/}-->
+					</div>
+					<div class="comment-con">
+						<div class="color-grey margin-bottom-5">
+							<small>{..wr_name} - {eb->date_time('Y-m-d H:i',..datetime)}</small>
+						</div>
+						<p class="color-grey">{..content}</p>
+					</div>
+					<div class="clearfix"></div>
+	            </section>
+				<!--{/}-->
+	        </div>
+			<!--{/}-->
+
+		    <!--{:}-->
+	        <div class="favorite-comment-solo">
+			    <div class="comment-solo-heading">
+				    <div class="favorite-marker">
+					    <strong class="color-black  margin-right-10">
+					    	<i class="fa fa-map-marker color-grey margin-right-5"></i><u class="color-blue">{.bo_info.gr_name} / {.bo_info.bo_name}</u>
+					    </strong>
+					    <strong><i class="fa fa-info-circle color-grey margin-right-5"></i>댓글</strong>
+				    </div>
+				    <div class="favorite-member">
+					    <div class="favorite-photo">
+					    	<!--{? .mb_photo}-->{.mb_photo}<!--{:}--><img src="./img/user.jpg"><!--{/}-->
+					    </div>
+					    <div class="favorite-nick">{=eb_nameview('basic', .mb_id, .mb_nick, .mb_email, .mb_homepage)}</div>
+				    </div>
+				    <div class="clearfix"></div>
+			    </div>
+			    <div class="comment-solo-body">
+					<p><i class="fa fa-comments-o color-black font-size-20 margin-right-10"></i><a href="{.href}" {? !C.G5_IS_MOBILE}onclick="favorite_modal(this.href); return false;"{:}target="_blank"{/} class="font-size-13">{=conv_subject(.wr_content,100,'…')}</a></p>
+					<!--{@ video}-->
+					<p>{..value_}</p>
+					<!--{/}-->
+					<!--{@ sound}-->
+					<p>{..value_}</p>
+					<!--{/}-->
+					<div class="text-right">
+						<span class="color-grey"><i class="fa fa-clock-o margin-right-5"></i>{eb->date_time('Y-m-d H:i',.datetime)}</span>
+					</div>
+			    </div>
+	        </div>
+		    <!--{/}-->
+		</article>
+		<!--{/}-->
+	</div>
+	<div id="infinite_pagination">
+		<a class="next" href="{C.G5_URL}/mypage/?t=favorite&page={page+1}"></a>
+	</div>
+	<div class="view-infinite-more text-center margin-top-30 margin-bottom-20">
+		<a id="my-favorite-more" href="#" class="btn btn-default btn-e-lg">더 보기 <i class="fa fa-arrow-circle-o-down"></i></a>
+	</div>
+	<!--{:}-->
+	<div class="text-center margin-top-30 margin-bottom-30 color-grey font-size-13">
+		<i class="fa fa-exclamation-circle"></i> 관심게시판이 없습니다.<br><a href="{C.G5_URL}/mypage/config.php#favorite">[환경설정]</a>에서 관심게시판을 설정하실 수 있습니다.
+	</div>
+	<!--{/}-->
+</div>
+
+<!--{* 관심게시판 상세보기 모달 시작 *}-->
+<div class="modal fade favorite-iframe-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog my-favorite-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong><i class="fa fa-search"></i> 관심 게시글 상세보기</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="favorite-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 관심게시판 상세보기 모달 끝 *}-->
+
+<script src="../../../plugins/masonry/jquery.masonry.min.js"></script>
+<script src="../../../plugins/infinite-scroll/jquery.infinitescroll.min.js"></script>
+<script src="../../../plugins/slick/slick.min.js"></script>
+<script>
+$('.favorite-img').slick({
+	infinite: true,
+	autoplay: true,
+	autoplaySpeed: 5000,
+	arrows: false
+});
+
+function favorite_modal(href) {
+	$('.favorite-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+		$("#favorite-iframe").attr("src", "");
+		$('html').css({overflow: ''});
+	});
+	$('.favorite-iframe-modal').modal('show').on('shown.bs.modal', function () {
+		$("#favorite-iframe").attr("src", href);
+		$('#favorite-iframe').height(parseInt($(window).height() * 0.85));
+		$('html').css({overflow: 'hidden'});
+	});
+	return false;
+}
+
+$(function(){
+    var $container = $('.infinite-container');
+	$container.infinitescroll({
+		navSelector  : "#infinite_pagination",
+		nextSelector : "#infinite_pagination .next",
+		itemSelector : ".favorite-box",
+		loading: {
+			finishedMsg: 'END',
+			img: '../../../image/loading.gif'
+		}
+	},
+	function( newElements ) {
+		var $newElems = $( newElements ).css({ opacity: 0 });
+		$newElems.imagesLoaded(function(){
+			$newElems.animate({ opacity: 1 });
+		});
+	});
+	$(window).unbind('.infscr');
+	$('#my-favorite-more').click(function(){
+		$container.infinitescroll('retrieve');
+		$('#infinite_pagination').show();
+		return false;
+	});
+});
+</script>

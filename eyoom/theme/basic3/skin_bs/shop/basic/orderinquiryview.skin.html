@@ -1,0 +1,573 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-steps {position:relative;margin-bottom:30px}
+.shop-steps .step-indicator {border-collapse:separate;display:table;margin-left:0;position:relative;table-layout:fixed;vertical-align:middle}
+.shop-steps .step-indicator li {display:table-cell;float:none;padding:0;width:1%}
+.shop-steps .step-indicator li:before {background-color:#d5d5d5;content:"";display:block;height:1px;position:relative;top:25px}
+.shop-steps .step-indicator li:first-child:before {left:50%}
+.shop-steps .step-indicator li:last-child:before {right:50%}
+.shop-steps .step-indicator .step {background-color:#fff;border:2px solid #e5e5e5;color:#e5e5e5;font-size:20px;width:50px;height:50px;line-height:48px;border-radius:25px !important;margin:0 auto;position:relative;z-index:1}
+.shop-steps .step-indicator .caption {box-sizing:border-box;color:#e5e5e5;padding:10px 15px;font-size:14px;font-weight:bold}
+.shop-steps .step-indicator .active .step {border-color:#2E3340;color:#2E3340}
+.shop-steps .step-indicator .active .caption {color:#2E3340}
+.shop-steps .step-indicator .complete .step {border-color:#b5b5b5;color:#b5b5b5}
+.shop-steps .step-indicator .complete .caption {color:#b5b5b5}
+.shop-steps .step-indicator .incomplete .step {border-color:#b5b5b5;color:#b5b5b5}
+.shop-steps .step-indicator .incomplete .caption {color:#b5b5b5}
+.shop-steps .step-indicator .inactive .caption {color:#b5b5b5}
+.shop-steps .alarm-marker .alarm-point {top:3px;right:3px}
+.shop-steps .alarm-marker .alarm-effect {top:-7px;right:-7px}
+.shop-order-inquiry-view .headline {margin:0 0 25px;border-bottom:1px solid #d5d5d5}
+.shop-order-inquiry-view .table-list-eb thead {border-top:2px solid #454545}
+.shop-order-inquiry-view .table-list-eb .table>thead>tr>th {padding:10px;text-align:center}
+.shop-order-inquiry-view .table-list-eb .table>tbody>tr>td {padding:10px}
+.shop-order-inquiry-view .table-list-eb .table>tfoot>tr>td {padding:15px 10px}
+.shop-order-inquiry-view .table-list-eb td img {display:block;width:100% \9;max-width:100%;height:auto}
+.shop-order-inquiry-view .table-list-eb .td-img {text-align:center}
+.shop-order-inquiry-view .table-list-eb .td-img .td-img-box {display:inline-block;border:1px solid #e5e5e5;padding:2px;margin-top:5px;width:70px;border-radius:2px !important}
+.shop-order-inquiry-view .table-list-eb .td-width-30 {width:30%}
+.shop-order-inquiry-view .table-list-eb .td-border {border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5}
+.shop-order-inquiry-view .table-list-eb .td-border-left {border-left:1px solid #e5e5e5}
+.shop-order-inquiry-view .table-list-eb .td-border-right {border-right:1px solid #e5e5e5}
+.shop-order-inquiry-view .table-list-eb .td-bg-color {background:#fcfcfc}
+.shop-order-inquiry-view .table-list-eb .total-icon {position:absolute;top:50%;left:-11px;margin-top:-11px;display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;background:#f5f5f5;color:#454545;font-size:16px;border:1px solid #b5b5b5}
+.shop-order-inquiry-view .table-list-eb .table.order-table>tbody>tr>td {padding:10px;text-align:center}
+.shop-order-inquiry-view .table-list-eb .table.total-table>tbody>tr>td {padding:20px 10px}
+.shop-order-inquiry-view #sod_fin_cancelfrm {background:transparent}
+</style>
+
+<div class="shop-steps">
+	<ol class="list-inline text-center step-indicator">
+		<li class="complete">
+			<div class="step"><span class="fa fa-hand-pointer-o"></span></div>
+			<div class="caption">상품선택</div>
+		</li>
+		<li class="complete">
+			<div class="step"><i class="fa fa-shopping-basket"></i></div>
+			<div class="caption">장바구니</div>
+		</li>
+		<li class="complete">
+			<div class="step"><i class="fa fa-credit-card"></i></div>
+			<div class="caption">주문/결제</div>
+		</li>
+		<li class="active">
+			<div class="step">
+				<div class="alarm-marker">
+					<span class="alarm-effect"></span>
+					<span class="alarm-point"></span>
+				</div>
+				<i class="fa fa-check"></i>
+			</div>
+			<div class="caption">주문완료</div>
+		</li>
+	</ol>
+</div>
+
+<div class="shop-order-inquiry-view">
+    <p class="text-right font-size-12 color-grey"><span class="label label-indigo margin-right-5">주문번호</span><u>{_od_id}</u></p>
+    <div class="sod-fin-list">
+        <div class="headline"><h4><strong>주문하신 상품</strong></h4></div>
+		<!--{? C.G5_IS_MOBILE}-->
+		<p class="text-right font-size-11 margin-bottom-5 color-grey">Note! 좌우 스크롤 (<i class="fa fa-arrows-h"></i>)</p>
+		<!--{/}-->
+		<div class="table-list-eb">
+		    <div class="table-responsive">
+		        <table class="table order-table">
+			        <thead>
+			            <tr>
+			                <th scope="col" rowspan="2" class="td-border-right">이미지</th>
+			                <th scope="col" colspan="7" id="th_itname">상품명</th>
+			            </tr>
+			            <tr>
+			                <th id="th_itopt" class="td-border-right">옵션명</th>
+			                <th id="th_itqty" class="td-border-right">수량</th>
+			                <th id="th_itprice" class="td-border-right">판매가</th>
+			                <th id="th_itsum" class="td-border-right">소계</th>
+			                <th id="th_itpt" class="td-border-right">포인트</th>
+			                <th id="th_itpt" class="td-border-right">배송비</th>
+			                <th id="th_itst"><span class="color-pink">상태</span></th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            <!--{@ order}-->
+						<!--{@ option}-->
+						<!--{? ..key == 0}-->
+			            <tr>
+			                <td rowspan="2" class="td-img td-border-right"><a href="./item.php?it_id={.it_id}" class="td-img-box">{.image}</a></td>
+			                <td headers="th_itname" colspan="7" class="text-center"><a href="./item.php?it_id={.it_id}"><strong class="font-size-13">{.it_name}</strong></a></td>
+			            </tr>
+			            <!--{/}-->
+			            <tr>
+			                <td headers="th_itopt" class="td-border-right td-bg-color">{=get_text(..ct_option)}</td>
+			                <td headers="th_itqty" class="td-border-right">{=number_format(..ct_qty)}</td>
+			                <td headers="th_itprice" class="td-border-right">{=number_format(..opt_price)}</td>
+			                <td headers="th_itsum" class="td-border-right">{=number_format(..sell_price)}</td>
+			                <td headers="th_itpt" class="td-border-right">{=number_format(..point)}</td>
+			                <td headers="th_itpt" class="td-border-right">{.ct_send_cost}</td>
+			                <td headers="th_itst" class="td-bg-color"><span class="label label-pink">{..ct_status}</span></td>
+			            </tr>
+						<!--{/}-->
+						<!--{/}-->
+			        </tbody>
+		            <tfoot>
+		            	<tr>
+			            	<td colspan="4"><strong>포인트지급</strong></td>
+			            	<td colspan="4" class="text-right"><strong>{=number_format(_tot_point)} 점</strong></td>
+			            </tr>
+		            </tfoot>
+		        </table>
+		    </div>
+		</div>
+        <div class="text-right">
+            <button type="button" id="sod_sts_explan_open" class="btn-e btn-e-dark btn-e-xs rounded">상태설명보기</button>
+        </div>
+        <div id="sod_sts_explan" class="alert alert-info font-size-12 margin-top-5 margin-bottom-20">
+            <p><strong class="margin-right-10">주문</strong><span>- 주문이 접수 되었습니다.</span></p>
+            <p><strong class="margin-right-10">입금</strong><span>- 입금(결제)이 완료 되었습니다.</span></p>
+            <p><strong class="margin-right-10">준비</strong><span>- 상품 준비 중 입니다.</span></p>
+            <p><strong class="margin-right-10">배송</strong><span>- 상품 배송 중 입니다.</span></p>
+            <p><strong class="margin-right-10">완료</strong><span>- 상품 배송이 완료 되었습니다.</span></p>
+            <button id="sod_sts_explan_close" class="close pull-right" type="button">×</button>
+            <div class="clearfix"></div>
+        </div>
+		<div class="table-list-eb margin-top-40 margin-bottom-50">
+			<!--{? C.G5_IS_MOBILE}-->
+			<p class="text-right font-size-11 margin-bottom-5 color-grey">Note! 좌우 스크롤 (<i class="fa fa-arrows-h"></i>)</p>
+			<!--{/}-->
+		    <div class="table-responsive">
+		        <table class="table total-table">
+		            <thead>
+		                <tr>
+				            <th>주문총액</th>
+							<!--{? od.od_cart_coupon > 0}-->
+				        	<th>개별상품 쿠폰할인</th>
+					        <!--{/}-->
+					        <!--{? od.od_send_cost > 0}-->
+				        	<th>배송비</th>
+					        <!--{/}-->
+					        <!--{? od.od_send_coupon > 0}-->
+				        	<th>배송비 쿠폰할인</th>
+					        <!--{/}-->
+					        <!--{? od.od_send_cost2 > 0}-->
+				        	<th>추가배송비</th>
+					        <!--{/}-->
+					        <!--{? od.od_cancel_price > 0}-->
+				        	<th>취소금액</th>
+					        <!--{/}-->
+				            <th>총계 가격</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+			            <tr>
+				        	<td class="text-center position-relative td-border-right">
+					        	<strong class="font-size-14">{=number_format(od.od_cart_price)}</strong> <strong>원</strong>
+					        </td>
+							<!--{? od.od_cart_coupon > 0}-->
+				        	<td class="text-center position-relative td-border-right">
+					        	<strong class="total-icon">+</strong>
+					        	<strong class="font-size-14">{=number_format(od.od_cart_coupon)}</strong> <strong>원</strong>
+					        </td>
+					        <!--{/}-->
+					        <!--{? od.od_send_cost > 0}-->
+				        	<td class="text-center position-relative td-border-right">
+					        	<strong class="total-icon">+</strong>
+					        	<strong class="font-size-14">{=number_format(od.od_send_cost)}</strong> <strong>원</strong>
+					        </td>
+					        <!--{/}-->
+					        <!--{? od.od_send_coupon > 0}-->
+				        	<td class="text-center position-relative td-border-right">
+					        	<strong class="total-icon">+</strong>
+					        	<strong class="font-size-14">{=number_format(od.od_send_coupon)}</strong> <strong>원</strong>
+					        </td>
+					        <!--{/}-->
+					        <!--{? od.od_send_cost2 > 0}-->
+				        	<td class="text-center position-relative td-border-right">
+					        	<strong class="total-icon">+</strong>
+					        	<strong class="font-size-14">{=number_format(od.od_send_cost2)}</strong> <strong>원</strong>
+					        </td>
+					        <!--{/}-->
+					        <!--{? od.od_cancel_price > 0}-->
+				        	<td class="text-center position-relative td-border-right">
+					        	<strong class="total-icon">+</strong>
+					        	<strong class="font-size-14">{=number_format(od.od_cancel_price)}</strong> <strong>원</strong>
+					        </td>
+					        <!--{/}-->
+				        	<td class="text-center position-relative td-bg-color">
+					        	<strong class="total-icon">=</strong>
+					        	<strong class="font-size-14 color-red">{=number_format(_tot_price)}</strong> <strong class="color-red">원</strong>
+					        </td>
+				        </tr>
+			        </tbody>
+			    </table>
+			</div>
+		</div>
+    </div>
+
+	<div class="sod-fin-view">
+	    <div class="headline"><h4><strong>결제정보</strong></h4></div>
+		<div class="table-list-eb margin-bottom-50">
+	        <table class="table">
+		        <thead>
+		            <tr>
+		                <th class="td-width-30">항목</th>
+		                <th>내용</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">주문번호</th>
+	                    <td>{_od_id}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">주문일시</th>
+	                    <td>{od.od_time}</td>
+                	</tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">결제방식</th>
+	                    <td><span class="color-blue">{? _easy_pay_name} {_easy_pay_name}({od.od_settle_case}){:}{=check_pay_name_replace(od.od_settle_case)}{/}</span></td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">결제금액</th>
+	                    <td><span class="color-blue">{_od_receipt_price}</span></td>
+                	</tr>
+					<!--{? od.od_receipt_price > 0}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">결제일시</th>
+	                    <td>{od.od_receipt_time}</td>
+	                </tr>
+					<!--{/}-->
+					<!--{? _app_no_subj // 승인번호, 휴대폰번호, 거래번호}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">{_app_no_subj}</th>
+	                    <td>{_app_no}</td>
+	                </tr>
+					<!--{/}-->
+					<!--{? _disp_bank // 계좌정보}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">입금자명</th>
+	                    <td>{=get_text(od.od_deposit_name)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">입금계좌</th>
+	                    <td><span class="color-blue">{=get_text(od.od_bank_account)}</span></td>
+	                </tr>
+					<!--{/}-->
+					<!--{? _disp_receipt // 영수증}-->
+	                <tr>
+	                    <th>영수증</th>
+	                    <td class="td-border-right td-bg-color">
+							<!--{? od.od_settle_case == '휴대폰'}-->
+	                        <button type="button" onclick="{_hp_receipt_script}" class="btn-e btn-e-xs btn-e-dark rounded">영수증 출력</button>
+	                        <!--{/}-->
+
+							<!--{? od.od_settle_case == '신용카드' || is_inicis_order_pay(od.od_settle_case)}-->
+	                        <button type="button" onclick="{_card_receipt_script}" class="btn-e btn-e-xs btn-e-dark rounded">영수증 출력</button>
+	                        <!--{/}-->
+	                        
+	                        <!--{? od.od_settle_case == 'KAKAOPAY'}-->
+	                        <button type="button" onclick="{_card_receipt_script}" class="btn-e btn-e-xs btn-e-dark rounded">영수증 출력</button>
+	                        <!--{/}-->
+	                    <td>
+	                    </td>
+	                </tr>
+					<!--{/}-->
+					<!--{? od.od_receipt_point > 0}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">포인트사용</th>
+	                    <td>{=display_point(od.od_receipt_point)}</td>
+	                </tr>
+					<!--{/}-->
+					<!--{? od.od_refund_price > 0}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">환불 금액</th>
+	                    <td>{=display_price(od.od_refund_price)}</td>
+	                </tr>
+					<!--{/}-->
+					<!--{? default.de_taxsave_use // 현금영수증 발급을 사용하는 경우에만}-->
+					<!--{? _misu_price == 0 && od.od_receipt_price && (od.od_settle_case == '무통장' || od.od_settle_case == '계좌이체' || od.od_settle_case == '가상계좌')}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">현금영수증</th>
+	                    <td>
+						<!--{? od.od_cash}-->
+							<button type="button" onclick="{_cash_receipt_script}" class="btn-e btn-e-dark btn-e-xs rounded">현금영수증 확인하기</button>
+						<!--{:}-->
+							<button type="button" onclick="window.open('{C.G5_SHOP_URL}/taxsave.php?od_id={_od_id}', 'taxsave', 'width=550,height=400,scrollbars=1,menus=0');" class="btn-e btn-e-red btn-e-xs rounded">현금영수증 발급하기</button>
+						<!--{/}-->
+	                    </td>
+	                </tr>
+	                <!--{/}-->
+	                <!--{/}-->
+		        </tbody>
+	        </table>
+		</div>
+
+	    <div class="headline"><h4><strong>주문하신 분</strong></h4></div>
+		<div class="table-list-eb margin-bottom-50">
+	        <table class="table">
+		        <thead>
+		            <tr>
+		                <th class="td-width-30">항목</th>
+		                <th>내용</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">이름</th>
+	                    <td>{=get_text(od.od_name)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">전화번호</th>
+	                    <td>{=get_text(od.od_tel)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">핸드폰</th>
+	                    <td>{=get_text(od.od_hp)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">주 소</th>
+	                    <td>{=get_text(sprintf("(%s%s)", od.od_zip1, od.od_zip2))} {=print_address(od.od_addr1, od.od_addr2, od.od_addr3, od.od_addr_jibeon)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">E-mail</th>
+	                    <td>{=get_text(od.od_email)}</td>
+	                </tr>
+		        </tbody>
+	        </table>
+		</div>
+
+	    <div class="headline"><h4><strong>받으시는 분</strong></h4></div>
+		<div class="table-list-eb margin-bottom-50">
+	        <table class="table">
+		        <thead>
+		            <tr>
+		                <th class="td-width-30">항목</th>
+		                <th>내용</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">이름</th>
+	                    <td>{=get_text(od.od_b_name)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">전화번호</th>
+	                    <td>{=get_text(od.od_b_tel)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">핸드폰</th>
+	                    <td>{=get_text(od.od_b_hp)}</td>
+	                </tr>
+	                <tr>
+	                    <th class="td-border-right td-bg-color">주 소</th>
+	                    <td>{=get_text(sprintf("(%s%s)", od.od_b_zip1, od.od_b_zip2))} {=print_address(od.od_b_addr1, od.od_b_addr2, od.od_b_addr3, od.od_b_addr_jibeon)}</td>
+	                </tr>
+					<!--{? default.de_hope_date_use}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">희망배송일</th>
+	                    <td>{=substr(od.od_hope_date,0,10)} ({=get_yoil(od.od_hope_date)})</td>
+	                </tr>
+					<!--{/}-->
+					<!--{? od.od_memo}-->
+	                <tr>
+	                    <th class="td-border-right td-bg-color">전하실 말씀</th>
+	                    <td>{=conv_content(od.od_memo, 0)}</td>
+	                </tr>
+	                <!--{/}-->
+		        </tbody>
+	        </table>
+		</div>
+
+	    <div class="headline"><h4><strong>배송정보</strong></h4></div>
+		<div class="table-list-eb margin-bottom-50">
+	        <table class="table">
+		        <thead>
+		            <tr>
+		                <th>배송회사</th>
+		                <th>운송장번호</th>
+		                <th>배송일시</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+					<!--{? od.od_invoice && od.od_delivery_company}-->
+	                <tr>
+	                    <td class="td-border-right">{od.od_delivery_company} {=get_delivery_inquiry(od.od_delivery_company, od.od_invoice, 'dvr_link')}</td>
+	                    <td class="td-border-right">{od.od_invoice}</td>
+	                    <td>{od.od_invoice_time}</td>
+	                </tr>
+	                <!--{:}-->
+	                <tr>
+	                    <td colspan="3" class="text-center"><span class="font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 아직 배송하지 않았거나 배송정보를 입력하지 못하였습니다.</span></td>
+	                </tr>
+	                <!--{/}-->
+		        </tbody>
+	        </table>
+		</div>
+    </div>
+
+    <div class="sod-fin-tot">
+        <div class="headline"><h4><strong>결제합계</strong></h4></div>
+		<div class="table-list-eb margin-bottom-50">
+	        <table class="table">
+		        <thead>
+		            <tr>
+		                <th>총 구매액</th>
+		                <!--{? _misu_price > 0}-->
+		                <th>미결제액</th>
+		                <!--{/}-->
+		                <th>결제액</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+	                <tr>
+	                    <td class="td-border-right text-right"><strong class="font-size-14">{=display_price(_tot_price)}</strong></td>
+	                    <!--{? _misu_price > 0}-->
+	                    <td class="td-border-right text-right"><strong class="font-size-14">{=display_price(_misu_price)}</strong></td>
+	                    <!--{/}-->
+	                    <td class="text-right td-bg-color"><strong class="font-size-14 color-red">{_wanbul}</strong></td>
+	                </tr>
+		        </tbody>
+	        </table>
+		</div>
+    </div>
+
+    <div class="sod-fin-cancel">
+		<!--{? _cancel_price == 0}-->
+			<!--{? _custom_cancel}-->
+		<div class="text-center margin-top-30">
+        	<button type="button" onclick="document.getElementById('sod_fin_cancelfrm').style.display='block';" class="btn-e btn-e-dark btn-e-lg">주문 취소하기</button>
+		</div>
+
+        <div id="sod_fin_cancelfrm">
+            <form method="post" action="#" onsubmit="return fcancel_check(this);" class="eyoom-form">
+            <input type="hidden" name="od_id"  value="{od.od_id}">
+            <input type="hidden" name="token"  value="{_token}">
+
+            <label for="cancel_memo" class="label"><strong class="color-pink">취소사유</strong> <small class="color-grey font-normal">(<i class="fa fa-check"></i> 필수입력)</small></label>
+			<div class="input input-button">
+				<input type="text" name="cancel_memo" id="cancel_memo" size="40" maxlength="100">
+				<div class="button"><input type="submit" value="확인">확인</div>
+			</div>
+            </form>
+        </div>
+			<!--{/}-->
+		<!--{:}-->
+        <p class="text-center font-size-14 color-red"><i class="fa fa-exclamation-circle"></i> <strong>주문 취소, 반품, 품절된 내역이 있습니다.</strong></p>
+        <!--{/}-->
+    </div>
+
+	<!--{? _deposit_no}-->
+	<div class="margin-hr-20"></div>
+    <p class="font-size-12 color-grey"><i class="fa fa-exclamation-circle"></i> 관리자가 가상계좌 테스트를 한 경우에만 보입니다.</p>
+    <form method="post" action="http://devadmin.kcp.co.kr/Modules/Noti/TEST_Vcnt_Noti_Proc.jsp" target="_blank" class="eyoom-form">
+	<div class="table-list-eb">
+        <table class="table">
+	        <thead>
+	            <tr>
+	                <th class="td-width-30">항목</th>
+	                <th>내용</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+		        <tr>
+		            <th class="td-border-right td-bg-color"><label for="e_trade_no">KCP 거래번호</label></th>
+		            <td>
+	                    <label class="input">
+	                        <input type="text" name="e_trade_no" value="{od.od_tno}">
+	                    </label>
+		            </td>
+		        </tr>
+		        <tr>
+		            <th class="td-border-right td-bg-color"><label for="deposit_no">입금계좌</label></th>
+		            <td>
+	                    <label class="input">
+	                        <input type="text" name="deposit_no" value="{_deposit_no}">
+	                    </label>
+			        </td>
+		        </tr>
+		        <tr>
+		            <th class="td-border-right td-bg-color"><label for="req_name">입금자명</label></th>
+		            <td>
+	                    <label class="input">
+	                        <input type="text" name="req_name" value="{od.od_deposit_name}">
+	                    </label>
+			        </td>
+		        </tr>
+		        <tr>
+		            <th class="td-border-right td-bg-color"><label for="noti_url">입금통보 URL</label></th>
+		            <td>
+	                    <label class="input">
+	                        <input type="text" name="noti_url" value="{C.G5_SHOP_URL}/settle_kcp_common.php">
+	                    </label>
+			        </td>
+		        </tr>
+	        </tbody>
+        </table>
+	</div>
+    <div id="sod_fin_test" class="text-center">
+        <input type="submit" value="입금통보 테스트" class="btn-e btn-e-red btn-e-lg">
+    </div>
+    </form>
+    <!--{/}-->
+</div>
+
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+$(function() {
+    $("#sod_sts_explan_open").on("click", function() {
+        var $explan = $("#sod_sts_explan");
+        if($explan.is(":animated"))
+            return false;
+
+        if($explan.is(":visible")) {
+            $explan.slideUp(200);
+            $("#sod_sts_explan_open").text("상태설명보기");
+        } else {
+            $explan.slideDown(200);
+            $("#sod_sts_explan_open").text("상태설명닫기");
+        }
+    });
+
+    $("#sod_sts_explan_close").on("click", function() {
+        var $explan = $("#sod_sts_explan");
+        if($explan.is(":animated"))
+            return false;
+
+        $explan.slideUp(200);
+        $("#sod_sts_explan_open").text("상태설명보기");
+    });
+});
+
+function fcancel_check(f) {
+    var memo = f.cancel_memo.value;
+    if (memo == "") {
+        swal({
+            title: "Oops...",
+            text: "취소사유를 입력해 주십시오.",
+            confirmButtonColor: "#FF2900",
+            type: "error",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+    swal({
+        title: "주문취소",
+        text: "주문을 정말 취소하시겠습니까?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF9500",
+        confirmButtonText: "주문취소",
+        cancelButtonText: "닫기",
+        closeOnConfirm: true,
+        closeOnCancel: true
+    },
+    function(){
+	    f.action = "./orderinquirycancel.php";
+	    f.submit();
+	    return true;
+    });
+    return false;
+}
+</script>

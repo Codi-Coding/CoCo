@@ -1,0 +1,112 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-shop-itemqaform .input-fake {padding:4px 10px;border:1px solid #d5d5d5;margin-bottom:10px}
+</style>
+
+<div class="admin-shop-itemqaform">
+	<form name="fitemqaform" method="post" action="{_action_url}" onsubmit="return fitemqaform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="iq_id" value="{_iq_id}">
+	<input type="hidden" name="sca" value="{_sca}">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod"  value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx"  value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="dir" id="dir" value="{_dir}">
+	<input type="hidden" name="pid" id="pid" value="{_pid}">
+	<input type="hidden" name="uploading" id="uploading" value="">
+
+	<div class="headline">
+		<h4><strong>상품문의 수정</strong></h4>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemqalist&qstr={_qstr}" class="btn-e btn-e-xs btn-e-purple pull-right"><i class="fa fa-list"></i> 목록</a>
+		<div class="clearfix"></div>
+	</div>
+	<div class="alert alert-info">
+	    <p>상품에 대한 문의에 답변하실 수 있습니다. 상품 문의 내용의 수정도 가능합니다.</p>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="adm-form-wrap margin-bottom-30">
+		<header>
+			<strong><i class="fa fa-caret-right"></i> 상품문의 내역</strong>
+		</header>
+		
+		<fieldset>
+			<div class="row">
+				<div class="col col-4">
+					<label class="label">이름</label>
+					<div class="input-fake">
+						{itemqa.name}
+					</div>
+				</div>
+				<!--{? itemqa.iq_email}-->
+				<div class="col col-4">
+					<label class="label">이메일</label>
+					<div class="input-fake">
+						{=get_text(itemqa.iq_email)}
+					</div>
+				</div>
+				<!--{/}-->
+				<!--{? itemqa.iq_hp}-->
+				<div class="col col-4">
+					<label class="label">휴대폰</label>
+					<div class="input-fake">
+						{=hyphen_hp_number(itemqa.iq_hp)}
+					</div>
+				</div>
+				<!--{/}-->
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+				<div class="col col-12">
+					<section>
+						<label for="iq_subject" class="label">제목</label>
+		                <label class="input">
+		                	<input type="text" name="iq_subject" value="{=conv_subject(itemqa.iq_subject,120)}" id="iq_subject" required>
+		                </label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+                <div class="col col-12">
+	                <section>
+		                <label for="iq_question" class="label">질문</label>
+		                {_editor_question_html}
+	                </section>
+                </div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<div class="row">
+                <div class="col col-12">
+	                <section>
+		                <label for="iq_answer" class="label">답변</label>
+		                {_editor_answer_html}
+	                </section>
+                </div>
+			</div>
+		</fieldset>
+		
+	</div>
+	
+	<div class='text-center margin-top-30 margin-bottom-30'>{buttons}</div>
+	
+	</form>
+</div>
+
+<script>
+function fitemqaform_submit(f) {
+    <!--{=get_editor_js('iq_question')}-->
+    <!--{=get_editor_js('iq_answer')}-->
+
+    return true;
+}
+</script>

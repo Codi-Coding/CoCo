@@ -1,0 +1,96 @@
+<?php if (!defined("_GNUBOARD_")) exit; ?>
+
+<style>
+.myhome-guest .guest-heading {position:relative;height:40px;line-height:40px;background:#3D4254;color:#fff;font-size:16px;padding:0 0 0 20px;margin-bottom:20px;margin-top:40px}
+.myhome-guest .guest-heading .owner-photo {position:absolute;top:-24px;right:20px;overflow:hidden;width:50px;height:50px;border:4px solid #fff;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.myhome-guest .guest-heading .owner-photo img {display:block;width:100% \9;max-width:100%;height:auto}
+.myhome-guest .guest-book {position:relative;border:1px solid #d5d5d5;background:#fff;border-radius:2px !important}
+.myhome-guest .guest-book .chats {list-style-type:none;margin:0;padding:0;padding:20px 25px}
+.myhome-guest .guest-book .chats > .pull-right, .my-home .guest-book .chats > .pull-left {margin:0px}
+.myhome-guest .guest-book .chats>.pull-right:after, .myhome-guest .guest-book .chats > .pull-right:before, .myhome-guest .guest-book .chats>.pull-left:after, .myhome-guest .guest-book .chats > .pull-left:before {content:"";display:table;clear:both}
+.myhome-guest .guest-book .chats .name {color:#000;font-size:12px;display:block;margin-bottom:5px;font-weight:bold}
+.myhome-guest .guest-book .chats .date-time {font-size:10px;display:block;float:right;color:#999;margin-top:3px}
+.myhome-guest .guest-book .chats .image img {max-width:100%;float:left;width:34px;height:34px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important;overflow:hidden}
+.myhome-guest .guest-book .chats .image i {max-width:100%;float:left;width:34px;height:34px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important;background:#eee;color:#84848a;text-align:center;line-height:34px;font-size:20px}
+.myhome-guest .guest-book .chats .image+.message {margin-left:50px}
+.myhome-guest .guest-book .chats .message {border:1px solid #d5d5d5;padding:7px 12px;font-size:12px;position:relative;background:#fafafa;-webkit-border-radius:3px !important;-moz-border-radius:3px !important;border-radius:3px !important}
+.myhome-guest .guest-book .chats .message:after, .myhome-guest .guest-book .chats .message:before {content:"";position:absolute;top:10px;left:-14px;border:7px solid transparent;border-right-color:#ddd}
+.myhome-guest .guest-book .chats .message:after {left:-13px;border-right-color:#fafafa}
+.myhome-guest .guest-book .chats .pull-right .name {text-align:right}
+.myhome-guest .guest-book .chats .pull-right .date-time {float:left}
+.myhome-guest .guest-book .chats .pull-right .image {float:right}
+.myhome-guest .guest-book .chats .pull-right .image+.message {margin-right:50px;margin-left:0}
+.myhome-guest .guest-book .chats .pull-right .message:after, .my-home .guest-book .chats .pull-right .message:before {left:auto;right:-14px;border-right-color:transparent;border-left-color:#ddd}
+.myhome-guest .guest-book .chats .pull-right .message:after {right:-13px;border-left-color:#fafafa}
+#infscr-loading {text-align:center;z-index:100;position:absolute;left:50%;bottom:0;width:200px;margin-left:-100px;padding:10px;background:#000;opacity:0.6;color:#fff}
+.myhome-guest .view-infinite-more .btn-e-lg {padding:10px 50px;font-size:17px;font-weight:bold;border:1px solid #959595}
+@media (max-width:600px) {
+	.myhome-guest .guest-book .chats {padding:20px 15px}
+}
+</style>
+
+<div class="myhome-guest">
+	<div class="guest-heading">
+		<div class="owner-photo">
+			<!--{? user.mb_photo}-->{user.mb_photo}<!--{:}--><img src="./img/user.jpg"><!--{/}-->
+		</div>
+		<strong>
+			<!--{? user.mb_id == member.mb_id}-->나의 방명록<!--{:}-->{user.mb_nick} 님의 방명록<!--{/}-->
+		</strong>
+	</div>
+	<div class="guest-book">
+		<div class="chats">
+			<div id="chats_list"></div>
+			<!--{@ list}-->
+			<div class="guest {? .mb_id == .gu_id}pull-right{:}pull-left{/}">
+				<span class="date-time"><i class="fa fa-clock-o {? .mb_id != .gu_id}margin-left-5{/}"></i> {eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<a class="name">{.gu_name}</a>
+				<a class="image"><!--{? .mb_photo}-->{.mb_photo}<!--{:}--><i class="fa fa-user"></i><!--{/}--></a>
+				<div class="message">
+					{=stripslashes(.content)}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<!--{:}-->
+			<div class="text-center font-size-14 color-grey"><i class="fa fa-exclamation-circle"></i> 출력할 방명록이 없습니다.</div>
+			<!--{/}-->
+		</div>
+	</div>
+	<!--{? list}-->
+	<div id="infinite_pagination">
+		<a class="next" href="{C.G5_URL}/?{user.mb_id}&guest&page={page+1}"></a>
+	</div>
+	<div class="view-infinite-more text-center margin-top-30 margin-bottom-20">
+		<a id="my-guest-more" href="#" class="btn btn-default btn-e-lg">더 보기 <i class="fa fa-arrow-circle-o-down"></i></a>
+	</div>
+	<!--{/}-->
+</div>
+
+<script src="../../../plugins/masonry/jquery.masonry.min.js"></script>
+<script src="../../../plugins/infinite-scroll/jquery.infinitescroll.min.js"></script>
+<script>
+$(function(){
+    var $container = $('.chats');
+	$container.infinitescroll({
+		navSelector  : "#infinite_pagination",
+		nextSelector : "#infinite_pagination .next",
+		itemSelector : ".chats .guest",
+		loading: {
+			finishedMsg: 'END',
+			img: '../../../image/loading.gif'
+		}
+	},
+	function( newElements ) {
+		var $newElems = $( newElements ).css({ opacity: 0 });
+		$newElems.imagesLoaded(function(){
+			$newElems.animate({ opacity: 1 });
+		});
+	});
+	$(window).unbind('.infscr');
+	$('#my-guest-more').click(function(){
+		$container.infinitescroll('retrieve');
+		$('#infinite_pagination').show();
+		return false;
+	});
+});
+</script>

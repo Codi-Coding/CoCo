@@ -1,0 +1,125 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+@media screen and (max-width:600px) {
+	.admin-countdown-setup .eyoom-form .trans-col .col {width:inherit;float:left;margin-bottom:0}
+	.admin-countdown-setup .eyoom-form .trans-col .col-4 {width:33.33333%}
+}
+</style>
+
+<div class="admin-countdown-setup">
+	<div class="headline">
+		<h4><strong>공사중 설정하기</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<form name="fcountdownform" method="post" action="{_action_url}" onsubmit="return fcountdown_check(this)" class="eyoom-form">
+	<input type="hidden" name="w" value="u">
+
+	<div class="adm-form-wrap trans-col margin-bottom-20">
+		<fieldset>
+			<section>
+				<label class="label">공사중 사용여부</label>
+				<label for="countdown_use" class="checkbox">
+					<input type="checkbox" name="countdown_use" value="y" id="countdown_use" {? eyoom.countdown == 'y'}checked{/}><i></i> 사용
+				</label>
+			</section>
+			<div class="margin-bottom-15"></div>
+			<section>
+				<label class="label">스킨선택</label>
+				<label for="cd_skin" class="select">
+					<select name="cd_skin" id="cd_skin">
+						<option value="">::스킨선택::</option>
+						<!--{@ countdown_skin}-->
+						<option value="{.value_}" {? .value_ == eyoom.countdown_skin}selected{/}>{.value_}</option>
+						<!--{/}-->
+					</select><i></i>
+				</label>
+			</section>
+			<div class="margin-bottom-15"></div>
+			<div class="row">
+				<div class="col col-4">
+					<section>
+						<label class="label">정상 오픈일</label>
+						<label for="cd_date" class="input">
+							<input type="text" name="cd_date" id="cd_date" value="{? countdown_date.mktime}{=date('Y-m-d', countdown_date.mktime)}{:}{=date('Y-m-d')}{/}">
+						</label>
+					</section>
+				</div>
+				<div class="col col-4">
+					<section>
+						<label class="label">시간</label>
+						<label for="cd_hour" class="select">
+							<select name="cd_hour" id="cd_hour">
+								<option value="">::선택::</option>
+								<!--{@ array_fill(0,24,1)}-->
+								<option value="{? .key_ < 10}0{/}{.key_}" {? countdown_date.hour == .key_}selected{/}>{? .key_ < 10}0{/}{.key_}</option>
+								<!--{/}-->
+							</select><i></i>
+						</label>
+					</section>
+				</div>
+				<div class="col col-4">
+					<section>
+						<label class="label">분</label>
+						<label for="cd_time" class="select">
+							<select name="cd_time" id="cd_time">
+								<option value="">::선택::</option>
+								<!--{@ array_fill(0,6,1)}-->
+								<option value="{? .key_ == 0}00{:}{.key_*10}{/}" {? countdown_date.minute == .key_*10}selected{/}>{? .key_ == 0}00{:}{.key_*10}{/}</option>
+								<!--{/}-->
+							</select><i></i>
+						</label>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	{frm_submit}
+
+	</form>
+</div>
+
+<script src="../../../plugins/eyoom-form/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script>
+function fcountdown_check(f) {
+	if($("input:checkbox[id='countdown_use']").is(":checked") == true) {
+		if($("#cd_skin option:selected").val() == '') {
+			alert('공사중 스킨을 선택해 주세요.');
+			f.cd_skin.focus();
+			return false;
+		}
+		if($("#cd_date").val().length != '10') {
+			alert('날짜를 정확히 입력해 주세요.');
+			f.cd_date.focus();
+			return false;
+		}
+		if($("#cd_hour option:selected").val() == '') {
+			alert('시간을 선택해 주세요.');
+			f.cd_hour.focus();
+			return false;
+		}
+		if($("#cd_time option:selected").val() == '') {
+			alert('분을 선택해 주세요.');
+			f.cd_time.focus();
+			return false;
+		}
+	}
+}
+
+/*--------------------------------------
+	Datepicker
+--------------------------------------*/
+$(document).ready(function(){
+	$('#cd_date').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+	});
+})
+</script>

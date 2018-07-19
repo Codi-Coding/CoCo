@@ -1,0 +1,33 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.shop-personal-pay .personal-icon {border:1px solid #e5e5e5;text-align:center;height:140px;background:#fbfbfb}
+.shop-personal-pay .personal-icon i {font-size:100px;line-height:140px;color:#b5b5b5}
+.shop-personal-pay .personal-icon a:hover i {color:#959595}
+.shop-personal-pay .personal-pay-name {border:1px solid #e5e5e5;border-top:0;padding:8px 10px}
+.shop-personal-pay .personal-pay-name a:hover {text-decoration:underline}
+.shop-personal-pay .personal-price {border:1px solid #e5e5e5;background:#fbfbfb;border-top:0;padding:8px 10px;text-align:right;margin-bottom:30px}
+.shop-personal-pay .personal-price strong {color:#E52700}
+</style>
+
+<div class="shop-personal-pay">
+	<div class="row">
+	<!--{@ list}-->
+	    <div class="col-sm-4">
+	        <div class="personal-icon">
+		        <a href="{.href}">
+			        <i class="fa fa-user"></i>
+			    </a>
+			</div>
+	        <div class="personal-pay-name"><a href="{.href}"><strong>{=get_text(.pp_name)}</strong> 님 개인결제</a></div>
+	        <div class="personal-price"><strong>{=display_price(.pp_price)}</strong></div>
+	    </div>
+	    <!--{? .key_%3==0}-->
+	    <div class="clearfix"></div>
+	    <!--{/}-->
+	<!--{:}-->
+		<p class="text-center font-size-14 color-grey margin-top-20"><i class="fa fa-exclamation-circle"></i> 등록된 개인결제가 없습니다.</p>
+	<!--{/}-->
+	</div>
+	{=eb_paging('basic')}
+</div>

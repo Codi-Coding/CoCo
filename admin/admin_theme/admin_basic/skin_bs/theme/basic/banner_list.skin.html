@@ -1,0 +1,213 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-banner-list">
+	<div class="headline">
+		<h4><strong>배너 / 광고 관리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	{# theme_manager // 테마 매니저 }
+
+	<form name="fbannerform" id="fbannerlist" action="{_action_url2}" method="post" onsubmit="return fbannerform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="theme" id="theme" value="{this_theme}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="loccd" value="{_loccd}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{this_theme}</span>] 배너 / 광고 리스트</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&pid=banner_form" class="btn-e btn-e-purple btn-e-xs pull-right margin-top-5"><i class="fa fa-plus"></i> 배너/광고 추가</a>
+		<div class="clearfix"></div>
+		<!--{/}-->
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="row">
+		<div class="col col-6">
+			<div class="local_ov01 local_ov padding-top-5 clearfix">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>등록된 배너수 {=number_format(_total_count)}개
+			    </span>
+			</div>
+		</div>
+		<div class="col col-3">
+			<section class="text-right">
+				<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=banner_location&amp;thema={this_theme}&wmode=1" class="btn-e btn-e-dark" onclick="eb_modal(this.href); return false;">배너/광고 위치 관리</a>
+			</section>
+		</div>
+		<div class="col col-3">
+			<section>
+				<label for="loccd" class="select">
+					<select name="loccd" id="loccd" onchange="this.form.submit();">
+						<option value="">위치별 배너/광고 보기</option>
+						<!--{@ bn_loccd}-->
+						<option value="{.key_}" {? _loccd == .key_}selected{/}>{.value_}</option>
+						<!--{/}-->
+					</select><i></i>
+				</label>
+			</section>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="banner-list"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <!--{? _is_admin == 'super'}-->
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	    <!--{/}-->
+	</div>
+	</form>
+
+</div>
+
+<div class="modal fade banner-modal" tabindex="-1" role="dialog" aria-labelledby="boardCopyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="boardCopyLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> 배너/광고 위치 관리</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="banner-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function eb_modal(href) {
+    $('.banner-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#banner-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.banner-modal').modal('show').on('shown.bs.modal', function () {
+        $("#banner-iframe").attr("src", href);
+        $('#banner-iframe').height(685);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('.banner-modal').modal('hide');
+};
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1)  )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ banner_list}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label><input type='hidden' name='bn_no[{.index_}]' value='{.bn_no}'>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=banner_form&amp;thema={this_theme}&amp;bn_no={.bn_no}&amp;w=u'><u>수정</u></a> <a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=banner_delete&amp;theme={this_theme}&amp;page={_page}&amp;loccd={_loccd}&amp;bn_no={.bn_no}&amp;smode=1' onclick='return del_confirm();' class='margin-left-10'><u>삭제</u></a>",
+	        배너위치: "{.bn_location}.{.bn_loccd}",
+	        치환코드: "{.bn_chg_code}",
+	        이미지: "{.bn_image}",
+	        상태: "<label for='bn_state_{.index_}' class='select'><select name='bn_state[{.index_}]' id='bn_state_{.index_}'><option value=''>선택</option><option value='1' {? .bn_state == '1'}selected{/}>보이기</option><option value='2' {? .bn_state == '2'}selected{/}>숨기기</option></select><i></i></label>",
+	        노출수: "{=number_format(.bn_exposed)}",
+	        클릭수: "{=number_format(.bn_clicked)}",
+	        클릭률: "{.bn_ratio}%",
+	        시작일: "{.bn_start}",
+	        종료일: "{.bn_end}",
+	        등록일: "{=substr(.bn_regdt, 0, 10)}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#banner-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 80, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "배너위치", type: "text", width: 120 },
+            { name: "치환코드", type: "text", align: "center", width: 260 },
+            { name: "이미지", type: "text", align: "center", width: 120 },
+            { name: "상태", type: "text", align: "center", width: 120 },
+            { name: "노출수", type: "number", width: 60 },
+            { name: "클릭수", type: "number", width: 60 },
+            { name: "클릭률", type: "number", width: 60 },
+            { name: "시작일", type: "text", align: "center", width: 80 },
+            { name: "종료일", type: "text", align: "center", width: 80 },
+            { name: "등록일", type: "text", align: "center", width: 80 },
+        ]
+    });
+
+    var $chk = $("#banner-list .jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function fbannerform_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function del_confirm() {
+	if (confirm('배너/광고를 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>

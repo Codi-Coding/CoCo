@@ -1,0 +1,72 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.member-signature {position:relative;width:300px;float:right;margin-bottom:30px;border:1px solid #d5d5d5;padding:10px;font-size:12px;border-radius:2px !important}
+.member-signature .color-light-grey {color:#b5b5b5}
+.member-signature .signature-photo {position:relative;height:56px;width:56px;padding:2px;box-shadow:0 0 0 1px rgba(0, 0, 0, 0.1);background:#fff;border-radius:2px !important}
+.member-signature .signature-photo img {height:52px;width:52px;background-color:#fff;background-size:cover;border-radius:2px !important}
+.member-signature .signature-photo .signature-user-icon {height:52px;width:52px;text-align:center;line-height:54px;background:#797b8a;color:#fff;font-size:36px;text-align:center;display:inline-block;-webkit-border-radius:2px !important;-moz-border-radius:2px !important;border-radius:2px !important}
+.member-signature .signature-info {position:relative; padding-left:15px; {? eyoom_board.bo_use_profile_photo == 1}border-left:1px dotted #ddd;{/}}
+.member-signature .signature-info .signature-lv-icon {display:inline-block;margin-left:2px}
+.member-signature .signature-statistics {position:relative;border-top:1px solid #d5d5d5;border-bottom:1px solid #d5d5d5;margin:10px -10px;padding:10px;background:#f2f2f2}
+.member-signature .signature-statistics .progress {background:#d5d5d5}
+@media (max-width:500px) {
+	.member-signature {width:100%}
+}
+</style>
+
+<div class="member-signature">
+	<!--{? eyoom_board.bo_use_profile_photo == 1}-->
+	<div class="width-30 pull-left">
+		<div class="signature-member">
+			<div class="signature-photo">
+				<!--{? view.mb_photo}-->{view.mb_photo}<!--{:}--><span class="signature-user-icon"><i class="fa fa-user"></i></span><!--{/}-->
+			</div>
+		</div>
+	</div>
+	<div class="width-70 pull-right">
+	<!--{:}-->
+	<div class="width-70 pull-left">
+	<!--{/}-->	
+		<div class="signature-info">
+			<span class="font-size-13">- {=eb_nameview('basic', view.mb_id, view.wr_name, view.wr_email, view.wr_homepage)}</span>
+			<!--{? lv.gnu_icon}-->
+			<span class="signature-lv-icon"><img src="{lv.gnu_icon}"></span>
+			<!--{/}-->
+			<!--{? lv.eyoom_icon}-->
+			<span class="signature-lv-icon"><img src="{lv.eyoom_icon}"></span>
+			<!--{/}-->
+	        <span class="display-block">- 회원등급 : <!--{? user.mb_level == 10}-->최고관리자<!--{:}-->{lvuser.gnu_name} / {lvuser.name}<!--{/}--></span>
+	    </div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="signature-statistics">
+		<div class="pull-left">
+			<span>{levelset.gnu_name}</span> <strong>{=number_format(user.mb_point)}</strong>
+		</div>
+		<!--{? levelset.use_eyoom_level != 'n'}-->
+		<div class="pull-right text-right">
+			<span>{levelset.eyoom_name}</span> <strong>{=number_format(user.level_point)}</strong>
+		</div>
+		<!--{/}-->
+		<div class="clearfix"></div>
+		<!--{? levelset.use_eyoom_level != 'n'}-->
+		<div class="margin-top-5">
+			<span class="progress-info-left"><span class="font-size-11">[레벨 <strong>{lvuser.level}</strong>] - 진행률</span></span>
+			<span class="progress-info-right"><span class="font-size-11">{lvuser.ratio}%</span></span>
+			<div class="progress progress-e progress-xs progress-striped active margin-top-5">
+			    <div class="progress-bar progress-bar-indigo" role="progressbar" aria-valuenow="{lvuser.ratio}" aria-valuemin="0" aria-valuemax="100" style="width: {lvuser.ratio}%">
+			    </div>
+			</div>
+		</div>
+		<!--{/}-->
+	</div>
+	<div class="signature-profile">
+		- <strong>가입일</strong> : {user.mb_datetime}
+		<div class="margin-hr-5"></div>
+		- <strong>서명</strong> : <!--{? user.mb_signature}-->{user.mb_signature}<!--{:}--><span class="color-light-grey"><i class="fa fa-exclamation-circle"></i> 미입력</span><!--{/}-->
+		<div class="margin-hr-5"></div>
+		- <strong>자기소개</strong> : <!--{? user.mb_profile}-->{user.mb_profile}<!--{:}--><span class="color-light-grey"><i class="fa fa-exclamation-circle"></i> 미입력</span><!--{/}-->
+	</div>
+</div>
+<div class="clearfix"></div>

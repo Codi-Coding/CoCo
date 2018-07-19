@@ -1,0 +1,126 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-product-use .panel-title {font-size:12px;font-weight:bold}
+.shop-product-use .panel-title > a:before {top:7px;margin-top:inherit;font-size:14px}
+.shop-product-use .product-ratings {margin-bottom:0}
+.shop-product-use .product-ratings > li {padding-left:0;padding-right:0;margin-right:-2px}
+.shop-product-use .product-ratings > li i {color:#b5b5b5;font-size:11px}
+.shop-product-use .product-ratings > li .rating-selected {color:#FF2900}
+.shop-product-use .product-ratings > li.ratings-average {margin-right:5px;color:#757575;font-size:11px}
+.shop-product-use .panel-body img {width:inherit !important;max-width:100%;height:auto}
+.shop-product-use .pg_page {height:22px;line-height:22px;font-size:11px;background:#e5e5e5;margin:0 1px;color:#000 !important}
+.shop-product-use .pg_current {height:22px;line-height:22px;font-size:11px;background:#2E3340;margin:inherit;margin:0 1px;color:#fff !important}
+.shop-product-use .pg_end, .shop-product-use .pg_next {text-indent:inherit;width:inherit;padding:0 8px}
+.draggable {display:block;width:100% \9;max-width:100%;height:auto;margin:0 auto}
+button.mfp-close {position:fixed;color:#fff !important}
+.mfp-figure .mfp-close {position:absolute}
+</style>
+
+<div id="itemuse" class="shop-product-use">
+	<div class="panel-group accordion-default panel-group-control panel-group-control-right" id="porduct-review">
+		<!--{@ _item_use}-->
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            <h4 class="panel-title">
+	                <a class="collapsed" data-toggle="collapse" data-parent="#porduct-review" href="#review_{.key_}">
+	                    {.is_num}. {.is_subject}
+	                </a>
+	            </h4>
+	            <div class="margin-top-5">
+	                <div class="pull-left">
+	                    <span class="font-size-11 color-grey">
+	                    	<span class="margin-right-10">{.is_name}</span><span>{.is_time}</span>
+	                    </span>
+	                </div>
+	                <!--{? .is_star > 0}-->
+		            <ul class="list-inline product-ratings pull-right">
+			            <li class="ratings-average">별 {.is_star}개</li>
+						<li><i class="rating{? .is_star > 0}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+						<li><i class="rating{? .is_star > 1}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+						<li><i class="rating{? .is_star > 2}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+						<li><i class="rating{? .is_star > 3}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+						<li><i class="rating{? .is_star > 4}-selected fa fa-star{:} fa fa-star-o{/}"></i></li>
+		            </ul>
+		            <!--{:}-->
+		            <div class="pull-right font-size-11 color-grey"><i class="fa fa-exclamation-circle"></i> 별점 평가 미등록</div>
+		            <!--{/}-->
+		            <div class="clearfix"></div>
+	            </div>
+	        </div>
+	        <div id="review_{.key_}" class="panel-collapse collapse">
+	            <div class="panel-body">
+					{.is_content}
+					<!--{? _is_admin || .mb_id == member.mb_id }-->
+	                <div class="text-right margin-top-20">
+	                    <a href="{.link_edit}" target="_blank" class="btn-e btn-e-yellow btn-e-xs rounded itemuse_form">수정</a>
+	                    <a href="{.link_del}" class="btn-e btn-e-dark btn-e-xs rounded itemuse_delete">삭제</a>
+	                </div>
+	                <!--{/}-->
+	            </div>
+	        </div>
+	    </div>
+		<!--{:}-->
+		<div class="text-center font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 사용후기가 없습니다.</div>
+		<!--{/}-->
+	</div>
+
+	{_paging_itemuse}
+
+	<div class="text-right margin-top-15">
+	    <a href="{_itemuse_form}" target="_blank" class="btn-e btn-e-purple rounded itemuse_form">사용후기 쓰기</a>
+	    <a href="{_itemuse_list}" class="btn-e btn-e-dark rounded"><i class="fa fa-plus"></i> 더보기</a>
+	</div>
+</div>
+
+<script src="../../../../../../js/viewimageresize.js"></script>
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script>
+$(function() {
+    $(".itemuse_form").click(function(){
+        window.open(this.href, "itemuse_form", "width=810,height=680,scrollbars=1");
+        return false;
+    });
+
+	$('.itemuse_delete').click(function(e){
+		e.preventDefault();
+	    var linkURL = $(this).attr("href");
+	    itemuse_delete_link(linkURL);
+	});
+	function itemuse_delete_link(linkURL) {
+	    swal({
+	        html: true,
+	        title: "중요!",
+	        text: "<div class='alert alert-warning font-size-12'>삭제 후에는 복구할 수 없습니다.</div><strong>정말 삭제 하시겠습니까?</strong>",
+	        type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#FF9500",
+	        confirmButtonText: "삭제",
+	        cancelButtonText: "취소",
+	        closeOnConfirm: true,
+	        closeOnCancel: true
+	    },
+	    function(){
+			window.location.href = linkURL;
+	    });
+	}
+
+    $(".pg_page").click(function(){
+        $("#itemuse").load($(this).attr("href"));
+        return false;
+    });
+
+	$('.shop-product-use img').parent().attr('class', 'view-img-popup').removeAttr('target');
+	$('.view-img-popup').magnificPopup({
+		type: 'ajax'
+	});
+});
+
+$(window).on("load", function() {
+    $(".shop-product-use .panel-body").viewimageresize2();
+});
+</script>

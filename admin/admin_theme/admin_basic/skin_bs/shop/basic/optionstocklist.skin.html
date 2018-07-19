@@ -1,0 +1,166 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-shop-optionstocklist #admin-shop-optionstocklist img {display:block;width:100% \9;max-width:100%;height:auto}
+</style>
+
+<div class="admin-shop-optionstocklist">
+	<form name="fsearch" id="fsearch" action="./" class="eyoom-form" method="get">
+	<input type="hidden" name="doc" value="{_doc}">
+	<input type="hidden" name="sort1" value="{_sort1}">
+	<input type="hidden" name="sort2" value="{_sort2}">
+	<input type="hidden" name="page" value="{_page}">
+	<div class="headline">
+		<h4><strong>상품옵션재고관리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="admin-search-box trans-col">
+		<div class="row">
+			<div class="col col-2">
+				<label for="sel_field" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-0">
+					<select name="sel_ca_id" id="sel_ca_id">
+					    <option value=''>전체분류</option>
+					    <!--{@ cate}-->
+					    <option value="{.ca_id}" {? _sel_ca_id == .ca_id}selected{/}>{.nbsp}{.ca_name}</option>
+					    <!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-2">
+				<label for="sel_field" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-0">
+					<select name="sel_field" id="sel_field">
+					    <option value="it_name" {? _sel_field == 'it_name'}selected{/}>상품명</option>
+					    <option value="it_id" {? _sel_field == 'it_id'}selected{/}>상품코드</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="search" value="{_search}" id="search" required autocomplete="off">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-20"></div>
+
+	<div class="text-right">
+	    <a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemstocklist" class="btn-e btn-e-xs btn-e-dark">상품재고관리</a>
+	    <a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemsellrank" class="btn-e btn-e-xs btn-e-dark">상품판매순위</a>
+	</div>
+
+	<form name="foptionstocklist" id="foptionstocklist" action="{_action_url}" method="post" class="eyoom-form">
+	<input type="hidden" name="sort1" value="{_sort1}">
+	<input type="hidden" name="sort2" value="{_sort2}">
+	<input type="hidden" name="sel_ca_id" value="{_sel_ca_id}">
+	<input type="hidden" name="sel_field" value="{_sel_field}">
+	<input type="hidden" name="search" value="{_search}">
+	<input type="hidden" name="page" value="{_page}">
+
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="margin-bottom-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>전체 옵션 {=number_format(_total_count)}개
+			    </span>
+			</div>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="admin-shop-optionstocklist"></div>
+
+	{frm_submit}
+
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+
+<script>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        상품코드: "<input type='hidden' name='it_id[{.index_}]' value='{.it_id}'><input type='hidden' name='io_id[{.index_}]' value='{.io_id}'><input type='hidden' name='io_type[{.index_}]' value='{.io_type}'>{.it_id}",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemform&w=u&it_id={.it_id}&ca_id={.ca_id}{?_qstr}&{_qstr}{/}'><u>수정</u></a>",
+	        이미지: "<div style='width:80px;margin:0 auto;'><a href='{.href}' target='_blank'>{.image}</a></div>",
+	        상품명: "<a href='{.href}' target='_blank'>{.it_name}</a>",
+	        옵션항목: "{.option}",
+	        옵션타입: "{.type}",
+	        창고재고: "{.io_stock_qty}",
+	        주문대기: "{=number_format(.wait_qty)}",
+	        가재고: "{=number_format(.temporary_qty)}",
+	        재고수정: "<label for='stock_qty_{.index_}' class='input'><input type='text' name='io_stock_qty[{.index_}]' id='stock_qty_{.index_}' value='{.io_stock_qty}' autocomplete='off'></label>",
+	        통보수량: "<label for='noti_qty_{.index_}' class='input'><input type='text' name='io_noti_qty[{.index_}]' id='noti_qty_{.index_}'  value='{.io_noti_qty}' autocomplete='off'></label>",
+	        판매: "<label for='use_{.index_}' class='checkbox'><input type='checkbox' name='io_use[{.index_}]' id='use_{.index_}' value='1' {? .io_use}checked{/}><i></i></label>"
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function(){
+    $("#admin-shop-optionstocklist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "상품코드", type: "text", align: "center", width: 100 },
+            { name: "관리", type: "text", align: "center", width: 70, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "이미지", type: "image", width: 100 },
+            { name: "상품명", type: "text", width: 200 },
+            { name: "옵션항목", type: "text", width: 70 },
+            { name: "옵션타입", type: "text", width: 70 },
+            { name: "창고재고", type: "text", width: 80 },
+            { name: "주문대기", type: "number", width: 80 },
+            { name: "가재고", type: "number", width: 80 },
+            { name: "재고수정", type: "text", width: 80 },
+            { name: "통보수량", type: "text", width: 80 },
+            { name: "판매", type: "text", width: 80 }
+        ]
+    });
+});
+</script>

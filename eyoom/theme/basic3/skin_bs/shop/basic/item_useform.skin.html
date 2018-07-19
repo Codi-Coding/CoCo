@@ -1,0 +1,103 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-product-use-form {padding:15px}
+.shop-product-use-form input {vertical-align:inherit}
+.shop-product-use-form input.btn-e-lg {padding:7px 16px;font-size:14px}
+.shop-product-use-form .eyoom-form .rating label:hover {color:#FF6F52}
+.shop-product-use-form .eyoom-form .rating input:checked ~ label {color:#FF2900}
+.shop-product-use-form .rating {width:170px}
+.shop-product-use-form textarea {min-height:100px}
+/* Ckeditor */
+.shop-product-use-form a.cke_button {padding:2px 5px}
+.shop-product-use-form a.cke_button_on {padding:1px 4px}
+.shop-product-use-form a.cke_button_off:hover, .shop-product-use-form a.cke_button_off:focus, .shop-product-use-form a.cke_button_off:active {padding:1px 4px}
+/* Smart Editor */
+.cke_sc {margin-bottom:10px}
+.btn_cke_sc {padding:0 10px}
+.cke_sc_def {padding:10px;margin-bottom:10px;margin-top:10px}
+.cke_sc_def button {padding:3px 15px;background:#53535a;color:#fff;border:none}
+/* Summernote */
+.eyoom-form .note-editor *, .eyoom-form .note-editor *:after, .eyoom-form .note-editor *:before {box-sizing:border-box;-moz-box-sizing:border-box}
+.eyoom-form .note-editor.panel-default>.panel-heading {background-color:#eaecee;border:0;border-bottom:1px solid #A9A9A9}
+.panel-heading.note-toolbar .note-color .dropdown-menu {padding-top:6px;padding-bottom:6px;padding-left:1px}
+</style>
+
+<div class="shop-product-use-form">
+    <form name="fitemuse" method="post" action="./itemuseformupdate.php" onsubmit="return fitemuse_submit(this);" autocomplete="off" class="eyoom-form">
+    <input type="hidden" name="w" value="{_w}">
+    <input type="hidden" name="it_id" value="{_it_id}">
+    <input type="hidden" name="is_id" value="{_is_id}">
+
+	<div class="headline"><h4><strong>사용후기 쓰기</strong></h4></div>
+	<div class="margin-bottom-30"></div>
+    <label for="is_subject" class="label">제목<strong class="sound_only"> 필수</strong></label>
+    <label class="input">
+    	<i class="icon-append fa fa-check"></i>
+    	<input type="text" name="is_subject" value="{=get_text(use.is_subject)}" id="is_subject" required class="form-control" minlength="2" maxlength="250">
+    </label>
+	<div class="margin-hr-15"></div>
+	<label class="label">내용</label>
+	<label class="textarea textarea-resizable">
+    	{_editor_html}
+    </label>
+	<div class="margin-hr-15"></div>
+    <section class="rating">
+        <input type="radio" name="is_score" value="5" id="is_score5">
+        <label for="is_score5"><i class="fa fa-star"></i></label>
+        <input type="radio" name="is_score" value="4" id="is_score4">
+        <label for="is_score4"><i class="fa fa-star"></i></label>
+        <input type="radio" name="is_score" value="3" id="is_score3">
+        <label for="is_score3"><i class="fa fa-star"></i></label>
+        <input type="radio" name="is_score" value="2" id="is_score2">
+        <label for="is_score2"><i class="fa fa-star"></i></label>
+        <input type="radio" name="is_score" value="1" id="is_score1">
+        <label for="is_score1"><i class="fa fa-star"></i></label>
+        <strong>평점선택</strong>
+    </section>
+    <p class="note"><strong>Note:</strong> 솔직한 평점 부탁드려요.^^</p>
+    <div class="margin-hr-15"></div>
+    <div class="text-center margin-top-15 margin-bottom-15">
+        <input type="submit" value="작성완료" class="btn-e btn-e-lg btn-e-red">
+        <button type="button" onclick="self.close();" class="btn-e btn-e-lg btn-e-dark"><i class="fa fa-close"></i> 닫기</button>
+    </div>
+
+    </form>
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script>
+function fitemuse_submit(f) {
+    {_editor_js}
+
+    return true;
+}
+
+$("input, textarea, select").on({ 'touchstart' : function() {
+	zoomDisable();
+}});
+$("input, textarea, select").on({ 'touchend' : function() {
+	setTimeout(zoomEnable, 500);
+}});
+function zoomDisable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">');
+}
+function zoomEnable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1">');
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->

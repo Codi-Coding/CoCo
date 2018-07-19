@@ -1,0 +1,98 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-shop-itemevent">
+	<div class="headline">
+		<h4><strong>이벤트관리</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=itemeventform" class="btn-e btn-e-xs btn-e-purple pull-right"><i class="fa fa-plus"></i> 이벤트 추가</a>
+		<!--{/}-->
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-20"></div>
+
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="margin-bottom-5">
+			    <span class="font-size-12 color-grey">전체 이벤트 {=number_format(_total_count)}건</span>
+			</div>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="admin-shop-itemevent"></div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.이벤트번호)
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ it_event}-->
+        {
+	        이벤트번호: "{.ev_id}",
+			관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=shopetc&amp;pid=itemeventform&amp;w=u&amp;ev_id={.ev_id}'><u>수정</u></a><a href='{C.G5_SHOP_URL}/event.php?ev_id={.ev_id}' target='_blank' class='margin-left-10'><u>보기</u></a><a href='{C.EYOOM_ADMIN_URL}/?dir=shopetc&amp;pid=itemeventformupdate&amp;w=d&amp;ev_id={.ev_id}' onclick='return delete_confirm(this);' class='margin-left-10'><u>삭제</u></a>",
+	        제목: "{.subject}",
+	        연결상품: "{? .cnt}{.href}{:}0{/}",
+	        사용: "{? .ev_use}예{:}아니오{/}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function() {
+    $("#admin-shop-itemevent").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "이벤트번호", type: "text", align: "center", width: 100 },
+            { name: "관리", type: "text", align: "center", width: 110, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "제목", type: "image", width: 250 },
+            { name: "연결상품", type: "text", align: "center", width: 60 },
+            { name: "사용", type: "text", align: "center", width: 60 },
+        ]
+    })
+});
+
+function itemeventwin(ev_id) {
+    window.open("{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=itemeventwin&wmode=1&ev_id="+ev_id, "itemeventwin", "left=10,top=10,width=500,height=600,scrollbars=1");
+}
+
+function delete_confirm() {
+	if(confirm('정말로 선택한 이벤트를 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>

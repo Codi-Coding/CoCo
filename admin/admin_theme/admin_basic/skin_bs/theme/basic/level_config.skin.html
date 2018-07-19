@@ -1,0 +1,592 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-level-config .min-width-80px {min-width:80px !important}
+</style>
+
+<div class="admin-level-config">
+	<form name="flevelconfigform" method="post" action="{_action_url}" class="eyoom-form">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>이윰레벨 환경설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="level-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 기본 설정</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="levelset_gnu_name" class="label">이윰레벨 사용</label>
+					        <div class="inline-group">
+						        <label for="levelset_use_eyoom_level1" class="radio"><input type="radio" name="levelset[use_eyoom_level]" id="levelset_use_eyoom_level1" value="y" {? levelset.use_eyoom_level == 'y' || !levelset.use_eyoom_level}checked{/}><i></i> 사용</label>
+						        <label for="levelset_use_eyoom_level2" class="radio"><input type="radio" name="levelset[use_eyoom_level]" id="levelset_use_eyoom_level2" value="n" {? levelset.use_eyoom_level == 'n'}checked{/}><i></i>사용 안함</label>
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<div class="row">
+							<div class="col col-6">
+								<section>
+									<label for="levelset_gnu_name" class="label">그누 포인트 명칭</label>
+									<label class="input">
+										<input type="text" name="levelset[gnu_name]" id="levelset_gnu_name" value="{? levelset.gnu_name}{levelset.gnu_name}{:}포인트{/}">
+									</label>
+								</section>
+							</div>
+						</div>
+						<div class="note margin-bottom-10"><strong>Note:</strong> 그누 포인트 명칭을 설정합니다. 포인트값 설정은 <a href="{C.EYOOM_ADMIN_URL}/?dir=config&amp;pid=config_form"><u>[환경설정 - 기본환경설정]</u></a>에서 설정해 주세요.</div>
+					</div>
+					<div class="col col-6">
+						<div class="row">
+							<div class="col col-6">
+								<section>
+									<label for="levelset_eyoom_name" class="label">이윰레벨 포인트 명칭</label>
+									<label class="input">
+										<input type="text" name="levelset[eyoom_name]" id="levelset_eyoom_name" value="{? levelset.eyoom_name}{levelset.eyoom_name}{:}경험치{/}">
+									</label>
+								</section>
+							</div>
+						</div>
+						<div class="note margin-bottom-10"><strong>Note:</strong> 이윰 레벨을 결정하는 포인트의 명칭을 설정합니다.</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="headline">
+		<h4><strong>이윰레벨 포인트 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="level-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 이윰레벨 포인트설정 [커뮤니티 활동]</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-warning font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 이윰레벨 포인트는 사이트의 활동에 따른 경험치로서 이윰레벨를 결정하는 기준 점수입니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="levelset_login" class="label">로그인 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[login]" id="levelset_login" value="{? levelset.login}{levelset.login}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_write" class="label">글쓰기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[write]" id="levelset_write" value="{? levelset.write}{levelset.write}{:}10{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_reply" class="label">답글쓰기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[reply]" id="levelset_reply" value="{? levelset.reply}{levelset.reply}{:}10{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_read" class="label">글읽기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[read]" id="levelset_read" value="{? levelset.read}{levelset.read}{:}1{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="levelset_cmt" class="label">댓글쓰기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[cmt]" id="levelset_cmt" value="{? levelset.cmt}{levelset.cmt}{:}5{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_memo" class="label">쪽지쓰기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[memo]" id="levelset_memo" value="{? levelset.memo}{levelset.memo}{:}5{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_rememo" class="label">쪽지받기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[rememo]" id="levelset_rememo" value="{? levelset.rememo}{levelset.rememo}{:}1{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_scrap" class="label">스크랩하기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[scrap]" id="levelset_scrap" value="{? levelset.scrap}{levelset.scrap}{:}5{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="levelset_good" class="label">추천하기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[good]" id="levelset_good" value="{? levelset.good}{levelset.good}{:}5{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_regood" class="label">추천받기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[regood]" id="levelset_regood" value="{? levelset.regood}{levelset.regood}{:}1{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_nogood" class="label">비추천하기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[nogood]" id="levelset_nogood" value="{? levelset.nogood}{levelset.nogood}{:}3{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_renogood" class="label">비추천받기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[renogood]" id="levelset_renogood" value="{? levelset.renogood}{levelset.renogood}{:}1{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="levelset_following" class="label">팔로우하기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[following]" id="levelset_following" value="{? levelset.following}{levelset.following}{:}5{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_follower" class="label">팔로우받기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[follower]" id="levelset_follower" value="{? levelset.follower}{levelset.follower}{:}5{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_banner" class="label">배너/광고클릭 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[banner]" id="levelset_banner" value="{? levelset.banner}{levelset.banner}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_qa" class="label">1:1문의하기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[qa]" id="levelset_qa" value="{? levelset.qa}{levelset.qa}{:}5{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="levelset_star" class="label">별점주기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[star]" id="levelset_star" value="{? levelset.star}{levelset.star}{:}2{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_restar" class="label">별점받기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[restar]" id="levelset_restar" value="{? levelset.restar}{levelset.restar}{:}1{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_tag" class="label">태그작성 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[tag]" id="levelset_tag" value="{? levelset.tag}{levelset.tag}{:}5{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_poll" class="label">설문참여 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[poll]" id="levelset_poll" value="{? levelset.poll}{levelset.poll}{:}10{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="level-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 이윰레벨 포인트설정 [쇼핑몰 활동]</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-warning font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 쇼핑몰 활동에 따른 이윰레벨 포인트를 설정합니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="levelset_goodsview" class="label">상품보기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[goodsview]" id="levelset_goodsview" value="{? levelset.goodsview}{levelset.goodsview}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_cart" class="label">장바구니담기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[cart]" id="levelset_cart" value="{? levelset.cart}{levelset.cart}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_wishlist" class="label">위시리스트 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[wishlist]" id="levelset_wishlist" value="{? levelset.wishlist}{levelset.wishlist}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_recommend" class="label">상품추천 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[recommend]" id="levelset_recommend" value="{? levelset.recommend}{levelset.recommend}{:}20{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="levelset_review" class="label">상품후기 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[review]" id="levelset_review" value="{? levelset.review}{levelset.review}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_goodsqa" class="label">상품문의 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[goodsqa]" id="levelset_goodsqa" value="{? levelset.goodsqa}{levelset.goodsqa}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_order" class="label">주문완료 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[order]" id="levelset_order" value="{? levelset.order}{levelset.order}{:}20{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="levelset_ordcancel" class="label">주문취소 {levelset.eyoom_name}</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="levelset[ordcancel]" id="levelset_ordcancel" value="{? levelset.ordcancel}{levelset.ordcancel}{:}20{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div class="headline">
+		<h4><strong>이윰레벨표 구성</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="level-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 이윰레벨 규칙</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-warning font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 전체적인 이윰레벨 설정을 변경하기 위해서는 이윰레벨 규칙을 변경하고, 계산하기를 실행한 후, [확인]버튼을 클릭해야만 정상적으로 적용이 됩니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="max_use_gnu_level" class="label">이윰레벨로 활용 할 그누레벨</label>
+							<label class="select">
+								{=get_member_level_select('max_use_gnu_level', 1, 9, max_gnu_level)}<i></i>
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section class="label-height">
+							<p class="note">설정된 그누레벨까지 이윰레벨로 활용</p>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="calc_level_point" class="label">기준포인트</label>
+							<label class="input">
+								<i class="icon-append">점</i>
+								<input type="text" name="calc_level_point" id="calc_level_point" value="{? levelset.calc_level_point}{setting_point}{:}100{/}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="calc_level_ratio" class="label">포인트 증가비율</label>
+							<label class="input">
+								<i class="icon-append">%</i>
+								<input type="text" name="calc_level_ratio" id="calc_level_ratio" value="{? levelset.calc_level_ratio}{levelset.calc_level_ratio}{:}200{/}">
+							</label>
+						</section>
+					</div>
+				</div>
+				<div class="margin-bottom-15"></div>
+
+				<!--{? C.G5_IS_MOBILE}-->
+				<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+				<!--{/}-->
+
+				<div class="table-list-eb">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>그누레벨</th>
+									<th>2레벨</th>
+									<th>3레벨</th>
+									<th>4레벨</th>
+									<th>5레벨</th>
+									<th>6레벨</th>
+									<th>7레벨</th>
+									<th>8레벨</th>
+									<th>9레벨</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="white-space:nowrap">구간별 이윰레벨 갯수</th>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_2" id="cnt_gnu_level_2" value="{cnt_gnu_level[2]}" class="text-right min-width-80px"></label></td>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_3" id="cnt_gnu_level_3" value="{cnt_gnu_level[3]}" class="text-right min-width-80px"></label></td>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_4" id="cnt_gnu_level_4" value="{cnt_gnu_level[4]}" class="text-right min-width-80px"></label></td>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_5" id="cnt_gnu_level_5" value="{cnt_gnu_level[5]}" class="text-right min-width-80px"></label></td>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_6" id="cnt_gnu_level_6" value="{cnt_gnu_level[6]}" class="text-right min-width-80px"></label></td>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_7" id="cnt_gnu_level_7" value="{cnt_gnu_level[7]}" class="text-right min-width-80px"></label></td>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_8" id="cnt_gnu_level_8" value="{cnt_gnu_level[8]}" class="text-right min-width-80px"></label></td>
+									<td><label class="input"><i class="icon-append">개</i><input type="text" name="cnt_gnu_level_9" id="cnt_gnu_level_9" value="{cnt_gnu_level[9]}" class="text-right min-width-80px"></label></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="text-center margin-top-10 margin-bottom-10">
+					<a href="javascript:;" onclick="calc_eyoom_level();" class="btn-e btn-e-lg btn-e-green">계산하기</a>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div class="headline" id="calc">
+		<h4><strong>그누레벨 vs 이윰레벨 {levelset.eyoom_name}설정표</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="level-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 이윰레벨 규칙</strong>
+			</header>
+
+			<fieldset>
+				<div class="margin-bottom-15"></div>
+				<!--{? C.G5_IS_MOBILE}-->
+				<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+				<!--{/}-->
+
+				<div class="table-list-eb">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>그누레벨</th>
+									<th>그누레벨 별칭</th>
+									<th>이윰레벨</th>
+									<th>이윰레벨 별칭</th>
+									<th>최소 포인트</th>
+									<th>최대 포인트</th>
+									<th>레벨업 포인트</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!--{@ level_table}-->
+								<tr>
+									<!--{? .rowspan}-->
+									<td rowspan="{.rowspan}">{.gnu_level}레벨</td>
+									<td rowspan="{.rowspan}">
+										<label for="levelset_gnu_alias_{.gnu_level}" class="input">
+											<input type="text" name="levelset[gnu_alias_{.gnu_level}]" id="levelset_gnu_alias_{.gnu_level}" value="{.gnu_alias}">
+										</label>
+									</td>
+									<!--{/}-->
+									<td>Level {.eyoom_level}</td>
+									<td>
+										<label for="levelinfo_{.eyoom_level}_name" class="input">
+											<input type="text" name="levelinfo[{.eyoom_level}][name]" id="levelinfo_{.eyoom_level}_name" value="{.eyoom_level_name}">
+										</label>
+									</td>
+									<td class="text-right">{=number_format(.min)}<input type="hidden" name="levelinfo[{.eyoom_level}][min]" value="{.min}"></td>
+									<td class="text-right">{=number_format(.max)}<input type="hidden" name="levelinfo[{.eyoom_level}][max]" value="{.max}"></td>
+									<td class="text-right">{=number_format(.gap)}</td>
+								</tr>
+								<!--{/}-->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	</form>
+</div>
+
+<script>
+function calc_eyoom_level() {
+	var level = parseInt($("#max_use_gnu_level > option:selected").val());
+	for(var i=2;i<=level;i++) {
+		if(check_cnt_gnu_level(i)==false) {break; return false;}
+	}
+	if($("#calc_level_point").val() == '') {
+		alert("기준포인트를 입력해 주세요.");
+		$("#calc_level_point").focus();
+		return false;
+	}
+	if($("#calc_level_ratio").val() == '') {
+		alert("포인트 증가비율을 입력해 주세요.");
+		$("#calc_level_ratio").focus();
+		return false;
+	}
+	var form = document.flevelconfigform;
+	form.action = '{C.EYOOM_ADMIN_URL}/?dir=theme&pid=level_config#calc';
+	form.submit();
+}
+
+function check_cnt_gnu_level(num) {
+	if($("#cnt_gnu_level_"+num).val() == '') {
+		alert("그누 "+num+"레벨 구간에 이윰레벨의 갯수를 설정해 주세요.");
+		$("#cnt_gnu_level_"+num).focus();
+		return false;
+	}
+}
+</script>

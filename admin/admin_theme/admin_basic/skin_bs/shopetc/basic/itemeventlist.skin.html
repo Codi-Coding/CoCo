@@ -1,0 +1,224 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-shop-itemeventlist #admin-shop-itemeventlist img {display:block;width:100% \9;max-width:100%;height:auto}
+</style>
+
+<div class="admin-shop-itemeventlist">
+	<div class="headline">
+		<h4><strong>이벤트일괄처리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<form id="flist" name="flist" class="eyoom-form" action="./" method="get" autocomplete="off">
+	<div class="admin-search-box">
+		<div class="row">
+			<div class="col col-6">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="select">
+					<select name="ev_id" id="ev_id" onchange="this.form.submit();">
+						{_event_option}
+					</select>
+				</label>
+			</div>
+			<div class="col col-6">
+				<input type="submit" value="이동" class="btn-e btn-e-md btn-e-dark">
+			</div>
+		</div>
+	</div>
+	<div class="margin-bottom-20"></div>
+
+	<form id="flist" name="flist" class="eyoom-form" action="./" method="post">
+	<div class="admin-search-box">
+		<div class="row">
+			<div class="col col-2">
+				<label for="sfl" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-10">
+					<select name="sfl" id="sfl">
+					    <option value="it_name" {=get_selected(_sel_field, 'it_name')}>상품명</option>
+					    <option value="a.it_id" {=get_selected(_sel_field, 'a.it_id')}>상품코드</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button">
+					<div class="button"><input type="submit" value="검색">검색</div>
+					<input type="text" name="stx" value="{_stx}" id="stx" required>
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col col-3">
+				<label for="cate_a" class="sound_only">대분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_a" id="cate_a" onchange="this.form.submit();">
+						<option value="">::대분류::</option>
+						<!--{@ _cate1}-->
+						<option value="{.ca_id}" {? _cate_a == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_b" class="sound_only">중분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_b" id="cate_b" onchange="this.form.submit();">
+						<option value="">::중분류::</option>
+						<!--{@ _cate2}-->
+						<option value="{.ca_id}" {? _cate_b == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_c" class="sound_only">소분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_c" id="cate_c" onchange="this.form.submit();">
+						<option value="">::소분류::</option>
+						<!--{@ _cate3}-->
+						<option value="{.ca_id}" {? _cate_c == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_d" class="sound_only">세분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_d" id="cate_d" onchange="this.form.submit();">
+						<option value="">::세분류::</option>
+						<!--{@ _cate4}-->
+						<option value="{.ca_id}" {? _cate_d == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-20"></div>
+
+	<form name="fitemeventlistupdate" method="post" action="{_action_url}" onsubmit="return fitemeventlistupdatecheck(this);" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="ev_id" value="{_ev_id}">
+	<input type="hidden" name="sel_ca_id" value="{_sel_ca_id}">
+	<input type="hidden" name="sel_field" value="{_sel_field}">
+	<input type="hidden" name="search" value="{_search}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="sort1" value="{_sort1}">
+	<input type="hidden" name="sort2" value="{_sort2}">
+
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="margin-bottom-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>등록된 상품 {=number_format(_total_count)}건
+			    </span>
+			</div>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="admin-shop-itemeventlist"></div>
+
+	<div class="margin-bottom-20"></div>
+
+	<div class="cont-text-bg">
+		<p class="bg-info font-size-12"><i class="fa fa-info-circle"></i>
+	        <!--{? _ev_title}-->
+	        현재 선택된 이벤트는 <strong>{_ev_title}</strong>입니다.<br>
+	        선택된 이벤트의 상품 수정 내용을 반영하시려면 일괄수정 버튼을 누르십시오.
+	        <!--{:}-->
+	        이벤트를 선택하지 않으셨습니다. <strong>수정 내용을 반영하기 전에 이벤트를 선택해주십시오.</strong><br>
+	        <a href="#ev_id" class="sound_only">이벤트 선택</a>
+	        <!--{/}-->
+	    </p>
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" value="일괄수정" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+	</div>
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.이벤트)
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ event_list}-->
+        {
+	        이벤트: "<input type='hidden' name='it_id[{.index_}]' value='{.it_id}' id='it_id_{.index_}'><label for='ev_chk_{.index_}' class='checkbox'><input type='checkbox' name='ev_chk[]' id='ev_chk_{.index_}' value='1' {? .is_ev_item}checked{/}><i></i></label>",
+	        상품코드: "<a href='{.href}' target='_blank'>{.it_id}</a>",
+	        상품이미지: "<div style='width:80px;margin:0 auto;'><a href='{.href}' target='_blank'>{.image}</a></div>",
+	        상품명: "<a href='{.href}' target='_blank'>{=cut_str(stripslashes(.it_name), 60, '&#133')}</a>",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function() {
+    $("#admin-shop-itemeventlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "이벤트", type: "text", align: "center", width: 40 },
+            { name: "상품코드", type: "text", width: 100 },
+            { name: "상품이미지", type: "image", align: "center", width: 100 },
+            { name: "상품명", type: "text", width: 350 },
+        ]
+    });
+});
+
+function fitemeventlistupdatecheck(f) {
+    if (!f.ev_id.value) {
+        alert('이벤트를 선택하세요');
+        return false;
+    }
+
+    return true;
+}
+</script>

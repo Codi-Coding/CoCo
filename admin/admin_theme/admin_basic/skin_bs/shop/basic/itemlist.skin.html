@@ -1,0 +1,259 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-shop-itemlist #admin-shop-itemlist img {display:block;width:100% \9;max-width:100%;height:auto}
+</style>
+
+<div class="admin-shop-itemlist">
+	<div class="headline">
+		<h4><strong>상품관리</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemform" class="btn-e btn-e-purple btn-e-xs pull-right margin-top-5"><i class="fa fa-plus"></i> 상품 추가</a>
+		<!--{/}-->
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<form id="form" name="form" class="eyoom-form" action="./" method="get">
+	<div class="admin-search-box">
+		<div class="row">
+			<div class="col col-3">
+				<label for="sfl" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-10">
+					<select name="sfl" id="sfl">
+					    <option value="it_name"{=get_selected(_GET.sfl, "it_name")}>상품명</option>
+					    <option value="it_id"{=get_selected(_GET.sfl, "it_id")}>상품코드</option>
+					    <option value="it_maker"{=get_selected(_GET.sfl, "it_maker")}>제조사</option>
+					    <option value="it_origin"{=get_selected(_GET.sfl, "it_origin")}>원산지</option>
+					    <option value="it_sell_email"{=get_selected(_GET.sfl, "it_sell_email")}>판매자 e-mail</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-6">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button">
+					<div class="button"><input type="submit" value="검색">검색</div>
+					<input type="text" name="stx" value="{_stx}" id="stx" required>
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col col-3">
+				<label for="cate_a" class="sound_only">대분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_a" id="cate_a" onchange="this.form.submit();">
+						<option value="">::대분류::</option>
+						<!--{@ _cate1}-->
+						<option value="{.ca_id}" {? _cate_a == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_b" class="sound_only">중분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_b" id="cate_b" onchange="this.form.submit();">
+						<option value="">::중분류::</option>
+						<!--{@ _cate2}-->
+						<option value="{.ca_id}" {? _cate_b == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_c" class="sound_only">소분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_c" id="cate_c" onchange="this.form.submit();">
+						<option value="">::소분류::</option>
+						<!--{@ _cate3}-->
+						<option value="{.ca_id}" {? _cate_c == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_d" class="sound_only">세분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_d" id="cate_d" onchange="this.form.submit();">
+						<option value="">::세분류::</option>
+						<!--{@ _cate4}-->
+						<option value="{.ca_id}" {? _cate_d == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-20"></div>
+
+	<form name="fitemlistupdate" method="post" action="{_action_url}" onsubmit="return fitemlist_submit(this);" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="sca" value="{_sca}">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="margin-bottom-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>등록된 상품 {=number_format(_total_count)}건
+			    </span>
+			</div>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="admin-shop-itemlist"></div>
+
+	<!--{? !_wmode}-->
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	</div>
+	<!--{/}-->
+	</form>
+</div>
+
+<div class="modal fade item-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title">상품복사</span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="item-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+function item_modal(href) {
+    $('.item-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#product-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.item-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#item-iframe").attr("src", href);
+        $('#item-iframe').height(250);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(url){
+    $('.item-iframe-modal').modal('hide');
+    document.location.href = url;
+};
+
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        체크: "<input type='hidden' name='it_id[{.index_}]' value='{.it_id}' id='it_id_{.index_}'><label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=itemform&amp;it_id={.it_id}&amp;w=u&amp;ca_id={.ca_id}{? _qstr}&amp;{_qstr}{/}'><u>수정</u></a><a href='{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=itemcopy&amp;it_id={.it_id}&amp;ca_id={.ca_id}&wmode=1' onclick='item_modal(this.href); return false;' class='itemcopy margin-left-10'><u>복사</u></a><a href='{.href}' target='_blank' class='margin-left-10'><u>보기</u></a>",
+	        이미지: "<div style='width:80px;margin:0 auto'><a href='{.href}' target='_blank'>{.image}</a></div>",
+	        상품코드_상품명: "<a href='{.href}' target='_blank' style='font-weight:bold;'><span style='color:#aaa;'>{.it_id}</span><br>{=get_text(.it_name)}</a>",
+	        총판매수량: "{=number_format(.sales)}",
+	        판매가격: "{=number_format(.it_price)}",
+	        시중가격: "{=number_format(.it_cust_price)}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function(){
+    $("#admin-shop-itemlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 50 },
+            { name: "관리", type: "text", align: "center", width: 110, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "이미지", type: "image", width: 100 },
+            { name: "상품코드_상품명", type: "text", width: 250 },
+            { name: "총판매수량", type: "number", width: 80 },
+            { name: "판매가격", type: "number", width: 100 },
+            { name: "시중가격", type: "number", width: 100 },
+        ]
+    })
+    $("#sort").click(function() {
+        var field = $("#sortingField").val();
+        $("#admin-shop-itemlist").jsGrid("sort", field);
+    });
+
+    var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function del_confirm() {
+	if(confirm('정말로 선택한 상품을 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+<!--{? _wmode}-->
+$(function() {
+    $(".goods-select").click(function(){
+	    var pfno = $(this).attr('title');
+		parent.set_goods(pfno);
+		parent.jQuery('.vbox-close, .vbox-overlay').trigger('click');
+    });
+});
+<!--{/}-->
+</script>

@@ -1,0 +1,21 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<!--{? C.G5_IS_MOBILE && config.cf_kakao_js_apikey}-->
+<script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+<script src="../../../../../../js/kakaolink.js"></script>
+<script>
+    // 사용할 앱의 Javascript 키를 설정해 주세요.
+    Kakao.init("{config.cf_kakao_js_apikey}");
+</script>
+<!--{/}-->
+
+<ul class="board-view-sns social-icons social-icons-color">
+    <li><a href="{_facebook_url}" target="_blank" title="Facebook" class="social_facebook"></a></li>
+    <li><a href="{_twitter_url}" target="_blank" title="Twitter" class="social_twitter"></a></li>
+    <li><a href="{_gplus_url}" target="_blank" title="Google Plus" class="social_google"></a></li>
+    <!--{? C.G5_IS_MOBILE && config.cf_kakao_js_apikey}-->
+    <li><a href="javascript:kakaolink_send('{_sns_msg}', '{_longurl}');" title="Kakao" class="social_kakao"></a></li>
+	<!--{/}-->
+    <li><a href="{_kakaostory_url}" target="_blank" title="Kakao Story" class="social_kakaostory"></a></li>
+    <li><a href="{_band_url}" target="_blank" title="Band" class="social_band"></a></li>
+</ul>

@@ -1,0 +1,27 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.popular-box {position:relative;border:1px solid #e5e5e5;padding:10px;margin:0px 20px 30px;background:#fff;-webkit-border-radius:3px !important;-moz-border-radius:3px !important;border-radius:3px !important}
+.popular ul {margin-bottom:0}
+.popular li {float:left;margin:0 3px 5px}
+</style>
+
+<div class="popular-box">
+	<div class="headline">
+		<h5><strong>인기검색어</strong></h5>
+	</div>
+	<div class="popular">
+        <ul class="list-unstyled">
+        	<!--{@ list}-->
+            <li>
+            	<a href="{C.G5_BBS_URL}/search.php?sfl=wr_subject&amp;sop=and&amp;stx={=urlencode(.pp_word)}">
+	            	<span class="label label-light">{.pp_word}</span>
+            	</a>
+            </li>
+			<!--{:}-->
+			<p class="text-center color-grey font-size-13"><i class="fa fa-exclamation-circle"></i> 출력할 인기검색어가 없습니다.</p>
+			<!--{/}-->
+			<div class="clearfix"></div>
+        </ul>
+	</div>
+</div>

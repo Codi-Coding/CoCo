@@ -1,0 +1,397 @@
+<?php if (!defined("_GNUBOARD_")) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sly/tab_scroll_category.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/perfect-scrollbar/perfect-scrollbar.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sweetalert/sweetalert.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.my-home .my-profile-box {position:relative}
+.my-home .my-wallpaper {position:relative;overflow:hidden;height:345px;background:#bebfc7;border-radius:2px !important}
+.my-home .my-wallpaper:after {position:absolute;top:0;left:0;width:100%;height:100%;content:"";background:rgba(0,0,0,0.35)}
+.my-home .my-wallpaper img {display:block;width:100% \9;max-width:100%;height:auto}
+.my-home .my-wallpaper .img-thumbnail {padding:0;border:0}
+.my-home .my-introduce {position:absolute;top:15px;left:20px}
+.my-home .my-introduce h5 {color:#fff;font-weight:bold;font-size:26px;margin-bottom:20px}
+.my-home .my-introduce h6 {color:#fff;font-weight:bold;font-size:13px}
+.my-home .my-introduce h6 .color-light-green {color:#00ff00}
+.my-home .my-introduce h6 .color-light-yellow {color:#ffff00}
+.my-home .my-introduce p {color:#fff;font-size:13px;width:300px;margin-top:20px}
+.my-home .my-photo {position:absolute;bottom:-15px;left:20px}
+.my-home .my-photo .photo {position:relative;overflow:hidden;border:5px solid #fff;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.my-home .my-photo .photo img {height:80px;width:80px;background-color:#fff;background-size:cover}
+.my-home .my-navbar {position:absolute;bottom:15px;left:0;width:100%;background:rgba(0,0,0,0.7);text-align:right;padding:5px 15px}
+.my-home .my-navbar a {color:#fff;font-size:12px;margin-left:15px}
+.my-home .my-navbar a:hover {text-decoration:underline}
+.my-home .my-btns {position:absolute;top:20px;right:20px}
+.my-home .my-btns .btn-likes {position:relative}
+.my-home .my-btns .btn-likes span.badge {top:-12px}
+.my-home-wallpaper .cover-img {display:block;overflow:hidden;text-align:center;margin:10px auto 20px;max-height:361px;background-color:#fff}
+.my-home-wallpaper .cover-img i {width:100%;height:250px;line-height:250px;color:#fff;font-size:64px;text-align:center;background:#bebfc7}
+.my-home-wallpaper .cover-img img {display:block;width:100% \9;max-width:100%;height:auto}
+@media (max-width:584px) {
+	.my-home .my-introduce h5 {margin-bottom:10px;font-size:18px}
+	.my-home .my-introduce p {margin-top:10px}
+	.my-home .my-photo {left:-15px}
+	.my-home .my-wallpaper {height:215px}
+}
+.my-home .guest-book {position:relative;overflow:hidden;border:1px solid #1C1C26;background:#fff;border-radius:2px !important}
+.my-home .guest-book .guest-book-heading {position:relative;height:40px;background:#1C1C26;padding:0 15px}
+.my-home .guest-book .guest-book-heading h5 {margin:0;padding:0;line-height:40px;font-weight:bold;color:#fff}
+.my-home .guest-book .guest-book-heading .btn-e {position:absolute;top:10px;right:15px}
+.my-home .guest-book .contentHolder {position:relative;overflow:hidden;height:190px}
+.my-home .guest-book .chats {list-style-type:none;margin:0;padding:0;padding:10px 15px}
+.my-home .guest-book .chats > .pull-right, .my-home .guest-book .chats > .pull-left {margin:0px}
+.my-home .guest-book .chats>.pull-right:after, .my-home .guest-book .chats > .pull-right:before, .my-home .guest-book .chats>.pull-left:after, .my-home .guest-book .chats > .pull-left:before {content:"";display:table;clear:both}
+.my-home .guest-book .chats .name {color:#000;font-size:12px;display:block;margin-bottom:5px;font-weight:bold}
+.my-home .guest-book .chats .date-time {font-size:10px;display:block;float:right;color:#999;margin-top:3px}
+.my-home .guest-book .chats .image img {max-width:100%;float:left;width:34px;height:34px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important;overflow:hidden}
+.my-home .guest-book .chats .image i {max-width:100%;float:left;width:34px;height:34px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important;background:#eee;color:#84848a;text-align:center;line-height:34px;font-size:20px}
+.my-home .guest-book .chats .image+.message {margin-left:50px}
+.my-home .guest-book .chats .message {border:1px solid #d5d5d5;padding:7px 12px;font-size:12px;position:relative;background:#fafafa;-webkit-border-radius:3px !important;-moz-border-radius:3px !important;border-radius:3px !important}
+.my-home .guest-book .chats .message:after, .my-home .guest-book .chats .message:before {content:"";position:absolute;top:10px;left:-14px;border:7px solid transparent;border-right-color:#ddd}
+.my-home .guest-book .chats .message:after {left:-13px;border-right-color:#fafafa}
+.my-home .guest-book .chats .pull-right .name {text-align:right}
+.my-home .guest-book .chats .pull-right .date-time {float:left}
+.my-home .guest-book .chats .pull-right .image {float:right}
+.my-home .guest-book .chats .pull-right .image+.message {margin-right:50px;margin-left:0}
+.my-home .guest-book .chats .pull-right .message:after, .my-home .guest-book .chats .pull-right .message:before {left:auto;right:-14px;border-right-color:transparent;border-left-color:#ddd}
+.my-home .guest-book .chats .pull-right .message:after {right:-13px;border-left-color:#fafafa}
+.my-home .guest-book .guest-textarea {background:#1C1C26;height:113px;padding:15px}
+.my-home .guest-book .guest-textarea .eyoom-form .textarea textarea {background:#000;color:#8c8d99;border-color:#3D4254}
+.my-home .guest-book .guest-textarea .eyoom-form .textarea textarea:focus, .my-home .guest-book .guest-textarea .eyoom-form .textarea textarea:hover {border-color:#75A5E4}
+</style>
+
+<div class="my-home">
+	<div class="tab-scroll-category">
+		<div id="tab-category">
+			<div class="category-list">
+		        <span {? !(userpage == 'following') && !(userpage == 'follower') && !(userpage == 'friends') && !(userpage == 'guest')}class="active"{/}><a href="{C.G5_URL}/?{user.mb_id}"><!--{? user.mb_id != member.mb_id}-->'{user.mb_nick}' 님의 홈<!--{:}-->마이홈<!--{/}--></a></span>
+		        <span {? userpage == 'friends'}class="active"{/}><a href="{C.G5_URL}/?{user.mb_id}&friends">맞팔친구</a></span>
+		        <span {? userpage == 'follower'}class="active"{/}><a href="{C.G5_URL}/?{user.mb_id}&follower">팔로워</a></span>
+		        <span {? userpage == 'following'}class="active"{/}><a href="{C.G5_URL}/?{user.mb_id}&following">팔로윙</a></span>
+		        <span {? userpage == 'guest'}class="active"{/}><a href="{C.G5_URL}/?{user.mb_id}&guest">방명록 전체보기</a></span>
+		        <!--{? user.mb_id != member.mb_id}-->
+		        <span><a href="{C.G5_URL}/?{member.mb_id}">마이홈 바로가기</a></span>
+		        <!--{/}-->
+		        <span class="fake-span"></span>
+			</div>
+			<div class="controls">
+				<button class="btn prev"><i class="fa fa-caret-left"></i></button>
+				<button class="btn next"><i class="fa fa-caret-right"></i></button>
+			</div>
+		</div>
+		<div class="tab-category-divider"></div>
+	</div>
+
+	<!--{? !(userpage == 'following') && !(userpage == 'follower') && !(userpage == 'friends') && !(userpage == 'guest')}-->
+	<div class="row">
+		<div class="col-md-6 md-margin-bottom-40">
+			<!--{* 프로필 박스 시작 *}-->
+			<div class="my-profile-box">
+				<section class="my-wallpaper">
+					<!--{? user.myhome_cover}-->
+					{user.wallpaper}
+					<!--{/}-->
+				</section>
+				<section class="my-introduce">
+					<h5>{user.mb_nick}</h5>
+					<h6>- 방문자수 : <span class="color-light-green helvetica-neue">{=number_format(user.myhome_hit)}</span></h6>
+					<h6>- 좋아요수 : <span class="color-light-yellow helvetica-neue">{=number_format(user.cnt_likes)}</span></h6>
+					<!--{? user.mb_signature}-->
+					<p>{=stripslashes(user.mb_signature)}</p>
+					<!--{/}-->
+				</section>
+				<section class="my-navbar">
+					<a href="{C.G5_URL}/?{user.mb_id}&friends" {? userpage == 'friends'}class="active"{/}>
+						맞팔친구 <!--{? user.cnt_friends}-->{=number_format(user.cnt_friends)}<!--{:}-->0<!--{/}-->
+					</a>
+					<a href="{C.G5_URL}/?{user.mb_id}&follower" {? userpage == 'follower'}class="active"{/}>
+						팔로워 <!--{? user.cnt_follower}-->{=number_format(user.cnt_follower)}<!--{:}-->0<!--{/}-->
+					</a>
+					<a href="{C.G5_URL}/?{user.mb_id}&following" {? userpage == 'following'}class="active"{/}>
+						팔로윙 <!--{? user.cnt_following}-->{=number_format(user.cnt_following)}<!--{:}-->0<!--{/}-->
+					</a>
+				</section>
+				<section class="my-photo">
+					<div class="photo">
+						<!--{? user.mb_photo}-->
+						{user.mb_photo}
+						<!--{:}-->
+						<img src="./img/user.jpg">
+						<!--{/}-->
+					</div>
+				</section>
+				<section id="follow" class="my-btns">
+				<!--{? user.mb_id != member.mb_id}-->
+					<a href="javascript:void(0);" class="btn-e btn-e-dark rounded btn-likes tooltips" data-toggle="tooltip" data-placement="top" data-original-title="{user.mb_nick}님의 홈 추천"><i class="fa fa-thumbs-o-up"></i> 좋아요<span id="like_count" class="badge badge-yellow rounded-3x">{user.cnt_likes}</span></a>
+					<!--{? !user.follow_tocken}-->
+					<button type="button" class="btn-e btn-e-blue rounded {user.mb_id}" name="{user.mb_id}" value="following" title="친구맺기를 신청합니다."><i class="fa fa-check"></i> 팔로윙</button>
+					<!--{:}-->
+					<button type="button" class="btn-e btn-e-dark rounded {user.mb_id}" name="{user.mb_id}" value="unfollow" title="친구관계를 해제합니다."><i class="fa fa-times"></i> 팔로윙 취소</button>
+					<!--{/}-->
+				<!--{:}-->
+					<a href="#" class="btn-e btn-e-dark rounded" data-toggle="modal" data-target=".my-home-wallpaper" title="배경 이미지 변경">배경변경</a>
+					<a href="{C.G5_URL}/?{member.mb_id}" class="btn-e btn-e-dark rounded"><span class="my-marker"><strong>마이홈</strong></span></a>
+				<!--{/}-->
+				</section>
+			</div>
+			<!--{* 프로필 박스 끝 *}-->
+		</div>
+		<div class="col-md-6">
+			<!--{* 방명록 시작 *}-->
+			<div class="guest-book">
+				<div class="guest-book-heading">
+					<h5><!--{? user.mb_id == member.mb_id}-->나의 방명록<!--{:}--><span class="color-blue">{user.mb_nick}</span> 님의 방명록<!--{/}--></h5>
+					<a href="{C.G5_URL}/?{user.mb_id}&guest" class="btn-e btn-e-xs btn-e-pink">전체보기</a>
+				</div>
+				<div class="contentHolder">
+					<div class="chats">
+						<div id="chats_list"></div>
+						<!--{@ guest}-->
+						<div class="guest {? .mb_id == .gu_id}pull-right{:}pull-left{/}">
+							<span class="date-time"><i class="fa fa-clock-o {? .mb_id != .gu_id}margin-left-5{/}"></i> {eb->date_time('Y-m-d H:i',.datetime)}</span>
+							<a class="name">{.gu_name}</a>
+							<a href="{C.G5_URL}/?{.gu_id}" class="image"><!--{? .mb_photo}-->{.mb_photo}<!--{:}--><i class="fa fa-user"></i><!--{/}--></a>
+							<div class="message">
+								{=stripslashes(.content)}
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<div class="margin-bottom-10"></div>
+						<!--{:}-->
+						<div class="text-center font-size-14 color-grey margin-top-30"><i class="fa fa-exclamation-circle"></i> 출력할 방명록이 없습니다.</div>
+						<!--{/}-->
+					</div>
+				</div>
+				<div class="guest-textarea">
+					<form name="fquest" onsubmit="return fquest_submit(this);" method="post" autocomplete="off" class="eyoom-form guest-write-box">
+					<input type="hidden" name="w" value="" id="w">
+					<input type="hidden" name="mb_id" id="mb_id" value="{user.mb_id}">
+					<input type="hidden" name="gu_id" id="gu_id" value="{member.mb_id}">
+					<input type="hidden" name="gu_name" id="gu_name" value="{member.mb_nick}">
+					<label class="label color-white">방명록 작성하기</label>
+					<label class="textarea margin-bottom-5">
+						<textarea rows="1" id="gu_content" name="gu_content" maxlength="10000"></textarea>
+					</label>
+					<div class="note pull-left"><strong>Note:</strong> 예의를 지켜주세요.</div>
+					<div class="pull-right"><button class="btn-e btn-e-yellow" type="submit">등록</button></div>
+					<div class="clearfix"></div>
+					</form>
+				</div>
+			</div>
+			<!--{* 방명록 끝 *}-->
+		</div>
+		<div class="margin-bottom-40"></div>
+	</div>
+	<!--{/}-->
+
+	<!--{* 마이홈 컨텐츠 시작 *}-->
+	<div class="my-content">
+		<!--{? userpage == 'following'}-->
+			{# myhome_following_bs}
+		<!--{: userpage == 'follower'}-->
+			{# myhome_follower_bs}
+		<!--{: userpage == 'friends'}-->
+			{# myhome_friends_bs}
+		<!--{: userpage == 'guest'}-->
+			{# myhome_guest_bs}
+		<!--{:}-->
+			{# myhome_myposts_bs}
+		<!--{/}-->
+	</div>
+	<!--{* 마이홈 컨텐츠 끝 *}-->
+</div>
+
+<!--{* 배경이미지 변경 모달 시작 *}-->
+<div class="modal fade my-home-wallpaper" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form name="wallpaper_photo" method="post" action="{C.EYOOM_CORE_URL}/mypage/cover_update.php" enctype="multipart/form-data" class="eyoom-form">
+			<input type="hidden" name="old_cover" value="{eyoomer.myhome_cover}">
+			<input type="hidden" name="back_url" value="{_SERVER.REQUEST_URI}">
+			<div class="modal-header bg-red">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h4 class="modal-title"><i class="fa fa-photo"></i> 마이홈 배경 이미지 변경</h4>
+			</div>
+			<div class="modal-body">
+				<div class="cover-img">
+					<!--{? eyoomer.myhome_cover}-->
+					{eyoomer.wallpaper}
+					<!--{:}-->
+					<i class="fa fa-picture-o"></i>
+					<!--{/}-->
+				</div>
+				<div class="alert alert-warning">
+				    <p>커버이미지는 이미지(gif/jpg/png) 파일만 등록가능하며, 가로X세로 1024x640픽셀 사이즈로 업로드하세요.</p>
+				</div>
+				<label for="file" class="label">메인 커버이미지 선택</label>
+				<div class="input input-file">
+					<div class="button"><input type="file" id="file" name="photo" value="배경이미지선택" onchange="this.parentNode.nextSibling.value = this.value">파일선택</div><input type="text" readonly>
+				</div>
+				<!--{? eyoomer.myhome_cover}-->
+				<label class="checkbox"><input type="checkbox" name="del_cover" value="1"><i></i>배경이미지 삭제</label>
+				<!--{/}-->
+			</div>
+			<div class="modal-footer">
+				<button class="btn-e btn-e-lg btn-e-red" type="submit" value="저장하기"><i class="fa fa-upload"></i> 저장하기</button>
+				<button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!--{* 배경이미지 변경 모달 끝 *}-->
+
+<script src="../../../plugins/sly/vendor_plugins.min.js"></script>
+<script src="../../../plugins/sly/sly.min.js"></script>
+<script src="../../../plugins/perfect-scrollbar/perfect-scrollbar.jquery.min.js"></script>
+<script src="../../../plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+$(function() {
+	var $frame = $('#tab-category');
+	var $wrap  = $frame.parent();
+	$frame.sly({
+		horizontal: 1,
+		itemNav: 'centered',
+		smart: 1,
+		activateOn: 'click',
+		mouseDragging: 1,
+		touchDragging: 1,
+		releaseSwing: 1,
+		scrollBar: $wrap.find('.scrollbar'),
+		scrollBy: 1,
+		speed: 300,
+		elasticBounds: 1,
+		easing: 'easeOutExpo',
+		dragHandle: 1,
+		dynamicHandle: 1,
+		clickBar: 1,
+		prev: $wrap.find('.prev'),
+		next: $wrap.find('.next')
+	});
+	var tabWidth = $('#tab-category').width();
+	var categoryWidth = $('.category-list').width();
+	if (tabWidth < categoryWidth) {
+		$('.controls').show();
+	}
+});
+
+$(function(){
+	$(".btn-likes").click(function(){
+		var mb_id = '{user.mb_id}';
+		var url = "{C.EYOOM_CORE_URL}/mypage/likes.ajax.php";
+		$.post(url, {'user':mb_id}, function(data) {
+			if(data.result == 'yes') {
+		        swal({
+		            title: "OK!",
+		            text: "'좋아요 추천'이 되었습니다.",
+		            confirmButtonColor: "#87BA00",
+		            type: "success",
+		            confirmButtonText: "확인"
+		        });
+				var like_count = parseInt($("#like_count").text())+1;
+				$("#like_count").text(like_count);
+			} else if(data.result == 'no') {
+		        swal({
+		            title: "알림!",
+		            text: "이미 '좋아요 추천'을 하였습니다.",
+		            confirmButtonColor: "#FF9500",
+		            type: "warning",
+		            confirmButtonText: "확인"
+		        });
+			}
+		},"json");
+	});
+});
+
+jQuery(document).ready(function(){
+    $('.contentHolder').height(190).perfectScrollbar();
+});
+
+function fquest_submit(f) {
+    var pattern = /(^\s*)|(\s*$)/g; // \s 공백 문자
+    var subject = "";
+    var content = "";
+    $.ajax({
+        url: g5_bbs_url+"/ajax.filter.php",
+        type: "POST",
+        data: {
+            "subject": "",
+            "content": f.gu_content.value
+        },
+        dataType: "json",
+        async: false,
+        cache: false,
+        success: function(data, textStatus) {
+            subject = data.subject;
+            content = data.content;
+        }
+    });
+    if (content) {
+        swal({
+            title: "알림!",
+            text: "내용에 금지단어('"+content+"')가 포함되어있습니다.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        f.gu_content.focus();
+        return false;
+    }
+    // 양쪽 공백 없애기
+	var pattern = /(^\s*)|(\s*$)/g; // \s 공백 문자
+    f.gu_content.value = f.gu_content.value.replace(pattern, "");
+    if (!f.gu_content.value) {
+        swal({
+            title: "알림!",
+            text: "내용을 입력하여 주십시오.",
+            confirmButtonColor: "#FF9500",
+            type: "warning",
+            confirmButtonText: "확인"
+        });
+        return false;
+    }
+	// 폼 전송 ajax로 처리
+	var w = f.w.value;
+	var mb_id = f.mb_id.value;
+	var gu_id = f.gu_id.value;
+	var gu_name = f.gu_name.value;
+	var direction = 'left';
+	var url = "{C.EYOOM_CORE_URL}/mypage/write_guest_update.php";
+	$.ajax({
+        url: url,
+        type: "POST",
+        data: {
+			"w":w,
+			"mb_id":mb_id,
+			"gu_id":gu_id,
+			"gu_name":gu_name,
+            "content": f.gu_content.value
+        },
+        dataType: "json",
+        async: false,
+        cache: false,
+        success: function(data, textStatus) {
+			if(mb_id == '{member.mb_id}') direction = 'right';
+			var obj = $("#chats_list");
+			var mb_photo = data.mb_photo;
+			var datetime = data.datetime;
+			set_guestlist(obj,direction,gu_name,mb_photo,f.gu_content.value,datetime);
+			f.gu_content.value = '';
+        }
+    });
+	return false;
+}
+function set_guestlist(obj,direction,mb_nick,mb_photo,content,datetime) {
+	var addhtml;
+	var left_margin = direction == 'left' ? 'margin-left-5':'';
+
+	addhtml = "<div class=\""+direction+"\" style=\"min-height:94px;\"><span class=\"date-time\"><i class=\"fa fa-clock-o "+left_margin+"\"></i> 1초전</span>";
+	addhtml += "<a class=\"name\">"+mb_nick+"</a><a class=\"image\">";
+	if(mb_photo) addhtml += mb_photo; else addhtml += "<i class=\"fa fa-user\"></i>";
+	addhtml += "</a><div class=\"message\">"+content+"</div></div>";
+	var html = obj.html() + addhtml;
+
+	obj.html(html);
+}
+</script>

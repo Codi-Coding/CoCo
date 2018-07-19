@@ -1,0 +1,78 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-board">
+	<div class="headline">
+		<h4><strong><i class="fa fa-genderless color-red"></i> 주문상품 목록</strong></h4>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="item-list"></div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.상품명 && !(client.상품명indexOf(filter.상품명) > -1) || filter.회원구분 && !(client.회원구분.indexOf(filter.회원구분) > -1) || filter.아이디 && !(client.아이디.indexOf(filter.아이디) > -1) || filter.이름 && !(client.이름.indexOf(filter.이름) > -1) || filter.휴대전화 && !(client.휴대전화.indexOf(filter.휴대전화) > -1) || filter.전화번호 && !(client.전화번호.indexOf(filter.전화번호) > -1) || filter.이메일 && !(client.이메일.indexOf(filter.이메일) > -1) || filter.가입일 && !(client.가입일.indexOf(filter.가입일) > -1) || filter.최신로그인 && !(client.최신로그인.indexOf(filter.최신로그인) > -1) || filter.상태 && !(client.상태.indexOf(filter.상태) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ item_list}-->
+        {
+	        상품명: "{=stripslashes(.it_name)}{? od.od_tax_flag && .ct_notax} [비과세상품]{/}",
+	        옵션항목: "{.ct_option}",
+	        상태: "{.ct_status}",
+	        수량: "{.ct_qty}",
+	        판매가: "{=number_format(.opt_price)}",
+	        소계: "{=number_format(.stotal)}",
+	        쿠폰: "{=number_format(.cp_pricev}",
+	        포인트: "{=number_format(.ptotal)}",
+	        배송비: "{.ct_send_cost}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function(){
+    $("#item-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "상품명", type: "text", width: 300 },
+            { name: "옵션항목", type: "text", align: "center", width: 110 },
+            { name: "상태", type: "text", width: 150 },
+            { name: "수량", type: "text", width: 150 },
+            { name: "판매가", type: "text", width: 105 },
+            { name: "소계", type: "number", width: 105 },
+            { name: "쿠폰", type: "text", width: 200 },
+            { name: "포인트", type: "text", width: 60 },
+            { name: "배송비", type: "text", width: 60 },
+        ]
+    });
+});
+</script>

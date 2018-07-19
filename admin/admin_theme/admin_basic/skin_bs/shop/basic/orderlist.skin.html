@@ -1,0 +1,550 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-shop-orderlist .orderlist-img img {display:block;width:100% \9;max-width:100%;height:auto}
+.admin-shop-orderlist .admin-search-box fieldset {background:none}
+.admin-shop-orderlist .search-btns .btn-e {margin-bottom:3px}
+.admin-shop-orderlist .shop-member-info i {width:20px;text-align:center}
+.admin-shop-orderlist #orderitemlist {position:absolute;background:#fff;border:1px solid #000;padding:10px;z-index:10}
+.admin-shop-orderlist #orderitemlist .h2_frm {font-size:15px;font-weight:bold;margin-top:0}
+.admin-shop-orderlist #orderitemlist td {min-width:40px}
+.admin-shop-orderlist #orderitemlist .td_num {min-width:70px}
+.admin-shop-orderlist #orderitemlist thead th {padding:8px 0;border-top:2px solid #757575;border-bottom:1px solid #757575;background:#e5e5e5}
+@media screen and (max-width:600px) {
+	.admin-shop-orderlist .eyoom-form .trans-col .col {width:inherit;float:left;margin-bottom:0}
+	.admin-shop-orderlist .eyoom-form .trans-col .col-2 {width:40%}
+	.admin-shop-orderlist .eyoom-form .trans-col .col-4 {width:60%}
+	.admin-shop-orderlist .eyoom-form .trans-col .col .sm-margin-bottom-10 {margin-bottom:0}
+}
+.jsgrid {overflow:inherit}
+</style>
+
+<div class="admin-shop-orderlist">
+	<form id="frmorderlist" name="frmorderlist" class="eyoom-form" action="./" method="get">
+	<input type="hidden" name="doc" value="{_doc}">
+	<input type="hidden" name="sort1" value="{_sort1}">
+	<input type="hidden" name="sort2" value="{_sort2}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="save_search" value="{_search}">
+
+	<div class="headline">
+		<h4><strong>주문관리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="admin-search-box trans-col">
+		<div class="row">
+			<div class="col col-2">
+				<label for="sfl" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-0">
+					<select name="sel_field" id="sel_field">
+					    <option value="od_id" {=get_selected(_sel_field, 'od_id')}>주문번호</option>
+					    <option value="mb_id" {=get_selected(_sel_field, 'mb_id')}>회원 아이디</option>
+					    <option value="it_name" {=get_selected(_sel_field, 'it_name')}>상품명</option>
+					    <option value="od_name" {=get_selected(_sel_field, 'od_name')}>주문자이름</option>
+					    <option value="mb_nick" {=get_selected(_sel_field, 'mb_nick')}>주문자닉네임</option>
+					    <option value="od_tel" {=get_selected(_sel_field, 'od_tel')}>주문자전화</option>
+					    <option value="od_hp" {=get_selected(_sel_field, 'od_hp')}>주문자핸드폰</option>
+					    <option value="od_b_name" {=get_selected(_sel_field, 'od_b_name')}>받는분</option>
+					    <option value="od_b_tel" {=get_selected(_sel_field, 'od_b_tel')}>받는분전화</option>
+					    <option value="od_b_hp" {=get_selected(_sel_field, 'od_b_hp')}>받는분핸드폰</option>
+					    <option value="od_deposit_name" {=get_selected(_sel_field, 'od_deposit_name')}>입금자</option>
+					    <option value="od_invoice" {=get_selected(_sel_field, 'od_invoice')}>운송장번호</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="search" value="{_search}" id="search" required class="frm_input" autocomplete="off">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-30"></div>
+
+	<form class="eyoom-form">
+	<input type="hidden" name="dir" value="{_dir}" id="dir">
+	<input type="hidden" name="pid" value="{_pid}" id="pid">
+
+	<div class="admin-search-box">
+		<div class="row">
+			<div class="col col-12">
+				<label class="label">주문상태</label>
+				<div class="inline-group">
+					<label for="od_status_all" class="radio">
+						<input type="radio" name="od_status" id="od_status_all" value="" {=get_checked(_od_status, '')}><i></i>전체
+					</label>
+					<label for="od_status_odr" class="radio">
+						<input type="radio" name="od_status" id="od_status_odr" value="주문" {=get_checked(_od_status, '주문')}><i></i>주문
+					</label>
+					<label for="od_status_income" class="radio">
+						<input type="radio" name="od_status" id="od_status_income" value="입금" {=get_checked(_od_status, '입금')}><i></i>입금
+					</label>
+					<label for="od_status_rdy" class="radio">
+						<input type="radio" name="od_status" id="od_status_rdy" value="준비" {=get_checked(_od_status, '준비')}><i></i>준비
+					</label>
+					<label for="od_status_dvr" class="radio">
+						<input type="radio" name="od_status" id="od_status_dvr" value="배송" {=get_checked(_od_status, '배송')}><i></i>배송
+					</label>
+					<label for="od_status_done" class="radio">
+						<input type="radio" name="od_status" id="od_status_done" value="완료" {=get_checked(_od_status, '완료')}><i></i>완료
+					</label>
+					<label for="od_status_cancel" class="radio">
+						<input type="radio" name="od_status" id="od_status_cancel" value="전체취소" {=get_checked(_od_status, '전체취소')}><i></i>전체취소
+					</label>
+					<label for="od_status_pcancel" class="radio">
+						<input type="radio" name="od_status" id="od_status_pcancel" value="부분취소" {=get_checked(_od_status, '부분취소')}><i></i>부분취소
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="margin-hr-5"></div>
+
+		<div class="row">
+			<div class="col col-12">
+				<label class="label">결제수단</label>
+				<div class="inline-group">
+					<label for="od_settle_case01" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case01" value="" {=get_checked(_od_settle_case, '')}><i></i>전체
+					</label>
+					<label for="od_settle_case02" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case02" value="무통장" {=get_checked(_od_settle_case, '무통장')}><i></i>무통장
+					</label>
+					<label for="od_settle_case03" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case03" value="가상계좌" {=get_checked(_od_settle_case, '가상계좌')}><i></i>가상계좌
+					</label>
+					<label for="od_settle_case04" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case04" value="계좌이체" {=get_checked(_od_settle_case, '계좌이체')}><i></i>계좌이체
+					</label>
+					<label for="od_settle_case05" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case05" value="휴대폰" {=get_checked(_od_settle_case, '휴대폰')}><i></i>휴대폰
+					</label>
+					<label for="od_settle_case06" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case06" value="신용카드" {=get_checked(_od_settle_case, '신용카드')}><i></i>신용카드
+					</label>
+					<label for="od_settle_case07" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case07" value="간편결제" {=get_checked(_od_settle_case, '간편결제')}><i></i>간편결제
+					</label>
+					<label for="od_settle_case08" class="radio">
+						<input type="radio" name="od_settle_case" id="od_settle_case08" value="KAKAOPAY" {=get_checked(_od_settle_case, 'KAKAOPAY')}><i></i>KAKAOPAY
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="margin-hr-5"></div>
+
+		<div class="row">
+			<div class="col col-12">
+				<label class="label">기타선택</label>
+				<div class="inline-group">
+					<label for="od_misu01" class="checkbox">
+						<input type="checkbox" name="od_misu" id="od_misu01" value="Y" {=get_checked(_od_misu, 'Y')}><i></i>미수금
+					</label>
+					<label for="od_misu02" class="checkbox">
+						<input type="checkbox" name="od_cancel_price" id="od_misu02" value="Y" {=get_checked(_od_cancel_price, 'Y')}><i></i>반품,품절
+					</label>
+					<label for="od_misu03" class="checkbox">
+						<input type="checkbox" name="od_refund_price" id="od_misu03" value="Y" {=get_checked(_od_refund_price, 'Y')}><i></i>환불
+					</label>
+					<label for="od_misu04" class="checkbox">
+						<input type="checkbox" name="od_receipt_point" id="od_misu04" value="Y" {=get_checked(_od_receipt_point, 'Y')}><i></i>포인트주문
+					</label>
+					<label for="od_misu05" class="checkbox">
+						<input type="checkbox" name="od_coupon" id="od_misu05" value="Y" {=get_checked(_od_coupon, 'Y')}><i></i>쿠폰
+					</label>
+					<!--{? default.de_escrow_use}-->
+					<label for="od_misu06" class="checkbox">
+						<input type="checkbox" name="od_escrow" id="od_misu06" value="Y" {=get_checked(_od_escrow, 'v')}><i></i>에스크로
+					</label>
+					<!--{/}-->
+				</div>
+			</div>
+		</div>
+
+		<div class="margin-hr-5"></div>
+
+		<div class="row">
+			<div class="col col-2">
+				<label for="fr_date" class="label">기준일(시작)</label>
+				<label class="input">
+					<input type="text" id="fr_date" name="fr_date" value="{_fr_date}" maxlength="10">
+				</label>
+			</div>
+			<div class="col col-2">
+				<label for="to_date" class="label">기준일(끝)</label>
+				<label class="input">
+					<input type="text" id="to_date" name="to_date" value="{_to_date}" maxlength="10">
+				</label>
+			</div>
+			<div class="col col-8">
+				<label class="label">기준일 선택</label>
+				<div class="search-btns">
+					<button type="button" onclick="javascript:set_date('오늘');" class="btn-e btn-e-sm btn-e-dark">오늘</button>
+					<button type="button" onclick="javascript:set_date('어제');" class="btn-e btn-e-sm btn-e-dark">어제</button>
+					<button type="button" onclick="javascript:set_date('이번주');" class="btn-e btn-e-sm btn-e-dark">이번주</button>
+					<button type="button" onclick="javascript:set_date('이번달');" class="btn-e btn-e-sm btn-e-dark">이번달</button>
+					<button type="button" onclick="javascript:set_date('지난주');" class="btn-e btn-e-sm btn-e-dark">지난주</button>
+					<button type="button" onclick="javascript:set_date('지난달');" class="btn-e btn-e-sm btn-e-dark">지난달</button>
+					<button type="button" onclick="javascript:set_date('전체');" class="btn-e btn-e-sm btn-e-dark">전체</button>
+					<input type="submit" value="검색" class="btn-e btn-e-sm btn-e-red">
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-20"></div>
+
+	<form name="forderlist" id="forderlist" onsubmit="return forderlist_submit(this);" method="post" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="search_od_status" value="{_od_status}">
+
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="local_ov01 local_ov margin-bottom-5 clearfix">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10">|</span>전체 주문내역 {=number_format(_total_count)}건
+			    <!--{? _od_status == '준비' && _total_count > 0}-->
+			    <a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=orderdelivery">엑셀배송처리</a>
+			    <!--{/}-->
+			    </span>
+			</div>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="order-list"></div>
+
+	<div class="margin-bottom-30"></div>
+
+	<!--{? (_od_status == '' || _od_status == '완료' || _od_status == '전체취소' || _od_status == '부분취소') == false}-->
+	<div class="headline">
+		<h4><strong>주문상태변경</strong></h4>
+		<div class="clearfix"></div>
+	</div>
+
+	<div class="row">
+		<p style="padding:15px;">
+			<input type="checkbox" name="od_status" value="{_change_status}"> {_od_status} 상태에서 <strong>{_change_status}</strong> 상태로 변경합니다.
+			<!--{? _od_status == '주문' || _od_status == '준비'}-->
+		    <input type="checkbox" name="od_send_mail" value="1" id="od_send_mail" checked="checked">
+		    <label for="od_send_mail">{_change_status} 안내 메일</label>
+		    <input type="checkbox" name="send_sms" value="1" id="od_send_sms" checked="checked">
+		    <label for="od_send_sms">{_change_status}안내 SMS</label>
+			<!--{/}-->
+
+			<!--{? _od_status == '준비'}-->
+		    <input type="checkbox" name="send_escrow" value="1" id="od_send_escrow">
+		    <label for="od_send_escrow">에스크로배송등록</label>
+			<!--{/}-->
+
+			<input type="submit" value="선택수정" class="btn-e btn-e-sm btn-e-red" onclick="document.pressed=this.value">
+			<!--{? _od_status == '주문'}-->
+			<span>주문상태에서만 삭제가 가능합니다.</span>
+			<input type="submit" value="선택삭제" class="btn-e btn-e-sm btn-e-red" onclick="document.pressed=this.value">
+			<!--{/}-->
+		</p>
+	</div>
+	<!--{/}-->
+
+	<div class="alert alert-info">
+	    <p>
+		    &lt;무통장&gt;인 경우에만 &lt;주문&gt;에서 &lt;입금&gt;으로 변경됩니다. 가상계좌는 입금시 자동으로 &lt;입금&gt;처리됩니다.<br>
+		    &lt;준비&gt;에서 &lt;배송&gt;으로 변경시 &lt;에스크로배송등록&gt;을 체크하시면 에스크로 주문에 한해 PG사에 배송정보가 자동 등록됩니다.<br>
+		    <strong>주의!</strong> 주문번호를 클릭하여 나오는 주문상세내역의 주소를 외부에서 조회가 가능한곳에 올리지 마십시오.
+	    </p>
+	</div>
+
+	</form>
+
+</div>
+
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script src="../../../plugins/eyoom-form/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('#fr_date').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#to_date').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    $('#to_date').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#fr_date').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+});
+
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        체크: "<input type='hidden' name='od_id[{.index_}]' value='{.od_id}' id='od_id_{.index_}'><label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' value='{.index_}' id='chk_{.index_}'><i></i></label>",
+	        관리: "<span class='text-center grid-buttons'><a href='{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderform&od_id={.od_id}{?_qstr}&{_qstr}{/}'><u>보기</u></a></span>",
+	        이미지: "<div class='orderlist-img' style='width:80px;margin:0 auto'><a href='{.href}' target='_blank'>{.image}</a></div>",
+	        주문번호_상품명_상태: "<a href='#' class='orderitem'>{.disp_od_id}</a><br><a href='{.href}' target='_blank' style='font-weight:bold;'>{=get_text(.it_name)}</a><div class='margin-top-5'><input type='hidden' name='current_status[{.index_}]' value='{.od_status}'><a href='javascript:;' class='btn-e btn-e-sm btn-e-{.od_color}' style='font-size:10px;padding:0 10px;min-width:80px;text-align:center;'>{.od_status}</a></div>",
+	        주문자정보: "<div class='shop-member-info'><i class='fa fa-user-circle color-light-grey'></i> <a href='{C.G5_BBS_URL}/profile.php?mb_id={.mb_id}' onclick='win_profile(this.href); return false;'><b>{.od_name} {? .mb_id}[{.mb_id}]{/}</b><br><i class='fa fa-user-circle-o color-light-grey'></i> <b>{.mbinfo.mb_nick}</b></a><br><i class='fa fa-shopping-cart color-light-grey'></i> <a href='{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlist&sort1={_sort1}&sort2={_sort2}&sel_field=mb_id&search={.mb_id}'>누적 {=number_format(.od_cnt)} 건</a></div>",
+	        결재수단_주문금액: "<input type='hidden' name='current_settle_case[{.index_}]' value='{.od_settle_case}'><span style='color:#999;'>{.s_receipt_way}</span><br>{=number_format(.od_cart_price + .od_send_cost + .od_send_cost2)}원",
+	        입금정보: "<b>미수금 : <span {? .od_misu > 0}class='color-red'{/}>{=number_format(.od_misu)}</span>원<br>입금액 : <span class='color-blue'>{=number_format(.od_receipt_price)}</span>원</b>",
+	        쿠폰_포인트결제: "<b>쿠폰 : {=number_format(.od_cart_coupon+.od_coupon+.od_send_coupon)}원<br>포인트: {=number_format(.od_receipt_point)}포인트</b>"
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function(){
+    $("#order-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 80, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "이미지", type: "image", width: 100 },
+            { name: "주문번호_상품명_상태", type: "text", width: 250 },
+            { name: "주문자정보", type: "text", width: 180 },
+            { name: "결재수단_주문금액", type: "number", width: 140 },
+            { name: "입금정보", type: "text", width: 140 },
+            { name: "쿠폰_포인트결제", type: "button", width: 140 },
+        ]
+    })
+
+    var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+</script>
+
+<script>
+$(function(){
+    // 주문상품보기
+    $(".orderitem").on("click", function() {
+        var $this = $(this);
+        var od_id = $this.text().replace(/[^0-9]/g, "");
+
+        if($this.next("#orderitemlist").size())
+            return false;
+
+        $("#orderitemlist").remove();
+
+        $.post(
+            "{C.G5_ADMIN_URL}/shop_admin/ajax.orderitem.php",
+            { od_id: od_id },
+            function(data) {
+                $this.after("<div id=\"orderitemlist\"><div class=\"itemlist\"></div></div>");
+                $("#orderitemlist .itemlist")
+                    .html(data)
+                    .append("<div id=\"orderitemlist_close\" class=\"text-right\"><button type=\"button\" id=\"orderitemlist-x\" class=\"btn-e btn-e-sm btn-e-dark\">닫기</button></div>");
+            }
+        );
+
+        return false;
+    });
+
+    // 상품리스트 닫기
+    $(".orderitemlist-x").on("click", function() {
+        $("#orderitemlist").remove();
+    });
+
+    $("body").on("click", function() {
+        $("#orderitemlist").remove();
+    });
+
+    // 엑셀배송처리창
+    $("#order_delivery").on("click", function() {
+        var opt = "width=600,height=450,left=10,top=10";
+        window.open(this.href, "win_excel", opt);
+        return false;
+    });
+});
+
+function set_date(today)
+{
+    <?php
+    {date_term} = date('w', G5_SERVER_TIME);
+    {week_term} = {date_term} + 7;
+    {last_term} = strtotime(date('Y-m-01', G5_SERVER_TIME));
+    ?>
+
+    if (today == "오늘") {
+        document.getElementById("fr_date").value = "{C.G5_TIME_YMD}";
+        document.getElementById("to_date").value = "{C.G5_TIME_YMD}";
+    } else if (today == "어제") {
+        document.getElementById("fr_date").value = "{=date('Y-m-d', C.G5_SERVER_TIME - 86400)}";
+        document.getElementById("to_date").value = "{=date('Y-m-d', C.G5_SERVER_TIME - 86400)}";
+    } else if (today == "이번주") {
+        document.getElementById("fr_date").value = "{=date('Y-m-d', strtotime('-7days', C.G5_SERVER_TIME))}";
+        document.getElementById("to_date").value = "{=date('Y-m-d', C.G5_SERVER_TIME)}";
+    } else if (today == "이번달") {
+        document.getElementById("fr_date").value = "{=date('Y-m-01', C.G5_SERVER_TIME)}";
+        document.getElementById("to_date").value = "{=date('Y-m-d', C.G5_SERVER_TIME)}";
+    } else if (today == "지난주") {
+        document.getElementById("fr_date").value = "{=date('Y-m-d', strtotime('-'+week_term+' days', C.G5_SERVER_TIME))}";
+        document.getElementById("to_date").value = "{=date('Y-m-d', strtotime('-'+(week_term - 6)+' days', C.G5_SERVER_TIME))}";
+    } else if (today == "지난달") {
+        document.getElementById("fr_date").value = "{=date('Y-m-01', strtotime('-1 Month', last_term))}";
+        document.getElementById("to_date").value = "{=date('Y-m-t', strtotime('-1 Month', last_term))}";
+    } else if (today == "전체") {
+        document.getElementById("fr_date").value = "";
+        document.getElementById("to_date").value = "";
+    }
+}
+</script>
+
+<script>
+function forderlist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    /*
+    switch (f.od_status.value) {
+        case "" :
+            alert("변경하실 주문상태를 선택하세요.");
+            return false;
+        case '주문' :
+
+        default :
+
+    }
+    */
+
+    if(document.pressed == "선택삭제") {
+        if(confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            f.action = "{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlistdelete&smode=1";
+            return true;
+        }
+        return false;
+    }
+
+    var change_status = f.od_status.value;
+
+    if (f.od_status.checked == false) {
+        alert("주문상태 변경에 체크하세요.");
+        return false;
+    }
+
+    var chk = document.getElementsByName("chk[]");
+
+    for (var i=0; i<chk.length; i++)
+    {
+        if (chk[i].checked)
+        {
+            var k = chk[i].value;
+            var current_settle_case = f.elements['current_settle_case['+k+']'].value;
+            var current_status = f.elements['current_status['+k+']'].value;
+
+            switch (change_status)
+            {
+                case "입금" :
+                    if (!(current_status == "주문" && current_settle_case == "무통장")) {
+                        alert("'주문' 상태의 '무통장'(결제수단)인 경우에만 '입금' 처리 가능합니다.");
+                        return false;
+                    }
+                    break;
+
+                case "준비" :
+                    if (current_status != "입금") {
+                        alert("'입금' 상태의 주문만 '준비'로 변경이 가능합니다.");
+                        return false;
+                    }
+                    break;
+
+                case "배송" :
+                    if (current_status != "준비") {
+                        alert("'준비' 상태의 주문만 '배송'으로 변경이 가능합니다.");
+                        return false;
+                    }
+
+                    var invoice      = f.elements['od_invoice['+k+']'];
+                    var invoice_time = f.elements['od_invoice_time['+k+']'];
+                    var delivery_company = f.elements['od_delivery_company['+k+']'];
+
+                    if ($.trim(invoice_time.value) == '') {
+                        alert("배송일시를 입력하시기 바랍니다.");
+                        invoice_time.focus();
+                        return false;
+                    }
+
+                    if ($.trim(delivery_company.value) == '') {
+                        alert("배송업체를 입력하시기 바랍니다.");
+                        delivery_company.focus();
+                        return false;
+                    }
+
+                    if ($.trim(invoice.value) == '') {
+                        alert("운송장번호를 입력하시기 바랍니다.");
+                        invoice.focus();
+                        return false;
+                    }
+
+                    break;
+            }
+        }
+    }
+
+    if (!confirm("선택하신 주문서의 주문상태를 '"+change_status+"'상태로 변경하시겠습니까?"))
+        return false;
+
+    f.action = "{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlistupdate&smode=1";
+    return true;
+}
+</script>

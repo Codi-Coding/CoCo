@@ -1,0 +1,19 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="pg-anchor">
+	<div class="pg-anchor-in tab-e2">
+	    <ul class="nav nav-tabs">
+	        <li {? anc_id == 'pg_anchor_inf'}class="active"{/}><a href="#shop-product-info">상품정보</a></li>
+	        <li {? anc_id == 'pg_anchor_use'}class="active"{/}><a href="#shop-product-use">사용후기 {item_use_count}</a></li>
+	        <li {? anc_id == 'pg_anchor_qa'}class="active"{/}><a href="#shop-product-qa">상품문의 {item_qa_count}</a></li>
+	        <!--{? default.de_baesong_content}-->
+	        <li {? anc_id == 'pg_anchor_dvr'}class="active"{/}><a href="#shop-product-dvr">배송정보</a></li>
+	        <!--{/}-->
+	        <!--{? default.de_change_content}-->
+	        <li {? anc_id == 'pg_anchor_ex'}class="active"{/}><a href="#shop-product-ex">교환정보</a></li>
+	        <!--{/}-->
+	        <li {? anc_id == 'pg_anchor_rel'}class="active"{/}><a href="#shop-product-rel">관련상품 {item_relation_count}</a></li>
+		</ul>
+		<div class="tab-bottom-line"></div>
+	</div>
+</div>

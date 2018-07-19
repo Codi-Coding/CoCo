@@ -7,9 +7,6 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '이벤트관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
-// APMS 불러오기
-include_once(G5_ADMIN_PATH.'/apms_admin/config/ev_type.php');
-
 $sql_common = " from {$g5['g5_shop_event_table']} ";
 
 // 테이블의 전체 레코드수만 얻음
@@ -22,12 +19,12 @@ $result = sql_query($sql);
 ?>
 
 <div class="local_ov01 local_ov">
-    전체 이벤트 <?php echo $total_count ?>건
+       <span class="btn_ov01"><span class="ov_txt">전체 이벤트</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>  
 </div>
 
 
-<div class="btn_add01 btn_add">
-    <a href="./itemeventform.php">이벤트 추가</a>
+<div class="btn_fixed_top">
+    <a href="./itemeventform.php" class="btn btn_01">이벤트 추가</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -36,7 +33,7 @@ $result = sql_query($sql);
     <thead>
     <tr>
         <th scope="col">이벤트번호</th>
-		<th scope="col">제목</th>
+        <th scope="col">제목</th>
         <th scope="col">연결상품</th>
         <th scope="col">사용</th>
         <th scope="col">관리</th>
@@ -55,19 +52,17 @@ $result = sql_query($sql);
         }
         if ($row['ev_subject_strong']) $subject = '<strong>'.$row['ev_subject'].'</strong>';
         else $subject = $row['ev_subject'];
+    ?>
 
-		$t = $row['ev_type'];
-		$type = ($ev_type[$t]) ? ' - '.$ev_type[$t] : '';
-	?>
     <tr>
         <td class="td_num"><?php echo $row['ev_id']; ?></td>
-        <td><?php echo $subject; ?><span style="color:#888;"><?php echo $type;?></span></td>
+        <td class="td_left"><?php echo $subject; ?></td>
         <td class="td_num"><?php echo $href; ?><?php echo $ev['cnt']; ?><?php echo $href_close; ?></td>
         <td class="td_boolean"><?php echo $row['ev_use'] ? '<span class="txt_true">예</span>' : '<span class="txt_false">아니오</span>'; ?></td>
-        <td class="td_mng">
-            <a href="./itemeventform.php?w=u&amp;ev_id=<?php echo $row['ev_id']; ?>">수정</a>
-            <a href="<?php echo G5_SHOP_URL; ?>/event.php?ev_id=<?php echo $row['ev_id']; ?>">보기</a>
-            <a href="./itemeventformupdate.php?w=d&amp;ev_id=<?php echo $row['ev_id']; ?>" onclick="return delete_confirm(this);">삭제</a>
+        <td class="td_mng td_mng_l">
+            <a href="./itemeventform.php?w=u&amp;ev_id=<?php echo $row['ev_id']; ?>" class="btn btn_03">수정</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/event.php?ev_id=<?php echo $row['ev_id']; ?>" class="btn btn_02">보기</a>
+            <a href="./itemeventformupdate.php?w=d&amp;ev_id=<?php echo $row['ev_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02">삭제</a>
         </td>
     </tr>
 

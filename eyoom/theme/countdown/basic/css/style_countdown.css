@@ -1,0 +1,133 @@
+
+
+.countdown-box {
+	margin: 50px auto 0;
+	text-align: center;
+	color: #fff;
+}
+
+.countdown-bg {
+	height: 600px;
+	padding-top: 20px;
+	background: url(../img/pattern.png);
+	-moz-box-shadow: 0 1px 5px 0 rgba(0,0,0,.7);
+	-webkit-box-shadow: 0 1px 5px 0 rgba(0,0,0,.7);
+	box-shadow: 0 1px 5px 0 rgba(0,0,0,.7);
+}
+h1.logo {	
+	margin-bottom: 100px;
+	margin-top:0;
+	text-align: left;
+	text-indent: 30px;
+	color: #fff;
+	font-size: 40px;
+	text-shadow: 0 1px 7px rgba(0,0,0,.5);
+}
+
+.countdown-box h2 {
+	font-size: 40px;
+	font-weight: 700;
+	text-transform: uppercase;
+	text-shadow: 0 1px 7px rgba(0,0,0,.5);
+}
+
+.countdown-box p {
+	margin-top: 20px;
+	font-size: 18px;
+	line-height: 36px;
+	text-shadow: 0 1px 7px rgba(0,0,0,.3);
+}
+
+.timer {
+	margin-top: 40px;
+	text-shadow: 0 1px 5px rgba(0,0,0,.1);
+}
+.timer ul {
+	position: relative;
+	margin: 0 auto;
+	width: 70%;
+}  
+.timer li {
+	min-width: 140px;
+	max-width: 320px;
+       display: inline-block;
+       text-align: center;
+       background: rgba(0,0,0, 0.5);
+       border-radius: 5px !important;
+       margin-bottom: 5px;
+  }    
+.timer  span {
+	font-size: 42px;
+	font-weight: bold;
+	padding-top: 20px;
+	display: block;
+}
+.timer p{
+	margin-top: 0;
+}
+
+.contact {
+	margin-top: 30px;
+	text-align: center;
+}
+.contact > li {
+	font-size: 16px;
+	color: #6a6a6a;
+}
+.contact > li > i {
+
+}
+.contact > li > ul {}
+.contact > li > ul > li {
+	margin-top: 10px;
+}
+.contact > li > ul > li > a {
+}
+.contact > li > ul > li > a > i {
+	width: 50px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	color: #fff;
+	background: #3a3a3a;
+	border-radius: 5px !important;
+	font-size: 22px;
+}
+.contact > li > ul > li > a:hover i {
+	background: #111;
+}
+
+
+
+@media (max-width: 767px) {
+	h1.logo {
+		margin-bottom: 50px;
+		text-align: center;
+		text-indent: 0;
+	}
+	.inner-bg {
+		padding: 45px 0 50px 0;
+	}
+
+	.countdown-box h2 {
+		font-size: 32px;
+		padding: 0 20px;
+	}
+
+	.countdown-box p {
+		padding: 0 20px;
+	}
+	.timer {
+		margin-top: 60px;
+	}
+	.timer ul {
+		width: 90%;
+	}
+	.timer ul li {
+		min-width: 140px;
+	}
+
+
+}
+
+

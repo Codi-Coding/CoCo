@@ -1,0 +1,112 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div id="fakeloader"></div>
+
+<!--{* 메인배너 시작 *}-->
+{=eyoom_display_banner('메인', 'mainbanner.10.skin.php')}
+<!--{* 메인배너 끝 *}-->
+
+<!--{* 히트상품 시작 *}-->
+<!--{? default.de_type1_list_use}-->
+<div class="margin-bottom-30">
+    <div class="headline">
+        <h4><a href="{C.G5_SHOP_URL}/listtype.php?type=1"><strong>히트상품</strong></a></h4>
+    </div>
+	{hit_goods->set_view('it_img', true)}
+    {hit_goods->set_view('it_id', false)}
+    {hit_goods->set_view('it_name', true)}
+    {hit_goods->set_view('it_basic', true)}
+    {hit_goods->set_view('it_cust_price', true)}
+    {hit_goods->set_view('it_price', true)}
+    {hit_goods->set_view('it_icon', true)}
+    {hit_goods->set_view('sns', true)}
+	{hit_goods->run()}
+</div>
+<!--{/}-->
+<!--{* 히트상품 끝 *}-->
+
+<!--{* 추천상품 시작 *}-->
+<!--{? default.de_type2_list_use}-->
+<div class="margin-bottom-30">
+    <div class="headline">
+        <h4><a href="{C.G5_SHOP_URL}/listtype.php?type=2"><strong>추천상품</strong></a></h4>
+    </div>
+    {recommend_goods->set_view('it_id', false)}
+    {recommend_goods->set_view('it_name', true)}
+    {recommend_goods->set_view('it_basic', true)}
+    {recommend_goods->set_view('it_cust_price', true)}
+    {recommend_goods->set_view('it_price', true)}
+    {recommend_goods->set_view('it_icon', true)}
+    {recommend_goods->set_view('sns', true)}
+	{recommend_goods->run()}
+</div>
+<!--{/}-->
+<!--{* 추천상품 끝 *}-->
+
+<!--{* 최신상품 시작 *}-->
+<!--{? default.de_type3_list_use}-->
+<div class="margin-bottom-30">
+    <div class="headline">
+        <h4><a href="{C.G5_SHOP_URL}/listtype.php?type=3"><strong>최신상품</strong></a></h4>
+    </div>
+    {new_goods->set_view('it_id', false)}
+    {new_goods->set_view('it_name', true)}
+    {new_goods->set_view('it_basic', true)}
+    {new_goods->set_view('it_cust_price', true)}
+    {new_goods->set_view('it_price', true)}
+    {new_goods->set_view('it_icon', true)}
+    {new_goods->set_view('sns', true)}
+	{new_goods->run()}
+</div>
+<!--{/}-->
+<!--{* 최신상품 끝 *}-->
+
+<!--{* 인기상품 시작 *}-->
+<!--{? default.de_type4_list_use}-->
+<div class="margin-bottom-30">
+    <div class="headline">
+        <h4><a href="{C.G5_SHOP_URL}/listtype.php?type=4"><strong>인기상품</strong></a></h4>
+    </div>
+    {popular_goods->set_view('it_id', false)}
+    {popular_goods->set_view('it_name', true)}
+    {popular_goods->set_view('it_basic', true)}
+    {popular_goods->set_view('it_cust_price', true)}
+    {popular_goods->set_view('it_price', true)}
+    {popular_goods->set_view('it_icon', true)}
+    {popular_goods->set_view('sns', true)}
+	{popular_goods->run()}
+</div>
+<!--{/}-->
+<!--{* 인기상품 끝 *}-->
+
+<!--{* 할인상품 시작 *}-->
+<!--{? default.de_type5_list_use}-->
+<div class="margin-bottom-30">
+    <div class="headline">
+        <h4><a href="{C.G5_SHOP_URL}/listtype.php?type=5"><strong>할인상품</strong></a></h4>
+    </div>
+    {sale_goods->set_view('it_id', false)}
+    {sale_goods->set_view('it_name', true)}
+    {sale_goods->set_view('it_basic', true)}
+    {sale_goods->set_view('it_cust_price', true)}
+    {sale_goods->set_view('it_price', true)}
+    {sale_goods->set_view('it_icon', true)}
+    {sale_goods->set_view('sns', true)}
+	{sale_goods->run()}
+</div>
+<!--{/}-->
+<!--{* 할인상품 끝 *}-->
+
+<script src="../../../plugins/fakeLoader/fakeLoader.min.js"></script>
+<script>
+$('#fakeloader').fakeLoader({
+	timeToHide:3000,
+	zIndex:"11",
+	spinner:"spinner6",
+	bgColor:"#f4f4f4",
+});
+
+$(window).load(function(){
+	$('#fakeloader').fadeOut(300);
+});
+</script>

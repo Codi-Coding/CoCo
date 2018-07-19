@@ -1,0 +1,125 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-shop-itemoption .table-list-eb {background:#fff}
+.admin-shop-itemoption .table-list-eb label {margin-bottom:0}
+.admin-shop-itemoption .table-list-eb .input {width:100px}
+.admin-shop-itemoption .table-list-eb .select {width:100px}
+.admin-shop-itemoption .table-list-eb .item-option-th {width:150px}
+.admin-shop-itemoption .margin-hr-20 {border-top:1px dotted #c5c5c5}
+.admin-shop-itemoption .label-height {margin-top:31px}
+@media screen and (max-width: 600px) {
+	.admin-shop-itemoption .label-height {margin-top:0}
+}
+</style>
+
+<div class="admin-shop-itemoption">
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+	
+	<div class="table-list-eb">
+		<div class="table-responsive">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>옵션</th>
+						<th>추가금액</th>
+						<th>재고수량</th>
+						<th>통보수량</th>
+						<th>사용여부</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!--{@ itoption}-->
+					<tr id="it_option_{.index_}">
+						<th>
+							<div class="item-option-th">
+				                <label for="opt_chk_{.index_}" class="checkbox">
+									<input type="checkbox" name="opt_chk[]" id="opt_chk_{.index_}" value="1"><i></i> {.opt_1} {? .opt_2_len}<small>&gt;</small> {.opt_2}{/} {? .opt_3_len}<small>&gt;</small> {.opt_3}{/}
+								</label>
+					            <input type="hidden" name="opt_id[]" value="{.opt_id}">
+					            <div style="display:none" class="opt-cell">{.opt_1} {? .opt_2_len}<small>&gt;</small> {.opt_2}{/} {? .opt_3_len}<small>&gt;</small> {.opt_3}{/}</div>
+				            </div>
+						</th>
+						<td>
+							<label for="opt_price_{.index_}" class="input">
+								<input type="text" name="opt_price[]" value="{.opt_price}" id="opt_price_{.index_}">
+							</label>
+						</td>
+						<td>
+							<label for="opt_stock_qty_{.index_}" class="input">
+								<input type="text" name="opt_stock_qty[]" value="{.opt_stock_qty}" id="opt_stock_qty_{.index_}">
+							</label>
+						</td>
+						<td>
+							<label for="opt_noti_qty_{.index_}" class="input">
+								<input type="text" name="opt_noti_qty[]" value="{.opt_noti_qty}" id="opt_noti_qty_{.index_}">
+							</label>
+						</td>
+						<td>
+							<label for="opt_use_{.index_}" class="select">
+								<select name="opt_use[]" id="opt_use_{.index_}">
+					                <option value="1" {? .opt_use == '1'}selected{/}>사용함</option>
+					                <option value="0" {? .opt_use == '0'}selected{/}>사용안함</option>
+								</select>
+								<i></i>
+							</label>
+						</td>
+					</tr>
+					<!--{/}-->
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="margin-top-20">
+    	<input type="button" value="선택삭제" id="sel_option_delete" class="btn-e btn-e-xs btn-e-dark">
+	</div>
+	
+	<div class="margin-hr-20"></div>
+
+	<div class="row">
+		<div class="col col-2"></div>
+        <div class="col col-10">
+			<div class="alert alert-info">
+			    <p>전체 옵션의 추가금액, 재고/통보수량 및 사용여부를 일괄 적용할 수 있습니다. 단, 체크된 수정항목만 일괄 적용됩니다.</p>
+			</div>
+        </div>
+	</div>
+	<div class="row">
+		<div class="col col-2">
+	        <strong>옵션 일괄 적용</strong>
+        </div>
+        <div class="col col-2">
+	        <label class="checkbox"><input type="checkbox" name="opt_com_price_chk" id="opt_com_price_chk" value="1" class="opt_com_chk"><i></i> 추가금액</label>
+	        <label class="input">
+				<input type="text" name="opt_com_price" value="0" id="opt_com_price">
+			</label>
+        </div>
+        <div class="col col-2">
+	        <label class="checkbox"><input type="checkbox" name="opt_com_stock_chk" id="opt_com_stock_chk" value="1" class="opt_com_chk"><i></i> 재고수량</label>
+	        <label class="input">
+				<input type="text" name="opt_com_stock" value="0" id="opt_com_stock">
+			</label>
+        </div>
+        <div class="col col-2">
+	        <label class="checkbox"><input type="checkbox" name="opt_com_noti_chk" id="opt_com_noti_chk" value="1" class="opt_com_chk"><i></i> 통보수량</label>
+	        <label class="input">
+				<input type="text" name="opt_com_noti" value="0" id="opt_com_noti">
+			</label>
+        </div>
+        <div class="col col-2">
+	        <label class="checkbox"><input type="checkbox" name="opt_com_use_chk" id="opt_com_use_chk" value="1" class="opt_com_chk"><i></i> 사용여부</label>
+	        <label class="select">
+	        	<select name="opt_com_use" id="opt_com_use">
+			        <option value="1">사용함</option>
+			        <option value="0">사용안함</option>
+	        	</select>
+				<i></i>
+			</label>
+        </div>
+        <div class="col col-2">
+	        <label for="opt_value_apply" class="label-height"><button type="button" id="opt_value_apply" class="btn-e btn-e-md btn-e-dark">일괄적용</button></label>
+        </div>
+	</div>
+</div>

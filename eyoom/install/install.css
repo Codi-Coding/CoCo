@@ -1,0 +1,30 @@
+@charset "utf-8";
+
+/* 공통 */
+body {margin:0;padding:0;font-size:0.75em;font-family:dotum,helvetica;background:#f7f4f3;}
+input, img, select, button {font-size:1em;vertical-align:middle}
+label {vertical-align:middle}
+
+#ins_bar {margin:0 0 50px;padding:20px 30px;background:#251f1d;color:#ddd;font-family:verdana;font-size:1.500em;zoom:1}
+#ins_bar:after {display:block;visibility:hidden;clear:both;content:""}
+#ins_bar #bar_img {float:left}
+#ins_bar #bar_txt {float:right}
+
+h1 {margin:0 0 30px;text-align:center;font-family:'Georgia', sans-serif;}
+h1 b{color:#ff7e00;}
+
+.ins_inner {margin:0 30px 50px;padding:20px 30px;border:1px solid #ddd;line-height:15pt;background:#fafafa;}
+.ins_inner ul {margin:20px 0;padding:0 0 0 13px}
+.ins_inner ol {margin:20px 0;padding:0 0 0 18px}
+.ins_inner ol li {margin:0 0 5px}
+.ins_inner p strong {color:red}
+.ins_inner p .uninstall {color:#555;}
+.ins_inner .inner_btn {margin:0;text-align:center}
+.ins_inner .inner_btn a, .ins_inner .inner_btn input {display:inline-block;padding:10px 20px;background:#333;color:#fff;text-decoration:none}
+.ins_inner .inner_btn input {border:0;cursor:pointer}
+.ins_inner .inner_btn input:hover {background:#892c2c;}
+
+#ins_ft {color:#a1a4a7;font-family:tahoma,helvetica;text-align:center}
+#ins_ft strong {font-size:1.500em;font-weight:normal}
+
+.caution b {color:#f30;}

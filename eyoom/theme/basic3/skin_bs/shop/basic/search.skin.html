@@ -1,0 +1,208 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sly/tab_scroll_category.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/scroll-tabs/scrolltabs.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-search .shop-search-form {position:relative;padding:15px;margin-bottom:30px;border:1px solid #e5e5e5;background:#fff;border-radius:3px !important}
+.shop-search .shop-search-form .search-input input {height:42px;background:#f8f8f8;font-size:13px;font-weight:bold;border-radius:3px !important}
+.shop-search .shop-search-form .search-input .icon-prepend {background-color:transparent;width:42px;height:40px;line-height:40px;border:0;color:#959595;font-size:14px}
+.shop-search .shop-search-form .input-button .button {height:40px;line-height:40px;background:#fff;padding:0 30px;font-size:13px;border-radius:0 3px 3px 0 !important}
+.shop-search .search-tab {background-color:#D6D6D6;height:40px;border-radius:3px !important;margin-bottom:30px}
+.shop-search .search-tab #tab-search-result {display:none}
+.shop-search .search-tab .scroll_tabs_container {text-align:center;margin-bottom:0}
+.shop-search .search-tab .scroll_tabs_container div.scroll_tab_inner li {padding-left:10px;padding-right:10px}
+.shop-search .search-tab .scroll_tabs_container div.scroll_tab_inner li a {font-weight:bold}
+.shop-search .search-tab .scroll_tabs_container div.scroll_tab_inner span {padding-left:2px;padding-right:0}
+</style>
+
+<!--{? _is_admin}-->
+<div class="text-right margin-bottom-10">
+	<a href="{C.G5_ADMIN_URL}/shop_admin/configform.php#anc_scf_etc'.'" class="btn-e btn-e-purple rounded">검색 설정</a>
+</div>
+<!--{/}-->
+
+<div class="shop-search">
+	<!--{* 상세검색 항목 시작 *}-->
+	<div class="shop-search-form">
+        <form name="frmdetailsearch" class="eyoom-form">
+        <input type="hidden" name="qsort" id="qsort" value="{_qsort}">
+        <input type="hidden" name="qorder" id="qorder" value="{_qorder}">
+        <input type="hidden" name="qcaid" id="qcaid" value="{_qcaid}">
+		<div class="row">
+			<section class="col col-6">
+	            <label class="label">검색범위</label>
+	            <div class="inline-group">
+	                <label for="ssch_qname" class="checkbox">
+	                	<input type="checkbox" name="qname" id="ssch_qname" value="1" {? _qname_check}checked="checked"{/}><i></i>상품명
+	                </label>
+	                <label for="ssch_qexplan" class="checkbox">
+	                	<input type="checkbox" name="qexplan" id="ssch_qexplan" value="1" {? _qexplan_check}checked="checked"{/}><i></i>상품설명
+	                </label>
+	                <label for="ssch_qid" class="checkbox">
+	                	<input type="checkbox" name="qid" id="ssch_qid" value="1" {? _qid_check}checked="checked"{/}><i></i>상품코드
+	                </label>
+	            </div>
+            </section>
+            <section class="col col-3">
+            	<label for="ssch_qfrom" class="label">최소 가격</label>
+				<label class="input">
+					<i class="icon-append font-style-normal">원</i>
+                	<input type="text" name="qfrom" value="{_qfrom}" id="ssch_qfrom" size="10">
+				</label>
+            </section>
+            <section class="col col-3">
+                <label for="ssch_qto" class="label">최대 가격</label>
+                <label class="input">
+                	<i class="icon-append font-style-normal">원</i>
+                    <input type="text" name="qto" value="{_qto}" id="ssch_qto" size="10">
+                </label>
+            </section>
+            <div class="clearfix"></div>
+			<section class="col col-12 margin-bottom-0">
+		        <label for="ssch_q" class="sound_only">검색어 입력 필수</label>
+				<div class="input input-button search-input">
+					<i class="icon-prepend fa fa-search"></i>
+					<input type="text" name="q" value="{_q}" id="ssch_q" size="40" maxlength="30">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</div>
+			</section>
+		</div>
+		</form>
+
+		<div class="margin-hr-20"></div>
+		<div class="alert alert-info font-size-12">
+	        <p>
+	            상세검색을 선택하지 않거나, 상품가격을 입력하지 않으면 전체에서 검색합니다.<br>
+	            검색어는 최대 30글자까지, 여러개의 검색어를 공백으로 구분하여 입력 할수 있습니다.
+	        </p>
+		</div>
+        <div class="text-right font-size-11 color-grey">
+            검색 결과 <strong>{_total_count}</strong>건
+        </div>
+	</div>
+	<!--{* 상세검색 항목 끝 *}-->
+
+    <a name="scl"></a>
+    <!--{* 검색 정렬 선택 시작 *}-->
+	<div class="tab-scroll-category">
+		<div id="tab-category">
+			<div class="category-list">
+	            <span {? _GET.qsort == 'it_sum_qty' && _GET.qorder == 'desc'}class="active"{/}>
+	            	<a href="#scl" onclick="set_sort('it_sum_qty', 'desc'); return false;">판매많은순</a>
+	            </span>
+	            <span {? _GET.qsort == 'it_price' && _GET.qorder == 'asc'}class="active"{/}>
+	            	<a href="#scl" onclick="set_sort('it_price', 'asc'); return false;">낮은가격순</a>
+	            </span>
+	            <span {? _GET.qsort == 'it_price' && _GET.qorder == 'desc'}class="active"{/}>
+	            	<a href="#scl" onclick="set_sort('it_price', 'desc'); return false;">높은가격순</a>
+	            </span>
+	            <span {? _GET.qsort == 'it_use_avg' && _GET.qorder == 'desc'}class="active"{/}>
+	            	<a href="#scl" onclick="set_sort('it_use_avg', 'desc'); return false;">평점높은순</a>
+	            </span>
+	            <span {? _GET.qsort == 'it_use_cnt' && _GET.qorder == 'desc'}class="active"{/}>
+	            	<a href="#scl" onclick="set_sort('it_use_cnt', 'desc'); return false;">후기많은순</a>
+	            </span>
+	            <span {? _GET.qsort == 'it_update_time' && _GET.qorder == 'desc'}class="active"{/}>
+	            	<a href="#scl" onclick="set_sort('it_update_time', 'desc'); return false;">최근등록순</a>
+	            </span>
+		        <span class="fake-span"></span>
+			</div>
+			<div class="controls">
+				<button class="btn prev"><i class="fa fa-caret-left"></i></button>
+				<button class="btn next"><i class="fa fa-caret-right"></i></button>
+			</div>
+		</div>
+		<div class="tab-category-divider"></div>
+	</div>
+	<!--{* 검색 정렬 선택 끝 *}-->
+
+	<!--{* 검색된 분류 시작 *}-->
+	<div class="search-tab">
+	    <ul id="tab-search-result">
+	        <li><a href="#scl" onclick="set_ca_id(\"\"); return false;">전체분류 <span>({_total_cnt})</span></a></li>
+			<!--{@ slist}-->
+			<li><a href="#scl" onclick="set_ca_id('{.ca_id}'); return false;">{.ca_name} <span>({.cnt})</span></a></li>
+			<!--{/}-->
+	    </ul>
+	</div>
+	<!--{* 검색된 분류 끝 *}-->
+
+	<!--{* 검색결과 시작 *}-->
+    <div>
+		<!--{? file_exists(_list_file)}-->
+            {list->set_view('it_img', true)}
+            {list->set_view('it_id', false)}
+            {list->set_view('it_name', true)}
+            {list->set_view('it_basic', true)}
+            {list->set_view('it_cust_price', false)}
+            {list->set_view('it_price', true)}
+            {list->set_view('it_icon', true)}
+            {list->set_view('sns', true)}
+            {list->run()}-->
+		<!--{:}-->
+		<p class="text-center font-size-13 color-grey margin-top-20 margin-bottom-20">{_list_file} 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</p>
+		<!--{/}-->
+
+		{=eb_paging('basic')}
+    </div>
+	<!--{* 검색결과 끝 *}-->
+</div>
+
+<script src="../../../plugins/sly/vendor_plugins.min.js"></script>
+<script src="../../../plugins/sly/sly.min.js"></script>
+<script src="../../../plugins/scroll-tabs/jquery.mousewheel.js"></script>
+<script src="../../../plugins/scroll-tabs/jquery.scrolltabs.js"></script>
+<script>
+$(function() {
+	var $frame = $('#tab-category');
+	var $wrap  = $frame.parent();
+	$frame.sly({
+		horizontal: 1,
+		itemNav: 'centered',
+		smart: 1,
+		activateOn: 'click',
+		mouseDragging: 1,
+		touchDragging: 1,
+		releaseSwing: 1,
+		scrollBar: $wrap.find('.scrollbar'),
+		scrollBy: 1,
+		speed: 300,
+		elasticBounds: 1,
+		easing: 'easeOutExpo',
+		dragHandle: 1,
+		dynamicHandle: 1,
+		clickBar: 1,
+		prev: $wrap.find('.prev'),
+		next: $wrap.find('.next')
+	});
+	var tabWidth = $('#tab-category').width();
+	var categoryWidth = $('.category-list').width();
+	if (tabWidth < categoryWidth) {
+		$('.controls').show();
+	}
+});
+
+$(document).ready(function(){
+	$('#tab-search-result').scrollTabs({
+		scroll_distance: 150
+	});
+});
+
+$(window).load(function(){
+	$('#tab-search-result').show();
+});
+
+function set_sort(qsort, qorder) {
+    var f = document.frmdetailsearch;
+    f.qsort.value = qsort;
+    f.qorder.value = qorder;
+    f.submit();
+}
+
+function set_ca_id(qcaid) {
+    var f = document.frmdetailsearch;
+    f.qcaid.value = qcaid;
+    f.submit();
+}
+</script>

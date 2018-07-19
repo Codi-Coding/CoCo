@@ -1,0 +1,70 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<span class="sv_wrap">
+	<!--{? !is_anonymous}-->
+	<a href="{head.link}" data-toggle="dropdown" title="{head.title}" target="_blank" onclick="return false;"><b>{head.name}</b></a>
+	<!--{:}-->
+	<b>{head.name}</b>
+	<!--{/}-->
+<?php  ob_start(); ?>
+	<!--{? !is_anonymous}-->
+	<ul class="sv dropdown-menu" role="menu">
+	<!--{? mb_id && member.mb_id}-->
+
+		<!--{? eyoom.is_community_theme == 'y'}-->
+			<!--{? mb_id != member.mb_id && eyoomer.onoff_social == 'on'}-->
+			<li>
+				<span id="follow">
+					<!--{? !follow}-->
+					<button type="button" class="btn-e btn-e-xs btn-e-yellow btn-e-block {mb_id}" name="{mb_id}" value="following" title="친구맺기를 신청합니다.">친구맺기 신청 <i class="fa fa-smile-o color-white"></i></button>
+					<!--{:}-->
+					<button type="button" class="btn-e btn-e-xs btn-e-dark btn-e-block {mb_id}" name="{mb_id}" value="unfollow" title="친구관계를 해제합니다.">팔로윙 해제 <i class="fa fa-meh-o color-white"></i></button>
+					<!--{/}-->
+				</span>
+			</li>
+			<!--{/}-->
+			<!--{? !_wmode}-->
+			<li><a href="{link.userpage}"><strong>{head.name}</strong>님의 홈</a></li>
+			<!--{/}-->
+		<!--{/}-->
+
+		<li><a {? !C.G5_IS_MOBILE}href="javascript:void(0);" onclick="memo_send_modal(this.title);"{:}href="{C.G5_BBS_URL}/memo_form.php?me_recv_mb_id={mb_id}" target="_blank"{/} title="{mb_id}" id="ol_after_memo">쪽지보내기</a></li>
+		<li><a href="{link.profile}" onclick="member_profile_modal(this.href); return false;">자기소개</a></li>
+		<!--{? !_wmode}-->
+		<li><a href="{link.article}">전체게시물</a></li>
+		<!--{/}-->
+	<!--{/}-->
+
+	<!--{? email && mb_id && member.mb_id}-->
+		<li><a href="{link.email}" onclick="win_email(this.href); return false;">메일보내기</a></li>
+	<!--{/}-->
+
+	<!--{? home && mb_id && member.mb_id}-->
+		<li><a href="{link.home}" target="_blank">홈페이지</a></li>
+	<!--{/}-->
+
+	<!--{? bo_table && !_wmode}-->
+		<!--{? mb_id}-->
+		<li><a href="{link.sid}">아이디로 검색</a></li>
+		<!--{:}-->
+		<li><a href="{link.sname}">이름으로 검색</a></li>
+		<!--{/}-->
+	<!--{/}-->
+	<!--{? g5.sms5_use_sideview && mb_id && member.mb_id}-->
+		<li><a href="{link.sms}" class="win_sms5" target="_blank">문자보내기</a></li>
+	<!--{/}-->
+	<!--{? is_admin && mb_id}-->
+		<li><a href="{link.info}" target="_blank">회원정보변경</a></li>
+		<li><a href="{link.point}" target="_blank">{levelset.gnu_name}내역</a></li>
+	<!--{/}-->
+	</ul>
+	<!--{/}-->
+<?php
+    $mb_name = ob_get_contents();
+    ob_end_clean();
+?>
+<?php echo $mb_name; ?>
+<!--{? !is_anonymous}-->
+<noscript class="sv_nojs"><?php echo $noscript;?></noscript>
+<!--{/}-->
+</span>

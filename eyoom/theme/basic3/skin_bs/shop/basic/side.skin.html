@@ -1,0 +1,36 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<aside class="basic-body-side {? side_layout.pos == 'left'}left{:}right{/}-side col-md-3">
+	<div class="side-pc-area">
+		<!--{* 아웃로그인 시작 *}-->
+			<!--{? eyoom.use_gnu_outlogin == 'y' //그누보드 스킨일 경우}-->
+			{=outlogin('basic')}
+			<!--{: //이윰 스킨일 경우}-->
+			{=eb_outlogin(eyoom.outlogin_skin)}
+			<!--{/}-->
+		<!--{* 아웃로그인 끝 *}-->
+
+		<!--{* notice_roll 최신글 영역 시작 *}-->
+			<!--{* 아래 bo_table=게시판id 설정 *}-->
+			{latest->latest_eyoom('notice_roll','bo_table=notify||count=5||cut_subject=50')}
+		<!--{* notice_roll 최신글 영역 끝 *}-->
+
+		<!--{* 투표 시작 *}-->
+			<!--{? eyoom.use_gnu_poll == 'y' //그누보드 스킨일 경우}-->
+			{=poll('basic')}
+			<!--{: //이윰 스킨일 경우}-->
+			{=eb_poll(eyoom.poll_skin)}
+			<!--{/}-->
+		<!--{* 투표 끝 *}-->
+
+		<!--{? _is_admin // 관리자일때만 보입니다.}-->
+	    <!--{* 방문자 통계 시작 *}-->
+			<!--{? eyoom.use_gnu_visit == 'y' //그누보드 스킨일 경우}-->
+			{=visit('basic')}
+			<!--{:}-->
+			{=eb_visit(eyoom.visit_skin)}
+			<!--{/}-->
+		<!--{* 방문자 통계 끝 *}-->
+		<!--{/}-->
+	</div>
+</aside>

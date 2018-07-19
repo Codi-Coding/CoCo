@@ -1,0 +1,53 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.tab-latest-text ul {margin-bottom:0}
+.tab-latest-text li {position:relative;overflow:hidden;padding:2px 0;font-size:12px}
+.tab-latest-text .txt-subj {position:relative;width:70%;padding-right:0;padding-left:0;display:block;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;overflow:hidden;float:left}
+.tab-latest-text .txt-comment {display: inline-block;min-width:38px;padding:1px 3px;font-size:10px;font-weight:300;line-height:11px;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;background-color:#757575}
+.tab-latest-text .txt-member {position:relative;overflow:hidden;display:block;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;overflow:hidden;width:15%;float:left}
+.tab-latest-text .txt-photo img {width:17px;height:17px;margin-right:2px}
+.tab-latest-text .txt-photo .txt-user-icon {width:17px;height:17px;font-size:11px;line-height:17px;text-align:center;background:#858585;color:#fff;margin-right:2px;display:inline-block;white-space:nowrap;vertical-align:baseline}
+.tab-latest-text .txt-nick {font-size:12px;color:#757575}
+.tab-latest-text .txt-time {position:relative;overflow:hidden;width:15%;font-size:12px;text-align:right;color:#555555;float:left}
+.tab-latest-text .txt-time .i-color {color:#b5b5b5}
+.tab-latest-text a:hover .txt-subj {text-decoration:underline}
+.tab-latest-text a:hover .txt-nick {color:#000}
+.tab-latest-text a:hover .txt-time i {color:#FF2900}
+@media (max-width: 650px) {
+	.tab-latest-text .txt-subj {width:68%}
+	.tab-latest-text .txt-member {display:none}
+	.tab-latest-text .txt-time {width:32%}
+}
+</style>
+
+<div class="tab-latest-text">
+	<ul class="list-unstyled">
+	<!--{@ loop}-->
+		<li>
+			<a href="{.href}">
+				<div class="txt-subj">
+					- <!--{? .wr_comment}--><span class="txt-comment">+{=number_format(.wr_comment)}</span> <!--{/}-->{.wr_subject}
+				</div>
+				<div class="txt-member">
+					<!--{? photo == 'y'}-->
+					<span class="txt-photo">
+						<!--{? .mb_photo}-->
+						{.mb_photo}
+						<!--{:}-->
+						<span class="txt-user-icon"><i class="fa fa-user"></i></span>
+						<!--{/}-->
+					</span>
+					<!--{/}-->
+					<span class="txt-nick">{.mb_nick}</span>
+				</div>
+				<div class="txt-time">
+					<i class="fa fa-clock-o {? .new}color-red{:}i-color{/}"></i> {eb->date_time('Y-m-d',.datetime)}
+				</div>
+			</a>
+		</li>
+	<!--{:}-->
+		<li><p class="text-center color-grey font-size-13 margin-top-30"><i class="fa fa-exclamation-circle"></i> 최신글이 없습니다.</p></li>
+	<!--{/}-->
+	</ul>
+</div>

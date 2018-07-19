@@ -47,15 +47,14 @@ for ($i=1; $i<=9; $i++) {
 $list2 = array();
 
 // 기타의견 리스트
-$sql = " select a.*, b.mb_open, b.as_level
+$sql = " select a.*, b.mb_open
            from {$g5['poll_etc_table']} a
            left join {$g5['member_table']} b on (a.mb_id = b.mb_id)
           where po_id = '{$po_id}' order by pc_id desc ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++) {
     $list2[$i]['pc_name']  = get_text($row['pc_name']);
-	$list2[$i]['photo']	   = apms_photo_url($row['mb_id']);
-	$list2[$i]['name']     = apms_sideview($row['mb_id'], get_text(cut_str($row['pc_name'],10)), '', '', $row['as_level']);
+    $list2[$i]['name']     = get_sideview($row['mb_id'], get_text(cut_str($row['pc_name'],10)), '', '', $row['mb_open']);
     $list2[$i]['idea']     = get_text(cut_str($row['pc_idea'], 255));
     $list2[$i]['datetime'] = $row['pc_datetime'];
 
@@ -78,7 +77,7 @@ if ($po['po_etc']) {
 $list3 = array();
 
 // 다른투표
-$sql = " select po_id, po_subject, po_date from {$g5['poll_table']} where po_id <> '{$po_id}' order by po_id desc ";
+$sql = " select po_id, po_subject, po_date from {$g5['poll_table']} order by po_id desc ";
 $result = sql_query($sql);
 for ($i=0; $row2=sql_fetch_array($result); $i++) {
     $list3[$i]['po_id'] = $row2['po_id'];
@@ -86,69 +85,31 @@ for ($i=0; $row2=sql_fetch_array($result); $i++) {
     $list3[$i]['subject'] = cut_str($row2['po_subject'],60,"…");
 }
 
-$is_etc_poll = ($i) ? true : false;
-
-// Page ID
-$pid = ($pid) ? $pid : '';
-$at = apms_page_thema($pid);
-include_once(G5_LIB_PATH.'/apms.thema.lib.php');
-
-if(!$skin_dir) $skin_dir = 'basic';
-
-if(USE_G5_THEME) {
-	if(preg_match('#^theme/(.+)$#', $skin_dir, $match)) {
-		if (G5_IS_MOBILE) {
-			$poll_skin_path = G5_THEME_MOBILE_PATH.'/'.G5_SKIN_DIR.'/poll/'.$match[1];
-			if(!is_dir($poll_skin_path))
-				$poll_skin_path = G5_THEME_PATH.'/'.G5_SKIN_DIR.'/poll/'.$match[1];
-			$poll_skin_url = str_replace(G5_PATH, G5_URL, $poll_skin_path);
-		} else {
-			$poll_skin_path = G5_THEME_PATH.'/'.G5_SKIN_DIR.'/poll/'.$match[1];
-			$poll_skin_url = str_replace(G5_PATH, G5_URL, $poll_skin_path);
-		}
-		//$skin_dir = $match[1];
-	} else {
-		if (G5_IS_MOBILE) {
-			$poll_skin_path = G5_MOBILE_PATH.'/'.G5_SKIN_DIR.'/poll/'.$skin_dir;
-			$poll_skin_url  = G5_MOBILE_URL.'/'.G5_SKIN_DIR.'/poll/'.$skin_dir;
-		} else {
-			$poll_skin_path = G5_SKIN_PATH.'/poll/'.$skin_dir;
-			$poll_skin_url  = G5_SKIN_URL.'/poll/'.$skin_dir;
-		}
-	}
+if(preg_match('#^theme/(.+)$#', $skin_dir, $match)) {
+    if (G5_IS_MOBILE) {
+        $poll_skin_path = G5_THEME_MOBILE_PATH.'/'.G5_SKIN_DIR.'/poll/'.$match[1];
+        if(!is_dir($poll_skin_path))
+            $poll_skin_path = G5_THEME_PATH.'/'.G5_SKIN_DIR.'/poll/'.$match[1];
+        $poll_skin_url = str_replace(G5_PATH, G5_URL, $poll_skin_path);
+    } else {
+        $poll_skin_path = G5_THEME_PATH.'/'.G5_SKIN_DIR.'/poll/'.$match[1];
+        $poll_skin_url = str_replace(G5_PATH, G5_URL, $poll_skin_path);
+    }
+    //$skin_dir = $match[1];
 } else {
-	if(is_dir(THEMA_PATH.'/widget/'.$skin_dir)) {
-		$poll_skin_path = THEMA_PATH.'/widget/'.$skin_dir;
-		$poll_skin_url  = THEMA_URL.'/widget/'.$skin_dir;
-	} else {
-		$poll_skin_path = G5_SKIN_PATH.'/poll/'.$skin_dir;
-		$poll_skin_url  = G5_SKIN_URL.'/poll/'.$skin_dir;
-	}
-
-	// 스킨 체크
-	list($poll_skin_path, $poll_skin_url) = apms_skin_thema('poll', $poll_skin_path, $poll_skin_url); 
+    if (G5_IS_MOBILE) {
+        $poll_skin_path = G5_MOBILE_PATH.'/'.G5_SKIN_DIR.'/poll/'.$skin_dir;
+        $poll_skin_url  = G5_MOBILE_URL.'/'.G5_SKIN_DIR.'/poll/'.$skin_dir;
+    } else {
+        $poll_skin_path = G5_SKIN_PATH.'/poll/'.$skin_dir;
+        $poll_skin_url  = G5_SKIN_URL.'/poll/'.$skin_dir;
+    }
 }
 
-// 설정값 불러오기
-$is_poll_sub = true;
-@include_once($poll_skin_path.'/config.skin.php');
+include_once(G5_PATH.'/head.sub.php');
 
-if($is_poll_sub) {
-	include_once(G5_PATH.'/head.sub.php');
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
-} else {
-	include_once('./_head.php');
-}
+if (!file_exists($poll_skin_path.'/poll_result.skin.php')) die('skin error');
+include_once ($poll_skin_path.'/poll_result.skin.php');
 
-$widget_path = $skin_path = $poll_skin_path;
-$widget_url = $skin_url = $poll_skin_url;
-
-include_once ($skin_path.'/poll_result.skin.php');
-
-if($is_poll_sub) {
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
-	include_once(G5_PATH.'/tail.sub.php');
-} else {
-	include_once('./_tail.php');
-}
+include_once(G5_PATH.'/tail.sub.php');
 ?>

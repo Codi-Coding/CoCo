@@ -1,0 +1,49 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.emoticon-list .eyoom-form {margin:15px 15px 25px}
+.emoticon-list .emoticon-label {width:100px;float:right;text-align:right;padding:7px 10px 0 0}
+.emoticon-list .emoticon-select {width:170px;float:right}
+.emoticon-list .emoticons {list-style:none;margin:0;padding:0}
+.emoticon-list .emoticons li {float:left;min-height:65px;margin:5px 13px}
+.emoticon-list .emoticons li img {width:40px}
+</style>
+
+<div class="emoticon-list">
+	<div class="eyoom-form">
+		<div class="emoticon-select">
+			<label class="select">
+				<select name="eom" id="emo" onchange="change_emoticon(this.value);">
+					<!--{@ _emo_type}-->
+					<option value="{.value_}" {? _emo == .value_}selected{/}>{.value_}</option>
+					<!--{/}-->
+				</select>
+				<i></i>
+			</label>
+		</div>
+		<div class="emoticon-label">
+			<label class="label">이모티콘 선택</label>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<ul class="emoticons">
+		<!--{@ _emoticon}-->
+		<li><a href="javascript:void(0);" onclick="set_emoticon('{.emoticon}');"><img src="{.url}"></a></li>
+		<!--{/}-->
+	</ul>
+</div>
+
+<script>
+function change_emoticon(emo) {
+	var url = './emoticon.php?emo='+emo;
+	$(location).attr('href',url);
+}
+function set_emoticon(emoticon) {
+	parent.set_emoticon(emoticon);
+	parent.jQuery('.vbox-close, .vbox-overlay').trigger('click');
+}
+</script>
+
+{# tail_sub}

@@ -1,0 +1,29 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.statistics-wrap {position:relative;border:1px solid #e5e5e5;padding:10px;margin:0px 20px 30px;background:#fff;-webkit-border-radius:3px !important;-moz-border-radius:3px !important;border-radius:3px !important}
+.statistics-wrap ul {margin-bottom:0}
+.statistics-list li {color:#474A5E;font-size:12px;padding:6px 0;display:block;border-top:1px dotted #e5e5e5}
+.statistics-list li:first-child {border-top:none}
+.statistics-list li a {color:#000;font-size:12px;display:block}
+.statistics-list li strong {color:#474A5E;float:right}
+</style>
+
+<div class="statistics-wrap">
+	<div class="headline"><h5><strong>사이트 통계</strong></h5></div>
+	<ul class="list-unstyled statistics-list">
+		<li><a href="{C.G5_BBS_URL}/current_connect.php">현재접속자 : <strong><!--{connect.total_cnt}-->{? connect.mb_cnt} (<span class='color-red'>Member {connect.mb_cnt}</span>)<!--{/}--></strong></a></li>
+		<li>오늘방문자 : <strong>{counter.visit_today}</strong></li>
+		<li>어제방문자 : <strong>{counter.visit_yesterday}</strong></li>
+		<li>최대방문자 : <strong>{counter.visit_max}</strong></li>
+		<li>전체방문자 : <strong>{counter.visit_total}</strong></li>
+		<!--{? 0 // 앞숫자 0:신규회원수 미출력, 1:신규회원수 출력}-->
+		<li>신규회원수 : <strong>{counter.newby}</strong></li>
+		<!--{/}-->
+		<li>전체회원수 : <strong>{counter.members}</strong></li>
+		<li>전체게시물 : <strong>{counter.write}</strong></li>
+		<!--{? 0 // 앞숫자 0:전체코멘트 미출력, 1:전체코멘트 출력}-->
+		<li>전체코멘트 : <strong>{counter.comment}</strong></li>
+		<!--{/}-->
+	</ul>
+</div>

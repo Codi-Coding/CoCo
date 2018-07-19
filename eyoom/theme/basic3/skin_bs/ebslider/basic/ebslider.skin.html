@@ -1,0 +1,114 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/slick/slick.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.eb-slider-basic-wrap-{code} {margin-bottom:30px}
+.eb-slider-basic-wrap-{code} .slick-dotted.slick-slider {margin-bottom:0}
+.eb-slider-basic-in {position:relative;overflow:hidden;display:none;background-color:#e5e5e5}
+.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item {position:relative;outline:none}
+.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont {position:absolute;top:0;left:0;width:100%;height:220px;background:rgba(0, 0, 0, 0.4);padding:20px 40px}
+.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont h3 {padding:0;margin:0;color:#fff;font-size:20px;font-weight:bold}
+.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont h2 {padding:0;margin:20px 0 0;color:#fff;font-size:26px;font-weight:bold}
+.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont p {padding:0;margin:20px 0 0;color:#fff}
+.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item img {display:block;width:100% \9;max-width:100%;height:auto}
+.eb-slider-basic-in .eb-slider-basic .slick-dots {bottom:10px;z-index:2}
+.eb-slider-basic-in .eb-slider-basic .slick-dots li button:before {color:#fff;font-size:14px;opacity:0.45}
+.eb-slider-basic-in .eb-slider-basic .slick-dots li.slick-active button:before {opacity:0.85}
+.eb-slider-basic-in .eb-slider-basic .slick-next, .eb-slider-basic-in .eb-slider-basic .slick-prev {width:50px;height:50px;top:50%;background:RGBA(0, 0, 0, 0.4);z-index:1;-webkit-transition:all 0.2s ease-in-out;-moz-transition:all 0.2s ease-in-out;-o-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out}
+.eb-slider-basic-in .eb-slider-basic .slick-next {right:5px}
+.eb-slider-basic-in .eb-slider-basic .slick-prev {left:5px}
+.eb-slider-basic-in .eb-slider-basic .slick-next:hover, .eb-slider-basic-in .eb-slider-basic .slick-prev:hover {background:RGBA(0, 0, 0, 0.5)}
+.eb-slider-basic-in .eb-slider-basic .slick-next:before, .eb-slider-basic-in .eb-slider-basic .slick-prev:before {font-family:FontAwesome;color:#fff;font-size:18px}
+.eb-slider-basic-in .eb-slider-basic .slick-next:before {content:"\f054"}
+.eb-slider-basic-in .eb-slider-basic .slick-prev:before {content:"\f053"}
+@media (max-width:767px) {
+	.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item {padding:0}
+	.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont {height:170px;padding:10px}
+	.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont h3 {font-size:16px}
+	.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont h2 {font-size:20px;margin-top:10px}
+	.eb-slider-basic-in .eb-slider-basic .eb-slider-basic-item .eb-slider-basic-cont p {display:none}
+}
+</style>
+
+<div class="eb-slider-basic-wrap-{code}">
+    <div class="eb-slider-basic-in">
+		<div class="eb-slider-basic">
+		<!--{? esinfo.es_state == '1' && slider.size_ > 0}-->
+			<!--{@ slider}-->
+			<div class="eb-slider-basic-item">
+				<!--{? .ei_link}-->
+				<a href="{.ei_link}" target="{.ei_target}">
+				<!--{/}-->
+					<img src="{.img_url}" class="img-responsive">
+					<!--{? .ei_subtitle || .ei_title || .ei_text}-->
+					<div class="eb-slider-basic-cont">
+						<h3>{.ei_subtitle}</h3>
+						<h2>{.ei_title}</h2>
+						<p>{=stripslashes(.ei_text)}</p>
+					</div>
+					<!--{/}-->
+				<!--{? .ei_link}-->
+				</a>
+				<!--{/}-->
+			</div>
+			<!--{/}-->
+		<!--{:}-->
+			<div class="eb-slider-basic-item">
+				<img src="./image/slider_sample_1.jpg" class="img-responsive">
+				<div class="eb-slider-basic-cont">
+					<h3>이윰에 오신것을 환영합니다.</h3>
+					<h2>Welcome to EYOOM</h2>
+					<p>새로운 소통의 창구 '이윰'에 오신것을 환영합니다.<br>더 나은 커뮤니티 환경을 위해 모인 여러분들께 최고의 환경을 선사하겠습니다.<br>즐겁게 보내다 가시기 바랍니다.</p>
+				</div>
+			</div>
+			<div class="eb-slider-basic-item">
+				<img src="./image/slider_sample_2.jpg" class="img-responsive">
+				<div class="eb-slider-basic-cont">
+					<h3></h3>
+					<h2>Enjoy EYOOM</h2>
+					<p>새로운 소통의 창구 '이윰'에 오신것을 환영합니다.<br>더 나은 커뮤니티 환경을 위해 모인 여러분들께 최고의 환경을 선사하겠습니다.<br>즐겁게 보내다 가시기 바랍니다.</p>
+				</div>
+			</div>
+			<div class="eb-slider-basic-item">
+				<img src="./image/slider_sample_3.jpg" class="img-responsive">
+				<div class="eb-slider-basic-cont">
+					<h3>끝나지 않는 우리들의 이야기</h3>
+					<h2>Conglature is a never ending story.</h2>
+				</div>
+			</div>
+		<!--{/}-->
+		</div>
+	</div>
+	<!--{? is_admin == 'super'}-->
+	<div class="text-center margin-top-20">
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=ebslider_form&thema={theme}&es_code={code}&w=u" target="_blank" class="btn-e btn-e-default"><i class="fa fa-cog"></i> EB슬라이더 설정하기</a>
+	</div>
+	<!--{/}-->
+</div>
+
+<script src="../../../plugins/slick/slick.min.js"></script>
+<script>
+$(window).load(function(){
+    $('.eb-slider-basic-wrap-{code} .eb-slider-basic-in').show();
+	$('.eb-slider-basic-wrap-{code} .eb-slider-basic').slick({
+		slidesToShow: 1,
+		arrows: true,
+		dots: true,
+		autoplay: true,
+		autoplaySpeed: 5000,
+		responsive: [
+			{
+				breakpoint: 768,
+				settings: {
+					arrows: false,
+					fade: true,
+					cssEase: 'linear',
+					centerPadding: '0px',
+					slidesToShow: 1
+				}
+			}
+		]
+	});
+});
+</script>

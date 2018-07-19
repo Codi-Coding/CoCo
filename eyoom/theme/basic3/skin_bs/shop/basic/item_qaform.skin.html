@@ -1,0 +1,111 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-product-qa-form {padding:15px}
+.shop-product-qa-form input {vertical-align:inherit}
+.shop-product-qa-form input.btn-e-lg {padding:7px 16px;font-size:14px}
+.shop-product-qa-form textarea {min-height:100px}
+/* Ckeditor */
+.shop-product-qa-form a.cke_button {padding:2px 5px}
+.shop-product-qa-form a.cke_button_on {padding:1px 4px}
+.shop-product-qa-form a.cke_button_off:hover, .shop-product-qa-form a.cke_button_off:focus, .shop-product-qa-form a.cke_button_off:active {padding:1px 4px}
+/* Smart Editor */
+.cke_sc {margin-bottom:10px}
+.btn_cke_sc {padding:0 10px}
+.cke_sc_def {padding:10px;margin-bottom:10px;margin-top:10px}
+.cke_sc_def button {padding:3px 15px;background:#53535a;color:#fff;border:none}
+/* Summernote */
+.eyoom-form .note-editor *, .eyoom-form .note-editor *:after, .eyoom-form .note-editor *:before {box-sizing:border-box;-moz-box-sizing:border-box}
+.eyoom-form .note-editor.panel-default>.panel-heading {background-color:#eaecee;border:0;border-bottom:1px solid #A9A9A9}
+.panel-heading.note-toolbar .note-color .dropdown-menu {padding-top:6px;padding-bottom:6px;padding-left:1px}
+</style>
+
+<div class="shop-product-qa-form">
+    <form name="fitemqa" method="post" action="./itemqaformupdate.php" onsubmit="return fitemqa_submit(this);" autocomplete="off" class="eyoom-form">
+    <input type="hidden" name="w" value="{_w}">
+    <input type="hidden" name="it_id" value="{_it_id}">
+    <input type="hidden" name="iq_id" value="{_iq_id}">
+
+	<div class="headline"><h4><strong>상품문의 쓰기</strong></h4></div>
+	<div class="margin-bottom-30"></div>
+    <div class="row">
+	    <section class="col col-9">
+	        <label for="iq_subject" class="label">제목<strong class="sound_only"> 필수</strong></label>
+            <label class="input">
+            	<i class="icon-append fa fa-check"></i>
+            	<input type="text" name="iq_subject" value="{=get_text(qa.iq_subject)}" id="iq_subject" required minlength="2" maxlength="250">
+            </label>
+	    </section>
+	    <section class="col col-3">
+		    <label for="iq_secret" class="checkbox"><input type="checkbox" name="iq_secret" id="iq_secret" value="1" {_chk_secret}><i></i>비밀글</label>
+	    </section>
+	    <div class="col col-12">
+	    	<div class="margin-hr-15"></div>
+	    </div>
+	    <section class="col col-6">
+	        <label for="iq_email" class="label">이메일</label>
+            <label class="input">
+            	<i class="icon-append fa fa-envelope-o"></i>
+            	<input type="text" name="iq_email" value="{qa.iq_email}" size="30">
+            </label>
+	        <div class="note"><strong>Note:</strong> 이메일을 입력하시면 답변 등록 시 답변이 이메일로 전송됩니다.</div>
+	    </section>
+	    <section class="col col-6">
+	        <label for="iq_hp" class="label">휴대폰</label>
+            <label class="input">
+            	<i class="icon-append fa fa-phone"></i>
+            	<input type="text" name="iq_hp" value="{qa.iq_hp}" size="20">
+            </label>
+	        <div class="note"><strong>Note:</strong> 휴대폰번호를 입력하시면 답변 등록 시 답변등록 알림이 SMS로 전송됩니다.</div>
+	    </section>
+    </div>
+    <div class="margin-hr-15"></div>
+	<label class="label">내용</label>
+	<label class="textarea textarea-resizable">
+    	{_editor_html}
+    </label>
+    <div class="margin-hr-15"></div>
+    <div class="text-center margin-top-15 margin-bottom-15">
+        <input type="submit" value="작성완료" class="btn-e btn-e-lg btn-e-red">
+        <button type="button" onclick="self.close();" class="btn-e btn-e-lg btn-e-dark"><i class="fa fa-close"></i> 닫기</button>
+    </div>
+
+    </form>
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script>
+function fitemqa_submit(f) {
+    {_editor_js}
+
+    return true;
+}
+
+$("input, textarea, select").on({ 'touchstart' : function() {
+	zoomDisable();
+}});
+$("input, textarea, select").on({ 'touchend' : function() {
+	setTimeout(zoomEnable, 500);
+}});
+function zoomDisable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">');
+}
+function zoomEnable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1">');
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->

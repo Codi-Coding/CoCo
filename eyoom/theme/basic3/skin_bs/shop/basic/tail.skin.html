@@ -1,0 +1,183 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<!--{? !_wmode }-->
+				</section>
+				<!--{? side_layout.use == 'yes'}-->
+				<!--{? side_layout.pos == 'right'}-->
+				{# shop_side}
+				<!--{/}-->
+				<!--{/}-->
+				<div class="clearfix"></div>
+			</div><!--{* End row *}-->
+		    <!--{? !defined('_INDEX_')}-->
+		    </div>
+			<!--{/}-->
+	    </div><!--{* End container *}-->
+	    <!--{* End Basic Body *}-->
+
+	    <!--{? footer_top == 'yes'}-->
+	    <!--{* Footer Top *}-->
+	    <div class="footer-top">
+		    <div class="container">
+			    <div class="footer-top-content">
+				    <div class="footer-top-logo">
+			            <a href="{C.G5_URL}">
+							<!--{? logo == 'text'}-->
+							<h2>{config.cf_title}</h2>
+							<!--{: logo == 'image' //로고 이미지 크기는 360x80픽셀 권장}-->
+							<img src="../../../image/site_logo.png" class="img-responsive">
+							<!--{/}-->
+						</a>
+				    </div>
+				    <div class="footer-top-info">
+						<strong>{default.de_admin_company_name}</strong>
+						<span class="info-divider">|</span>
+						<span>대표 : {default.de_admin_company_owner}</span>
+						<span class="info-divider">|</span>
+						<span>사업자등록번호 : {default.de_admin_company_saupja_no}</span>
+						<span class="info-divider">|</span>
+						<span>통신판매업신고번호 : {default.de_admin_tongsin_no}</span>
+						<span class="info-divider">|</span>
+						<span>주소 : {default.de_admin_company_addr1}, {default.de_admin_company_addr2} {default.de_admin_company_addr3}</span><br>
+						<span>T. {default.de_admin_company_tel}</span>
+						<span class="info-divider">|</span>
+						<span>F. {default.de_admin_company_fax}</span>
+						<span class="info-divider">|</span>
+						<span>E-mail : <a href="mailto:{default.de_admin_info_email}">{default.de_admin_info_email}</a></span>
+						<span class="info-divider">|</span>
+						<span>개인정보관리 : {default.de_admin_info_name}</span>
+				    </div>
+			    </div>
+		    </div>
+		</div>
+	    <!--{* End Footer Top *}-->
+	    <!--{/}-->
+
+	    <!--{* Footer *}-->
+	    <footer class="footer footer-dark">
+		    <div class="footer-left">
+			    <ul class="list-unstyled list-inline">
+				    <li>
+				    	<span class="footer-site-name hidden-xs">{config.cf_title}</span>
+						<div class="btn-group dropup visible-xs">
+							<span data-toggle="dropdown" class="footer-info-btn dropdown-toggle">{config.cf_title} 정보<i class="fa fa-caret-up margin-left-5"></i></span>
+							<ul role="menu" class="dropdown-menu">
+								<li><a href="{C.G5_URL}/page/?pid=aboutus">회사소개</a></li>
+								<li class="divider"></li>
+								<li><a href="{C.G5_URL}/page/?pid=provision">이용약관</a></li>
+								<li><a href="{C.G5_URL}/page/?pid=privacy">개인정보처리방침</a></li>
+								<li><a href="{C.G5_URL}/page/?pid=noemail">이메일무단수집거부</a></li>
+							</ul>
+						</div>
+				    </li>
+				    <li class="hidden-xs"><a href="">회사소개</a><a href="">이용약관</a><a href="">개인정보처리방침</a><a href="">이메일무단수집거부</a></li>
+			    </ul>
+		    </div>
+		    <div class="footer-right">
+			    <p><span class="hidden-xs">Copyright </span>&copy; {config.cf_title}. All Rights Reserved.</p>
+		    </div>
+		    <div class="clearfix"></div>
+	    </footer>
+	    <!--{* End Footer *}-->
+    </div><!--{* End Header Fixed *}-->
+
+	<div class="back-to-top">
+        <i class="fa fa-angle-up"></i>
+    </div>
+</div><!--{* End wrapper *}-->
+<!--{/}-->
+
+<div class="sidebar-left-mask sidebar-left-trigger" data-action="toggle" data-side="left"></div>
+<div class="sidebar-right-mask sidebar-right-trigger" data-action="toggle" data-side="right"></div>
+<form name="fitem_for_list" method="post" action="" onsubmit="return fitem_for_list_submit(this);">
+<input type="hidden" name="url">
+<input type="hidden" name="it_id">
+</form>
+
+<!--{* 전체 상품 검색 모달 시작 *}-->
+<div class="modal fade shop-search-modal eb-search-modal" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h4 class="modal-title"><i class="fa fa-search"></i> <strong>전체 상품 검색</strong></h4>
+			</div>
+			<div class="modal-body margin-bottom-20">
+				<form name="frmsearch1" action="<?php echo G5_SHOP_URL; ?>/search.php" onsubmit="return search_submit(this);" class="eyoom-form">
+				<input type="hidden" name="sfl" value="wr_subject||wr_content">
+				<input type="hidden" name="sop" value="and">
+				<label for="modal_sch_str" class="sound_only">검색어 입력 필수</strong></label>
+				<div class="input input-button">
+					<input type="text" name="q" value="<?php echo stripslashes(get_text(get_search_string($q))); ?>" id="modal_sch_str" class="sch_stx" placeholder="검색어 입력" required>
+					<div class="button"><input type="submit">검색</div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!--{* 전체 상품 검색 모달 끝 *}-->
+
+{# misc_bs}
+
+<!--{? _is_member && eyoomer.onoff_push == 'on'}-->
+{# push_bs}
+<!--{/}-->
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../plugins/jquery.bootstrap-hover-dropdown.min.js"></script>
+<script src="../../../plugins/sidebar/jquery.sidebar.min.js"></script>
+<script src="../../../plugins/sticky-kit/sticky-kit.min.js"></script>
+<script src="./js/shop_app.js"></script>
+<script>
+$(document).ready(function() {
+    ShopApp.init();
+});
+
+function search_submit(f) {
+    if (f.q.value.length < 2) {
+        alert("검색어는 두글자 이상 입력하십시오.");
+        f.q.select();
+        f.q.focus();
+        return false;
+    }
+    return true;
+}
+
+function item_wish_for_list(it_id) {
+	var f = document.fitem_for_list;
+	f.url.value = "{C.G5_SHOP_URL}/wishupdate.php?it_id="+it_id;
+	f.it_id.value = it_id;
+	f.action = "{C.G5_SHOP_URL}/wishupdate.php";
+	f.submit();
+}
+
+// 쇼핑몰 퀵메뉴
+$(document).ready(function() {
+	$(".quick-menu-wrap").stick_in_parent({
+		<!--{? sticky == 'yes'}--> // 메뉴바 sticky 적용
+
+			<!--{? defined('_INDEX_')}--> // 메뉴바 sticky 적용 메인일때
+				offset_top:93
+			<!--{:}--> // 메뉴바 sticky 적용 메인이 아닐때
+				offset_top:118
+			<!--{/}-->
+
+		<!--{:}--> // 메뉴바 sticky 미적용
+			<!--{? defined('_INDEX_')}--> // 메뉴바 sticky 미적용 메인일때
+				offset_top:32
+			<!--{:}--> // 메뉴바 sticky 미적용 메인이 아닐때
+				offset_top:58
+			<!--{/}-->
+		<!--{/}-->
+	});
+});
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->
+
+{# tail_sub}

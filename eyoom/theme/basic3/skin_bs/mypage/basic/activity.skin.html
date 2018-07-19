@@ -1,0 +1,240 @@
+<?php if (!defined("_GNUBOARD_")) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/sly/tab_scroll_category.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.my-activity {position:relative}
+.my-activity .timeline {padding:20px;max-width:600px;margin:0 auto}
+.my-activity .timeline ul {list-style-type:none;position:relative;padding:10px 0 10px 10px;margin:0}
+.my-activity .timeline ul:after {content:"";position:absolute;top:0;left:-4px;bottom:0;border-left:1px solid #d5d5d5;height:100%}
+.my-activity .timeline ul li {margin:15px 0 15px 10px;position:relative;display:block}
+.my-activity .timeline ul li:last-child {margin-bottom:0}
+.my-activity .timeline ul li:before {content:"";display:block;width:12px;height:12px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important;background-color:white;border:2px solid #0078FF;position:absolute;z-index:2;left:-30px;outline:2px solid white;top:8px}
+.my-activity .timeline ul li .timeline-date {display:table;color:white;background:#2E3340;font-size:11px;padding:4px 10px;margin-bottom:20px;position:relative;top:5px;outline:2px solid #fff;z-index:0;line-height:1;border-radius:2px !important}
+.my-activity .timeline ul li .timeline-date:before {content:"";position:absolute;left:-20px;border-bottom:1px solid #ccc;width:20px;top:9px;z-index:-1}
+.my-activity .timeline ul li .timeline-panel {position:relative;display:block;border:1px solid #d5d5d5;padding:8px 15px;background:#f2f2f2;font-size:12px;border-radius:2px !important}
+.my-activity .timeline ul li .timeline-panel h6 {margin:3px 0 8px;padding:0}
+.my-activity .timeline ul li .timeline-panel p:last-child {margin-bottom:0}
+.my-activity .timeline ul li h5 {font-size:15px;font-weight:bold;margin-bottom:15px}
+.my-activity .timeline ul li p {color:#959595}
+.my-activity .timeline ul li a .timeline-panel:hover {text-decoration:underline;color:#000}
+.my-activity .timeline ul li a .timeline-panel:hover p {color:#000}
+#infscr-loading {text-align:center;z-index:100;position:absolute;left:50%;bottom:0;width:200px;margin-left:-100px;padding:10px;background:#000;opacity:0.6;color:#fff}
+.my-activity .view-infinite-more .btn-e-lg {padding:10px 50px;font-size:17px;font-weight:bold;border:1px solid #959595}
+@media (min-width: 768px) {
+	.my-activity-modal {width:750px;margin:10px auto}
+	.my-activity-modal .modal-header, .my-activity-modal .modal-body, .my-activity-modal .modal-footer {padding:10px 20px}
+}
+@media (min-width: 992px) {
+	.my-activity-modal {width:970px}
+}
+@media (min-width: 1200px) {
+	.my-activity-modal {width:1170px}
+}
+</style>
+
+<div class="tab-scroll-category">
+{# tab_category}
+</div>
+
+<div class="my-activity">
+	<div class="cont-text-bg margin-bottom-30">
+	    <p class="bg-primary rounded">활동 기록</p>
+	</div>
+
+	<div class="timeline">
+		<ul class="infinite-container">
+		<!--{@ list}-->
+			<li>
+			<!--{? .type == 'new'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5><u>{.bo_name}</u> 게시판의 새글을 작성하셨습니다.</h5>
+				<a href="{C.G5_BBS_URL}/board.php?bo_table={.bo_table}&amp;wr_id={.wr_id}&wmode=1" {? !C.G5_IS_MOBILE}onclick="activity_modal(this.href); return false;"{:}target="_blank"{/}>
+					<div class="timeline-panel">
+						<h6 class="font-bold">{=stripslashes(.subject)}</h6>
+						<p>{=conv_subject(.content,80,'…')}</p>
+					</div>
+				</a>
+			<!--{: .type == 'reply'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5><u>{.bo_name}</u> 게시판의 답변글을 작성하셨습니다.</h5>
+				<a href="{C.G5_BBS_URL}/board.php?bo_table={.bo_table}&amp;wr_id={.wr_id}&wmode=1" {? !C.G5_IS_MOBILE}onclick="activity_modal(this.href); return false;"{:}target="_blank"{/}>
+					<div class="timeline-panel">
+						<h6 class="font-bold">{=stripslashes(.subject)}</h6>
+						<p>{=conv_subject(.content,80,'…')}</p>
+					</div>
+				</a>
+			<!--{: .type == 'login'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5>로그인하였습니다.</h5>
+				<div class="timeline-panel">
+					<p>{.ip}</p>
+				</div>
+			<!--{: .type == 'cmt'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5><u>{.bo_name}</u> 게시판의 댓글을 작성하였습니다.</h5>
+				<a href="{C.G5_BBS_URL}/board.php?bo_table={.bo_table}&amp;wr_id={.wr_parent}&wmode=1#c_{.wr_id}" {? !C.G5_IS_MOBILE}onclick="activity_modal(this.href); return false;"{:}target="_blank"{/}>
+					<div class="timeline-panel">
+						<p>{=conv_subject(.content,80,'…')}</p>
+					</div>
+				</a>
+			<!--{: .type == 'cmt_re'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5><u>{.bo_name}</u> 게시판의 대댓글을 작성하였습니다.</h5>
+				<a href="{C.G5_BBS_URL}/board.php?bo_table={.bo_table}&amp;wr_id={.wr_parent}&wmode=1#c_{.wr_id}" {? !C.G5_IS_MOBILE}onclick="activity_modal(this.href); return false;"{:}target="_blank"{/}>
+					<div class="timeline-panel">
+						<p>{=conv_subject(.content,80,'…')}</p>
+					</div>
+				</a>
+			<!--{: .type == 'good'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5><u>{.bo_name}</u> 게시판의 게시글을 추천하였습니다.</h5>
+				<a href="{C.G5_BBS_URL}/board.php?bo_table={.bo_table}&amp;wr_id={.wr_id}&wmode=1" {? !C.G5_IS_MOBILE}onclick="activity_modal(this.href); return false;"{:}target="_blank"{/}>
+					<div class="timeline-panel">
+						<p><u>{.bo_name}</u> 게시판의 게시글을 추천</p>
+					</div>
+				</a>
+			<!--{: .type == 'nogood'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5><u>{.bo_name}</u> 게시판의 게시글을 비추천하였습니다.</h5>
+				<a href="{C.G5_BBS_URL}/board.php?bo_table={.bo_table}&amp;wr_id={.wr_id}&wmode=1" {? !C.G5_IS_MOBILE}onclick="activity_modal(this.href); return false;"{:}target="_blank"{/}>
+					<div class="timeline-panel">
+						<p><u>{.bo_name}</u> 게시판의 게시글을 비추천</p>
+					</div>
+				</a>
+			<!--{: .type == 'following'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5>팔로윙하였습니다.</h5>
+				<a href="{C.G5_URL}/?{.mb_id}" target="_blank">
+					<div class="timeline-panel">
+						<p><u>{.mb_nick}</u>님을 팔로윙</p>
+					</div>
+				</a>
+			<!--{: .type == 'unfollow'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5>팔로윙 해제하였습니다.</h5>
+				<a href="{C.G5_URL}/?{.mb_id}" target="_blank">
+					<div class="timeline-panel">
+						<p><u>{.mb_nick}</u>님을 팔로윙 해제</p>
+					</div>
+				</a>
+			<!--{: .type == 'memo'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5>쪽지를 발송하였습니다.</h5>
+				<a href="{C.G5_BBS_URL}/memo_view.php?me_id={.me_id}&kind=send" target="_blank" class="win_memo">
+					<div class="timeline-panel">
+						<p><u>{.mb_nick}</u>님에게 쪽지를 발송</p>
+					</div>
+				</a>
+			<!--{: .type == 'guest'}-->
+				<span class="timeline-date">{eb->date_time('Y-m-d H:i',.datetime)}</span>
+				<h5><u>{.mb_name}</u>님의 마이홈에 방명록을 작성하였습니다.</h5>
+				<a href="{C.G5_URL}/?{.mb_id}" target="_blank">
+					<div class="timeline-panel">
+						<p>{=conv_subject(.content,80,'…')}</p>
+					</div>
+				</a>
+			<!--{/}-->
+			</li>
+		<!--{/}-->
+		</ul>
+	</div>
+	<div id="infinite_pagination">
+		<a class="next" href="{C.G5_URL}/mypage/activity.php?page={page+1}"></a>
+	</div>
+	<div class="view-infinite-more text-center margin-top-30 margin-bottom-20">
+		<a id="my-activity-more" href="#" class="btn btn-default btn-e-lg">더 보기 <i class="fa fa-arrow-circle-o-down"></i></a>
+	</div>
+</div>
+
+<!--{* 활동기록 상세보기 모달 시작 *}-->
+<div class="modal fade activity-iframe-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog my-activity-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong><i class="fa fa-search"></i> 활동기록 상세보기</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="activity-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 활동기록 상세보기 모달 끝 *}-->
+
+<script src="../../../plugins/sly/vendor_plugins.min.js"></script>
+<script src="../../../plugins/sly/sly.min.js"></script>
+<script src="../../../plugins/masonry/jquery.masonry.min.js"></script>
+<script src="../../../plugins/infinite-scroll/jquery.infinitescroll.min.js"></script>
+<script>
+$(function() {
+	var $frame = $('#tab-category');
+	var $wrap  = $frame.parent();
+	$frame.sly({
+		horizontal: 1,
+		itemNav: 'centered',
+		smart: 1,
+		activateOn: 'click',
+		mouseDragging: 1,
+		touchDragging: 1,
+		releaseSwing: 1,
+		scrollBar: $wrap.find('.scrollbar'),
+		scrollBy: 1,
+		speed: 300,
+		elasticBounds: 1,
+		easing: 'easeOutExpo',
+		dragHandle: 1,
+		dynamicHandle: 1,
+		clickBar: 1,
+		prev: $wrap.find('.prev'),
+		next: $wrap.find('.next')
+	});
+	var tabWidth = $('#tab-category').width();
+	var categoryWidth = $('.category-list').width();
+	if (tabWidth < categoryWidth) {
+		$('.controls').show();
+	}
+});
+
+function activity_modal(href) {
+	$('.activity-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+		$("#activity-iframe").attr("src", "");
+		$('html').css({overflow: ''});
+	});
+	$('.activity-iframe-modal').modal('show').on('shown.bs.modal', function () {
+		$("#activity-iframe").attr("src", href);
+		$('#activity-iframe').height(parseInt($(window).height() * 0.85));
+		$('html').css({overflow: 'hidden'});
+	});
+	return false;
+}
+
+$(function(){
+    var $container = $('.infinite-container');
+	$container.infinitescroll({
+		navSelector  : "#infinite_pagination",
+		nextSelector : "#infinite_pagination .next",
+		itemSelector : ".timeline li",
+		loading: {
+			finishedMsg: 'END',
+			img: '../../../image/loading.gif'
+		}
+	},
+	function( newElements ) {
+		var $newElems = $( newElements ).css({ opacity: 0 });
+		$newElems.imagesLoaded(function(){
+			$newElems.animate({ opacity: 1 });
+		});
+	});
+	$(window).unbind('.infscr');
+	$('#my-activity-more').click(function(){
+		$container.infinitescroll('retrieve');
+		$('#infinite_pagination').show();
+		return false;
+	});
+});
+</script>

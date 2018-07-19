@@ -1,0 +1,54 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+#tag_words {min-height:500px;margin-bottom:40px}
+/* fonts */
+div.jqcloud {font-size:12px;line-height:normal}
+div.jqcloud a {font-size:inherit;text-decoration:none}
+div.jqcloud span.w10 {font-size:190%}
+div.jqcloud span.w9 {font-size:180%}
+div.jqcloud span.w8 {font-size:170%}
+div.jqcloud span.w7 {font-size:160%}
+div.jqcloud span.w6 {font-size:150%}
+div.jqcloud span.w5 {font-size:140%}
+div.jqcloud span.w4 {font-size:130%}
+div.jqcloud span.w3 {font-size:120%}
+div.jqcloud span.w2 {font-size:110%}
+div.jqcloud span.w1 {font-size:100%}
+/* colors */
+div.jqcloud {color:#B5B5B5}
+div.jqcloud a {color:inherit}
+div.jqcloud a:hover {color:#000;text-decoration:underline}
+div.jqcloud span.w10 {color:#FF2900}
+div.jqcloud span.w9 {color:#4052B5}
+div.jqcloud span.w8 {color:#009687}
+div.jqcloud span.w7 {color:#663BB8}
+div.jqcloud span.w6 {color:#FF9500}
+div.jqcloud span.w5 {color:#87BA00}
+div.jqcloud span.w4 {color:#0078FF}
+div.jqcloud span.w3 {color:#2E3340}
+div.jqcloud span.w2 {color:#757575}
+div.jqcloud span.w1 {color:#B5B5B5}
+/* layout */
+div.jqcloud {overflow:hidden;position:relative}
+div.jqcloud span {padding:2px}
+</style>
+
+<div class="margin-bottom-20 font-size-12 color-grey">
+    <u>전체 {=number_format(_total_count)} 건 - {_page} 페이지</u>
+</div>
+<div id="tag_words"></div>
+
+{=eb_paging('basic')}
+
+<script src="./js/jqcloud.min.js"></script>
+<script>
+var word_list = [
+	<!--{@ list }-->
+	{text: "{.tag}", weight:{.weight}, link: "{.href}"},
+	<!--{/}-->
+];
+$(function() {
+	$("#tag_words").jQCloud(word_list);
+});
+</script>

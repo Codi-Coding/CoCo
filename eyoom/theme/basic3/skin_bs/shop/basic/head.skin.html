@@ -1,0 +1,396 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="./css/shop_style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<?php
+// ------------- 테마 디자인 설정 옵션 시작 ------------- //
+
+/**
+ * 레이아웃 종류 : 'basic' || 'boxed'
+ */
+{layout} = 'basic';
+
+/**
+ * 로고 타입 : 'image' || 'text'
+ */
+{logo} = 'image';
+
+/**
+ * PC버전 메뉴바 sticky 적용 : 'yes' || 'no'
+ */
+{sticky} = 'yes';
+
+/**
+ * 상단 topbar의 쪽지, 내글반응 드롭다운 마우스온 작동 : 'yes' || 'no'
+ */
+{dropdown_hover} = 'yes';
+
+/**
+ * Footer Top (하단 사이트 상세 정보) 적용 : 'yes' || 'no'
+ */
+{footer_top} = 'yes';
+
+/**
+ * 상품 이미지 미리보기 종류 : zoom or slider
+ */
+{item_view} = 'zoom';
+
+// ------------- 테마 디자인 설정 옵션 끝 ------------- //
+?>
+
+<!--{? !_wmode }-->
+<div class="wrapper">
+    <!--{* Header Topbar *}-->
+    <header class="header-topbar">
+        <div class="topbar-left">
+            <div class="header-logo">
+	            <a href="{C.G5_SHOP_URL}" class="navbar-brand">
+					<!--{? logo == 'text'}-->
+					{config.cf_title}
+					<!--{: logo == 'image'}-->
+					<img src="../../../image/site_logo.png" class="img-responsive" alt="{config.cf_title} LOGO">
+					<!--{/}-->
+				</a>
+            </div>
+        </div>
+
+        <!--{* ---------- PC용 컨텐츠 시작 // 992픽셀 이상에서만 출력 ---------- *}-->
+        <!--{? !C.G5_IS_MOBILE}-->
+        <div class="topbar-center hidden-xs hidden-sm">
+
+        </div>
+        <!--{/}-->
+        <!--{* ---------- PC용 컨텐츠 끝 ---------- *}-->
+
+        <ul class="topbar-right list-unstyled">
+	        <div class="member-menu">
+		        <li><a href="{C.G5_URL}"><i class="fa fa-comments margin-right-5"></i>커뮤니티</a></li>
+			<!--{? _is_member //회원일 경우}-->
+				<!--{? _is_admin //관리자일 경우}-->
+	            <li><a href="{C.G5_ADMIN_URL}"><i class="fa fa-cog margin-right-5"></i>관리자</a></li>
+	            <!--{/}-->
+	            <li><a href="{C.G5_BBS_URL}/logout.php"><i class="fa fa-sign-out margin-right-5"></i>로그아웃</a></li>
+	            <li><a href="{C.G5_SHOP_URL}/mypage.php"><i class="fa fa-user-circle-o margin-right-5"></i>마이페이지</a></li>
+			<!--{: //비회원일 경우}-->
+	            <li><a href="{C.G5_BBS_URL}/register.php"><i class="fa fa-user-plus margin-right-5"></i>회원가입</a></li>
+	            <li><a href="{C.G5_BBS_URL}/login.php"><i class="fa fa-unlock-alt margin-right-5"></i>로그인</a></li>
+			<!--{/}-->
+	            <li class="topbar-add-menu">
+	            	<a href="#" data-toggle="dropdown" data-hover="dropdown"><i class="fa fa-plus-circle margin-right-5"></i>추가메뉴</a>
+	            	<ul class="dropdown-menu" role="menu">
+		            	<li><a href="{C.G5_SHOP_URL}/cart.php">장바구니</a></li>
+		            	<li><a href="{C.G5_SHOP_URL}/wishlist.php">위시리스트</a></li>
+		            	<li><a href="{C.G5_SHOP_URL}/orderinquiry.php">주문/배송조회</a></li>
+		            	<li><a href="{C.G5_SHOP_URL}/couponzone.php">쿠폰존</a></li>
+		            	<li><a href="{C.G5_SHOP_URL}/personalpay.php">개인결제</a></li>
+		            	<li><a href="{C.G5_SHOP_URL}/itemuselist.php">사용후기</a></li>
+		            	<li class="divider"></li>
+		            	<li><a href="{C.G5_BBS_URL}/faq.php">FAQ</a></li>
+		            	<li><a href="{C.G5_BBS_URL}/qalist.php">1:1문의</a></li>
+		            	<!--{? _is_member //회원일 경우}-->
+		            	<li><a href="{C.G5_BBS_URL}/member_confirm.php?url=register_form.php">회원정보수정</a></li>
+		            	<!--{/}-->
+		            	<li class="divider"></li>
+                        <li><a href="{C.G5_SHOP_URL}/listtype.php?type=1">히트상품</a></li>
+                        <li><a href="{C.G5_SHOP_URL}/listtype.php?type=2">추천상품</a></li>
+                        <li><a href="{C.G5_SHOP_URL}/listtype.php?type=3">최신상품</a></li>
+                        <li><a href="{C.G5_SHOP_URL}/listtype.php?type=4">인기상품</a></li>
+                        <li><a href="{C.G5_SHOP_URL}/listtype.php?type=5">할인상품</a></li>
+		            </ul>
+	            </li>
+			</div>
+            <li class="mobile-nav-trigger">
+	            <a href="#" class="sidebar-left-trigger" data-action="toggle" data-side="left">
+	                <span class="sr-only">Toggle navigation</span>
+	                <span class="fa fa-search font-size-25 color-white margin-right-10"></span>
+	                <span class="fa fa-bars font-size-25 color-white"></span>
+	            </a>
+            </li>
+        </ul>
+    </header>
+    <!--{* End Header Topbar *}-->
+
+	<!--{? layout == 'basic'}-->
+	<div {? sticky == 'yes'}id="header-fixed"{/} class="basic-layout {? defined('_INDEX_')}fixed-main{/}">
+	<!--{: layout == 'boxed'}-->
+	<div {? sticky == 'yes'}id="header-fixed"{/} class="boxed-layout container {? defined('_INDEX_')}fixed-main{/}">
+	<!--{/}-->
+	    <!--{* Header Title *}-->
+	    <div class="header-title">
+		    <div class="header-title-in {? !defined('_INDEX_')}page-title{/}">
+		        <div class="container">
+			        <a href="{C.G5_SHOP_URL}">
+						<!--{? logo == 'text'}-->
+						<h1>{config.cf_title}</h1>
+						<!--{: logo == 'image' //로고 이미지 크기는 360x80픽셀 권장}-->
+						<img src="../../../image/site_logo.png" class="title-image-center" alt="{config.cf_title} LOGO">
+						<!--{/}-->
+					</a>
+		        </div>
+		    </div>
+	    </div>
+	    <!--{* End Header Title *}-->
+
+	    <!--{* Header Nav *}-->
+	    <div class="header-nav header-sticky">
+	        <div class="navbar" role="navigation">
+	            <div class="container">
+		            <!--{* ---------- 모바일용 컨텐츠 시작 // 991픽셀 이하 모바일 기기에서만 출력 ---------- *}-->
+		            <!--{? C.G5_IS_MOBILE}-->
+			        <div class="nav-center hidden-md hidden-lg">
+				        <!--{* 아래 bo_table=게시판id 설정 *}-->
+						{latest->latest_eyoom('notice_roll','bo_table=게시판id||count=5||cut_subject=50')}
+			        </div>
+			        <!--{/}-->
+			        <!--{* ---------- 모바일용 컨텐츠 끝 ---------- *}-->
+
+		            <nav class="sidebar left">
+			            <div class="sidebar-left-content">
+				            <!--{* ---------- 모바일용 컨텐츠 시작 // 991픽셀 이하에서만 출력 ---------- *}-->
+				            <div class="sidebar-member-menu">
+								<form name="frmsearch1" action="<?php echo G5_SHOP_URL; ?>/search.php" onsubmit="return search_submit(this);" class="eyoom-form margin-bottom-20">
+								<input type="hidden" name="sfl" value="wr_subject||wr_content">
+								<input type="hidden" name="sop" value="and">
+								<label for="side_sch_str" class="sound_only">검색어 입력 필수</strong></label>
+								<div class="input input-button">
+									<input type="text" name="q" value="<?php echo stripslashes(get_text(get_search_string($q))); ?>" id="side_sch_str" class="sch_stx" placeholder="상품 검색어 입력" required>
+									<div class="button"><input type="submit">검색</div>
+								</div>
+								</form>
+					            <a href="{C.G5_URL}" class="sidebar-lg-btn btn-e btn-e-lg btn-e-red btn-e-block">
+						            <i class="fa fa-comments margin-right-5"></i>커뮤니티 메인
+						        </a>
+								<!--{? _is_admin //관리자일 경우}-->
+					            <a href="{C.G5_ADMIN_URL}" class="sidebar-lg-btn btn-e btn-e-lg btn-e-yellow btn-e-block">
+						            <i class="fa fa-cogs margin-right-5"></i>관리자 페이지
+						        </a>
+					            <!--{/}-->
+					            <a href="{C.G5_SHOP_URL}/cart.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-other-btn">
+						            	<i class="fa fa-shopping-basket margin-right-5"></i>장바구니
+						            </div>
+					            </a>
+					            <a href="{C.G5_SHOP_URL}/orderinquiry.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-other-btn pull-right">
+						            	<i class="fa fa-shopping-bag margin-right-5"></i>주문/배송조회
+						            </div>
+					            </a>
+					            <div class="margin-bottom-10"></div>
+								<!--{? _is_member //회원일 경우}-->
+					            <a href="{C.G5_SHOP_URL}/wishlist.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-other-btn">
+						            	<i class="fa fa-cart-plus margin-right-5"></i>위시리스트
+						            </div>
+					            </a>
+					            <a href="{C.G5_SHOP_URL}/mypage.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-other-btn pull-right">
+						            	<i class="fa fa-user-circle-o margin-right-5"></i>마이페이지
+						            </div>
+					            </a>
+					            <div class="margin-bottom-10"></div>
+					            <a href="{C.G5_BBS_URL}/member_confirm.php?url=register_form.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-member-btn"><i class="fa fa-info-circle margin-right-5"></i>정보수정</div>
+					            </a>
+					            <a href="{C.G5_BBS_URL}/logout.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-member-btn pull-right"><i class="fa fa-sign-out margin-right-5"></i>로그아웃</div>
+					            </a>
+								<!--{: //비회원일 경우}-->
+								<a href="{C.G5_BBS_URL}/register.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-member-btn"><i class="fa fa-user-plus margin-right-5"></i>회원가입</div>
+					            </a>
+					            <a href="{C.G5_BBS_URL}/login.php" class="sidebar-member-btn-box">
+					            	<div class="sidebar-member-btn pull-right"><i class="fa fa-unlock-alt margin-right-5"></i>로그인</div>
+					            </a>
+								<!--{/}-->
+								<div class="clearfix"></div>
+							</div>
+							<!--{* ---------- 모바일용 컨텐츠 끝 ---------- *}-->
+
+		                    <ul class="nav navbar-nav">
+	                            <li>
+	                                <a href="{C.G5_SHOP_URL}"><i class="fa fa-navicon nav-icon-pre hidden-xs hidden-sm"></i>HOME</a>
+	                            </li>
+	                            <li class="nav-li-divider">|</li>
+	                        <!--{? eyoom.use_eyoom_shopmenu == 'n'}-->
+	                        	<!--{@ menu}-->
+		                        <li class="{? .active}active{/} dropdown">
+		                            <a href="{.href}" class="dropdown-toggle" {? C.G5_IS_MOBILE}data-toggle="dropdown"{:}data-hover="dropdown"{/}>
+		                                {.ca_name}
+		                            </a>
+									<!--{@ submenu}-->
+					                <!--{? ..key_ == 0}-->
+		                            <ul class="dropdown-menu">
+		                            <!--{/}-->
+		                                <li {? ..active}class="active"{/}>
+											<a href="{..href}">{..ca_name}</a>
+										</li>
+		                            <!--{? ..key_ == .cnt-1}-->
+		                            </ul>
+		                            <!--{/}-->
+									<!--{/}-->
+		                        </li>
+		                        <!--{/}-->
+							<!--{: eyoom.use_eyoom_shopmenu == 'y'}-->
+		                        <!--{@ menu}-->
+		                        <li class="{? .active}active{/} {? menu.submenu}dropdown{/}">
+		                            <a href="{.me_link}" target="_{.me_target}" class="dropdown-toggle" {? C.G5_IS_MOBILE && menu.submenu}data-toggle="dropdown"{:}data-hover="dropdown"{/}>
+		                                <!--{? .me_icon}--><i class="fa {.me_icon}"></i> <!--{/}-->{.me_name}
+		                            </a>
+									<!--{@ submenu}-->
+					                <!--{? ..index_ == 0}-->
+		                            <ul class="dropdown-menu">
+		                            <!--{/}-->
+		                                <li class="dropdown-submenu {? ..active}active{/}">
+		                                    <a href="{..me_link}" target="_{..me_target}"><!--{? ..me_icon}--><i class="fa {..me_icon}"></i> <!--{/}-->{..me_name}<!--{? ..new}-->&nbsp;<i class="fa fa-check-circle color-red margin-left-5"></i><!--{/}--><!--{? ..sub=='on'}--><i class="fa fa-angle-right sub-caret hidden-sm hidden-xs"></i><i class="fa fa-angle-down sub-caret hidden-md hidden-lg"></i><!--{/}--></a>
+											<!--{@ subsub}-->
+											<!--{? ...index_ == 0}-->
+		                                    <ul class="dropdown-menu">
+		                                    <!--{/}-->
+		                                        <li class="dropdown-submenu {? ...active}active{/}">
+		                                            <a href="{...me_link}" target="_{...me_target}"><!--{? ...me_icon}--><i class="fa {...me_icon}"></i> <!--{/}-->{...me_name}<!--{? ...new}-->&nbsp;<i class="fa fa-check-circle color-red margin-left-5"></i><!--{/}--><!--{? ...sub=='on'}--><i class="fa fa-angle-right sub-caret hidden-sm hidden-xs"></i><i class="fa fa-angle-down sub-caret hidden-md hidden-lg"></i><!--{/}--></a>
+		                                        </li>
+		                                    <!--{? ...index_ == ...size_-1}-->
+		                                    </ul>
+											<!--{/}-->
+											<!--{/}-->
+		                                </li>
+		                            <!--{? ..index_ == ..size_-1}-->
+		                            </ul>
+		                            <!--{/}-->
+									<!--{/}-->
+		                        </li>
+		                        <!--{/}-->
+		                    <!--{/}-->
+	                            <li class="hidden-xs hidden-sm"><a href="#" data-toggle="modal" data-target=".shop-search-modal"><i class="fa fa-search"></i></a></li>
+
+	                            <!--{* ---------- 모바일용 컨텐츠 시작 // 991픽셀 이하에서만 출력 ---------- *}-->
+	                            <li class="visible-xs visible-sm nav-li-space"></li>
+	                            <li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/listtype.php?type=1">히트상품</a></li>
+	                            <li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/listtype.php?type=2">추천상품</a></li>
+	                            <li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/listtype.php?type=3">최신상품</a></li>
+	                            <li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/listtype.php?type=4">인기상품</a></li>
+	                            <li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/listtype.php?type=5">할인상품</a></li>
+	                            <li class="visible-xs visible-sm nav-li-space"></li>
+	                            <li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/couponzone.php">쿠폰존</a></li>
+				            	<li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/personalpay.php">개인결제</a></li>
+	                            <li class="visible-xs visible-sm"><a href="{C.G5_SHOP_URL}/itemuselist.php">사용후기</a></li>
+				            	<li class="visible-xs visible-sm"><a href="{C.G5_BBS_URL}/faq.php">FAQ</a></li>
+				            	<li class="visible-xs visible-sm"><a href="{C.G5_BBS_URL}/qalist.php">1:1문의</a></li>
+				            	<!--{* ---------- 모바일용 컨텐츠 끝 ---------- *}-->
+		                    </ul>
+			            </div>
+		            </nav>
+	            </div>
+	        </div>
+	        <!--{* End Navbar *}-->
+	    </div>
+	    <!--{* End Header Nav *}-->
+
+	    <div class="header-sticky-space"></div>
+
+		<!--{? !defined('_INDEX_')}-->
+		<div class="page-title-wrap">
+			<div class="container">
+			<!--{? !defined('_EYOOM_MYPAGE_')}-->
+			    <h2 class="pull-left">
+				    <!--{? !_it_id}-->
+				    <i class="fa fa-map-marker"></i> {subinfo.title}
+				    <!--{:}-->
+				    <span class="font-size-14"><i class="fa fa-map-marker"></i> {subinfo.title}</span>
+				    <!--{/}-->
+				</h2>
+			    <!--{? !_it_id}-->
+	            <ul class="breadcrumb pull-right hidden-xs">
+					{subinfo.path}
+	            </ul>
+	            <!--{/}-->
+	            <div class="clearfix"></div>
+			<!--{:}-->
+				<h2><i class="fa fa-map-marker"></i> 마이페이지</h2>
+			<!--{/}-->
+		    </div>
+		</div>
+		<!--{/}-->
+
+	    <!--{* Basic Body *}-->
+	    <div class="basic-body container {? !defined('_INDEX_')}page-padding {? footer_top == 'yes'}ft-padding{/}{/}">
+		    <!--{* Quick Menu *}-->
+			<div class="quick-menu-wrap">
+				<div class="quick-menu {? defined('_INDEX_')}quick-menu-main{/}">
+					<div class="quick-menu-box">
+						<a href="{C.G5_SHOP_URL}/cart.php">
+							<i class="fa fa-shopping-basket"></i>
+							<span>장바구니</span>
+						</a>
+					</div>
+					<div class="quick-menu-box">
+						<a href="{C.G5_SHOP_URL}/wishlist.php">
+							<i class="fa fa-heart"></i>
+							<span>위시리스트</span>
+						</a>
+					</div>
+					<div class="quick-menu-box">
+						<a href="{C.G5_SHOP_URL}/orderinquiry.php">
+							<i class="fa fa-truck"></i>
+							<span>주문/배송</span>
+						</a>
+					</div>
+					<div class="quick-menu-box">
+						<a href="{C.G5_BBS_URL}/faq.php">
+							<i class="fa fa-question-circle"></i>
+							<span>FAQ</span>
+						</a>
+					</div>
+					<div class="quick-menu-box heading-current">
+						<span><strong>최근본상품</strong></span>
+					</div>
+					<div class="quick-menu-box current-view">
+						<div class="quick-carousel">
+							<div id="quickCarousel" class="carousel slide carousel-e1 item-carousel">
+								<div class="carousel-inner">
+									<!--{@ _boxtoday}-->
+									<div class="item {? .index_==0}active{/}">
+										{.img}
+									</div>
+									<!--{:}-->
+									<div class="item active"><p>최근 본 상품이 없습니다.</p></div>
+									<!--{/}-->
+								</div>
+								<div class="carousel-arrow">
+									<a class="left carousel-control pull-left" href="#quickCarousel" data-slide="prev">이전</a>
+									<a class="right carousel-control pull-right" href="#quickCarousel" data-slide="next">다음</a>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="quick-scroll-btn top-btn">
+						<i class="fa fa-caret-up"></i>
+						<span>TOP</span>
+					</div>
+					<div class="quick-scroll-btn down-btn">
+						<span>DOWN</span>
+						<i class="fa fa-caret-down"></i>
+					</div>
+				</div>
+			</div>
+			<!--{* End quick menu *}-->
+
+		    <!--{? !defined('_INDEX_')}-->
+		    <div class="basic-body-page">
+			<!--{/}-->
+	    	<div class="row">
+		    	<!--{? side_layout.use == 'yes'}-->
+				<!--{? side_layout.pos == 'left'}-->
+				{# shop_side}
+				<!--{/}-->
+				<section class="basic-body-main {? !defined('_INDEX_')}page-padding{:}{? footer_top == 'yes'}ft-padding{/}{/} {? side_layout.pos == 'left'}right{:}left{/}-main col-md-9">
+				<!--{:}-->
+				<section class="basic-body-main col-md-12 {? footer_top == 'yes'}ft-padding{/}">
+				<!--{/}-->
+<!--{/}-->

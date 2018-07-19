@@ -1,0 +1,1221 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-config-form .inline-group > span {display:inline-block}
+@media (min-width: 1100px) {
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:14px;font-weight:bold;padding:8px 17px}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {z-index:1;border:1px solid #000;border-top:1px solid #DE2600;color:#DE2600}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {position:relative;display:block;height:1px;background:#000;margin-bottom:20px}
+}
+@media (max-width: 1099px) {
+	.pg-anchor-in {position:relative;overflow:hidden;margin-bottom:20px;border:1px solid #757575}
+	.pg-anchor-in.tab-e2 .nav-tabs li {width:33.33333%;margin:0}
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:12px;padding:6px 0;text-align:center;border-bottom:1px solid #d5d5d5;margin-right:0;font-weight:bold;background:#fff}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {border:0;border-bottom:1px solid #d5d5d5 !important;color:#DE2600;background:#fff1f0}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(1) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(2) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(4) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(5) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(7) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(8) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(9) a {border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {display:none}
+}
+.cf_cert_hide {display:none;position:absolute;top:-20000px;left:-10000px}
+#anc_cf_domain .icon-prepend {width:60px;font-weight: normal;}
+#anc_cf_domain input {padding-left:70px;}
+</style>
+
+<div class="admin-config-form">
+	<div class="headline">
+		<h4><strong>기본환경 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	{# theme_manager // 테마 매니저 }
+
+	<form name="fconfigform" method="post" action="{_action_url}" onsubmit="return fconfigform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="theme" id="theme" value="{this_theme}">
+	<input type="hidden" name="shop_theme" id="shop_theme" value="{this_theme}">
+	<input type="hidden" name="tm_key" id="tm_key" value="{this_tminfo.tm_key}">
+	<input type="hidden" name="cm_key" id="cm_key" value="">
+	<input type="hidden" name="cm_salt" id="cm_salt" value="">
+	
+	<div id="anc_cf_domain">
+		<div class="pg-anchor">
+			{# anc_cf_domain}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> [<span class="color-red">{this_theme}</span>] 도메인 설정</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-danger font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 작업용 도메인인 <strong>작업도메인</strong>과 실제 홈페이지로 운영할 <strong>실제도메인</strong>을 각각 입력해 주세요. 둘 중 하나는 반드시 입력해 주셔야 합니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="work_url" class="label">작업도메인</label>
+					        <label class="input">
+					        	<i class="icon-prepend">http(s)://</i>
+					        	<input type="text" name="work_url" id="work_url" value="{eyoom_config.work_url}">
+					        </label>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="real_url" class="label">실제도메인</label>
+					        <label class="input">
+					        	<i class="icon-prepend">http(s)://</i>
+					        	<input type="text" name="real_url" id="real_url" value="{eyoom_config.real_url}">
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	
+	{frm_submit}
+	
+	<div id="anc_cf_alias">
+		<div class="pg-anchor">
+			{# anc_cf_alias}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> [<span class="color-red">{this_theme}</span>] 테마명 별칭 설정</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-danger font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 테마에 다른 별칭을 만들 수 있습니다. 웹사이트를 다국어 버전으로 제작할 경우 유용하며 1차메뉴들을 각각 다른 테마로 구성할 수도 있습니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="tm_alias" class="label">별칭</label>
+							<div class="inline-mix">
+								<span class="display-inline-block">{C.G5_URL}?theme=</span>
+						        <label class="input display-inline-block width-150px">
+						        	<input type="text" name="tm_alias" id="tm_alias" value="{this_tminfo.tm_alias}">
+						        </label>
+						        <!--{? this_tminfo.tm_alias}-->
+						        <span class="display-inline-block"><a href="{C.G5_URL}?theme={this_tminfo.tm_alias}" class="btn-e btn-e-dark btn-e-sm" target="_blank">바로가기</a></span>
+						        <!--{/}-->
+					        </div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_cf_skin">
+		<div class="pg-anchor">
+			{# anc_cf_skin}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> [<span class="color-red">{this_theme}</span>] 테마 스킨 설정</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-danger font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 그누보드 스킨 선택시 그누보드 환경설정에서 스킨을 선택하거나 스킨파일에서 직접 설정하셔야 합니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.outlogin}-->
+					<div class="col col-2">
+						<section>
+							<label for="outlogin_skin" class="label">아웃로그인 스킨</label>
+					        <label class="select">
+					            <select name="outlogin_skin" id="outlogin_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.outlogin}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.outlogin_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_outlogin1" class="radio"><input type="radio" name="use_gnu_outlogin" id="use_gnu_outlogin1" value="n" {? eyoom_config.use_gnu_outlogin == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_outlogin2" class="radio"><input type="radio" name="use_gnu_outlogin" id="use_gnu_outlogin2" value="y" {? eyoom_config.use_gnu_outlogin == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">아웃로그인 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 아웃로그인 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.connect}-->
+					<div class="col col-2">
+						<section>
+							<label for="connect_skin" class="label">현재접속자 스킨</label>
+					        <label class="select">
+					            <select name="connect_skin" id="connect_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.connect}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.connect_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_connect1" class="radio"><input type="radio" name="use_gnu_connect" id="use_gnu_connect1" value="n" {? eyoom_config.use_gnu_connect == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_connect2" class="radio"><input type="radio" name="use_gnu_connect" id="use_gnu_connect2" value="y" {? eyoom_config.use_gnu_connect == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">현재접속자 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 현재접속자 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.popular}-->
+					<div class="col col-2">
+						<section>
+							<label for="popular_skin" class="label">인기검색어 스킨</label>
+					        <label class="select">
+					            <select name="popular_skin" id="popular_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.popular}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.popular_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_popular1" class="radio"><input type="radio" name="use_gnu_popular" id="use_gnu_popular1" value="n" {? eyoom_config.use_gnu_popular == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_popular2" class="radio"><input type="radio" name="use_gnu_popular" id="use_gnu_popular2" value="y" {? eyoom_config.use_gnu_popular == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">인기검색어 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 인기검색어 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.poll}-->
+					<div class="col col-2">
+						<section>
+							<label for="poll_skin" class="label">설문조사 스킨</label>
+					        <label class="select">
+					            <select name="poll_skin" id="poll_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.poll}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.poll_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_poll1" class="radio"><input type="radio" name="use_gnu_poll" id="use_gnu_poll1" value="n" {? eyoom_config.use_gnu_poll == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_poll2" class="radio"><input type="radio" name="use_gnu_poll" id="use_gnu_poll2" value="y" {? eyoom_config.use_gnu_poll == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">설문조사 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 설문조사 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.visit}-->
+					<div class="col col-2">
+						<section>
+							<label for="visit_skin" class="label">방문자통계 스킨</label>
+					        <label class="select">
+					            <select name="visit_skin" id="visit_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.visit}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.visit_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_visit1" class="radio"><input type="radio" name="use_gnu_visit" id="use_gnu_visit1" value="n" {? eyoom_config.use_gnu_visit == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_visit2" class="radio"><input type="radio" name="use_gnu_visit" id="use_gnu_visit2" value="y" {? eyoom_config.use_gnu_visit == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">방문자통계 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 방문자통계 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.new}-->
+					<div class="col col-2">
+						<section>
+							<label for="new_skin" class="label">새글 스킨</label>
+					        <label class="select">
+					            <select name="new_skin" id="new_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.new}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.new_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_new1" class="radio"><input type="radio" name="use_gnu_new" id="use_gnu_new1" value="n" {? eyoom_config.use_gnu_new == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_new2" class="radio"><input type="radio" name="use_gnu_new" id="use_gnu_new2" value="y" {? eyoom_config.use_gnu_new == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">새글 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 새글 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.member}-->
+					<div class="col col-2">
+						<section>
+							<label for="member_skin" class="label">멤버쉽(회원) 스킨</label>
+					        <label class="select">
+					            <select name="member_skin" id="member_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.member}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.member_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_member1" class="radio"><input type="radio" name="use_gnu_member" id="use_gnu_member1" value="n" {? eyoom_config.use_gnu_member == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_member2" class="radio"><input type="radio" name="use_gnu_member" id="use_gnu_member2" value="y" {? eyoom_config.use_gnu_member == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">멤버쉽(회원) 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 멤버쉽(회원) 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.faq}-->
+					<div class="col col-2">
+						<section>
+							<label for="faq_skin" class="label">FAQ 스킨</label>
+					        <label class="select">
+					            <select name="faq_skin" id="faq_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.faq}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.faq_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_faq1" class="radio"><input type="radio" name="use_gnu_faq" id="use_gnu_faq1" value="n" {? eyoom_config.use_gnu_faq == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_faq2" class="radio"><input type="radio" name="use_gnu_faq" id="use_gnu_faq2" value="y" {? eyoom_config.use_gnu_faq == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">FAQ 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 FAQ 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.qa}-->
+					<div class="col col-2">
+						<section>
+							<label for="qa_skin" class="label">1:1문의 스킨</label>
+					        <label class="select">
+					            <select name="qa_skin" id="qa_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.qa}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.qa_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_qa1" class="radio"><input type="radio" name="use_gnu_qa" id="use_gnu_qa1" value="n" {? eyoom_config.use_gnu_qa == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_qa2" class="radio"><input type="radio" name="use_gnu_qa" id="use_gnu_qa2" value="y" {? eyoom_config.use_gnu_qa == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">1:1문의 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 1:1문의 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.search}-->
+					<div class="col col-2">
+						<section>
+							<label for="search_skin" class="label">검색 스킨</label>
+					        <label class="select">
+					            <select name="search_skin" id="search_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.search}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.search_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_search1" class="radio"><input type="radio" name="use_gnu_search" id="use_gnu_search1" value="n" {? eyoom_config.use_gnu_search == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_search2" class="radio"><input type="radio" name="use_gnu_search" id="use_gnu_search2" value="y" {? eyoom_config.use_gnu_search == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">검색 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 검색 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.shop}-->
+					<div class="col col-2">
+						<section>
+							<label for="shop_skin" class="label">쇼핑몰 스킨</label>
+					        <label class="select">
+					            <select name="shop_skin" id="shop_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.shop}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.shop_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_shop1" class="radio"><input type="radio" name="use_gnu_shop" id="use_gnu_shop1" value="n" {? eyoom_config.use_gnu_shop == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_shop2" class="radio"><input type="radio" name="use_gnu_shop" id="use_gnu_shop2" value="y" {? eyoom_config.use_gnu_shop == 'y'}checked{/}><i></i>영카트 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">쇼핑몰 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 쇼핑몰 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.newwin}-->
+					<div class="col col-2">
+						<section>
+							<label for="newwin_skin" class="label">팝업 스킨</label>
+					        <label class="select">
+					            <select name="newwin_skin" id="newwin_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.newwin}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.newwin_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section class="label-height">
+					        <div class="inline-group">
+						        <label for="use_gnu_newwin1" class="radio"><input type="radio" name="use_gnu_newwin" id="use_gnu_newwin1" value="n" {? eyoom_config.use_gnu_newwin == 'n'}checked{/}><i></i>이윰빌더 스킨</label>
+						        <label for="use_gnu_newwin2" class="radio"><input type="radio" name="use_gnu_newwin" id="use_gnu_newwin2" value="y" {? eyoom_config.use_gnu_newwin == 'y'}checked{/}><i></i>그누보드 스킨</label>
+					        </label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">팝업 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 팝업 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.mypage}-->
+					<div class="col col-2">
+						<section>
+							<label for="mypage_skin" class="label">마이페이지 스킨</label>
+					        <label class="select">
+					            <select name="mypage_skin" id="mypage_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.mypage}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.mypage_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">마이페이지 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 마이페이지 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.signature}-->
+					<div class="col col-2">
+						<section>
+							<label for="signature_skin" class="label">서명 스킨</label>
+					        <label class="select">
+					            <select name="signature_skin" id="signature_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.signature}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.signature_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">서명 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 서명 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.respond}-->
+					<div class="col col-2">
+						<section>
+							<label for="respond_skin" class="label">내글반응 스킨</label>
+					        <label class="select">
+					            <select name="respond_skin" id="respond_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.respond}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.respond_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">내글반응 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 내글반응 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? skins.push}-->
+					<div class="col col-2">
+						<section>
+							<label for="push_skin" class="label">푸시알림 스킨</label>
+					        <label class="select">
+					            <select name="push_skin" id="push_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.push}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.push_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">푸시알림 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 푸시알림 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? skins.tag}-->
+					<div class="col col-2">
+						<section>
+							<label for="tag_skin" class="label">태그 스킨</label>
+					        <label class="select">
+					            <select name="tag_skin" id="tag_skin" required="required">
+						            <option value="">선택</option>
+						            <!--{@ skins.tag}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.tag_skin, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+					</div>
+					<!--{:}-->
+					<div class="col col-6">
+						<section>
+							<label class="label">태그 스킨</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 태그 스킨이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_cf_func">
+		<div class="pg-anchor">
+			{# anc_cf_func}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> [<span class="color-red">{this_theme}</span>] 테마 기능 설정</strong>
+			</header>
+			
+			<!--{? _is_youngcart && eyoom_config.is_shop_theme == 'y'}-->
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">홈페이지 메인설정</label>
+							<div class="inline-group">
+								<label for="use_shop_index_1" class="radio"><input type="radio" name="use_shop_index" id="use_shop_index_1" value="n" {? eyoom_config.use_shop_index == 'n'}checked{/}><i></i> 커뮤니티 메인</label>
+								<label for="use_shop_index_2" class="radio"><input type="radio" name="use_shop_index" id="use_shop_index_2" value="y" {? eyoom_config.use_shop_index == 'y'}checked{/}><i></i> 쇼핑몰 메인</label>
+							</div>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 홈페이지 메인을 선택적으로 사용하실 수 있습니다.</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">홈페이지 메인에 쇼핑몰 유형별 상품 연동</label>
+							<div class="inline-group">
+								<label for="use_shop_itemtype_1" class="radio"><input type="radio" name="use_shop_itemtype" id="use_shop_itemtype_1" value="y" {? eyoom_config.use_shop_itemtype == 'y'}checked{/}><i></i> 네</label>
+								<label for="use_shop_itemtype_2" class="radio"><input type="radio" name="use_shop_itemtype" id="use_shop_itemtype_2" value="n" {? eyoom_config.use_shop_itemtype == 'n'}checked{/}><i></i> 아니오</label>
+							</div>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 홈페이지 메인에 쇼핑몰의 유형별 상품을 쇼핑몰 메인처럼 호출하실 수 있습니다.</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">커뮤니티 레이아웃을 쇼핑몰에 적용</label>
+							<div class="inline-group">
+								<label for="use_layout_community_1" class="radio"><input type="radio" name="use_layout_community" id="use_layout_community_1" value="y" {? eyoom_config.use_layout_community == 'y'}checked{/}><i></i> 적용</label>
+								<label for="use_layout_community_2" class="radio"><input type="radio" name="use_layout_community" id="use_layout_community_2" value="n" {? eyoom_config.use_layout_community == 'n'}checked{/}><i></i> 적용하지 않음</label>
+							</div>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 쇼핑몰 기능의 페이지에서 커뮤니티 레이아웃(메뉴구성 포함)을 사용합니다.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			<!--{/}-->
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">반응형/비반응형 설정</label>
+							<div class="inline-group">
+								<label for="bootstrap1" class="radio"><input type="radio" name="bootstrap" id="bootstrap1" value="1" {? eyoom_config.bootstrap == '1'}checked{/}><i></i> 반응형 테마</label>
+								<label for="bootstrap2" class="radio"><input type="radio" name="bootstrap" id="bootstrap1" value="0" {? eyoom_config.bootstrap == '0'}checked{/}><i></i> 비반응형 테마</label>
+							</div>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 테마의 속성에 맞게 설정해야만 에러를 출력하지 않습니다.</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">쇼핑몰 테마인가?</label>
+							<div class="inline-group">
+								<label for="is_shop_theme1" class="radio"><input type="radio" name="is_shop_theme" id="is_shop_theme1" value="y" {? eyoom_config.is_shop_theme == 'y'}checked{/}><i></i> 네</label>
+								<label for="is_shop_theme2" class="radio"><input type="radio" name="is_shop_theme" id="is_shop_theme2" value="n" {? eyoom_config.is_shop_theme == 'n'}checked{/}><i></i> 아니오</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">커뮤니티 기능 사용여부</label>
+							<div class="inline-group">
+								<label for="is_community_theme1" class="radio"><input type="radio" name="is_community_theme" id="is_community_theme1" value="y" {? eyoom_config.is_community_theme == 'y'}checked{/}><i></i> 사용</label>
+								<label for="is_community_theme2" class="radio"><input type="radio" name="is_community_theme" id="is_community_theme2" value="n" {? eyoom_config.is_community_theme == 'n'}checked{/}><i></i> 미사용</label>
+							</div>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 커뮤니티 기능을 사용할 경우, [타임라인, 관심게시판, 팔로잉글, 활동기록, 방문설정, 마이홈, 친구맺기,  방명록] 기능이 활성화됩니다.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">커뮤니티 메뉴</label>
+							<div class="inline-group">
+								<label for="use_eyoom_menu1" class="radio"><input type="radio" name="use_eyoom_menu" id="use_eyoom_menu1" value="y" {? eyoom_config.use_eyoom_menu == 'y'}checked{/}><i></i> 이윰메뉴 사용</label>
+								<label for="use_eyoom_menu2" class="radio"><input type="radio" name="use_eyoom_menu" id="use_eyoom_menu2" value="n" {? eyoom_config.use_eyoom_menu == 'n'}checked{/}><i></i> 그누메뉴 사용</label>
+							</div>
+						</section>
+					</div>
+					<!--{? _is_youngcart}-->
+					<div class="col col-4">
+						<section>
+							<label class="label">쇼핑몰 메뉴</label>
+							<div class="inline-group">
+								<label for="use_eyoom_shopmenu1" class="radio"><input type="radio" name="use_eyoom_shopmenu" id="use_eyoom_shopmenu1" value="y" {? eyoom_config.use_eyoom_shopmenu == 'y'}checked{/}><i></i> 이윰메뉴 사용</label>
+								<label for="use_eyoom_shopmenu2" class="radio"><input type="radio" name="use_eyoom_shopmenu" id="use_eyoom_shopmenu2" value="n" {? eyoom_config.use_eyoom_shopmenu == 'n'}checked{/}><i></i> 그누메뉴 사용</label>
+							</div>
+						</section>
+					</div>
+					<!--{/}-->
+					<div class="col col-4">
+						<section>
+							<label class="label">그누관리자모드</label>
+							<div class="">
+								<a href="{C.EYOOM_ADMIN_INC_URL}/g5_admin.php" class="btn-e btn-e-sm btn-e-dark">그누 관리자모드 사용 및 바로가기</a>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<!--{? icons.gnuboard}-->
+					<div class="col col-2">
+						<section>
+							<label for="level_icon_gnu" class="label">그누레벨 아이콘</label>
+					        <label class="select">
+					            <select name="level_icon_gnu" id="level_icon_gnu" required="required">
+						            <option value="">선택</option>
+						            <!--{@ icons.gnuboard}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.level_icon_eyoom, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-2">
+						<section class="label-height">
+						    <label for="use_level_icon_gnu" class="checkbox"><input type="checkbox" name="use_level_icon_gnu" id="use_level_icon_gnu" value="y" {? eyoom_config.use_level_icon_gnu == 'y'}checked{/}><i></i> 사용</label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-4">
+						<section>
+							<label class="label">그누레벨 아이콘</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 그누레벨 아이콘이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+
+					<!--{? icons.eyoom}-->
+					<div class="col col-2">
+						<section>
+							<label for="level_icon_eyoom" class="label">이윰레벨 아이콘</label>
+					        <label class="select">
+					            <select name="level_icon_eyoom" id="level_icon_eyoom" required="required">
+						            <option value="">선택</option>
+						            <!--{@ icons.eyoom}-->
+						            <option value="{.value_}" {=get_selected(eyoom_config.level_icon_eyoom, .value_)}>{.value_}</option>
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-2">
+						<section class="label-height">
+						    <label for="use_level_icon_eyoom" class="checkbox"><input type="checkbox" name="use_level_icon_eyoom" id="use_level_icon_eyoom" value="y" {? eyoom_config.use_level_icon_eyoom == 'y'}checked{/}><i></i> 사용</label>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-4">
+						<section>
+							<label class="label">이윰레벨 아이콘</label>
+					        <p class="padding-top-5"><strong>{this_theme}</strong> 테마에 이윰레벨 아이콘이 존재하지 않습니다.</p>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">회원 사이드뷰</label>
+							<div class="inline-group">
+								<label for="use_sideview1" class="radio"><input type="radio" name="use_sideview" id="use_sideview1" value="y" {? eyoom_config.use_sideview == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_sideview2" class="radio"><input type="radio" name="use_sideview" id="use_sideview2" value="n" {? eyoom_config.use_sideview == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">푸시알람 사용여부</label>
+							<div class="inline-group">
+								<label for="push_reaction1" class="radio"><input type="radio" name="push_reaction" id="push_reaction1" value="y" {? eyoom_config.push_reaction == 'y'}checked{/}><i></i> 사용</label>
+								<label for="push_reaction2" class="radio"><input type="radio" name="push_reaction" id="push_reaction2" value="n" {? eyoom_config.push_reaction == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-2">
+						<section>
+							<label class="label">푸시체크 반복시간</label>
+							<label for="push_time" class="input">
+								<input type="input" name="push_time" id="push_time" value="{eyoom_config.push_time}">
+							</label>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 1000 -> 1초</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">프로필사진 가로 사이즈</label>
+							<label for="photo_width" class="input">
+								<i class="icon-append">px</i>
+								<input type="text" name="photo_width" id="photo_width" value="{eyoom_config.photo_width}" class="text-right">
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">프로필사진 세로 사이즈</label>
+							<label for="photo_height" class="input">
+								<i class="icon-append">px</i>
+								<input type="text" name="photo_height" id="photo_height" value="{eyoom_config.photo_height}" class="text-right">
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">마이홈 커버사진 가로사이즈</label>
+							<label for="cover_width" class="input">
+								<i class="icon-append">px</i>
+								<input type="text" name="cover_width" id="cover_width" value="{eyoom_config.cover_width}" class="text-right">
+							</label>
+						</section>
+						<input type="hidden" name="push_sound" id="push_sound" value="push_sound_01.mp3">
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">그룹 게시판 최신글 추출 갯수</label>
+							<label for="group_latest_cnt" class="input">
+								<i class="icon-append">개</i>
+								<input type="text" name="group_latest_cnt" id="group_latest_cnt" value="{? eyoom_config.group_latest_cnt}{eyoom_config.group_latest_cnt}{:}7{/}" class="text-right">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">게시판 관리패널 사용</label>
+							<div class="inline-group">
+								<label for="use_board_control1" class="radio"><input type="radio" name="use_board_control" id="use_board_control1" value="y" {? eyoom_config.use_board_control == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_board_control2" class="radio"><input type="radio" name="use_board_control" id="use_board_control2" value="n" {? eyoom_config.use_board_control == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">테마정보 패널 사용</label>
+							<div class="inline-group">
+								<label for="use_theme_info1" class="radio"><input type="radio" name="use_theme_info" id="use_theme_info1" value="y" {? eyoom_config.use_theme_info == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_theme_info2" class="radio"><input type="radio" name="use_theme_info" id="use_theme_info2" value="n" {? eyoom_config.use_theme_info == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">소셜로그인 사용</label>
+							<div class="inline-group">
+								<label for="use_social_login1" class="radio"><input type="radio" name="use_social_login" id="use_social_login1" value="y" {? eyoom_config.use_social_login == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_social_login2" class="radio"><input type="radio" name="use_social_login" id="use_social_login2" value="n" {? eyoom_config.use_social_login == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">전체검색에서 이미지 사용</label>
+							<div class="inline-group">
+								<label for="use_search_image1" class="radio"><input type="radio" name="use_search_image" id="use_search_image1" value="y" {? eyoom_config.use_search_image == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_search_image2" class="radio"><input type="radio" name="use_search_image" id="use_search_image2" value="n" {? eyoom_config.use_search_image == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">검색결과 이미지 가로 사이즈</label>
+							<label for="search_image_width" class="input">
+								<i class="icon-append">px</i>
+								<input type="text" name="search_image_width" id="search_image_width" value="{eyoom_config.search_image_width}" class="text-right">
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">검색결과 이미지  세로 사이즈</label>
+							<label for="search_image_height" class="input">
+								<i class="icon-append">px</i>
+								<input type="text" name="search_image_height" id="search_image_height" value="{eyoom_config.search_image_height}" class="text-right">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_cf_layout">
+		<div class="pg-anchor">
+			{# anc_cf_layout}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> [<span class="color-red">{this_theme}</span>] 테마 사이드 레이아웃</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label class="label">사이드 레이아웃 사용[메인]</label>
+							<div class="inline-group">
+								<label for="use_main_side_layout1" class="radio"><input type="radio" name="use_main_side_layout" id="use_main_side_layout1" value="y" {? eyoom_config.use_main_side_layout == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_main_side_layout2" class="radio"><input type="radio" name="use_main_side_layout" id="use_main_side_layout2" value="n" {? eyoom_config.use_main_side_layout == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">사이드 레이아웃 사용[서브]</label>
+							<div class="inline-group">
+								<label for="use_sub_side_layout1" class="radio"><input type="radio" name="use_sub_side_layout" id="use_sub_side_layout1" value="y" {? eyoom_config.use_sub_side_layout == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_sub_side_layout2" class="radio"><input type="radio" name="use_sub_side_layout" id="use_sub_side_layout2" value="n" {? eyoom_config.use_sub_side_layout == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">사이드 레이아웃 위치[메인]</label>
+							<div class="inline-group">
+								<label for="pos_main_side_layout1" class="radio"><input type="radio" name="pos_main_side_layout" id="pos_main_side_layout1" value="left" {? eyoom_config.pos_main_side_layout == 'left'}checked{/}><i></i> 왼쪽</label>
+								<label for="pos_main_side_layout2" class="radio"><input type="radio" name="pos_main_side_layout" id="pos_main_side_layout2" value="right" {? eyoom_config.pos_main_side_layout == 'right'}checked{/}><i></i> 오른쪽</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">사이드 레이아웃 위치[서브]</label>
+							<div class="inline-group">
+								<label for="pos_sub_side_layout1" class="radio"><input type="radio" name="pos_sub_side_layout" id="pos_sub_side_layout1" value="left" {? eyoom_config.pos_sub_side_layout == 'left'}checked{/}><i></i> 왼쪽</label>
+								<label for="pos_sub_side_layout2" class="radio"><input type="radio" name="pos_sub_side_layout" id="pos_sub_side_layout2" value="right" {? eyoom_config.pos_sub_side_layout == 'right'}checked{/}><i></i> 오른쪽</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<!--{? _shopping_theme}-->
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label class="label">쇼핑몰 사이드 레이아웃 사용[메인]</label>
+							<div class="inline-group">
+								<label for="use_shopmain_side_layout1" class="radio"><input type="radio" name="use_shopmain_side_layout" id="use_shopmain_side_layout1" value="y" {? eyoom_config.use_shopmain_side_layout == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_shopmain_side_layout2" class="radio"><input type="radio" name="use_shopmain_side_layout" id="use_shopmain_side_layout2" value="n" {? eyoom_config.use_shopmain_side_layout == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">쇼핑몰 사이드 레이아웃 사용[서브]</label>
+							<div class="inline-group">
+								<label for="use_shopsub_side_layout1" class="radio"><input type="radio" name="use_shopsub_side_layout" id="use_shopsub_side_layout1" value="y" {? eyoom_config.use_shopsub_side_layout == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_shopsub_side_layout2" class="radio"><input type="radio" name="use_shopsub_side_layout" id="use_shopsub_side_layout2" value="n" {? eyoom_config.use_shopsub_side_layout == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">쇼핑몰 사이드 레이아웃 위치[메인]</label>
+							<div class="inline-group">
+								<label for="pos_shopmain_side_layout1" class="radio"><input type="radio" name="pos_shopmain_side_layout" id="pos_shopmain_side_layout1" value="left" {? eyoom_config.pos_shopmain_side_layout == 'left'}checked{/}><i></i> 왼쪽</label>
+								<label for="pos_shopmain_side_layout2" class="radio"><input type="radio" name="pos_shopmain_side_layout" id="pos_shopmain_side_layout2" value="right" {? eyoom_config.pos_shopmain_side_layout == 'right'}checked{/}><i></i> 오른쪽</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">쇼핑몰 사이드 레이아웃 위치[서브]</label>
+							<div class="inline-group">
+								<label for="pos_shopsub_side_layout1" class="radio"><input type="radio" name="pos_shopsub_side_layout" id="pos_shopsub_side_layout1" value="left" {? eyoom_config.pos_shopsub_side_layout == 'left'}checked{/}><i></i> 왼쪽</label>
+								<label for="pos_shopsub_side_layout2" class="radio"><input type="radio" name="pos_shopsub_side_layout" id="pos_shopsub_side_layout2" value="right" {? eyoom_config.pos_shopsub_side_layout == 'right'}checked{/}><i></i> 오른쪽</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			<!--{/}-->
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_cf_tag">
+		<div class="pg-anchor">
+			{# anc_cf_tag}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> [<span class="color-red">{this_theme}</span>] 테마 태그기능 설정</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">태그기능 사용</label>
+							<div class="inline-group">
+								<label for="use_tag1" class="radio"><input type="radio" name="use_tag" id="use_tag1" value="y" {? eyoom_config.use_tag == 'y'}checked{/}><i></i> 사용</label>
+								<label for="use_tag2" class="radio"><input type="radio" name="use_tag" id="use_tag2" value="n" {? eyoom_config.use_tag == 'n'}checked{/}><i></i> 사용하지 않음</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">태그메뉴 출력 태그수</label>
+							<label for="tag_dpmenu_count" class="input">
+								<i class="icon-append">건</i>
+								<input type="text" name="tag_dpmenu_count" id="tag_dpmenu_count" value="{eyoom_config.tag_dpmenu_count}" class="text-right">
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">추천태그 출력 태그수</label>
+							<label for="tag_recommend_count" class="input">
+								<i class="icon-append">건</i>
+								<input type="text" name="tag_recommend_count" id="tag_recommend_count" value="{eyoom_config.tag_recommend_count}" class="text-right">
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">태그메뉴 출력방식</label>
+							<div class="inline-group">
+								<label for="tag_dpmenu_sort_regdt" class="radio"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_regdt" value="regdt" {? eyoom_config.tag_dpmenu_sort == 'regdt'}checked{/}><i></i> 최신등록순</label>
+								<label for="tag_dpmenu_sort_score" class="radio"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_score" value="score" {? eyoom_config.tag_dpmenu_sort == 'score'}checked{/}><i></i> 노출점수순</label>
+								<label for="tag_dpmenu_sort_regcnt" class="radio"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_regcnt" value="regcnt" {? eyoom_config.tag_dpmenu_sort == 'regcnt'}checked{/}><i></i> 등록건수순</label>
+								<label for="tag_dpmenu_sort_scnt" class="radio"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_scnt" value="scnt" {? eyoom_config.tag_dpmenu_sort == 'scnt'}checked{/}><i></i> 인기검색순</label>
+								<label for="tag_dpmenu_sort_random" class="radio"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_random" value="random" {? eyoom_config.tag_dpmenu_sort == 'random'}checked{/}><i></i> 랜덤출력</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+		</div>
+	</div>
+
+	{frm_submit}
+
+	</form>
+</div>
+
+<script>
+$('.pg-anchor a').on('click', function(e) {
+	e.stopPropagation();
+	var scrollTopSpace;
+	if (window.innerWidth >= 1100) {
+		scrollTopSpace = 70;
+	} else {
+		scrollTopSpace = 70;
+	}
+	var tabLink = $(this).attr('href');
+	var offset = $(tabLink).offset().top;
+	$('html, body').animate({scrollTop : offset - scrollTopSpace}, 500);
+	return false;
+});
+	
+function fconfigform_submit(f) {
+	var wurl = f.work_url.value;
+	var rurl = f.real_url.value;
+	if (!(wurl || rurl)) {
+		alert("작업도메인이나 실제도메인중 하나는 입력해 주셔야 합니다.");
+		f.work_url.focus();
+		return false;
+	} else {
+		var tmkey = '{this_tminfo.tm_key}';
+		var host = '{_SERVER.HTTP_HOST}';
+		
+		$.ajax({
+			url: "{C.EYOOM3_AJAX_URL}",
+			data: {tmkey: tmkey, host: host, wurl: wurl, rurl: rurl},
+			dataType: 'jsonp',
+			jsonp: 'callback',
+			jsonpCallback: 'set_config',
+			success: function(){}
+		});
+		return false;
+	}
+}
+
+function set_config(data) {
+	var f = document.fconfigform;
+	if(data.cm_key) {
+		if (data.cm_key) f.cm_key.value = data.cm_key;
+		if (data.cm_salt) f.cm_salt.value = data.cm_salt;
+		f.submit();
+	} else {
+		alert(data.msg);
+		return false;
+	}
+}
+</script>

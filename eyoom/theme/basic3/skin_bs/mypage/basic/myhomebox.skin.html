@@ -1,0 +1,125 @@
+<?php if (!defined("_GNUBOARD_")) exit; ?>
+
+<style>
+.follow-panel {position:relative;margin-bottom:20px}
+.follow-panel .nav-tabs .active {font-weight:bold}
+.follow-panel .panel-default > .panel-heading {background:#fafafa}
+.follow-panel .follow-list {list-style-type:none;padding:0;margin-bottom:0}
+.follow-panel .follow-list li {position:relative;overflow:hidden;width:70px;height:70px;float:left;margin:3px;-webkit-border-radius:2px !important;-moz-border-radius:2px !important;border-radius:2px !important}
+.follow-panel .follow-list li:after {position:absolute;top:0;left:0;width:100%;height:100%;content:"";background:rgba(0,0,0,0.5)}
+.follow-panel .follow-list li img {display:block;width:100% \9;max-width:100%;height:auto}
+.follow-panel .follow-list li span {display:inline-block;color:#fff;z-index:1;position:absolute;top:0;left:0;width:70px;line-height:70px;text-align:center;padding:0 5px;font-size:12px}
+.follow-panel .follow-list li:hover:after {display:none}
+.follow-panel .follow-list li:hover span {display:none}
+@media (max-width:767px) {
+	.follow-panel .follow-list li {width:50px;height:50px;margin:1px}
+	.follow-panel .follow-list li span {width:50px;line-height:50px;font-size:11px}
+}
+</style>
+
+<!--{* 팔로우 포토 시작 *}-->
+<div class="follow-panel">
+	<div class="tab-brd tab-brd-dark">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#myfriends" data-toggle="tab">맞팔친구</a></li>
+			<li><a href="#myfollower" data-toggle="tab">팔로워</a></li>
+			<li><a href="#myfollowing" data-toggle="tab">팔로윙</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane fade in active" id="myfriends">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<strong class="color-blue font-size-14 margin-right-5">맞팔친구</strong>
+						<span class="badge badge-dark rounded-3x helvetica-neue">
+							<!--{? user.cnt_friends}-->{user.cnt_friends}<!--{:}-->0<!--{/}-->
+						</span>
+						<a href="{C.G5_URL}/?{user.mb_id}&friends" class="btn-e btn-e-xs btn-e-dark pull-right">
+							전체보기
+						</a>
+					</div>
+					<div class="panel-body">
+						<ul class="follow-list clearfix">
+							<!--{@ box_friends }-->
+							<li class="tooltips" type="button" data-placement="top" data-toggle="tooltip" data-original-title="{.mb_nick}">
+								<a href="{C.G5_URL}/?{.mb_id}">
+									<!--{? .mb_photo}-->
+									{.mb_photo}
+									<!--{:}-->
+									<img src="./img/user.jpg">
+									<!--{/}-->
+								</a>
+								<span class="ellipsis">{.mb_nick}</span>
+							</li>
+							<!--{:}-->
+							<div class="text-center color-grey"><i class="fa fa-exclamation-circle"></i> 맞팔친구가 없습니다.</div>
+							<!--{/}-->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade in" id="myfollower">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<strong class="color-blue font-size-14 margin-right-5">팔로워</strong>
+						<span class="badge badge-dark rounded-3x helvetica-neue">
+							<!--{? user.cnt_follower}-->{user.cnt_follower}<!--{:}-->0<!--{/}-->
+						</span>
+						<a href="{C.G5_URL}/?{user.mb_id}&follower" class="btn-e btn-e-xs btn-e-dark pull-right">
+							전체보기
+						</a>
+					</div>
+					<div class="panel-body">
+						<ul class="follow-list clearfix">
+							<!--{@ box_follower}-->
+							<li class="tooltips" type="button" data-placement="top" data-toggle="tooltip" data-original-title="{.mb_nick}">
+								<a href="{C.G5_URL}/?{.mb_id}">
+									<!--{? .mb_photo}-->
+									{.mb_photo}
+									<!--{:}-->
+									<img src="./img/user.jpg">
+									<!--{/}-->
+								</a>
+								<span class="ellipsis">{.mb_nick}</span>
+							</li>
+							<!--{:}-->
+							<div class="text-center color-grey"><i class="fa fa-exclamation-circle"></i> 팔로워가 없습니다.</div>
+							<!--{/}-->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade in" id="myfollowing">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<strong class="color-blue font-size-14 margin-right-5">팔로윙</strong>
+						<span class="badge badge-dark rounded-3x helvetica-neue">
+							<!--{? user.cnt_following}-->{user.cnt_following}<!--{:}-->0<!--{/}-->
+						</span>
+						<a href="{C.G5_URL}/?{user.mb_id}&following" class="btn-e btn-e-xs btn-e-dark pull-right">
+							전체보기
+						</a>
+					</div>
+					<div class="panel-body">
+						<ul class="follow-list clearfix">
+							<!--{@ box_following}-->
+							<li class="tooltips" type="button" data-placement="top" data-toggle="tooltip" data-original-title="{.mb_nick}">
+								<a href="{C.G5_URL}/?{.mb_id}">
+									<!--{? .mb_photo}-->
+									{.mb_photo}
+									<!--{:}-->
+									<img src="./img/user.jpg">
+									<!--{/}-->
+								</a>
+								<span class="ellipsis">{.mb_nick}</span>
+							</li>
+							<!--{:}-->
+							<div class="text-center color-grey"><i class="fa fa-exclamation-circle"></i> 팔로윙이 없습니다.</div>
+							<!--{/}-->
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--{* 팔로우 포토 끝 *}-->

@@ -1,0 +1,80 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/slick/slick.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.main_banner {position:relative;overflow:hidden}
+.main_banner img {display:block;width:100% \9;max-width:100%;height:auto}
+.main_banner .main_banner-nav {position:absolute;bottom:20px;left:50%;width:200px;margin-left:-100px}
+.main_banner .main_banner-nav .nav-box {background:RGBA(214, 214, 214, 0.9);padding:2px;margin:0 4px;outline:none;height:50px}
+.main_banner .main_banner-nav .nav-box img {opacity:1}
+.main_banner .main_banner-nav .nav-box-in {position:relative;overflow:hidden;height:46px}
+.main_banner .main_banner-nav .slick-center img {opacity:0.9}
+.main_banner .slick-next, .main_banner .slick-prev {width:30px;height:100%;background:RGBA(214, 214, 214, 0.8)}
+.main_banner .slick-next {right:-30px}
+.main_banner .slick-prev {left:-30px}
+.main_banner .slick-next:hover, .main_banner .slick-prev:hover {background:RGBA(255, 255, 255, 0.8)}
+.main_banner .slick-next:before, .main_banner .slick-prev:before {font-family:FontAwesome;color:#000;font-size:12px}
+.main_banner .slick-next:before {content:"\f054"}
+.main_banner .slick-prev:before {content:"\f053"}
+@media (max-width:767px) {
+	.main_banner .main_banner-nav {position:relative;bottom:inherit;left:inherit;margin-left:inherit;margin:10px auto}
+	.main_banner .main_banner-nav .nav-box {background:#fff}
+	.main_banner .slick-next, .main_banner .slick-prev {background:#fff}
+	.main_banner .slick-next:hover, .main_banner .slick-prev:hover {background:#fff}
+}
+</style>
+
+<div class="main_banner">
+    <div class="main_banner-content">
+		<!--{@eb_banner(1)}-->{.html}<!--{/}-->
+		<!--{@eb_banner(2)}-->{.html}<!--{/}-->
+		<!--{@eb_banner(3)}-->{.html}<!--{/}-->
+    </div>
+    <div class="main_banner-nav">
+		<div class="nav-box">
+			<div class="nav-box-in">
+				<!--{@eb_banner(1)}-->{.html}<!--{/}-->
+			</div>
+		</div>
+		<div class="nav-box">
+			<div class="nav-box-in">
+				<!--{@eb_banner(2)}-->{.html}<!--{/}-->
+			</div>
+		</div>
+		<div class="nav-box">
+			<div class="nav-box-in">
+				<!--{@eb_banner(3)}-->{.html}<!--{/}-->
+			</div>
+		</div>
+    </div>
+</div>
+
+<script src="../../../plugins/slick/slick.min.js"></script>
+<script>
+$(function() {
+	$('.main_banner-nav').on('click', '.slick-slide', function(e){
+		e.stopPropagation();
+		var index = $(this).data('slick-index');
+		if ($('.main_banner-nav').slick('slickCurrentSlide') !== index){
+			$('.main_banner-nav').slick('slickGoTo', index);
+		}
+	});
+	$('.main_banner-content').slick({
+		slidesToShow: 1,
+		infinite: true,
+		arrows: false,
+		asNavFor: '.main_banner-nav'
+	});
+	$('.main_banner-nav').slick({
+		centerMode: true,
+		centerPadding: '46px',
+		slidesToShow: 1,
+		asNavFor: '.main_banner-content',
+		infinite: true,
+		autoplay: true,
+		autoplaySpeed: 5000,
+		arrows: true,
+	});
+});
+</script>

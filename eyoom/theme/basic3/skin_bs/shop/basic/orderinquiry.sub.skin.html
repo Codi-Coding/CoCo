@@ -1,0 +1,61 @@
+<?php
+if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
+if (!defined("_ORDERINQUIRY_")) exit; // 개별 페이지 접근 불가
+?>
+
+<style>
+.shop-orderinquiry-sub .table-list-eb thead {border-top:2px solid #454545}
+.shop-orderinquiry-sub .table-list-eb .table>thead>tr>th {padding:10px;text-align:center}
+.shop-orderinquiry-sub .table-list-eb .table>tbody>tr>td {padding:10px}
+.shop-orderinquiry-sub .table-list-eb .table>tfoot>tr>td {padding:15px 10px}
+.shop-orderinquiry-sub .table-list-eb .td-width-30 {width:30%}
+.shop-orderinquiry-sub .table-list-eb .td-border {border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5}
+.shop-orderinquiry-sub .table-list-eb .td-border-left {border-left:1px solid #e5e5e5}
+.shop-orderinquiry-sub .table-list-eb .td-border-right {border-right:1px solid #e5e5e5}
+.shop-orderinquiry-sub .table-list-eb .td-bg-color {background:#fcfcfc}
+</style>
+
+<div class="shop-orderinquiry-sub">
+	<!--{? !_limit}-->
+	<p class="text-right"><strong>총 <span class="color-red">{_cnt}</span> 건</strong></p>
+	<!--{/}-->
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="text-right font-size-11 margin-bottom-5 color-grey">Note! 좌우 스크롤 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+	<div class="table-list-eb">
+	    <div class="table-responsive">
+	        <table class="table">
+		        <thead>
+		            <tr>
+				        <th>주문서번호</th>
+				        <th>주문일시</th>
+				        <th>상품수</th>
+				        <th>주문금액</th>
+				        <th>입금액</th>
+				        <th>미입금액</th>
+				        <th>상태</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+				    <!--{@ list}-->
+				    <tr>
+				        <td class="td-bg-color">
+				            <input type="hidden" name="ct_id[{.key_}]" value="{.ct_id}">
+				            <a href="{.href}"><u>{.od_id}</u></a>
+				        </td>
+				        <td class="td-border">{=substr(.od_time,2,14)}--> ({=get_yoil(.od_time)})</td>
+				        <td class="text-center">{.od_cart_count}</td>
+				        <td class="td-border td-bg-color text-right">{=display_price(.od_price)}</td>
+				        <td class="text-right">{=display_price(.od_receipt_price)}</td>
+				        <td class="td-border text-right">{=display_price(.od_misu)}</td>
+				        <td class="text-center"><span class="color-blue">{.od_status}</span></td>
+				    </tr>
+					<!--{:}-->
+					<tr><td colspan="7" class="text-center"><span class="font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 주문 내역이 없습니다.</span></td></tr>
+					<!--{/}-->
+		        </tbody>
+	        </table>
+	    </div>
+	</div>
+</div>

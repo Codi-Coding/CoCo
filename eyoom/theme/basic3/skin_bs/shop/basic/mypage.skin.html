@@ -1,0 +1,147 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.shop-mypage .headline {margin:0 0 25px;border-bottom:1px solid #d5d5d5}
+.shop-mypage .table-list-eb thead {border-top:2px solid #454545}
+.shop-mypage .table-list-eb .table>thead>tr>th {padding:10px;text-align:center}
+.shop-mypage .table-list-eb .table>tbody>tr>td {padding:10px}
+.shop-mypage .table-list-eb .td-width-30 {width:30%}
+.shop-mypage .table-list-eb .btn-e-xs {width:100px;text-align:center}
+.shop-mypage .table-list-eb td img {display:block;width:100% \9;max-width:100%;height:auto}
+.shop-mypage .table-list-eb .td-img {text-align:center}
+.shop-mypage .table-list-eb .td-img .td-img-box {display:inline-block;border:1px solid #e5e5e5;padding:2px;margin-top:5px;width:70px;border-radius:2px !important}
+.shop-mypage .table-list-eb .td-border {border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5}
+.shop-mypage .table-list-eb .td-border-right {border-right:1px solid #e5e5e5}
+.shop-mypage .table-list-eb .td-bg-color {background:#fcfcfc}
+</style>
+
+<div class="shop-mypage">
+	<!--{* 회원정보 개요 시작 *}-->
+	<div class="mypage-info margin-bottom-50">
+        <div class="text-right margin-bottom-20">
+	        <a href="{C.G5_BBS_URL}/member_confirm.php?url=register_form.php" class="btn-e btn-e-lg btn-e-red rounded"><i class="fa fa-info-circle margin-right-5"></i>회원정보수정</a>
+        </div>
+		<div class="headline"><h4><strong>쇼핑몰 내 정보</strong></h4></div>
+		<div class="table-list-eb">
+	        <table id="sod_list" class="table">
+		        <thead>
+		            <tr>
+		                <th class="td-width-30">항목</th>
+		                <th>내용</th>
+		            </tr>
+		        </thead>
+	            <tbody>
+		            <tr>
+			            <th class="td-border-right td-bg-color">보유포인트</th>
+			            <td>{=number_format(member.mb_point)}점 <a {? !C.G5_IS_MOBILE}href="javascript:void(0);" onclick="point_modal();"{:}href="{C.G5_BBS_URL}/point.php" target="_blank"{/} class="btn-e btn-e-dark btn-e-xs rounded pull-right"><span class="color-white">포인트내역보기</span></a></td>
+		            </tr>
+		            <tr>
+			            <th class="td-border-right td-bg-color">보유쿠폰</th>
+			            <td>{=number_format(_cp_count)}개 <a {? !C.G5_IS_MOBILE}href="javascript:void(0);" onclick="coupon_modal();"{:}href="<?php echo G5_SHOP_URL; ?>/coupon.php" target="_blank"{/} class="btn-e btn-e-dark btn-e-xs rounded pull-right"><span class="color-white">쿠폰내역보기</span></a></td>
+		            </tr>
+		            <tr>
+			            <th class="td-border-right td-bg-color">연락처</th>
+			            <td><!--{? member.mb_tel}-->{member.mb_tel}<!--{:}-->미등록<!--{/}--></td>
+		            </tr>
+		            <tr>
+			            <th class="td-border-right td-bg-color">E-Mail</th>
+			            <td><!--{? member.mb_email}-->{member.mb_email}<!--{:}-->미등록<!--{/}--></td>
+		            </tr>
+		            <tr>
+			            <th class="td-border-right td-bg-color">최종접속일시</th>
+			            <td>{member.mb_today_login}</td>
+		            </tr>
+		            <tr>
+			            <th class="td-border-right td-bg-color">회원가입일시</th>
+			            <td>{member.mb_datetime}</td>
+		            </tr>
+		            <tr>
+			            <th id="smb_my_ovaddt" class="td-border-right td-bg-color">주소</th>
+			            <td id="smb_my_ovaddd">{=sprintf("(%s%s)", member.mb_zip1, member.mb_zip2)} {=print_address(member.mb_addr1, member.mb_addr2, member.mb_addr3, ember.mb_addr_jibeon)}</td>
+		            </tr>
+	            </tbody>
+	        </table>
+		</div>
+	</div>
+	<!--{* 회원정보 개요 끝 *}-->
+
+    <!--{* 최근 주문내역 시작 *}-->
+    <div class="mypage-order margin-bottom-50">
+	    <div class="headline">
+		    <h4><strong>최근 주문내역</strong></h4>
+		    <a href="./orderinquiry.php" class="btn-e btn-e-default btn-e-xs rounded pull-right margin-top-5"><i class="fa fa-plus"></i> 주문내역 더보기</a>
+		</div>
+        {# orderinquiry_sub_bs}
+    </div>
+    <!--{* 최근 주문내역 끝 *}-->
+
+    <!--{* 최근 위시리스트 시작 *}-->
+    <div class="mypage-wish margin-bottom-50">
+        <div class="headline">
+	        <h4><strong>최근 위시리스트</strong></h4>
+            <a href="./wishlist.php" class="btn-e btn-e-default btn-e-xs rounded pull-right margin-top-5"><i class="fa fa-plus"></i> 위시리스트 더보기</a>
+	    </div>
+		<!--{? C.G5_IS_MOBILE}-->
+		<p class="text-right font-size-11 margin-bottom-5 color-grey">Note! 좌우 스크롤 (<i class="fa fa-arrows-h"></i>)</p>
+		<!--{/}-->
+		<div class="table-list-eb">
+		    <div class="table-responsive">
+		        <table class="table">
+		            <thead>
+		                <tr>
+			                <th>이미지</th>
+			                <th>상품명</th>
+			                <th>보관일시</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+			            <!--{@ wishlist}-->
+			            <tr>
+			                <td class="td-img"><a href="./item.php?it_id={.it_id}" class="td-img-box">{.image}</a></td>
+			                <td class="td-border td-bg-color"><a href="./item.php?it_id={.it_id}">{=stripslashes(.it_name)}</a></td>
+			                <td>{.wi_time}</td>
+			            </tr>
+						<!--{:}-->
+						<tr><td colspan="3" class="text-center"><span class="font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 보관 내역이 없습니다.</span></td></tr>
+						<!--{/}-->
+		            </tbody>
+		        </table>
+		    </div>
+		</div>
+    </div>
+    <!--{* 최근 위시리스트 끝 *}-->
+</div>
+
+<!--{* 쿠폰 모달 시작 *}-->
+<div class="modal fade coupon-iframe-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title"><strong>쿠폰 내역</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="coupon-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{* 쿠폰 모달 끝 *}-->
+
+<script>
+function coupon_modal() {
+    $('.coupon-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#coupon-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.coupon-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#coupon-iframe").attr("src", "<?php echo G5_SHOP_URL; ?>/coupon.php");
+        $('#coupon-iframe').height(parseInt($(window).height() * 0.7));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+</script>

@@ -1,0 +1,56 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.notice-roll {position:relative;overflow:hidden;height:35px;border:1px solid #d5d5d5;background:#fff;margin:0 20px 30px;padding:0 10px;box-sizing:content-box;border-radius:2px !important}
+.notice-roll ul {position:absolute;width:100%;list-style:none;margin:0;padding:0}
+.notice-roll ul li {position:relative;height:35px;padding-right:20px;box-sizing:content-box}
+.notice-roll ul li a {line-height:36px;font-size:12px;margin-left:43px}
+.notice-roll ul li span {line-height:36px;font-size:12px;margin-left:43px}
+.notice-roll .label {position:absolute;top:9px;left;10px}
+</style>
+
+<div class="notice-roll">
+	<span class="label label-purple">공지</span>
+	<ul>
+		<!--{@ loop}-->
+		<li><a href="{.href}" class="ellipsis">{.wr_subject}</a></li>
+		<!--{:}-->
+		<li><span class="color-grey ellipsis"><i class="fa fa-exclamation-circle"></i> 출력할 최신글이 없습니다.</span></li>
+		<!--{/}-->
+	</ul>
+</div>
+
+<script>
+$(function() {
+	var noticeRollUl = $('.notice-roll ul'),
+		noticeRollLi = noticeRollUl.append(noticeRollUl.html()).children(),
+		noticeRollHeight = $('.notice-roll').height() * -1,
+		scrollSpeed = 600,
+		timer,
+		speed = 3000 + scrollSpeed;
+
+	if (noticeRollLi.length > 2) {
+		function sliderText() {
+			var noticeRollFoucs = noticeRollUl.position().top / noticeRollHeight;
+
+			noticeRollFoucs = (noticeRollFoucs + 1) % noticeRollLi.length;
+			noticeRollUl.animate({
+				top: noticeRollFoucs * noticeRollHeight
+			}, scrollSpeed, function() {
+				if (noticeRollFoucs == noticeRollLi.length / 2) {
+					noticeRollUl.css('top', 0);
+				}
+			});
+			timer = setTimeout(sliderText, speed);
+		}
+
+		noticeRollLi.hover(function() {
+			clearTimeout(timer);
+		}, function() {
+			timer = setTimeout(sliderText, speed);
+		});
+
+		timer = setTimeout(sliderText, speed);
+	}
+});
+</script>

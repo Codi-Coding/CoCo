@@ -1,0 +1,90 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.memo-write {padding:5px}
+.memo-write input {vertical-align:inherit}
+.memo-write input.btn-e-lg {padding:7px 16px;font-size:14px}
+.memo-write .vc-captcha {border:1px solid #2E3340}
+</style>
+<!--{? C.G5_IS_MOBILE}-->
+<style>
+.memo-write {padding:15px}
+</style>
+<!--{/}-->
+
+<div class="memo-write">
+    <div class="tab-bg tab-bg-dark">
+        <ul class="nav nav-tabs">
+            <li><a href="./memo.php?kind=recv">받은쪽지</a></li>
+            <li><a href="./memo.php?kind=send">보낸쪽지</a></li>
+            <li class="active"><a href="./memo_form.php"><strong>쪽지쓰기</strong></a></li>
+        </ul>
+        <div class="tab-content">
+			<!-- 쪽지 쓰기 시작 -->
+		    <form name="fmemoform" action="{_memo_action_url}" onsubmit="return fmemoform_submit(this);" method="post" autocomplete="off" class="eyoom-form">
+            <section>
+                <label for="me_recv_mb_id" class="label">받는 회원아이디<strong class="sound_only">필수</strong></label>
+                <label class="input">
+                    <i class="icon-append fa fa-user"></i>
+                    <input type="text" name="me_recv_mb_id" value="{_me_recv_mb_id}" id="me_recv_mb_id" required size="47">
+                </label>
+                <div class="note margin-bottom-10"><strong>Note:</strong> 여러 회원에게 보낼때는 컴마 ( , )로 구분하세요.</div>
+            </section>
+			<div class="margin-hr-15"></div>
+            <section>
+				<label for="me_memo" class="label">쪽지내용</label>
+				<label class="textarea textarea-resizable">
+					<textarea name="me_memo" id="me_memo" rows="5" required>{_content}</textarea>
+				</label>
+            </section>
+			<div class="margin-hr-15"></div>
+            <section>
+                <label class="label">자동등록방지</label>
+                <div class="vc-captcha">{=captcha_html()}</div>
+            </section>
+		    <div class="text-center margin-top-30 margin-bottom-30">
+			    <input type="submit" value="보내기" id="btn_submit" class="btn-e btn-e-lg btn-e-red">
+			    <!--{? C.G5_IS_MOBILE}-->
+		        <button type="button" onclick="window.close();" class="btn-e btn-e-lg btn-e-dark">창닫기</button>
+		        <!--{/}-->
+		    </div>
+	    </form>
+	</div>
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script>
+function fmemoform_submit(f) {
+    <!--{=chk_captcha_js()}-->
+
+    return true;
+}
+
+$("input, textarea, select").on({ 'touchstart' : function() {
+	zoomDisable();
+}});
+$("input, textarea, select").on({ 'touchend' : function() {
+	setTimeout(zoomEnable, 500);
+}});
+function zoomDisable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">');
+}
+function zoomEnable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1">');
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->

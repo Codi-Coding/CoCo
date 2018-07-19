@@ -12,7 +12,7 @@ if (!function_exists("itemdelete")) {
     {
         global $g5, $is_admin;
 
-        $sql = " select it_explan, it_mobile_explan, it_img1, it_img2, it_img3, it_img4, it_img5, it_img6, it_img7, it_img8, it_img9, it_img10, pt_thumb
+        $sql = " select it_explan, it_mobile_explan, it_img1, it_img2, it_img3, it_img4, it_img5, it_img6, it_img7, it_img8, it_img9, it_img10
                     from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
         $it = sql_fetch($sql);
 
@@ -31,10 +31,10 @@ if (!function_exists("itemdelete")) {
         }
 
         // 이미지디렉토리 삭제
-        //for($i=0; $i<count($dir_list); $i++) {
-        //    if(is_dir($dir_list[$i]))
-        //        rmdir($dir_list[$i]);
-        //}
+        for($i=0; $i<count($dir_list); $i++) {
+            if(is_dir($dir_list[$i]))
+                rmdir($dir_list[$i]);
+        }
 
         // 상, 하단 이미지 삭제
         @unlink(G5_DATA_PATH."/item/$it_id"."_h");
@@ -67,34 +67,46 @@ if (!function_exists("itemdelete")) {
         //------------------------------------------------------------------------
         // HTML 내용에서 에디터에 올라간 이미지의 경로를 얻어 삭제함
         //------------------------------------------------------------------------
+        $imgs = get_editor_image($it['it_explan'], false);
 
-		// 에디터 이미지 삭제
-		apms_editor_image($it['it_explan'], 'del');
-		apms_editor_image($it['it_mobile_explan'], 'del');
-		apms_editor_image($it['pt_explan'], 'del');
-		apms_editor_image($it['pt_mobile_explan'], 'del');
+        for($i=0;$i<count($imgs[1]);$i++) {
+            $p = parse_url($imgs[1][$i]);
+            if(strpos($p['path'], "/data/editor/") === false)
+                continue;
+            if(strpos($p['path'], "/data/") != 0)
+                $data_path = preg_replace("/^\/.*\/data/", "/data", $p['path']);
+            else
+                $data_path = $p['path'];
 
-		// 동영상 이미지 삭제
-		apms_video_thumbnail($it['pt_thumb']);
+            $destfile = G5_PATH.$data_path;
 
+            if(is_file($destfile))
+                @unlink($destfile);
+        }
+
+        $imgs = get_editor_image($it['it_mobile_explan'], false);
+
+        for($i=0;$i<count($imgs[1]);$i++) {
+            $p = parse_url($imgs[1][$i]);
+            if(strpos($p['path'], "/data/editor/") === false)
+                continue;
+            if(strpos($p['path'], "/data/") != 0)
+                $data_path = preg_replace("/^\/.*\/data/", "/data", $p['path']);
+            else
+                $data_path = $p['path'];
+
+            $destfile = G5_PATH.$data_path;
+
+            if(is_file($destfile))
+                @unlink($destfile);
+        }
         //------------------------------------------------------------------------
+
 
         // 상품 삭제
         $sql = " delete from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
         sql_query($sql);
-
-		// APMS : 댓글삭제 - 2014.07.22
-		apms_delete_comment($it_id);
-
-		// APMS : 태그삭제 - 2014.07.20
-		apms_delete_tag($it_id);
-
-		// APMS : 파일삭제 - 2014.07.20
-		apms_delete_file('item', $it_id);
-
-		// APMS : 폴더삭제 - 2014.07.25
-		apms_delete_dir($it_id);
-	}
+    }
 }
 
 itemdelete($it_id);

@@ -1,0 +1,15 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="pg-anchor-in tab-e2">
+    <ul class="nav nav-tabs">
+		<li {? anc_id == 'anc_scf_info'}class="active"{/}><a href="#anc_scf_info">사업자정보</a></li>
+		<li {? anc_id == 'anc_scf_skin'}class="active"{/}><a href="#anc_scf_skin">스킨설정</a></li>
+		<li {? anc_id == 'anc_scf_index'}class="active"{/}><a href="#anc_scf_index">쇼핑몰 초기화면</a></li>
+		<li {? anc_id == 'anc_mscf_index'}class="active"{/}><a href="#anc_mscf_index">모바일 초기화면</a></li>
+		<li {? anc_id == 'anc_scf_payment'}class="active"{/}><a href="#anc_scf_payment">결제설정</a></li>
+		<li {? anc_id == 'anc_scf_delivery'}class="active"{/}><a href="#anc_scf_delivery">배송설정</a></li>
+		<li {? anc_id == 'anc_scf_etc'}class="active"{/}><a href="#anc_scf_etc">기타설정</a></li>
+		{? 0}<li {? anc_id == 'anc_scf_sms'}class="active"{/}><a href="#anc_scf_sms">SMS설정</a></li>{/}
+	</ul>
+	<div class="tab-bottom-line"></div>
+</div>

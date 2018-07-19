@@ -1,0 +1,64 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.cp-frm-box {position:relative;width:600px;height:auto;margin:50px auto}
+.cp-frm-box-in {position:relative;padding:20px 15px;background:#fff}
+@media (max-width:767px) {
+	.cp-frm-box {width:100%}
+	.cp-frm-box-in {padding:20px 10px;margin:0 10px}
+	.cp-frm-box .table-responsive {position:inherit;overflow:inherit}
+}
+</style>
+<!--{? !C.G5_IS_MOBILE}-->
+<style>
+#sod_list #cp_frm {position:fixed;top:0;left:0;width:100%;height:100% !important;padding:0;border:0;background:transparent;overflow:hidden}
+.cp-frm-bg {position:fixed;top:0;left:0;width:100%;height:100%;background:#000;opacity:0.7;padding:0}
+</style>
+<!--{:}-->
+<style>
+.cp-frm-box {width:360px;margin:20px auto}
+.cp-frm-box-in {padding:10px;background:#f5f5f5;border:1px solid #d5d5d5}
+</style>
+<!--{/}-->
+
+<div id="cp_frm">
+	<div class="cp-frm-bg"></div>
+	<div class="cp-frm-box">
+		<div class="cp-frm-box-in">
+		    <!--{? _count > 0}-->
+			<div class="table-list-eb">
+			    <div class="table-responsive">
+			        <table id="sod_list" class="table table-hover">
+			            <thead>
+				            <tr>
+					            <th>쿠폰명</th>
+					            <th>할인금액</th>
+					            <th>적용</th>
+				            </tr>
+			            </thead>
+			            <tbody>
+				            <!--{@ list}-->
+				            <tr>
+					            <td class="text-center">
+					                <input type="hidden" name="f_cp_id[]" value="{.cp_id}">
+					                <input type="hidden" name="f_cp_prc[]" value="{.dc}">
+					                <input type="hidden" name="f_cp_subj[]" value="{.cp_subject}">
+					                {=get_text(.cp_subject)}
+					            </td>
+					            <td class="td-border td-bg-color text-center"><span class="color-red">{=number_format(.dc)}</span></td>
+					            <td class="text-center"><button type="button" class="cp_apply btn-e btn-e-xs btn-e-red rounded"><i class="fa fa-check"></i> 적용</button></td>
+				            </tr>
+				            <!--{/}-->
+			            </tbody>
+			        </table>
+			    </div>
+			</div>
+			<!--{:}-->
+			<div class="text-center font-size-13 color-grey margin-top-20 margin-bottom-20"><i class="fa fa-exclamation-circle"></i> 사용할 수 있는 쿠폰이 없습니다.</div>
+			<!--{/}-->
+		    <div class="text-center">
+		        <button type="button" id="cp_close" class="btn-e btn-e-lg btn-e-dark">닫기</button>
+		    </div>
+	    </div>
+    </div>
+</div>

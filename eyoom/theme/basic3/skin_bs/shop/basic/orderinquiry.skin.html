@@ -1,0 +1,18 @@
+<?php
+if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
+if (!defined("_ORDERINQUIRY_")) exit; // 개별 페이지 접근 불가
+?>
+
+<style>
+.shop-order-inquiry.headline {margin:0 0 25px;border-bottom:1px solid #d5d5d5}
+</style>
+
+<div class="shop-order-inquiry">
+	<div class="headline"><h4><strong>주문 내역</strong></h4></div>
+
+    <p class="font-size-12 color-grey"><i class="fa fa-info-circle"></i> 주문서번호를 누르시면 주문상세내역을 조회하실 수 있습니다.</p>
+
+    {# orderinquiry_sub_bs}
+
+	{=eb_paging('basic')}
+</div>

@@ -1,0 +1,187 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-contentform">
+	<form name="frmcontentform" id="frmcontentform" method="post" action="{_action_url}" onsubmit="return frmcontentform_check(this)" enctype="multipart/form-data" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="co_html" value="1">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>내용 {_html_title}</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="qa-config-form">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 내용관리</strong></header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="co_id" class="label">ID</label>
+					        <label class="input">
+					            <input type="text" name="co_id" value="{co.co_id}" id="co_id" required {_readonly} maxlength="20">
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 20자 이내의 영문자, 숫자, _ 만 가능합니다.</div>
+						</section>
+					</div>
+					<!--{? _w == 'u'}-->
+					<div class="col col-3">
+						<section class="label-height">
+							<a href="{C.G5_BBS_URL}/content.php?co_id={_co_id}" class="btn-e btn-e-md btn-e-dark">내용확인</a>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="co_subject" class="label">제목</label>
+					        <label class="input">
+					            <input type="text" name="co_subject" value="{=htmlspecialchars2(co.co_subject)}" id="co_subject" required>
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="co_skin" class="label">스킨 디렉토리</label>
+							<label class="select">
+								{=get_skin_select('content', 'co_skin', 'co_skin', co.co_skin, 'required')}<i></i>
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="co_mobile_skin" class="label">모바일 스킨 디렉토리</label>
+					        <label class="select">
+					            {=get_mobile_skin_select('content', 'co_mobile_skin', 'co_mobile_skin', co.co_mobile_skin, 'required')}<i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label class="label">태그 필터링 사용</label>
+				        	<label for="co_tag_filter_use" class="select">
+					            <select name="co_tag_filter_use" id="co_tag_filter_use">
+					                <option value="1"{=get_selected(1, co.co_tag_filter_use)}>사용함</option>
+					                <option value="0"{=get_selected(0, co.co_tag_filter_use)}>사용안함</option>
+					            </select><i></i>
+				        	</label>
+				        	<div class="note margin-bottom-10"><strong>Note:</strong> 내용에서 iframe 등의 태그를 사용하려면 사용안함으로 선택해 주십시오.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="co_include_head" class="label">상단 파일 경로</label>
+					        <label class="input">
+				                <input type="text" name="co_include_head" value="{co.co_include_head}" id="co_include_head">
+					        </label>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="co_include_tail" class="label">하단 파일 경로</label>
+					        <label class="input">
+				                <input type="text" name="co_include_tail" value="{co.co_include_tail}" id="co_include_tail">
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="co_content" class="label">내용</label>
+					        {=editor_html("co_content", get_text(co.co_content, 0))}
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="co_mobile_content" class="label">모바일 내용</label>
+					        {=editor_html("co_mobile_content", get_text(co.co_mobile_content, 0))}
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="co_himg" class="label">상단 이미지</label>
+					        <label for="file" class="input input-file">
+								<div class="button bg-color-light-grey"><input type="file" id="co_himg" name="co_himg" value="이미지선택" onchange="this.parentNode.nextSibling.value = this.value">이미지선택</div><input type="text" readonly>
+							</label>
+							<!--{? co.himg_width}-->
+							<label for="co_himg_del" class="checkbox"><input type="checkbox" name="co_himg_del" value="1" id="co_himg_del"><i></i> 삭제</label>
+							<img class="img-responsive" src="{C.G5_DATA_URL}/content/{co.co_id}_h" width="{co.himg_width}" alt="">
+							<!--{/}-->
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="co_himg" class="label">하단 이미지</label>
+					        <label for="file" class="input input-file">
+								<div class="button bg-color-light-grey"><input type="file" id="co_timg" name="co_timg" value="이미지선택" onchange="this.parentNode.nextSibling.value = this.value">이미지선택</div><input type="text" readonly>
+							</label>
+							<!--{? co.timg_width}-->
+							<label for="co_timg_del" class="checkbox"><input type="checkbox" name="co_timg_del" value="1" id="co_timg_del"><i></i> 삭제</label>
+							<img class="img-responsive" src="{C.G5_DATA_URL}/content/{co.co_id}_h" width="{co.timg_width}" alt="">
+							<!--{/}-->
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" value="확인" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=contentlist" class="btn-e btn-e-lg btn-e-dark">목록</a>
+	</div>
+
+	</form>
+</div>
+
+<script>
+function frmcontentform_check(f) {
+    errmsg = "";
+    errfld = "";
+
+    <!--{=get_editor_js('co_content')}-->
+    <!--{=chk_editor_js('co_content')}-->
+    <!--{=get_editor_js('co_mobile_content')}-->
+
+    check_field(f.co_id, "ID를 입력하세요.");
+    check_field(f.co_subject, "제목을 입력하세요.");
+    check_field(f.co_content, "내용을 입력하세요.");
+
+    if (errmsg != "") {
+        alert(errmsg);
+        errfld.focus();
+        return false;
+    }
+    return true;
+}
+</script>

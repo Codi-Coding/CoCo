@@ -1,0 +1,1054 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../plugins/c3/c3.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.main-headline h5 {float:left;padding:0;margin:0 0 10px;color:#000}
+.main-headline a:hover {text-decoration:underline}
+.main-headline .headline-btn {float:right}
+.main-headline .headline-btn.btn-e-brd {background:#fff}
+.main-headline .headline-btn .btn-e-brd {background:#fff}
+.main-headline .headline-btn.btn-e-brd:hover {text-decoration:none}
+.main-headline .headline-btn .btn-e-brd:hover {text-decoration:none}
+/*----- Info Box -----*/
+.info-box-wrap {position:relative;background:#fff;border:2px solid #b5b5b5;padding:10px;border-radius:2px !important;margin-bottom:30px}
+.info-box {position:relative;overflow:hidden;min-height:83px;float:left;width:25%;border-left:1px dashed #dbdbdb}
+.info-box:first-child {border-left:0}
+.info-box small {font-size:12px}
+.info-box-content {padding:5px 10px}
+.info-box-text {font-size:14px;font-weight:bold}
+.info-box-number {display:block;font-size:20px;font-weight:bold;line-height:36px}
+.info-description {margin:0;font-size:12px;line-height:15px}
+.info-description a {color:#005cff;text-decoration:underline}
+@media (max-width:767px) {
+	.info-box {width:50%;border-top:1px dashed #dbdbdb}
+	.info-box:nth-child(1), .info-box:nth-child(2) {border-top:0}
+	.info-box:nth-child(3) {border-left:0}
+	.info-box-content {padding:10px}
+	.info-box-text {font-size:13px}
+	.info-box-number {font-size:18px}
+	.info-description {font-size:11px}
+}
+/*----- Order Box -----*/
+.order-wrap {position:relative;margin-bottom:30px;border:2px solid #959595;border-radius:2px !important}
+.order-box {position:relative;overflow:hidden;width:25%;float:left;background:#fff}
+.order-box:nth-child(1) {border-right:1px dotted #d5d5d5}
+.order-box:nth-child(2) {border-right:1px dotted #d5d5d5}
+.order-box:nth-child(3) {border-right:1px dotted #d5d5d5}
+.order-box > .order-box-in {padding:15px}
+.order-box > .order-box-footer {position:relative;text-align:center;padding:5px 0;color:#000;display:block;z-index:10;background:#fbfbfb;text-decoration:none;font-size:12px;border-top:1px dotted #d5d5d5}
+.order-box > .order-box-footer:hover span {color:#007AFF}
+.order-box h3 {font-size:35px;font-weight:bold;margin:0 0 10px;white-space:nowrap;padding:0;color:#1C1C26}
+.order-box:nth-child(1) h3 {color:#FF9500}
+.order-box:nth-child(2) h3 {color:#87BA00}
+.order-box:nth-child(3) h3 {color:#4052B5}
+.order-box:nth-child(4) h3 {color:#E81F63}
+.order-box > .order-box-footer span {text-decoration:underline}
+.order-box p {font-size:13px;margin-bottom:0;color:#656565}
+.order-box p > order {display:block;color:#f9f9f9;font-size:13px;margin-top:5px}
+.order-box h3 {position:relative}
+.order-box h3,.order-box p {z-index:5px}
+.order-box .icon {position:absolute;top:0;right:15px;z-index:0;font-size:35px;color:rgba(0, 0, 0, 0.2)}
+.order-box:hover {text-decoration:none;color:#f9f9f9}
+.order-box:hover .icon {color:#1F263B}
+.order-box:hover p {color:#DE2600}
+@media (max-width: 767px) {
+	.order-box {text-align:center;width:50%}
+	.order-box:nth-child(1) {border-right:1px dotted #d5d5d5;border-bottom:1px solid #d5d5d5}
+	.order-box:nth-child(2) {border-right:0;border-bottom:1px solid #d5d5d5}
+	.order-box:nth-child(3) {border-right:1px dotted #d5d5d5}
+	.order-box .icon {display:none}
+	.order-box p {font-size:12px}
+}
+/*----- Chart -----*/
+.chart-wrap .chart-item {position:relative;float:left;width:50%}
+.chart-wrap .chart-item .btn-group .dropdown-menu {left:inherit;right:0}
+.chart-wrap .chart-item.item-left {padding-right:10px}
+.chart-wrap .chart-item.item-right {padding-left:10px}
+.chart-wrap .chart-item-in {position:relative;overflow:hidden;width:100%;height:auto;border:1px solid #d5d5d5;padding:10px 0;background:#fff;border-radius:2px !important}
+.chart-wrap .chart-item-in.padding-left-10 {padding-left:10px}
+.chart-wrap .chart-item-in.padding-right-10 {padding-right:10px}
+.chart-wrap .chart-item-in.padding-x-10 {padding-left:10px;padding-right:10px}
+@media (max-width: 767px) {
+	.chart-wrap .chart-item {position:relative;float:left;width:100%;margin-bottom:30px}
+	.chart-wrap .chart-item.item-left {padding-right:0}
+	.chart-wrap .chart-item.item-right {padding-left:0}
+}
+/*----- Table -----*/
+.jsgride-wrap .new-member-photo {position:relative;overflow:hidden;width:26px;height:26px;border:1px solid #c5c5c5;background:#fff;padding:1px;margin:0 auto;text-align:center;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.jsgride-wrap .new-member-photo i {width:22px;height:22px;font-size:15px;line-height:22px;background:#b2b4bd;color:#fff;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.jsgride-wrap .new-member-photo img {-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+/*----- Admin Basic Latest -----*/
+.admin-basic-latest {position:relative;border:1px solid #d5d5d5;padding:11px 10px;background:#fff;font-size:12px;border-radius:2px !important}
+.admin-basic-latest li {padding:2px 0}
+.admin-basic-latest li a:hover {text-decoration:underline}
+.admin-basic-latest li .member-name {display:block;margin-left:14px;color:#959595}
+.admin-basic-latest li .member-name a {color:#959595}
+.admin-basic-latest li .sv_on {top:15px;left:0}
+.admin-basic-latest li .sv_on a {text-decoration:none}
+</style>
+
+<!--{? ver_check // 서버환경이 지원될 경우만 설치정보를 볼 수 있음}-->
+<!--{* ------------- 메인 상단 설치정보 시작 ------------- *}-->
+<div class="info-box-wrap">
+	<div class="info-box">
+		<div class="info-box-content">
+			<span class="info-box-text ellipsis">설치된 <u>{? defined('G5_YOUNGCART_VER')}영카트5{:}그누보드5{/}</u> 버전</span>
+			<span class="info-box-number color-pink">{? defined('G5_YOUNGCART_VER')}{C.G5_YOUNGCART_VER}{:}{C.G5_GNUBOARD_VER}{/}</span>
+			<span class="info-description ellipsis">
+				최신버전 : {verinfo.gnuboard.version} <a href="{verinfo.gnuboard.downlink}" target="_blank">다운로드</a>
+			</span>
+		</div>
+	</div>
+	<div class="info-box">
+		<div class="info-box-content">
+			<span class="info-box-text ellipsis">설치된 <u>이윰빌더</u> 버전</span>
+			<span class="info-box-number color-yellow">{verinfo.eyoom.now_version}</span>
+			<span class="info-description ellipsis">
+				최신버전 : {verinfo.eyoom.version} <a href="{verinfo.eyoom.downlink}" target="_blank">다운로드</a>
+			</span>
+		</div>
+	</div>
+	<div class="info-box">
+		<div class="info-box-content">
+			<span class="info-box-text ellipsis">적용중인 <u>테마명</u></span>
+			<span class="info-box-number color-green">{_theme}</span>
+			<span class="info-description ellipsis">
+				보유테마 - <a href="#" target="_blank" title="{@ tminfo}{.key_}{? .size_ != .index_+1}, {/}{/}">{@ tminfo}{.key_}{? .size_ != .index_+1}, {/}{/}</span></a>
+			</span>
+		</div>
+	</div>
+	<div class="info-box">
+		<div class="info-box-content">
+			<span class="info-box-text ellipsis">최초 <u>설치일자</u></span>
+			<span class="info-box-number color-indigo">{eb->date_format('Y.m.d', adminfo.mb_datetime)}</span>
+			<span class="info-description ellipsis">
+				<span>{eb->date_format('H시 i분', adminfo.mb_datetime)}</span>
+			</span>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+<!--{* 메인 상단 설치정보 끝 *}-->
+<!--{/}-->
+
+<!--{? _is_youngcart}-->
+<!--{* ------------- 처리할 주문 시작 ------------- *}-->
+<div class="main-headline">
+	<h5><strong>처리할 주문</strong></h5>
+	<div class="clearfix"></div>
+</div>
+<div class="order-wrap">
+	<!--{@ order_status}-->
+	<div class="order-box">
+		<div class="order-box-in">
+			<h3>{? .count > 0}<div class="alarm-marker"><span class="alarm-effect"></span><span class="alarm-point"></span></div>{/}{=number_format(.count)}</h3>
+			<p>
+				{.key_} <i class="fa fa-caret-right"></i>
+				{? .key_=='주문'}입금{: .key_=='입금'}준비{: .key_=='준비'}배송{: .key_=='배송'}완료{/}
+			</p>
+		</div>
+		<div class="icon">
+			<i class="fa fa-{? .key_=='주문'}shopping-basket{: .key_=='입금'}credit-card{: .key_=='준비'}cube{: .key_=='배송'}check{/}"></i>
+		</div>
+		<a href="{.href}" class="order-box-footer ellipsis">
+			금액: <strong>{=number_format(.price)}원</strong> - <span>처리하기</span>
+		</a>
+	</div>
+	<!--{/}-->
+	<div class="clearfix"></div>
+</div>
+<!--{* 처리할 주문 끝 *}-->
+
+<div class="row margin-bottom-30">
+	<div class="col-md-6 md-margin-bottom-30">
+		<!--{* ------------- 상품문의 시작 ------------- *}-->
+		<div class="main-headline">
+			<h5><strong>상품문의</strong></h5>
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=itemqalist" class="headline-btn btn-e btn-e-xs btn-e-brd btn-e-default pull-right"><i class="fa fa-plus"></i> 더보기</a>
+			<div class="clearfix"></div>
+		</div>
+		<div class="admin-basic-latest" style="height:235px">
+			<ul class="list-unstyled margin-bottom-0">
+				<!--{@ item_qa}-->
+				<li><div class="ellipsis">{? .is_answer == ''}<i class="fa fa-check-circle-o"></i>{:}<i class="fa fa-circle-o color-blue"></i>{/} <a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=itemqaform&amp;iq_id={.iq_id}&amp;w=u">{=conv_subject(.iq_subject, 40)}</a></div><span class="member-name">{.name}</span></li>
+				<!--{:}-->
+				<li class="ellipsis text-center">자료가 없습니다.</li>
+				<!--{/}-->
+			</ul>
+		</div>
+		<!--{* 상품문의 끝 *}-->
+	</div>
+	<div class="col-md-6">
+		<!--{* ------------- 사용후기 시작 ------------- *}-->
+		<div class="main-headline">
+			<h5><strong>사용후기</strong></h5>
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=itemuselist&amp;sort1=is_confirm&amp;sort2=asc" class="headline-btn btn-e btn-e-xs btn-e-brd btn-e-default pull-right"><i class="fa fa-plus"></i> 더보기</a>
+			<div class="clearfix"></div>
+		</div>
+		<div class="admin-basic-latest" style="height:93px">
+			<ul class="list-unstyled margin-bottom-0">
+				<!--{@ item_use}-->
+				<li><div class="ellipsis">{? .is_confirm != 0}<i class="fa fa-check-circle-o"></i>{:}<i class="fa fa-circle-o color-blue"></i>{/} <a href="{C.EYOOM_ADMIN_URL}/?dir=shop&amp;pid=itemuseform&amp;is_id={.is_id}&amp;w=u">{=conv_subject(.is_subject, 40)}</a></div></li>
+				<!--{:}-->
+				<li class="ellipsis text-center">자료가 없습니다.</li>
+				<!--{/}-->
+			</ul>
+		</div>
+		<!--{* 사용후기 끝 *}-->
+		<div class="margin-bottom-20 hidden-xs hidden-sm"></div>
+		<div class="margin-bottom-30 visible-xs visible-sm"></div>
+		<!--{* ------------- 1:1문의 시작 ------------- *}-->
+		<div class="main-headline">
+			<h5><strong>1:1문의</strong></h5>
+			<a href="{C.G5_BBS_URL}/qalist.php" class="headline-btn btn-e btn-e-xs btn-e-brd btn-e-default pull-right"><i class="fa fa-plus"></i> 더보기</a>
+			<div class="clearfix"></div>
+		</div>
+		<div class="admin-basic-latest" style="height:93px">
+			<ul class="list-unstyled margin-bottom-0">
+				<!--{@ qa_conts}-->
+				<li class="ellipsis"><div class="ellipsis">{? .qa_status}<i class="fa fa-check-circle-o"></i>{:}<i class="fa fa-circle-o color-blue"></i>{/} <a href="{C.G5_BBS_URL}/qaview.php?qa_id={.qa_id}">{=conv_subject(.qa_subject, 40)}</a></div></li>
+				<!--{:}-->
+				<li class="ellipsis text-center">자료가 없습니다.</li>
+				<!--{/}-->
+			</ul>
+		</div>
+		<!--{* 1:1문의 끝 *}-->
+	</div>
+</div>
+
+<div class="chart-wrap">
+	<!--{* ------------- 쇼핑몰 주간 일-매출 현황 시작 ------------- *}-->
+	<div class="chart-item item-left">
+		<div class="main-headline">
+			<h5><strong>쇼핑몰 주간 일-매출 현황</strong></h5>
+			<div class="headline-btn btn-group">
+			    <a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=sale1" type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split">상세보기</a>
+			    <button type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split-default dropdown-toggle" data-toggle="dropdown">
+			        <i class="fa fa-caret-down"></i>
+			        <span class="sr-only">Toggle Dropdown</span>
+			    </button>
+			    <ul class="dropdown-menu" role="menu">
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=sale1">기간별 매출현황 검색</a></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=itemsellrank">상품판매 순위</a></li>
+			        <li class="divider"></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlist">쇼핑몰 주문현황</a></li>
+			    </ul>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="chart-item-in padding-right-10">
+			<div class="chart-canvas">
+				<div id="chartSalesWeek"></div>
+			</div>
+		</div>
+	</div>
+	<!--{* 쇼핑몰 주간 일-매출 현황 끝 *}-->
+
+	<!--{* ------------- 쇼핑몰 년간 월-매출 현황 시작 ------------- *}-->
+	<div class="chart-item item-right">
+		<div class="main-headline">
+			<h5><strong>쇼핑몰 년간 월-매출 현황</strong></h5>
+			<div class="headline-btn btn-group">
+			    <a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=sale1" type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split">상세보기</a>
+			    <button type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split-default dropdown-toggle" data-toggle="dropdown">
+			        <i class="fa fa-caret-down"></i>
+			        <span class="sr-only">Toggle Dropdown</span>
+			    </button>
+			    <ul class="dropdown-menu" role="menu">
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=sale1">기간별 매출현황 검색</a></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=shopetc&pid=itemsellrank">상품판매 순위</a></li>
+			        <li class="divider"></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=orderlist">쇼핑몰 주문현황</a></li>
+			    </ul>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="chart-item-in padding-right-10">
+			<div class="chart-canvas">
+				<div id="chartSalesMonth"></div>
+			</div>
+		</div>
+	</div>
+	<!--{* 쇼핑몰 년간 월-매출 현황 끝 *}-->
+	<div class="clearfix"></div>
+	<div class="margin-bottom-30 hidden-xs"></div>
+</div>
+
+<!--{* ------------- 결제수단별 주문현황 시작 ------------- *}-->
+<div class="table-wrap">
+	<div class="main-headline">
+		<h5><strong>결제수단별 주문현황</strong></h5>
+		<div class="clearfix"></div>
+	</div>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+	<div class="table-list-eb">
+	<div class="table-responsive bg-color-white">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="min-width-100">구분</th>
+                    <!--{@ od_pg_thead}-->
+                    <th colspan="2" class="text-center">{.day}</th>
+                    <!--{/}-->
+                </tr>
+                <tr>
+	                <!--{@ od_pg_thead}-->
+	                <th class="min-width-50 text-center">건수</th>
+	                <th class="min-width-50 text-center">금액</th>
+	                <!--{/}-->
+                </tr>
+            </thead>
+            <tbody>
+	            <!--{@ pg_info}-->
+                <tr>
+	                <td><strong>{.method}</strong></td>
+	                <!--{@ info}-->
+                    <td class="text-right">{=number_format(..count)}</td>
+                    <td class="text-right">{=number_format(..price)}</td>
+                    <!--{/}-->
+                </tr>
+                <!--{/}-->
+            </tbody>
+        </table>
+	</div>
+	</div>
+	<div class="margin-bottom-30"></div>
+</div>
+<!--{* 결제수단별 주문현황 끝 *}-->
+<!--{/}-->
+
+<div class="chart-wrap">
+	<!--{* ------------- 오늘의 시간별 접속자, 회원가입 시작 ------------- *}-->
+	<div class="chart-item item-left">
+		<div class="main-headline">
+			<h5><strong>오늘의 시간별 접속자, 회원가입</strong></h5>
+			<div class="headline-btn btn-group">
+			    <a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list" type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split">상세보기</a>
+			    <button type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split-default dropdown-toggle" data-toggle="dropdown">
+			        <i class="fa fa-caret-down"></i>
+			        <span class="sr-only">Toggle Dropdown</span>
+			    </button>
+			    <ul class="dropdown-menu" role="menu">
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list">접속자 집계</a></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_search">접속자 검색</a></li>
+			        <li class="divider"></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=member_list">회원 관리</a></li>
+			    </ul>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="chart-item-in">
+			<div class="chart-canvas">
+				<div id="chartTime"></div>
+			</div>
+		</div>
+	</div>
+	<!--{* 오늘의 시간별 접속자, 회원가입 끝 *}-->
+
+	<!--{* ------------- 오늘의 브라우저별 접속자 비율 시작 ------------- *}-->
+	<div class="chart-item item-right">
+		<div class="main-headline">
+			<h5><strong>오늘의 브라우저별 접속자 비율</strong></h5>
+			<div class="headline-btn btn-group">
+			    <a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list" type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split">상세보기</a>
+			    <button type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split-default dropdown-toggle" data-toggle="dropdown">
+			        <i class="fa fa-caret-down"></i>
+			        <span class="sr-only">Toggle Dropdown</span>
+			    </button>
+			    <ul class="dropdown-menu" role="menu">
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list">접속자 집계</a></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_search">접속자 검색</a></li>
+			        <li class="divider"></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=member_list">회원 관리</a></li>
+			    </ul>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="chart-item-in">
+			<div class="chart-canvas">
+				<div id="chartBrowser"></div>
+			</div>
+		</div>
+	</div>
+	<!--{* 오늘의 브라우저별 접속자 비율 끝 *}-->
+	<div class="clearfix"></div>
+	<div class="margin-bottom-30 hidden-xs"></div>
+</div>
+
+<div class="chart-wrap">
+	<!--{* ------------- 오늘의 도메인별 접속자 시작 ------------- *}-->
+	<div class="chart-item item-left">
+		<div class="main-headline">
+			<h5><strong>오늘의 도메인별 접속자</strong></h5>
+			<div class="headline-btn btn-group">
+			    <a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list" type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split">상세보기</a>
+			    <button type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split-default dropdown-toggle" data-toggle="dropdown">
+			        <i class="fa fa-caret-down"></i>
+			        <span class="sr-only">Toggle Dropdown</span>
+			    </button>
+			    <ul class="dropdown-menu" role="menu">
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list">접속자 집계</a></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_search">접속자 검색</a></li>
+			        <li class="divider"></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=member_list">회원 관리</a></li>
+			    </ul>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="chart-item-in">
+			<div class="chart-canvas">
+				<div id="chartDomain"></div>
+			</div>
+		</div>
+	</div>
+	<!--{* 오늘의 도메인별 접속자 끝 *}-->
+
+	<!--{* ------------- 오늘의 접속자 OS 비율 시작 ------------- *}-->
+	<div class="chart-item item-right">
+		<div class="main-headline">
+			<h5><strong>오늘의 OS별 접속자 비율</strong></h5>
+			<div class="headline-btn btn-group">
+			    <a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list" type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split">상세보기</a>
+			    <button type="button" class="btn-e btn-e-xs btn-e-brd btn-e-default btn-e-split-default dropdown-toggle" data-toggle="dropdown">
+			        <i class="fa fa-caret-down"></i>
+			        <span class="sr-only">Toggle Dropdown</span>
+			    </button>
+			    <ul class="dropdown-menu" role="menu">
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_list">접속자 집계</a></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=visit_search">접속자 검색</a></li>
+			        <li class="divider"></li>
+			        <li><a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=member_list">회원 관리</a></li>
+			    </ul>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="chart-item-in">
+			<div class="chart-canvas">
+				<div id="chartOS"></div>
+			</div>
+		</div>
+	</div>
+	<!--{* 오늘의 접속자 OS 비율 끝 *}-->
+	<div class="clearfix"></div>
+	<div class="margin-bottom-30 hidden-xs"></div>
+</div>
+
+<div class="jsgride-wrap">
+	<!--{* ------------- 최근 신규가입회원 10건 시작 ------------- *}-->
+	<div class="main-headline">
+		<h5><strong>최근 신규가입회원 10건</strong></h5>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=member_list" class="pull-right font-size-11">회원 전체보기</a>
+		<div class="clearfix"></div>
+	</div>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+	<div id="new-member"></div>
+	<!--{* 최근 신규가입회원 10건 끝 *}-->
+	<div class="margin-bottom-30"></div>
+
+	<!--{* ------------- 최근 게시물 시작 ------------- *}-->
+	<div class="main-headline">
+		<h5><strong>최근 게시물</strong></h5>
+		<a href="{C.G5_BBS_URL}/new.php" class="pull-right font-size-11">최근게시물 더보기</a>
+		<div class="clearfix"></div>
+	</div>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+	<div id="new-post"></div>
+	<!--{* 최근 게시물 끝 *}-->
+	<div class="margin-bottom-30"></div>
+
+	<!--{* ------------- 최근 포인트 발생내역 시작 ------------- *}-->
+	<div class="main-headline">
+		<h5><strong>최근 포인트 발생내역</strong></h5>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=point_list" class="pull-right font-size-11">포인트내역 전체보기</a>
+		<div class="clearfix"></div>
+	</div>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+	<div id="new-point"></div>
+	<!--{* 최근 포인트 발생내역 끝 *}-->
+</div>
+
+<script type="text/javascript" src="../plugins/d3/d3.min.js"></script>
+<script type="text/javascript" src="../plugins/c3/c3.min.js"></script>
+<script type="text/javascript" src="../plugins/jsgrid/jsgrid.min.js"></script>
+<script type="text/javascript" src="../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Chart
+--------------------------------------*/
+// ----- 시간별 접속자, 회원가입 ----- //
+var chartTime = c3.generate({
+	bindto: '#chartTime',
+    data: {
+        x: '시간',
+        columns: [
+            ['시간', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+            // 어제의 시간별 접속자
+            ['접속자', {@ last_vi_count}{.value_}{? .size_!=.index_+1},{/}{/}],
+            // 어제의 시간별 회원가입
+            ['회원가입', {@ last_vi_regist}{.value_}{? .size_!=.index_+1},{/}{/}]
+        ],
+        axes: {
+            회원가입: 'y2'
+        },
+		types: {
+			접속자: 'area-spline',
+			회원가입: 'bar'
+		}
+    },
+    color: {
+        pattern: ['#007AFF', '#FF9400']
+    },
+    axis: {
+	    x: {
+            label: {
+                text: '시간 (단위: 시)',
+                position: 'outer-center'
+            }
+	    },
+		y: {
+            tick: {
+                format: d3.format(",")
+            },
+			label: {
+				text: '접속자 (단위: 명)',
+				position: 'outer-middle'
+			}
+		},
+        y2: {
+            show: true,
+			label: {
+				text: '회원가입 (단위: 명)',
+				position: 'outer-middle'
+			}
+        }
+    }
+});
+
+setTimeout(function () {
+    chartTime.load({
+        columns: [
+	        // 오늘의 시간별 접속자
+            ['접속자', {@ this_vi_count}{.value_}{? .size_!=.index_+1},{/}{/}]
+        ]
+    });
+}, 1500);
+
+setTimeout(function () {
+    chartTime.load({
+        columns: [
+	        // 오늘의 시간별 회원가입
+            ['회원가입', {@ this_vi_regist}{.value_}{? .size_!=.index_+1},{/}{/}]
+        ]
+    });
+}, 2000);
+
+// ----- 브라우저별 접속자	----- //
+var chartBrowser = c3.generate({
+	bindto: '#chartBrowser',
+    data: {
+	    // 어제의 브라우저별 접속자
+        columns: [
+	        <!--{@ last_vi_browser}-->
+            ['{.key_}', {.value_}]{? .size_!=.index_+1},{/}
+            <!--{/}-->
+        ],
+        type : 'donut',
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+    donut: {
+        title: "브라우저별 접속자",
+        label: {
+            format: function (value, ratio, id) {
+                return d3.format()(value);
+            }
+        }
+    }
+});
+
+setTimeout(function () {
+    chartBrowser.load({
+	    // 오늘의 브라우저별 접속자
+        columns: [
+	        <!--{@ this_vi_browser}-->
+            ['{.key_}', {.value_}]{? .size_!=.index_+1},{/}
+            <!--{/}-->
+        ]
+    });
+}, 1500);
+
+// ----- 도메인별 접속자	----- //
+var chartDomain = c3.generate({
+	bindto: '#chartDomain',
+    data: {
+	    // 어제의 도메인별 접속자
+        columns: [
+	        <!--{@ last_vi_domain}-->
+	        {? .key_ && .index_ < 10}
+            ['{.key_}', {.value_}]{? .size_!=.index_+1},{/}
+            {/}
+            <!--{/}-->
+        ],
+        type : 'donut',
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+    donut: {
+        title: "도메인별 접속자",
+        label: {
+            format: function (value, ratio, id) {
+                return d3.format()(value);
+            }
+        }
+    }
+});
+
+setTimeout(function () {
+    chartDomain.load({
+	    // 오늘의 도메인별 접속자
+        columns: [
+	        <!--{@ this_vi_domain}-->
+	        {? .key_ && .index_ < 10}
+            ['{.key_}', {.value_}]{? .size_!=.index_+1},{/}
+            {/}
+            <!--{/}-->
+        ]
+    });
+}, 1500);
+
+// ----- OS별 접속자 비율 ----- //
+var chartOS = c3.generate({
+	bindto: '#chartOS',
+    data: {
+	    // 어제의 OS 접속자
+        columns: [
+	        <!--{@ last_vi_os}-->
+            ['{? !.key_}기타{:}{.key_}{/}', {.value_}]{? .size_!=.index_+1},{/}
+            <!--{/}-->
+        ],
+        type : 'donut',
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+    donut: {
+        title: "OS별 접속자",
+        label: {
+            format: function (value, ratio, id) {
+                return d3.format()(value);
+            }
+        }
+    }
+});
+
+setTimeout(function () {
+    chartOS.load({
+	    // 오늘의 OS 접속자
+        columns: [
+	        <!--{@ this_vi_os}-->
+            ['{? !.key_}기타{:}{.key_}{/}', {.value_}]{? .size_!=.index_+1},{/}
+            <!--{/}-->
+        ]
+    });
+}, 1500);
+
+<!--{? _is_youngcart}-->
+// ----- 쇼핑몰 주간 일-매출 현황 ----- //
+var chartSalesWeek = c3.generate({
+	bindto: '#chartSalesWeek',
+    data: {
+	    x: '날짜',
+	    // 지난 7일 쇼핑몰 매출 현황
+        columns: [
+	        ['날짜', {@ last_x_val}'{.value_}'{? .size_!=.index_+1}, {/}{/}],
+            ['주문', {@ last_arr_order}{.order}{? .size_!=.index_+1}, {/}{/}],
+            ['취소', {@ last_arr_order}{(.cancel)*-1}{? .size_!=.index_+1}, {/}{/}]
+        ],
+        type: 'bar'
+    },
+    color: {
+        pattern: ['#87BA00', '#FF2900']
+    },
+    bar: {
+        width: {
+            ratio: 0.8
+        }
+    },
+    axis: {
+	    x: {
+            type: 'timeseries',
+            tick: {
+                format: '%m-%d'
+            },
+            label: {
+                text: '주간 (단위: 일)',
+                position: 'outer-center'
+            }
+	    },
+		y: {
+            tick: {
+                format: d3.format(",")
+            },
+			label: {
+				text: '매출 (단위: 원)',
+				position: 'outer-middle'
+			}
+		}
+    }
+});
+
+setTimeout(function () {
+    chartSalesWeek.load({
+	    // 최근 7일 쇼핑몰 매출 현황((주문)
+        columns: [
+	        ['날짜', {@ x_val}'{.value_}'{? .size_!=.index_+1}, {/}{/}],
+            ['주문', {@ arr_order}{.order}{? .size_!=.index_+1}, {/}{/}]
+        ]
+    });
+}, 1600);
+
+setTimeout(function () {
+    chartSalesWeek.load({
+	    // 최근 7일 쇼핑몰 매출 현황(취소)
+        columns: [
+	        ['날짜', {@ x_val}'{.value_}'{? .size_!=.index_+1}, {/}{/}],
+            ['취소', {@ arr_order}{(.cancel)*-1}{? .size_!=.index_+1}, {/}{/}]
+        ]
+    });
+}, 2200);
+
+// ----- 쇼핑몰 년간 월-매출 현황 ----- //
+var chartSalesMonth = c3.generate({
+	bindto: '#chartSalesMonth',
+    data: {
+        x: '월',
+        // 작년 쇼핑몰 매출 현황
+        columns: [
+            ['월', 1, 2, 3, 4 ,5 ,6 ,7 ,8 ,9 ,10 ,11, 12],
+            ['합계', {@ last_tot}{.orderprice}{? .key!= '12'}, {/}{/}],
+            ['무통장', {@ last_receiptbank}{.value_}{? .key!= '12'}, {/}{/}],
+            ['가상계좌', {@ last_receiptvbank}{.value_}{? .key!= '12'}, {/}{/}],
+            ['계좌이체', {@ last_receiptiche}{.value_}{? .key!= '12'}, {/}{/}],
+            ['카드', {@ last_receiptcard}{.value_}{? .key!= '12'}, {/}{/}],
+            ['간편결제', {@ last_receipteasy}{.value_}{? .key!= '12'}, {/}{/}],
+            ['카카오페이', {@ last_receiptkakao}{.value_}{? .key!= '12'}, {/}{/}],
+            ['휴대폰', {@ last_receipthp}{.value_}{? .key!= '12'}, {/}{/}],
+            ['쿠폰', {@ last_ordercoupon}{.value_}{? .key!= '12'}, {/}{/}],
+            ['포인트', {@ last_receiptpoint}{.value_}{? .key!= '12'}, {/}{/}],
+            ['취소', {@ last_ordercancel}{.value_*-1}{? .key!= '12'}, {/}{/}]
+        ],
+		types: {
+			합계: 'bar',
+			취소: 'bar'
+		}
+    },
+    color: {
+        pattern: ['#63B5F5', '#DE2600', '#E08200', '#669400', '#7347CF', '#8C6130', '#C2175C', '#171C29', '#FF2900', '#AA2929']
+    },
+    bar: {
+        width: {
+            ratio: 0.5
+        }
+    },
+    axis: {
+	    x: {
+            label: {
+                text: '년간 (단위: 월)',
+                position: 'outer-center'
+            }
+	    },
+		y: {
+            tick: {
+                format: d3.format(",")
+            },
+			label: {
+				text: '매출 (단위: 원)',
+				position: 'outer-middle'
+			}
+		}
+    }
+});
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(무통장)
+            ['무통장', {@ receiptbank}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 1000);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(가상계좌)
+            ['가상계좌', {@ receiptvbank}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 1200);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(계좌이체)
+            ['계좌이체', {@ receiptiche}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 1400);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(카드입금)
+            ['카드', {@ receiptcard}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 1600);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(PAYNOW 외)
+            ['간편결제', {@ receipteasy}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 1800);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(KAKAOPAY)
+            ['카카오페이', {@ receiptkakao}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 2000);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(휴대폰)
+            ['휴대폰', {@ receipthp}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 2200);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(쿠폰)
+            ['쿠폰', {@ ordercoupon}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 2400);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(포인트)
+            ['포인트', {@ receiptpoint}{.value_}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 2600);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+        columns: [
+	        // 올해 쇼핑몰 매출 현황(주문취소)
+            ['취소', {@ ordercancel}{.value_*-1}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 2800);
+
+setTimeout(function () {
+    chartSalesMonth.load({
+	    // 올해 쇼핑몰 매출 현황(주문합계)
+        columns: [
+            ['합계', {@ tot}{.orderprice}{? .key!= '12'}, {/}{/}]
+        ]
+    });
+}, 3000);
+<!--{/}-->
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    // 최근 신규가입회원
+    var db_member = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.회원아이디 && !(client.회원아이디.indexOf(filter.회원아이디) > -1) || filter.이름 && !(client.이름.indexOf(filter.이름) > -1))
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db1 = db_member,
+    db_member.clients = [
+	    <!--{@ new_member}-->
+        {
+	        포토: "<div class='new-member-photo'>{? !.photo_url}<i class='fa fa-user'></i>{:}<img src='{.photo_url}' class='img-responsive'>{/}</div>",
+	        회원아이디: "{.mb_id}",
+	        이름: "{=get_text(.mb_name)}",
+	        닉네임: "{.mb_nick}",
+	        권한: "{.mb_level}",
+	        포인트: "{=number_format(.mb_point)}",
+	        가입일: "{=substr(.mb_datetime,0,-3)}",
+	        최신로그인: "{=substr(.mb_today_login,0,-3)}",
+	    },
+        <!--{/}-->
+    ];
+
+    // 최근 게시물
+    var db_post = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.그룹 && !(client.그룹.indexOf(filter.그룹) > -1) || filter.게시판 && !(client.게시판.indexOf(filter.게시판) > -1))
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db2 = db_post,
+    db_post.clients = [
+	    <!--{@ new_post}-->
+        {
+	        그룹: "<a href='{.gr_href}' target='_blank'>{.group}</a>",
+	        게시판: "<a href='{.bo_href}' target='_blank'>{.board}</a>",
+	        제목: "<p class='ellipsis margin-bottom-0'><a href='{.view_url}' target='_blank'>{.subject}</a></p>",
+	        이름: "{.name}",
+	        일시: "{eb->date_format('Y-m-d', .datetime)}",
+	    },
+	    <!--{/}-->
+    ];
+
+    // 최근 포인트
+    var db_point = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.회원아이디 && !(client.회원아이디.indexOf(filter.회원아이디) > -1) || filter.이름 && !(client.이름.indexOf(filter.이름) > -1))
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db3 = db_point,
+    db_point.clients = [
+	    <!--{@ new_point}-->
+        {
+	        회원아이디: "<a href='{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=point_list&amp;sfl=mb_id&amp;stx={.mb_id}'>{.mb_id}</a>",
+	        이름: "{.mb_name}",
+	        닉네임: "{.mb_nick}",
+	        일시: "{.po_datetime}",
+	        포인트내용: "{? !preg_match('/^\@/', .po_rel_table) && .po_rel_table}<a href='{C.G5_BBS_URL}/board.php?bo_table={.po_rel_table}&amp;wr_id={.po_rel_id}'>{.po_content}</a>{:}{.po_content}{/}",
+	        포인트: "<span class='color-red'>{=number_format(.po_point)}</span>",
+	        포인트합: "{=number_format(.po_mb_point)}",
+	    },
+	    <!--{/}-->
+    ];
+}();
+
+jQuery(document).ready(function(){
+	// 최근 신규가입회원
+    $("#new-member").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db1,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 5,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+	        { name: "포토", type: "image", width: 50, align: "center" },
+            { name: "회원아이디", type: "text", width: 100 },
+            { name: "이름", type: "text", width: 100 },
+            { name: "닉네임", type: "text", width: 100 },
+            { name: "권한", type: "number", width: 50 },
+            { name: "포인트", type: "number", width: 80 },
+            { name: "가입일", type: "text", width: 145 },
+            { name: "최신로그인", type: "text", width: 145 },
+        ]
+    });
+
+	// 최근 게시물
+    $("#new-post").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db2,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 5,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "그룹", type: "text", width: 100 },
+            { name: "게시판", type: "text", width: 100 },
+            { name: "제목", type: "text", width: 250 },
+            { name: "이름", type: "text", width: 100 },
+            { name: "일시", type: "text", width: 145 },
+        ]
+    });
+
+	// 최근 포인트
+    $("#new-point").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db3,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 5,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "회원아이디", type: "text", width: 100 },
+            { name: "이름", type: "text", width: 100 },
+            { name: "닉네임", type: "text", width: 100 },
+            { name: "일시", type: "text", width: 150 },
+            { name: "포인트내용", type: "text", width: 150 },
+            { name: "포인트", type: "number", width: 100 },
+            { name: "포인트합", type: "number", width: 100 },
+        ]
+    });
+});
+</script>

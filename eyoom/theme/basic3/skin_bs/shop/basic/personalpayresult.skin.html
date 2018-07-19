@@ -1,0 +1,157 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="sod-fin">
+	<p class="text-right font-size-12 color-grey"><span class="label label-indigo margin-right-5">개인결제번호</span><u>{_pp_id}</u></p>
+    <div class="sod-fin-view">
+        <div class="headline"><h4><strong>결제 정보</strong></h4></div>
+		<div class="margin-bottom-30"></div>
+        <div class="sod-fin-pay">
+		    <div class="table-list-eb">
+		        <table class="table table-bordered">
+				    <thead>
+				        <tr>
+				            <th>항목</th>
+				            <th>내용</th>
+				        </tr>
+				    </thead>
+		            <tbody>
+						<!--{? pp.od_id}-->
+		                <tr>
+		                    <th>주문번호</th>
+		                    <td>{pp.od_id}</td>
+		                </tr>
+		                <!--{/}-->
+		                <tr>
+		                    <th>결제방식</th>
+		                    <td>{pp.pp_settle_case}</td>
+		                </tr>
+						<!--{? _pp_receipt_price}-->
+		                <tr>
+		                    <th scope="row">결제금액</th>
+		                    <td>{_pp_receipt_price}</td>
+		                </tr>
+		                <tr>
+		                    <th>결제일시</th>
+		                    <td><!--{? !is_null_time(pp.pp_receipt_time)}-->{pp.pp_receipt_time}<!--{/}--></td>
+		                </tr>
+						<!--{/}-->
+
+						<!--{? _app_no_subj // 승인번호, 휴대폰번호, 거래번호}-->
+		                <tr>
+		                    <th>{_app_no_subj}</th>
+		                    <td>{_app_no}</td>
+		                </tr>
+						<!--{/}-->
+
+						<!--{? _disp_bank // 계좌정보}-->
+		                <tr>
+		                    <th>입금자명</th>
+		                    <td>{=get_text(pp.pp_deposit_name)}</td>
+		                </tr>
+		                <tr>
+		                    <th>입금계좌</th>
+		                    <td>{=get_text(pp.pp_bank_account)}</td>
+		                </tr>
+						<!--{/}-->
+
+						<!--{? _disp_receipt}-->
+		                <tr>
+		                    <th>영수증</th>
+		                    <td>
+								<!--{? pp.pp_settle_case == '휴대폰'}-->
+		                        <a href="javascript:;" onclick="{_hp_receipt_script}">영수증 출력</a>
+		                        <!--{/}-->
+
+								<!--{? pp.pp_settle_case == '신용카드'}-->
+		                        <a href="javascript:;" onclick="{_card_receipt_script}">영수증 출력</a>
+		                        <!--{/}-->
+		                    </td>
+		                </tr>
+						<!--{/}-->
+
+						<!--{? default.de_taxsave_use}-->
+						<!--{? _is_cash_receipt && _misu_price == 0 && pp.pp_receipt_price && (pp.pp_settle_case == '계좌이체' || pp.pp_settle_case == '가상계좌')}-->
+		                <tr>
+		                    <th>현금영수증</th>
+		                    <td>
+							<!--{? pp.pp_cash}-->
+								<a href="javascript:;" onclick="{_cash_receipt_script}" class="btn_frmline">현금영수증 확인하기</a>
+							<!--{:}-->
+								<a href="javascript:;" onclick="window.open('{C.G5_SHOP_URL}/taxsave.php?tx=personalpay&od_id={_pp_id}', 'taxsave', 'width=550,height=400,scrollbars=1,menus=0');" class="btn_frmline">현금영수증을 발급하시려면 클릭하십시오.</a>
+							<!--{/}-->
+							</td>
+						<!--{/}-->
+						<!--{/}-->
+		            </tbody>
+		        </table>
+	        </div>
+        </div>
+    </div>
+
+    <div class="sod-fin-tot">
+	    <div class="table-list-eb">
+			<table class="table table-striped table-bordered">
+			    <thead>
+			        <tr>
+			            <th colspan="2">총 주문액</th>
+			        </tr>
+			    </thead>
+			    <tbody>
+			        <tr>
+			            <th>총 주문액</th>
+			            <td>{=display_price(pp.pp_price)}</td>
+			        </tr>
+			        <!--{? _misu_price > 0}-->
+			        <tr>
+			            <th>미결제액</th>
+			            <td>{display_price(_misu_price)}</td>
+			        </tr>
+			        <!--{/}-->
+			        <tr>
+			            <th>결제액</th>
+			            <td>{_wanbul}</td>
+			        </tr>
+			    </tbody>
+			</table>
+		</div>
+    </div>
+
+    <!--{? _deposit_no}-->
+    <div class="headline margin-top-30"><h4><strong>모의입금처리</strong></h4></div>
+    <form method="post" action="http://devadmin.kcp.co.kr/Modules/Noti/TEST_Vcnt_Noti_Proc.jsp" target="_blank">
+    <p>관리자가 가상계좌 테스트를 한 경우에만 보입니다.</p>
+
+	<div class="panel panel-dark">
+	    <div class="panel-heading">
+	        <h3 class="panel-title"><i class="fa fa-th-list"></i> 결제 정보</h3>
+	    </div>
+	    <div class="panel-body">
+	        <table class="table table-bordered">
+	            <tbody>
+			        <tr>
+			            <th><label for="e_trade_no">KCP 거래번호</label></th>
+			            <td><input type="text" class="form-control" name="e_trade_no" value="{pp.pp_tno}" size="80"></td>
+			        </tr>
+			        <tr>
+			            <th><label for="deposit_no">입금계좌</label></th>
+			            <td><input type="text" class="form-control" name="deposit_no" value="{_deposit_no}" size="80"></td>
+			        </tr>
+			        <tr>
+			            <th><label for="req_name">입금자명</label></th>
+			            <td><input type="text" class="form-control" name="req_name" value="{pp.pp_deposit_name}" size="80"></td>
+			        </tr>
+			        <tr>
+			            <th><label for="noti_url">입금통보 URL</label></th>
+			            <td><input type="text" class="form-control" name="noti_url" value="{C.G5_SHOP_URL}/settle_kcp_common.php" size="80"></td>
+			        </tr>
+	            </tbody>
+	        </table>
+	    </div>
+	</div>
+
+    <div id="sod_fin_test" class="text-center">
+        <input type="submit" value="입금통보 테스트" class="btn-e btn-e-lg btn-e-dark">
+    </div>
+	</form>
+	<!--{/}-->
+</div>

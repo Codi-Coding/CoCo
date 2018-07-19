@@ -1,0 +1,465 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-ebslider-form .ebslider-image {max-width:300px}
+</style>
+
+<div class="admin-ebslider-form">
+	<div class="headline">
+		<h4><strong>EB 슬라이더 - 마스터 관리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	{# theme_manager // 테마 매니저 }
+
+	<form name="febsliderform" method="post" action="{_action_url1}" onsubmit="return febsliderform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="theme" id="theme" value="{? this_theme}{this_theme}{:}{_theme}{/}">
+	<input type="hidden" name="es_no" id="es_no" value="{es.es_no}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{this_theme}</span>] EB 슬라이더 마스터 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="ebslider-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 설정정보</strong></header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label class="label">코드</label>
+							<label for="es_code" class="input">
+						        <input type="text" name="es_code" id="es_code" value="{? es.es_code}{es.es_code}{:}{=time()}{/}" readonly required>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 자동생성되며, 수정하실 수 없습니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">상태</label>
+							<div class="inline-group">
+								<label for="es_state_1" class="radio"><input type="radio" name="es_state" id="es_state_1" value="1" {? es.es_state == '1' || !es.es_state}checked{/}><i></i> 활성</label>
+								<label for="es_state_2" class="radio"><input type="radio" name="es_state" id="es_state_2" value="2" {? es.es_state == '2'}checked{/}><i></i> 비활성</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-9">
+						<section>
+							<label class="label">슬라이더 마스터 제목</label>
+							<label for="es_subject" class="input">
+						        <input type="text" name="es_subject" id="es_subject" value="{=get_text(es.es_subject)}" required>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> 예) 메인페이지 배너 슬라이더, 메인 우측 제품소개 슬라이더, etc
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">스킨선택</label>
+							<label for="es_skin" class="select">
+						        <select name="es_skin" id="es_skin">
+							    	<option value="">::선택::</option>
+							    	<!--{@ skins.ebslider}-->
+							    	<option value="{.value_}" {=get_selected(es.es_skin, .value_)}>{.value_}</option>
+							    	<!--{/}-->
+						        </select><i></i>
+							</label>
+							<div class="note">
+								<strong>Note:</strong> EB 슬라이더용 스킨을 선택해 주세요.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label class="label">유튜브동영상 플레이 방식</label>
+							<div class="inline-group">
+								<label for="es_ytplay_1" class="radio"><input type="radio" name="es_ytplay" id="es_ytplay_1" value="1" {? es.es_ytplay == '1' || !es.es_ytplay}checked{/}><i></i> 순차적으로 플레이</label>
+								<label for="es_ytplay_2" class="radio"><input type="radio" name="es_ytplay" id="es_ytplay_2" value="2" {? es.es_ytplay == '2'}checked{/}><i></i> 랜덤하게 플레이</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 유튜브동영상 아이템을 여러개 등록하였을 경우, 플레이 방식을 선택합니다. (유튜브동영상을 지원하는 EB슬라이더 스킨에서만 작동합니다.)
+							</div>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label class="label">유튜브동영상 모바일에서 자동 플레이</label>
+							<div class="inline-group">
+								<label for="es_ytmauto_1" class="radio"><input type="radio" name="es_ytmauto" id="es_ytmauto_1" value="1" {? es.es_ytmauto == '1'}checked{/}><i></i> 자동실행</label>
+								<label for="es_ytmauto_2" class="radio"><input type="radio" name="es_ytmauto" id="es_ytmauto_2" value="2" {? es.es_ytmauto == '2' || !es.es_ytmauto}checked{/}><i></i> 멈춤</label>
+							</div>
+							<div class="note">
+								<strong>Note:</strong> 모바일에서 페이지 로딩 후, 동영상을 바로 플레이 시킬지 멈춘 상태로 있을지 결정합니다. (유튜브동영상을 지원하는 EB슬라이더 스킨에서만 작동합니다.)
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{ frm_submit }
+
+	</form>
+</div>
+
+<script>
+function febsliderform_submit(f) {
+	if (f.es_code.value == '') {
+		alert("코드는 자동생성되며 빈값을 입력하실 수 없습니다.");
+		document.location.reload();
+		return false;
+	}
+	if (f.es_subject.value.length < 5) {
+		alert("슬라이더 마스터의 제목을 5자이상으로 입력해 주세요.");
+		f.es_subject.focus();
+		return false;
+	}
+	if (!f.es_skin.value) {
+		alert("슬라이더 마스터의 스킨을 선택해 주세요.");
+		f.es_skin.focus();
+		return false;
+	}
+    return true;
+}
+</script>
+
+<!--{? _w == 'u' && _es_code}-->
+<div class="admin-ebslider-YTitemlist">
+
+	<form name="febsliderytitemlist" id="febsliderytitemlist" action="{_action_url2}" method="post" onsubmit="return febsliderytitemlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="theme" id="theme" value="{this_theme}">
+	<input type="hidden" name="es_code" id="es_code" value="{es.es_code}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="headline">
+		<h4><strong>EB 슬라이더 - 유튜브동영상 아이템 관리</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&pid=ebslider_ytitemform&amp;es_code={es.es_code}&amp;thema={this_theme}&amp;wmode=1" onclick="ebslideritem_modal(this.href); return false;" class="btn-e btn-e-red btn-e-xs  pull-right margin-top-5"><i class="fa fa-plus"></i> 유튜브동영상 아이템 추가</a>
+		<div class="clearfix"></div>
+		<!--{/}-->
+	</div>
+
+	<div class="cont-text-bg">
+		<p class="bg-danger font-size-12 margin-bottom-0">
+			<i class="fa fa-info-circle"></i> 유튜브동영상을 지원하는 EB슬라이더 스킨에서만 작동합니다.
+		</p>
+	</div>
+	<div class="margin-bottom-20"></div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="ebslider-ytitemlist"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <!--{? _is_admin == 'super'}-->
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	    <!--{/}-->
+	</div>
+	</form>
+
+</div>
+
+<div class="margin-bottom-30"></div>
+
+<div class="admin-ebslider-itemlist">
+
+	<form name="febslideritemlist" id="febslideritemlist" action="{_action_url3}" method="post" onsubmit="return febslideritemlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="theme" id="theme" value="{this_theme}">
+	<input type="hidden" name="es_code" id="es_code" value="{es.es_code}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="headline">
+		<h4><strong>EB 슬라이더 - 아이템 관리</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=theme&pid=ebslider_itemform&amp;es_code={es.es_code}&amp;thema={this_theme}&amp;wmode=1" onclick="ebslideritem_modal(this.href); return false;" class="btn-e btn-e-purple btn-e-xs  pull-right margin-top-5"><i class="fa fa-plus"></i> EB 슬라이더 아이템 추가</a>
+		<div class="clearfix"></div>
+		<!--{/}-->
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="ebslider-itemlist"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <!--{? _is_admin == 'super'}-->
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	    <!--{/}-->
+	</div>
+	</form>
+
+</div>
+
+<div class="modal fade ebslideritem-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title">EB슬라이더 아이템 관리</span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="ebslideritem-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="ebslider-close-btn btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function ebslideritem_modal(href) {
+    $('.ebslideritem-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#ebslideritem-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+        $('html').css({overflow: ''});
+    });
+    $('.ebslideritem-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#ebslideritem-iframe").attr("src", href);
+        $('#ebslideritem-iframe').height(700);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('.ebslideritem-iframe-modal').modal('hide');
+    window.location.reload();
+};
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+	// EB슬라이더 이미지 아이템
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1)  )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label><input type='hidden' name='ei_no[{.index_}]' value='{.ei_no}'>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=ebslider_itemform&amp;thema={this_theme}&amp;es_code={.es_code}&amp;ei_no={.ei_no}&amp;w=u&amp;iw=u&amp;page={_page}&amp;wmode=1' onclick='ebslideritem_modal(this.href); return false;'><u>수정</u></a>",
+	        이미지: "{.ei_image}",
+	        대표타이틀: "{? .ei_title}{=get_text(.ei_title)}{:}없음{/}",
+	        순서: "<label for='ei_sort_{.index}' class='input'><input type='text' name='ei_sort[{.index_}]' id='ei_sort_{.index_}' value='{.ei_sort}'></label>",
+	        상태: "<label for='ei_state_{.index_}' class='select'><select name='ei_state[{.index_}]' id='ei_state_{.index_}'><option value=''>선택</option><option value='1' {? .ei_state == '1'}selected{/}>보이기</option><option value='2' {? .ei_state == '2'}selected{/}>숨기기</option></select><i></i></label>",
+	        보기권한: "<label class='select'>{.view_level}<i></i></label>",
+	        시작일: "{.ei_start}",
+	        종료일: "{.ei_end}",
+	        등록일: "{=substr(.ei_regdt, 0, 10)}",
+        },
+        <!--{/}-->
+    ];
+
+    // EB슬라이더 유튜브 동영상 아이템
+    var ytdb = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1)  )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.ytdb    = ytdb,
+    ytdb.clients   = [
+	    <!--{@ ytlist}-->
+        {
+	        체크: "<label for='ytchk_{.index_}' class='checkbox'><input type='checkbox' name='ytchk[]' id='ytchk_{.index_}' value='{.index_}'><i></i></label><input type='hidden' name='ei_no[{.index_}]' value='{.ei_no}'>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=ebslider_ytitemform&amp;thema={this_theme}&amp;es_code={.es_code}&amp;ei_no={.ei_no}&amp;w=u&amp;iw=u&amp;page={_page}&amp;wmode=1' onclick='ebslideritem_modal(this.href); return false;'><u>수정</u></a>",
+	        유튜브동영상_URL: "<a href='https://youtu.be/{.ei_ytcode}' target='_blank'>https://youtu.be/{.ei_ytcode}</a>",
+	        자동실행: "<label class='checkbox'><input type='checkbox' name='ei_autoplay[{.index_}]' value='1' {? .ei_autoplay == '1'}checked{/}><i></i></label>",
+	        제어판: "<label class='checkbox'><input type='checkbox' name='ei_control[{.index_}]' value='1' {? .ei_control == '1'}checked{/}><i></i></label>",
+	        반복재생: "<label class='checkbox'><input type='checkbox' name='ei_loop[{.index_}]' value='1' {? .ei_loop == '1'}checked{/}><i></i></label>",
+	        음소거: "<label class='checkbox'><input type='checkbox' name='ei_mute[{.index_}]' value='1' {? .ei_mute == '1'}checked{/}><i></i></label>",
+	        투명패턴: "<label class='checkbox'><input type='checkbox' name='ei_raster[{.index_}]' value='1' {? .ei_raster == '1'}checked{/}><i></i></label>",
+	        순서: "<label for='ei_sort_{.index}' class='input'><input type='text' name='ei_sort[{.index_}]' id='ei_sort_{.index_}' value='{.ei_sort}'></label>",
+	        상태: "<label for='ei_state_{.index_}' class='select'><select name='ei_state[{.index_}]' id='ei_state_{.index_}'><option value=''>선택</option><option value='1' {? .ei_state == '1'}selected{/}>보이기</option><option value='2' {? .ei_state == '2'}selected{/}>숨기기</option></select><i></i></label>",
+	        보기권한: "<label class='select'>{.view_level}<i></i></label>",
+	        시작일: "{.ei_start}",
+	        종료일: "{.ei_end}",
+	        등록일: "{=substr(.ei_regdt, 0, 10)}",
+        },
+        <!--{/}-->
+    ];
+}();
+
+$(function() {
+    $("#ebslider-itemlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 60, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "이미지", type: "text", align: "center", width: 180 },
+            { name: "대표타이틀", type: "text", width: 250 },
+            { name: "순서", type: "number",width: 60 },
+            { name: "상태", type: "text", align: "center", width: 120 },
+            { name: "보기권한", type: "text", align: "center", width: 80 },
+            { name: "시작일", type: "text", align: "center", width: 80 },
+            { name: "종료일", type: "text", align: "center", width: 80 },
+            { name: "등록일", type: "text", align: "center", width: 80 },
+        ]
+    });
+
+    $("#ebslider-ytitemlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : ytdb,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 60, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "유튜브동영상_URL", type: "text", align: "center", width: 200 },
+            { name: "자동실행", type: "text", align: "center", width: 90 },
+            { name: "제어판", type: "text", align: "center", width: 80 },
+            { name: "반복재생", type: "text", align: "center", width: 90 },
+            { name: "음소거", type: "text", align: "center", width: 80 },
+            { name: "투명패턴", type: "text", align: "center", width: 90 },
+            { name: "순서", type: "number",width: 80 },
+            { name: "상태", type: "text", align: "center", width: 120 },
+            { name: "보기권한", type: "text", align: "center", width: 90 },
+            { name: "시작일", type: "text", align: "center", width: 80 },
+            { name: "종료일", type: "text", align: "center", width: 80 },
+            { name: "등록일", type: "text", align: "center", width: 80 },
+        ]
+    });
+
+    var $chk = $("#ebslider-itemlist .jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all_img(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+	
+    var $ytchk = $("#ebslider-ytitemlist .jsgrid-table th:first-child");
+	if ($ytchk.text() == '체크') {
+		var html = '<label for="ytchkall" class="checkbox"><input type="checkbox" name="chkall" id="ytchkall" value="1" onclick="check_all_yt(this.form)"><i></i></label>';
+		$ytchk.html(html);
+	}
+});
+
+function febslideritemlist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function febsliderytitemlist_submit(f) {
+    if (!is_checked("ytchk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function del_confirm() {
+	if (confirm('배너/광고를 삭제하시겠습니까?')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function check_all_img(f)
+{
+    var chk = document.getElementsByName("chk[]");
+
+    for (i=0; i<chk.length; i++)
+        chk[i].checked = f.chkall.checked;
+}
+
+function check_all_yt(f)
+{
+    var chk = document.getElementsByName("ytchk[]");
+
+    for (i=0; i<chk.length; i++)
+        chk[i].checked = f.chkall.checked;
+}
+</script>
+<!--{/}-->

@@ -44,7 +44,7 @@ function wrestRequired(fld)
     if (wrestTrim(fld) == "") {
         if (wrestFld == null) {
             // 셀렉트박스일 경우에도 필수 선택 검사합니다.
-            wrestMsg = wrestItemname(fld) + " : " + (fld.type=="select-one" ? aslang[21] : aslang[22]) + "\n";
+            wrestMsg = wrestItemname(fld) + " : 필수 "+(fld.type=="select-one"?"선택":"입력")+"입니다.\n";
             wrestFld = fld;
         }
     }
@@ -58,7 +58,7 @@ function wrestTelNum(fld)
     var pattern = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$/;
     if(!pattern.test(fld.value)){
         if(wrestFld == null){
-            wrestMsg = wrestItemname(fld) + " : " + aslang[23] + "\n";
+            wrestMsg = wrestItemname(fld)+" : 전화번호 형식이 올바르지 않습니다.\n\n하이픈(-)을 포함하여 입력하세요.\n";
             wrestFld = fld;
             fld.select();
         }
@@ -74,7 +74,7 @@ function wrestEmail(fld)
     var pattern = /([0-9a-zA-Z_-]+)@([0-9a-zA-Z_-]+)\.([0-9a-zA-Z_-]+)/;
     if (!pattern.test(fld.value)) {
         if (wrestFld == null) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[24] + "\n";
+            wrestMsg = wrestItemname(fld) + " : 이메일주소 형식이 아닙니다.\n";
             wrestFld = fld;
         }
     }
@@ -90,7 +90,7 @@ function wrestHangul(fld)
 
     if (pattern.test(fld.value)) {
         if (wrestFld == null) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[25] + "\n";
+            wrestMsg = wrestItemname(fld) + ' : 한글이 아닙니다. (자음, 모음 조합된 한글만 가능)\n';
             wrestFld = fld;
         }
     }
@@ -106,7 +106,7 @@ function wrestHangul2(fld)
 
     if (pattern.test(fld.value)) {
         if (wrestFld == null) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[26] + "\n";
+            wrestMsg = wrestItemname(fld) + ' : 한글이 아닙니다.\n';
             wrestFld = fld;
         }
     }
@@ -121,7 +121,7 @@ function wrestHangulAlNum(fld)
 
     if (pattern.test(fld.value)) {
         if (wrestFld == null) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[27] + "\n";
+            wrestMsg = wrestItemname(fld) + ' : 한글, 영문, 숫자가 아닙니다.\n';
             wrestFld = fld;
         }
     }
@@ -136,7 +136,7 @@ function wrestHangulAlpha(fld)
 
     if (pattern.test(fld.value)) {
         if (wrestFld == null) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[28] + "\n";
+            wrestMsg = wrestItemname(fld) + ' : 한글, 영문이 아닙니다.\n';
             wrestFld = fld;
         }
     }
@@ -149,7 +149,7 @@ function wrestNumeric(fld)
     if (fld.value.length > 0) {
         for (i = 0; i < fld.value.length; i++) {
             if (fld.value.charAt(i) < '0' || fld.value.charAt(i) > '9') {
-                wrestMsg = wrestItemname(fld) + " : " + aslang[29] + "\n";
+                wrestMsg = wrestItemname(fld) + " : 숫자가 아닙니다.\n";
                 wrestFld = fld;
             }
         }
@@ -166,7 +166,7 @@ function wrestAlpha(fld)
 
     if (!pattern.test(fld.value)) {
         if (wrestFld == null) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[30] + "\n";
+            wrestMsg = wrestItemname(fld) + " : 영문이 아닙니다.\n";
             wrestFld = fld;
         }
     }
@@ -182,7 +182,7 @@ function wrestAlNum(fld)
 
    if (!pattern.test(fld.value)) {
        if (wrestFld == null) {
-           wrestMsg = wrestItemname(fld) + " : " + aslang[31] + "\n";
+           wrestMsg = wrestItemname(fld) + " : 영문 또는 숫자가 아닙니다.\n";
            wrestFld = fld;
        }
    }
@@ -197,7 +197,7 @@ function wrestAlNum_(fld)
 
    if (!pattern.test(fld.value)) {
        if (wrestFld == null) {
-           wrestMsg = wrestItemname(fld) + " : " + aslang[32] + "\n";
+           wrestMsg = wrestItemname(fld) + " : 영문, 숫자, _ 가 아닙니다.\n";
            wrestFld = fld;
        }
    }
@@ -212,7 +212,7 @@ function wrestMinLength(fld)
 
     if (wrestFld == null) {
         if (fld.value.length < parseInt(minlength)) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[33].replace("[cnt]", minlength) + "\n";
+            wrestMsg = wrestItemname(fld) + " : 최소 "+minlength+"글자 이상 입력하세요.\n";
             wrestFld = fld;
         }
     }
@@ -226,7 +226,7 @@ function wrestImgExt(fld)
     var pattern = /\.(gif|jpg|png)$/i; // jpeg 는 제외
     if(!pattern.test(fld.value)){
         if(wrestFld == null){
-            wrestMsg = wrestItemname(fld) + " : " + aslang[34] + "\n";
+            wrestMsg = wrestItemname(fld)+" : 이미지 파일이 아닙니다.\n.gif .jpg .png 파일만 가능합니다.\n";
             wrestFld = fld;
             fld.select();
         }
@@ -244,7 +244,7 @@ function wrestExtension(fld, css)
 
     if (wrestFld == null) {
         if (ext.toLowerCase() < str[1].toLowerCase()) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[35].replace("[ext]", str[1]) + "\n";
+            wrestMsg = wrestItemname(fld) + " : ."+str[1]+" 파일만 가능합니다.\n";
             wrestFld = fld;
         }
     }
@@ -257,7 +257,7 @@ function wrestNospace(fld)
 
     if (pattern.test(fld.value)) {
         if (wrestFld == null) {
-            wrestMsg = wrestItemname(fld) + " : " + aslang[36] + "\n";
+            wrestMsg = wrestItemname(fld) + " : 공백이 없어야 합니다.\n";
             wrestFld = fld;
         }
     }

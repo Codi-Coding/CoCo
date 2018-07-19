@@ -1,0 +1,37 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.new-comment {position:relative;overflow:hidden;padding:6px 0;border-top:1px dotted #e5e5e5}
+.new-comment:first-child {border-top:0}
+.new-comment .comment-subject {font-size:12px}
+.new-comment a:hover .comment-subject {text-decoration:underline}
+.new-comment .comment-photo {display:inline-block;width:26px;height:26px;margin-right:2px;border:1px solid #e5e5e5;padding:1px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.new-comment .comment-photo img {width:100%;height:auto;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.new-comment .comment-photo .comment-user-icon {width:22px;height:22px;font-size:14px;line-height:22px;text-align:center;background:#959595;color:#fff;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:inline-block;white-space:nowrap;vertical-align:baseline;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.new-comment .comment-nick {font-size:11px;color:#757575}
+.new-comment .comment-time {font-size:11px;color:#757575;margin-left:5px}
+.new-comment .comment-time .i-color {color:#b5b5b5}
+</style>
+
+<div class="tab-newcomment">
+	<!--{@ comment}-->
+    <article class="new-comment">
+		<a href="{.href}">
+			<div class="comment-subject ellipsis">
+				{.wr_subject}
+			</div>
+			<span class="comment-photo">
+				<!--{? .mb_photo}-->
+				{.mb_photo}
+				<!--{:}-->
+				<span class="comment-user-icon"><i class="fa fa-user"></i></span>
+				<!--{/}-->
+			</span>
+			<span class="comment-nick">{.mb_nick}</span>
+			<span class="comment-time"><i class="fa fa-clock-o {? .new}color-red{:}i-color{/}"></i> {eb->date_time('Y-m-d',.datetime)}</span>
+		</a>
+    </article>
+    <!--{:}-->
+    <p class="text-center color-grey font-size-13 margin-top-10"><i class="fa fa-exclamation-circle"></i> 최신글이 없습니다.</p>
+	<!--{/}-->
+</div>

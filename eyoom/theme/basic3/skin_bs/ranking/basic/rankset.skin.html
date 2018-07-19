@@ -1,0 +1,101 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.ranking-box {position:relative;margin:0 20px 30px}
+.ranking-box .nav-tabs li {width:33.33333%}
+.ranking-box .nav-tabs li a {text-align:center;padding:8px 3px}
+.ranking-box .tab-content {position:relative;border:1px solid #e5e5e5;border-top:0;padding:10px;background:#fff;-webkit-border-radius:0 0 3px 3px !important;-moz-border-radius:0 0 3px 3px !important;border-radius:0 0 3px 3px !important}
+.ranking-content ul {margin-bottom:0}
+.ranking-content li {padding:5px 0;border-bottom:1px dotted #e5e5e5}
+.ranking-content li:last-child {border-bottom:0}
+.ranking-content .ranking-num {display:inline-block;width:18px;height:18px;line-height:18px;background:#474A5E;text-align:center;color:#fff;font-size:10px;margin-right:5px;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.ranking-content .ranking-num-1 {background:#FF2900}
+.ranking-content .ranking-num-2 {background:#FF9500}
+.ranking-content .ranking-num-3 {background:#FF9500}
+.ranking-content .pull-left {font-size:12px}
+.ranking-content .pull-right {text-align:right;color:#FF9500;font-size:11px}
+.ranking-content .ranking-lv-icon {display:inline-block;margin-left:2px}
+</style>
+
+<div class="ranking-box">
+	<div class="tab-bg tab-bg-dark">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#rank-1" data-toggle="tab">오늘{levelset.gnu_name}</a></li>
+			<li><a href="#rank-2" data-toggle="tab">전체{levelset.gnu_name}</a></li>
+			<li><a href="#rank-3" data-toggle="tab">{levelset.eyoom_name}</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane fade active in" id="rank-1">
+				<div class="ranking-content">
+					<ul class="list-unstyled">
+						<!--{@ rank_today}-->
+						<li>
+							<div class="width-60 pull-left ellipsis">
+								<span class="ranking-num {? .index_ <= 2}ranking-num-{.index_+1}{/}">{.index_+1}</span>
+								{.mb_nick}
+								<!--{? .eyoom_icon}-->
+								<span class="ranking-lv-icon"><img src="{.eyoom_icon}"></span>
+								<!--{/}-->
+							</div>
+							<div class="width-40 pull-right">
+								{=number_format(.point)}
+							</div>
+							<div class="clearfix"></div>
+						</li>
+						<!--{:}-->
+						<p class="text-center color-grey font-size-13 margin-top-10"><i class="fa fa-exclamation-circle"></i> 출력할 랭킹이 없습니다.</p>
+						<!--{/}-->
+					</ul>
+				</div>
+			</div>
+			<div class="tab-pane fade in" id="rank-2">
+				<div class="ranking-content">
+					<ul class="list-unstyled">
+						<!--{@ rank_total}-->
+						<li>
+							<div class="width-60 pull-left ellipsis">
+								<span class="ranking-num {? .index_ <= 2}ranking-num-{.index_+1}{/}">{.index_+1}</span>
+								{.mb_nick}
+								<!--{? .eyoom_icon}-->
+								<span class="ranking-lv-icon"><img src="{.eyoom_icon}"></span>
+								<!--{/}-->
+							</div>
+							<div class="width-40 pull-right">
+								{=number_format(.point)}
+							</div>
+							<div class="clearfix"></div>
+						</li>
+						<!--{:}-->
+						<p class="text-center color-grey font-size-13 margin-top-10"><i class="fa fa-exclamation-circle"></i> 출력할 랭킹이 없습니다.</p>
+						<!--{/}-->
+					</ul>
+				</div>
+			</div>
+			<!--{? levelset.use_eyoom_level != 'n'}-->
+			<div class="tab-pane fade in" id="rank-3">
+				<div class="ranking-content">
+					<ul class="list-unstyled">
+						<!--{@ rank_level}-->
+						<li>
+							<div class="width-60 pull-left ellipsis">
+								<span class="ranking-num {? .index_ <= 2}ranking-num-{.index_+1}{/}">{.index_+1}</span>
+								{.mb_nick}
+								<!--{? .eyoom_icon}-->
+								<span class="ranking-lv-icon"><img src="{.eyoom_icon}"></span>
+								<!--{/}-->
+							</div>
+							<div class="width-40 pull-right">
+								{=number_format(.point)}
+							</div>
+							<div class="clearfix"></div>
+						</li>
+						<!--{:}-->
+						<p class="text-center color-grey font-size-13 margin-top-10"><i class="fa fa-exclamation-circle"></i> 출력할 랭킹이 없습니다.</p>
+						<!--{/}-->
+					</ul>
+				</div>
+			</div>
+			<!--{/}-->
+		</div>
+	</div>
+</div>

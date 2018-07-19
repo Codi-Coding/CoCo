@@ -1,0 +1,172 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+@media screen and (max-width:600px) {
+	.admin-boardgroup-list .eyoom-form .trans-col .col {width:inherit;float:left;margin-bottom:0}
+	.admin-boardgroup-list .eyoom-form .trans-col .col-2 {width:40%}
+	.admin-boardgroup-list .eyoom-form .trans-col .col-4 {width:60%}
+	.admin-boardgroup-list .eyoom-form .trans-col .col .sm-margin-bottom-10 {margin-bottom:0}
+}
+</style>
+
+<div class="admin-boardgroup-list">
+	<form id="fsearch" name="fsearch" class="eyoom-form" action="./" method="get">
+	<div class="headline">
+		<h4><strong>게시판 그룹 설정</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=boardgroup_form" class="btn-e btn-e-purple btn-e-xs pull-right margin-top-5"><i class="fa fa-plus"></i> 게시판 그룹 추가</a>
+		<!--{/}-->
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="admin-search-box trans-col">
+		<div class="row">
+			<div class="col col-2">
+				<label for="sfl" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-0">
+					<select name="sfl" id="sfl">
+					    <option value="gr_subject"{=get_selected(_GET.sfl, "gr_subject")}>제목</option>
+					    <option value="gr_id"{=get_selected(_GET.sfl, "gr_id")}>그룹ID</option>
+					    <option value="gr_admin"{=get_selected(_GET.sfl, "gr_admin")}>그룹관리자</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="stx" value="{_stx}" id="stx" required class="frm_input">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-30"></div>
+
+	<form name="fboardgrouplist" id="fboardgrouplist" action="{_action_url}" method="post" onsubmit="return fboardgrouplist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="local_ov01 local_ov margin-bottom-10">
+	    <span class="font-size-12 color-grey">
+	    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>전체그룹 {=number_format(_total_count)}개
+	    </span>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="group-list"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	</div>
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ group_list}-->
+        {
+	        체크: "<input type='hidden' name='group_id[{.index_}]' value='{.gr_id}'><label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=boardgroup_form&amp;w=u&amp;gr_id={.gr_id}&amp;{_qstr}'><u>수정</u></a>",
+	        그룹아이디: "<a href='{C.G5_BBS_URL}/group.php?gr_id={.gr_id}'>{.gr_id}</a>",
+	        제목: "<label class='input'><input type='text' name='gr_subject[{.index_}]' id='gr_subject_{.index_}' value='{=get_text(.gr_subject)}' required></label>",
+	        그룹관리자: "<label class='input'><input type='text' name='gr_admin[{.index_}]' id='gr_admin{.index_}' value='{.gr_admin}' style='text-align:right;'></label>",
+	        게시판: "<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=board_list&amp;sfl=a.gr_id&amp;stx={.gr_id}'>{.board_cnt}</a>",
+	        접근사용: "<label class='checkbox'><input type='checkbox' name='gr_use_access[{.index_}]' id='gr_use_access_{.index_}' value='1' {? .gr_use_access}checked{/}><i></i></label>",
+	        접근회원수: "<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=boardgroupmember_list&amp;gr_id={.gr_id}'>{.member_cnt}</a>",
+	        출력순서: "<label class='input'><input type='text' name='gr_order[{.index_}]' id='gr_order_{.index_}' value='{.gr_order}' style='text-align:right;'></label>",
+	        접속기기: "<label class='select'><select name='gr_device[{.index_}]' id='gr_device_{.index_}'><option value='both' {? .gr_device=='both'}selected{/}>모두</option><option value='pc' {? .gr_device=='pc'}selected{/}>PC</option><option value='mobile' {? .gr_device=='mobile'}selected{/}>모바일</option></select><i></i></label>",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#group-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 80, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "그룹아이디", type: "text", width: 100 },
+            { name: "제목", type: "text", width: 200 },
+            { name: "그룹관리자", type: "text", width: 100 },
+            { name: "게시판", type: "number", width: 60 },
+            { name: "접근사용", type: "text", width: 60 },
+            { name: "접근회원수", type: "number", width: 60 },
+            { name: "출력순서", type: "text", width: 70 },
+            { name: "접속기기", type: "text", width: 105 },
+        ]
+    });
+
+    var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function fboardgrouplist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+</script>

@@ -1,0 +1,19 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="pg-anchor-in tab-e2">
+    <ul class="nav nav-tabs">
+	    <li {? anc_id == 'anc_bo_common'}class="active"{/}><a href="#anc_bo_common">기본 설정</a></li>
+	    <li {? anc_id == 'anc_bo_blind'}class="active"{/}><a href="#anc_bo_blind">신고/블라인드</a></li>
+	    <li {? anc_id == 'anc_bo_rating'}class="active"{/}><a href="#anc_bo_rating">별점 기능</a></li>
+	    <li {? anc_id == 'anc_bo_tag'}class="active"{/}><a href="#anc_bo_tag">태그 기능</a></li>
+	    <li {? anc_id == 'anc_bo_automove'}class="active"{/}><a href="#anc_bo_automove">자동 이동/복사</a></li>
+	    <li {? anc_id == 'anc_bo_addon'}class="active"{/}><a href="#anc_bo_addon">애드온 기능</a></li>
+	    <li {? anc_id == 'anc_bo_cmtbest'}class="active"{/}><a href="#anc_bo_cmtbest">댓글 베스트 기능</a></li>
+	    <li {? anc_id == 'anc_bo_exif'}class="active"{/}><a href="#anc_bo_exif">이미지 EXIF 정보</a></li>
+	    <li {? anc_id == 'anc_bo_cmtpoint'}class="active"{/}><a href="#anc_bo_cmtpoint">댓글포인트</a></li>
+	    <!--{? preg_match('/adopt/i', eyoom_board.bo_skin)}-->
+	    <li {? anc_id == 'anc_bo_adopt'}class="active"{/}><a href="#anc_bo_adopt">채택게시판 설정</a></li>
+	    <!--{/}-->
+	</ul>
+	<div class="tab-bottom-line"></div>
+</div>

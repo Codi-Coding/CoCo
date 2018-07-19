@@ -1,0 +1,360 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+body {background:#f4f4f4}
+.admin-menu-form .alert {padding:5px 10px}
+</style>
+
+<div class="admin-menu-form">
+	<form name="fmenu" action="{_action_url}" onsubmit="return fmenu_check(this)" method="post" class="eyoom-form">
+	<input type="hidden" name="mode" id="mode" value="update">
+	<input type="hidden" name="theme" id="theme" value="{_theme}">
+	<input type="hidden" name="me_code" id="me_code" value="{_me_code}">
+	<input type="hidden" name="me_shop" id="me_shop" value="2">
+	<input type="hidden" name="token" id="token" value="">
+
+	<div class="adm-form-wrap margin-bottom-20">
+		<header><strong><i class="fa fa-caret-right"></i> {? _me_code === '1' || !_me_code}메뉴 생성{:}메뉴 수정 및 삭제{/}</strong></header>
+		<!--{? _me_code === '1' || !_me_code}-->
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">메뉴위치</label>
+				</div>
+				<div class="col col-9">
+					<div class="alert alert-info margin-bottom-0">
+					    <p>커뮤니티 메뉴 루트</p>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<!--{:}-->
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">메뉴 코드</label>
+					<label class="input state-disabled">
+						<input type="text" disabled value="{meinfo.me_code}">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">출력순서</label>
+					<label class="input">
+						<input type="text" name="me_order" id="me_order" value="{meinfo.me_order}" required size="5">
+						<input type="hidden" name="me_order_prev" id="me_order_prev" value="{meinfo.me_order}">
+					</label>
+				</div>
+				<div class="col col-6">
+					<section class="label-height">
+						<p class="note">작은 숫자가 우선순위로 출력됩니다.</p>
+					</section>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label for="me_icon" class="label">폰트어썸 아이콘</label>
+					<label class="input input-button">
+						<input type="text" name="me_icon" id="me_icon" value="{meinfo.me_icon}">
+						<a href="{C.EYOOM_SITE}/page/?pid=code_icons&wmode=1" onclick="menuform_modal(this.href); return false;" class="button" target="_blank">Font Awesome</a>
+					</label>
+					<div class="note">
+		                <strong>예:</strong> fa-user
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-9">
+					<label for="me_name" class="label">메뉴명</label>
+					<label class="input">
+						<input type="text" name="me_name" id="me_name" value="{meinfo.me_name}" required>
+						<input type="hidden" name="me_name_prev" id="me_name_prev" value="{meinfo.me_name}">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label for="me_permit_level" class="label">메뉴보이기 레벨설정</label>
+					<label class="select">
+						{=get_member_level_select('me_permit_level', 1, 10, meinfo.me_permit_level)}<i></i>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-12">
+					<label for="me_path" class="label">메뉴경로</label>
+					<label class="input">
+						<input type="text" name="me_path" id="me_path" value="{meinfo.me_path}" required>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-9">
+					<label for="me_link" class="label">메뉴링크</label>
+					<label class="input">
+						<input type="text" name="me_link" id="me_link" value="{meinfo.me_link}">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label for="me_target" class="label">링크타겟</label>
+					<label class="select">
+						<select name="me_target" id="me_target">
+							<option value="">:: 타겟 선택 ::</option>
+							<option value="blank" {? meinfo.me_target=='blank'}selected{/}>새창</option>
+							<option value="self" {? meinfo.me_target=='self'}selected{/}>현재창</option>
+						</select>
+						<i></i>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-4">
+					<label class="label">메뉴 사용 여부</label>
+					<div class="inline-group">
+						<label for="me_use1" class="radio"><input type="radio" name="me_use" id="me_use1" value="y" {? meinfo.me_use == 'y'}checked{/}><i></i> 사용</label>
+						<label for="me_use2" class="radio"><input type="radio" name="me_use" id="me_use2" value="n" {? meinfo.me_use == 'n'}checked{/}><i></i> 사용안함</label>
+					</div>
+				</div>
+				<div class="col col-4">
+					<label class="label">상단메뉴 사용 여부</label>
+					<div class="inline-group">
+						<label for="me_use_nav1" class="radio"><input type="radio" name="me_use_nav" id="me_use_nav1" value="y" {? meinfo.me_use_nav == 'y'}checked{/}><i></i> 사용</label>
+						<label for="me_use_nav2" class="radio"><input type="radio" name="me_use_nav" id="me_use_nav2" value="n" {? meinfo.me_use_nav == 'n'}checked{/}><i></i> 사용안함</label>
+					</div>
+				</div>
+				<div class="col col-4">
+					<label class="label">사이드 레이아웃</label>
+					<div class="inline-group">
+						<label for="me_side1" class="radio"><input type="radio" name="me_side" id="me_side1" value="y" {? meinfo.me_side == 'y'}checked{/}><i></i> 보이기</label>
+						<label for="me_side2" class="radio"><input type="radio" name="me_side" id="me_side2" value="n" {? meinfo.me_side == 'n'}checked{/}><i></i> 감추기</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<label class="label">메뉴 삭제</label>
+			<div>
+				<a href="javascript:;" onclick="delete_menu('{meinfo.me_code}','{meinfo.me_theme}');" class="btn-e btn-e-dark">삭제하기</a>
+				<span class="margin-left-10 padding-top-5"><i class="fa fa-exclamation-circle color-red"></i> <span class="exp color-grey">주의! 삭제시, 서브메뉴까지 함께 삭제됩니다.</span></span>
+			</div>
+		</fieldset>
+		<!--{/}-->
+	</div>
+
+	<!--{? _me_code !== '1' && _me_code}-->
+	<div class="text-center margin-bottom-30">
+		<input type="submit" value="메뉴 수정" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+	</div>
+	<!--{/}-->
+
+	<!--{? _depth < 5}-->
+	<div class="adm-form-wrap margin-bottom-20">
+		<header><strong><i class="fa fa-caret-right"></i> {? _me_code === '1' || !_me_code}1차메뉴 생성{:}{meinfo.me_name} <i class="fa fa-angle-right"></i> 하위메뉴 생성{/}</strong>{? _me_code}<small class="font-size-12 color-grey margin-left-10">선택한 메뉴의 하위 메뉴를 생성합니다.</small>{/}</header>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label for="subme_type" class="label">대상 선택</label>
+					<label class="select">
+						<select name="subme_type" id="subme_type" onchange="view_select_list(this.value);return false;">
+							<option value="userpage">직접입력</option>
+							<option value="group">게시판그룹</option>
+							<option value="board">게시판</option>
+							<option value="page">내용페이지</option>
+							<!--{? _is_youngcart}-->
+							<option value="shop">쇼핑몰분류</option>
+							<!--{/}-->
+						</select>
+						<i></i>
+					</label>
+				</div>
+				<div class="col col-6">
+					<label for="subme_target" class="label">타겟 선택</label>
+					<label class="select" id="selbox">
+						<select>
+							<option value=''>::대상을 선택해 주세요::</option>
+						</select>
+						<i></i>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label for="subme_icon" class="label">폰트어썸 아이콘</label>
+					<label class="input input-button">
+						<input type="text" name="subme_icon" id="subme_icon" value="">
+						<a href="{C.EYOOM_SITE}/page/?pid=code_icons&wmode=1" onclick="menuform_modal(this.href); return false;" class="button" target="_blank">Font Awesome</a>
+					</label>
+					<div class="note">
+		                <strong>예:</strong> fa-user
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label for="subme_name" class="label">메뉴명</label>
+					<label class="input">
+						<input type="text" name="subme_name" id="subme_name" value="">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label for="subme_permit_level" class="label">메뉴보이기 레벨설정</label>
+					<label class="select">
+						{=get_member_level_select('subme_permit_level', 1, 10, 1)}<i></i>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-9">
+					<label for="subme_link" class="label">메뉴링크</label>
+					<label class="input">
+						<input type="text" name="subme_link" id="subme_link" value="">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label for="subme_target" class="label">링크타겟</label>
+					<label class="select">
+						<select name="subme_target" id="subme_target">
+							<option value="">:: 타겟 선택 ::</option>
+							<option value="blank">새창</option>
+							<option value="self" selected>현재창</option>
+						</select>
+						<i></i>
+					</label>
+				</div>
+			</div>
+			<div class="note margin-bottom-10"><strong>예)</strong> {C.G5_BBS_URL}/board.php?bo_table=free</div>
+		</fieldset>
+
+		<fieldset>
+			<div class="row">
+				<div class="col col-4">
+					<label class="label">메뉴 사용 여부</label>
+					<div class="inline-group">
+						<label for="subme_use1" class="radio"><input type="radio" name="subme_use" id="subme_use1" value="y" checked><i></i> 사용</label>
+						<label for="subme_use2" class="radio"><input type="radio" name="subme_use" id="subme_use2" value="n"><i></i> 사용안함</label>
+					</div>
+				</div>
+				<div class="col col-4">
+					<label class="label">상단메뉴 사용 여부</label>
+					<div class="inline-group">
+						<label for="subme_use_nav1" class="radio"><input type="radio" name="subme_use_nav" id="subme_use_nav1" value="y" checked><i></i> 사용</label>
+						<label for="subme_use_nav2" class="radio"><input type="radio" name="subme_use_nav" id="subme_use_nav2" value="n"><i></i> 사용안함</label>
+					</div>
+				</div>
+				<div class="col col-4">
+					<label class="label">사이드 레이아웃</label>
+					<div class="inline-group">
+						<label for="subme_side1" class="radio"><input type="radio" name="subme_side" id="subme_side1" value="y" checked><i></i> 보이기</label>
+						<label for="subme_side2" class="radio"><input type="radio" name="subme_side" id="subme_side2" value="n"><i></i> 감추기</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" value="메뉴 생성" id="btn_submit" class="btn-e btn-e-lg btn-e-yellow" accesskey="s">
+	</div>
+	<!--{/}-->
+
+	</form>
+</div>
+
+<script>
+function menuform_modal(href) {
+	parent.menuform_modal(href);
+}
+function fmenu_check(f) {
+	if(f.me_name.value == '') {
+		alert('메뉴명은 필수항목입니다.');
+		f.me_name.focus();
+		f.me_name.select();
+		return false;
+	}
+}
+function view_select_list(type) {
+	var theme = '{this_theme}';
+	var url = "{C.EYOOM_ADMIN_URL}/?dir=theme&pid=menu_ajax&smode=1";
+	$.post(url, {'type':type,'theme':theme}, function(data) {
+		if(data.pid) {
+			var pid_str = data.pid;
+			var name_str = data.name;
+			var pid = pid_str.split("|");
+			var name = name_str.split("|");
+			if(pid.length>0) {
+				var select = "<select name='select_item' id='select_item' onchange='set_item_value(this.value)'><option value=''>::선택해주세요::</option>";
+				for(var i=0; i<pid.length;i++) {
+					var nbsp = '';
+					if (type == 'shop') {
+						for(var j=2; j<pid[i].length; j++) nbsp += '&nbsp;&nbsp;';
+					}
+					select += "<option value=\""+pid[i]+"|"+name[i]+"\">"+nbsp+''+name[i]+"</option>";
+				}
+				select += "</select><i></i>";
+			}
+			$("#selbox").html(select);
+		}
+	},"json");
+}
+function set_item_value(str) {
+	var type = $("#subme_type > option:selected").val();
+	var data = str.split("|");
+	switch(type) {
+		case 'group':
+			var url = '{C.G5_BBS_URL}/group.php?gr_id='+data[0];
+			var name = data[1];
+			break;
+		case 'board':
+			var url = '{C.G5_BBS_URL}/board.php?bo_table='+data[0];
+			var path = data[1].split(' > ');
+			var name = path[1];
+			break;
+		case 'page':
+			var url = '{C.G5_BBS_URL}/content.php?co_id='+data[0];
+			var name = data[1];
+			break;
+		case 'shop':
+			var url = '{C.G5_SHOP_URL}/list.php?ca_id='+data[0];
+			var name = data[1];
+			break;
+	}
+	$("#subme_link").val(url);
+	$("#subme_name").val(name);
+}
+function delete_menu() {
+	if(confirm("본 메뉴를 삭제하시면 하위메뉴까지 모두 삭제됩니다.\n\n그래도 삭제하시겠습니까?")) {
+		var form = document.fmenu;
+        var token = get_ajax_token();
+        if(!token) {
+            alert("토큰 정보가 올바르지 않습니다.");
+            return false;
+        }
+        form.token.value = token;
+        form.mode.value = 'delete';
+		form.submit();
+	} else return false;
+}
+</script>

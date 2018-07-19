@@ -1,23 +1,26 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-// 관리자스킨
-$admin_skin = $config['cf_8'];
-
-if($is_demo) {
-	if($pva) set_session('pva', $pva);
-	$tmp_pva = get_session('pva');
-	
-	if($tmp_pva && is_dir(G5_SKIN_PATH.'/admin/'.$tmp_pva)) {
-		$admin_skin = $tmp_pva;
-	}
-}
-
 $begin_time = get_microtime();
+
+$files = glob(G5_ADMIN_PATH.'/css/admin_extend_*');
+if (is_array($files)) {
+    foreach ((array) $files as $k=>$css_file) {
+        
+        $fileinfo = pathinfo($css_file);
+        $ext = $fileinfo['extension'];
+        
+        if( $ext !== 'css' ) continue;
+        
+        $css_file = str_replace(G5_ADMIN_PATH, G5_ADMIN_URL, $css_file);
+        add_stylesheet('<link rel="stylesheet" href="'.$css_file.'">', $k);
+    }
+}
 
 include_once(G5_PATH.'/head.sub.php');
 
-function print_menu1($key, $no) {
+function print_menu1($key, $no='')
+{
     global $menu;
 
     $str = print_menu2($key, $no);
@@ -25,15 +28,13 @@ function print_menu1($key, $no) {
     return $str;
 }
 
-function print_menu2($key, $no) {
+function print_menu2($key, $no='')
+{
     global $menu, $auth_menu, $is_admin, $auth, $g5, $sub_menu;
 
-    $str .= "<ul class=\"gnb_2dul\">";
-    for($i=1; $i<count($menu[$key]); $i++) {
-
-		if(!$menu[$key][$i][1])
-			continue;
-
+    $str .= "<ul>";
+    for($i=1; $i<count($menu[$key]); $i++)
+    {
         if ($is_admin != 'super' && (!array_key_exists($menu[$key][$i][0],$auth) || !strstr($auth[$menu[$key][$i][0]], 'r')))
             continue;
 
@@ -43,10 +44,13 @@ function print_menu2($key, $no) {
         if ($menu[$key][$i][4] == 1) $gnb_grp_style = 'gnb_grp_style';
         else $gnb_grp_style = '';
 
-		if (isset($sub_menu) && $sub_menu == $menu[$key][$i][0]) $gnb_on = ' on';
-        else $gnb_on = '';
+        $current_class = '';
 
-        $str .= '<li class="gnb_2dli"><a href="'.$menu[$key][$i][2].'" class="gnb_2da '.$gnb_grp_style.' '.$gnb_grp_div.$gnb_on.'">'.$menu[$key][$i][1].'</a></li>';
+        if ($menu[$key][$i][0] == $sub_menu){
+            $current_class = ' on';
+        }
+
+        $str .= '<li data-menu="'.$menu[$key][$i][0].'"><a href="'.$menu[$key][$i][2].'" class="gnb_2da '.$gnb_grp_style.' '.$gnb_grp_div.$current_class.'">'.$menu[$key][$i][1].'</a></li>';
 
         $auth_menu[$menu[$key][$i][0]] = $menu[$key][$i][1];
     }
@@ -55,40 +59,17 @@ function print_menu2($key, $no) {
     return $str;
 }
 
-// 스킨설정
-function apms_admin_skin($save='', $str='') {
-    global $g5, $admin_skin, $is_demo;
+$adm_menu_cookie = array(
+'container' => '',
+'gnb'       => '',
+'btn_gnb'   => '',
+);
 
-	$set = array();
-
-	if($is_demo) {
-		if($save) {
-			$pva_set = apms_pack($str);
-			set_session($admin_skin.'_ademo_set', $pva_set);
-		}
-		$aset = get_session($admin_skin.'_ademo_set');
-		$set = apms_unpack($aset);
-	} else {
-		$data = sql_fetch(" select * from {$g5['apms_data']} where type = '5' and data_q = '{$admin_skin}' ", false);
-		if($save) {
-			//스킨설정
-			$aset = apms_pack($str);
-
-			if($data['id']) {
-				sql_query(" update {$g5['apms_data']} set data_set = '{$aset}' where id = '{$data['id']}'", false);
-			} else {
-				sql_query(" insert {$g5['apms_data']} set type = '5', data_q = '{$admin_skin}', data_set = '{$aset}' ", false);
-			}
-
-			$set = $str;
-		} else {
-			$set = apms_unpack($data['data_set']);
-		}
-	}
-
-    return $set;
+if( ! empty($_COOKIE['g5_admin_btn_gnb']) ){
+    $adm_menu_cookie['container'] = 'container-small';
+    $adm_menu_cookie['gnb'] = 'gnb_small';
+    $adm_menu_cookie['btn_gnb'] = 'btn_gnb_open';
 }
-
 ?>
 
 <script>
@@ -114,102 +95,106 @@ function imageview(id, w, h)
 }
 </script>
 
-<?php
-// 어드민 스킨
-$is_admin_skin = ($admin_skin && is_file(G5_SKIN_PATH.'/admin/'.$admin_skin.'/admin.head.php')) ? true : false;
-
-if($is_admin_skin) {
-
-	define('ADMIN_SKIN_PATH', G5_SKIN_PATH.'/admin/'.$admin_skin);
-	define('ADMIN_SKIN_URL', G5_SKIN_URL.'/admin/'.$admin_skin);
-
-	include_once(ADMIN_SKIN_PATH.'/admin.head.php');
-
-} else {
-
-// 어드민스킨 미사용시 기본스킨 출력
-?>
-
 <div id="to_content"><a href="#container">본문 바로가기</a></div>
 
 <header id="hd">
-    <div id="hd_wrap">
-        <h1><?php echo $config['cf_title'] ?></h1>
+    <h1><?php echo $config['cf_title'] ?></h1>
+    <div id="hd_top">
+        <button type="button" id="btn_gnb" class="btn_gnb_close <?php echo $adm_menu_cookie['btn_gnb'];?>">메뉴</button>
+       <div id="logo"><a href="<?php echo G5_ADMIN_URL ?>"><img src="<?php echo G5_ADMIN_URL ?>/img/logo.png" alt="<?php echo $config['cf_title'] ?> 관리자"></a></div>
 
-        <div id="logo"><a href="<?php echo G5_ADMIN_URL ?>"><img src="<?php echo G5_ADMIN_URL ?>/img/logo.jpg" alt="<?php echo $config['cf_title'] ?> 관리자"></a></div>
-
-        <ul id="tnb">
-            <li><a href="<?php echo G5_ADMIN_URL ?>/member_form.php?w=u&amp;mb_id=<?php echo $member['mb_id'] ?>">관리자정보</a></li>
-            <li><a href="<?php echo G5_ADMIN_URL ?>/config_form.php">기본환경</a></li>
-            <li><a href="<?php echo G5_URL ?>/">커뮤니티</a></li>
-            <?php if(defined('G5_USE_SHOP')) { ?>
-            <li><a href="<?php echo G5_ADMIN_URL ?>/shop_admin/configform.php">쇼핑몰환경</a></li>
-            <li><a href="<?php echo G5_ADMIN_URL ?>/service.php">부가서비스</a></li>
-            <li><a href="<?php echo G5_SHOP_URL ?>/">쇼핑몰</a></li>
-            <?php } ?>
-            <li id="tnb_logout"><a href="<?php echo G5_BBS_URL ?>/logout.php">로그아웃</a></li>
-        </ul>
-
-        <nav id="gnb">
-            <h2>관리자 주메뉴</h2>
+        <div id="tnb">
+            <ul>
+                <li class="tnb_li"><a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop" target="_blank" title="쇼핑몰 바로가기">쇼핑몰 바로가기</a></li>
+                <li class="tnb_li"><a href="<?php echo G5_URL ?>/" class="tnb_community" target="_blank" title="커뮤니티 바로가기">커뮤니티 바로가기</a></li>
+                <li class="tnb_li"><a href="<?php echo G5_ADMIN_URL ?>/service.php" class="tnb_service">부가서비스</a></li>
+                <li class="tnb_li"><button type="button" class="tnb_mb_btn">관리자<span class="./img/btn_gnb.png">메뉴열기</span></button>
+                    <ul class="tnb_mb_area">
+                        <li><a href="<?php echo G5_ADMIN_URL ?>/member_form.php?w=u&amp;mb_id=<?php echo $member['mb_id'] ?>">관리자정보</a></li>
+                        <li id="tnb_logout"><a href="<?php echo G5_BBS_URL ?>/logout.php">로그아웃</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <nav id="gnb" class="gnb_large <?php echo $adm_menu_cookie['gnb']; ?>">
+        <h2>관리자 주메뉴</h2>
+        <ul class="gnb_ul">
             <?php
-            $gnb_str = "<ul id=\"gnb_1dul\">";
+            $jj = 1;
             foreach($amenu as $key=>$value) {
                 $href1 = $href2 = '';
+
                 if ($menu['menu'.$key][0][2]) {
                     $href1 = '<a href="'.$menu['menu'.$key][0][2].'" class="gnb_1da">';
                     $href2 = '</a>';
                 } else {
                     continue;
                 }
+
                 $current_class = "";
                 if (isset($sub_menu) && (substr($sub_menu, 0, 3) == substr($menu['menu'.$key][0][0], 0, 3)))
-                    $current_class = " gnb_1dli_air";
-                $gnb_str .= '<li class="gnb_1dli'.$current_class.'">'.PHP_EOL;
-                $gnb_str .=  $href1 . $menu['menu'.$key][0][1] . $href2;
-                $gnb_str .=  print_menu1('menu'.$key, 1);
-                $gnb_str .=  "</li>";
-            }
-            $gnb_str .= "</ul>";
-            echo $gnb_str;
+                    $current_class = " on";
+
+                $button_title = $menu['menu'.$key][0][1];
             ?>
-        </nav>
+            <li class="gnb_li<?php echo $current_class;?>">
+                <button type="button" class="btn_op menu-<?php echo $key; ?> menu-order-<?php echo $jj; ?>" title="<?php echo $button_title; ?>"><?php echo $button_title;?></button>
+                <div class="gnb_oparea_wr">
+                    <div class="gnb_oparea">
+                        <h3><?php echo $menu['menu'.$key][0][1];?></h3>
+                        <?php echo print_menu1('menu'.$key, 1); ?>
+                    </div>
+                </div>
+            </li>
+            <?php
+            $jj++;
+            }     //end foreach
+            ?>
+        </ul>
+    </nav>
 
-    </div>
 </header>
+<script>
+jQuery(function($){
 
-<?php if($sub_menu) { ?>
-<ul id="lnb">
-<?php
-$menu_key = substr($sub_menu, 0, 3);
-$nl = '';
-foreach($menu['menu'.$menu_key] as $key=>$value) {
-    if($key > 0) {
-        if ($is_admin != 'super' && (!array_key_exists($value[0],$auth) || !strstr($auth[$value[0]], 'r')))
-            continue;
+    var menu_cookie_key = 'g5_admin_btn_gnb';
 
-        if($value[3] == 'cf_service')
-            $svc_class = ' class="lnb_svc"';
-        else
-            $svc_class = '';
+    $(".tnb_mb_btn").click(function(){
+        $(".tnb_mb_area").toggle();
+    });
 
-        echo $nl.'<li><a href="'.$value[2].'"'.$svc_class.'>'.$value[1].'</a></li>';
-        $nl = PHP_EOL;
-    }
-}
-?>
-</ul>
-<?php } ?>
+    $("#btn_gnb").click(function(){
+        
+        var $this = $(this);
+
+        try {
+            if( ! $this.hasClass("btn_gnb_open") ){
+                set_cookie(menu_cookie_key, 1, 60*60*24*365);
+            } else {
+                delete_cookie(menu_cookie_key);
+            }
+        }
+        catch(err) {
+        }
+
+        $("#container").toggleClass("container-small");
+        $("#gnb").toggleClass("gnb_small");
+        $this.toggleClass("btn_gnb_open");
+
+    });
+
+    $(".gnb_ul li .btn_op" ).click(function() {
+        $(this).parent().addClass("on").siblings().removeClass("on");
+    });
+
+});
+</script>
+
 
 <div id="wrapper">
 
-    <div id="container">
-        <div id="text_size">
-            <!-- font_resize('엘리먼트id', '제거할 class', '추가할 class'); -->
-            <button onclick="font_resize('container', 'ts_up ts_up2', '');"><img src="<?php echo G5_ADMIN_URL ?>/img/ts01.gif" alt="기본"></button>
-            <button onclick="font_resize('container', 'ts_up ts_up2', 'ts_up');"><img src="<?php echo G5_ADMIN_URL ?>/img/ts02.gif" alt="크게"></button>
-            <button onclick="font_resize('container', 'ts_up ts_up2', 'ts_up2');"><img src="<?php echo G5_ADMIN_URL ?>/img/ts03.gif" alt="더크게"></button>
-        </div>
-        <h1><?php echo $g5['title'] ?></h1>
+    <div id="container" class="<?php echo $adm_menu_cookie['container']; ?>">
 
-<?php } ?>
+        <h1 id="container_title"><?php echo $g5['title'] ?></h1>
+        <div class="container_wr">

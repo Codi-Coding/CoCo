@@ -1,0 +1,283 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-banner-form .banner-image {max-width:300px}
+</style>
+
+<div class="admin-banner-form">
+	<div class="headline">
+		<h4><strong>배너 / 광고 관리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	{# theme_manager // 테마 매니저 }
+
+	<form name="fbannerform" method="post" action="{_action_url}" onsubmit="return fbannerform_submit(this);" enctype="multipart/form-data" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="theme" id="theme" value="{? this_theme}{this_theme}{:}{_theme}{/}">
+	<input type="hidden" name="bn_no" id="bn_no" value="{banner.bn_no}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{this_theme}</span>] 배너 / 광고 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="banner-config">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 설정정보</strong></header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">배너위치설정</label>
+							<label for="bn_location" class="select">
+						        <select name="bn_location" id="bn_location" required>
+							        <option value="">배너위치를 선택해 주세요.</option>
+							        <!--{@ bn_loccd}-->
+							        <option value="{.key_}" {? banner.bn_location == .key_}selected{/}>{.value_}</option>
+							        <!--{/}-->
+						        </select><i></i>
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">배너종류</label>
+							<label for="bn_type" class="select">
+						        <select name="bn_type" id="bn_type" required>
+							        <option value="intra" {? banner.bn_type == 'intra' || !banner.bn_type}selected{/}>내부광고/배너</option>
+									<option value="extra" {? banner.bn_type == 'extra'}selected{/}>외부배너[구글 애드센스등]</option>
+						        </select><i></i>
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">게시여부</label>
+							<div class="inline-group">
+								<label for="bn_state_1" class="radio"><input type="radio" name="bn_state" id="bn_state_1" value="1" {? banner.bn_state == '1' || !banner.bn_state}checked{/}><i></i> 보이기</label>
+								<label for="bn_state_2" class="radio"><input type="radio" name="bn_state" id="bn_state_2" value="2" {? banner.bn_state == '2'}checked{/}><i></i> 숨기기</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label class="label">노출 방식</label>
+							<div class="inline-group">
+								<label for="bn_period_1" class="radio"><input type="radio" name="bn_period" id="bn_period_1" value="1" {? banner.bn_period == '1' || !banner.bn_period}checked{/}><i></i> 무제한 방식</label>
+								<label for="bn_period_2" class="radio"><input type="radio" name="bn_period" id="bn_period_2" value="2" {? banner.bn_period == '2'}checked{/}><i></i> 기간제 방식</label>
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<div class="row">
+							<div class="col col-6">
+								<section>
+									<label class="label">시작일</label>
+									<label for="bn_start" class="input">
+										<i class="icon-append fa fa-calendar-o"></i>
+								        <input type="text" name="bn_start" id="bn_start" value="{banner.bn_start}">
+									</label>
+								</section>
+							</div>
+							<div class="col col-6">
+								<section>
+									<label class="label">종료일</label>
+									<label for="bn_end" class="input">
+										<i class="icon-append fa fa-calendar-o"></i>
+								        <input type="text" name="bn_end" id="bn_end" value="{banner.bn_end}">
+									</label>
+								</section>
+							</div>
+							<section>
+								<div class="note margin-left-10"><strong>Note:</strong> 노출 시작일과 종료일은 기간제 방식에만 적용됩니다.</div>
+							</section>
+						</div>
+
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">배너보기 권한 설정</label>
+							<label for="bn_view_level" class="select">
+								{=get_member_level_select('bn_view_level', 1, 10, banner.bn_view_level)}<i></i>
+							</label>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 설정 그누레벨 이상의 회원에게 배너/광고가 노출됩니다.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset class="intra_item">
+				<div class="row">
+					<div class="col col-9">
+						<section>
+							<label class="label">연결주소 [링크]</label>
+							<label for="bn_link" class="input">
+						        <input type="text" name="bn_link" id="bn_link" value="{banner.bn_link}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label class="label">링크 타겟</label>
+							<label for="bn_target" class="select">
+						        <select name="bn_target" id="bn_target" required>
+							        <option value="">타겟을 선택하세요.</option>
+							        <option value="_blank" {? banner.bn_target == '_blank'}selected{/}>새창</option>
+									<option value="_self" {? banner.bn_target == '_self' || !banner.bn_target}selected{/}>현재창</option>
+						        </select><i></i>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset class="intra_item">
+				<div class="row">
+					<div class="col col-9">
+						<section>
+							<label class="label">배너이미지</label>
+							<span class="input input-file">
+								<div class="button"><input type="file" name="bn_img" id="bn_img" onchange="this.parentNode.nextSibling.value = this.value">이미지파일 찾기</div><input type="text" readonly="">
+							</span>
+							<!--{? banner.bn_url}-->
+							<div class="bn_img_info">
+								<label for="bn_img_del" class="checkbox"><input type="checkbox" id="bn_img_del" name="bn_img_del" value="1"><i></i>{banner.bn_img} ({=get_filesize(banner.bn_img)}) 파일삭제</label>
+								<div class="thumbnail banner-image">
+									<div class="thumb">
+										<img src="{banner.bn_url}">
+										<div class="caption-overflow">
+											<span>
+												<a href="{banner.bn_url}" class="btn-e btn-e-default btn-e-lg btn-e-brd"><i class="fa fa-plus color-white"></i></a>
+											</span>
+										</div>
+									</div>
+								</div>
+								<input type="hidden" name="old_bn_image" id="old_bn_image" value="{banner.old_bn_image}">
+							</div>
+							<!--{/}-->
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset class="extra_item">
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label class="label">외부배너 소스 (구글애드센스 코드 등)</label>
+							<label for="bn_link" class="textarea">
+						        <textarea  name="bn_code" id="bn_code" rows="20">{banner.bn_code}</textarea>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{ frm_submit }
+
+	</form>
+</div>
+
+<script src="../../../plugins/eyoom-form/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script>
+/*--------------------------------------
+	Datepicker
+--------------------------------------*/
+$(document).ready(function(){
+    $('#bn_start').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#bn_end').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    $('#bn_end').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#bn_start').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+});
+
+$(function() {
+	<!--{? banner.bn_type == 'intra' || !banner.bn_type}-->
+	$('.extra_item').hide();
+	$('.intra_item').show();
+	<!--{: banner.bn_type == 'extra'}-->
+	$('.intra_item').hide();
+	$('.extra_item').show();
+	<!--{/}-->
+
+	$('#bn_type').change(function() {
+		switch( $(this).val() ) {
+			case 'intra':
+				$('.extra_item').hide();
+				$('.intra_item').show();
+				break;
+			case 'extra':
+				$('.intra_item').hide();
+				$('.extra_item').show();
+				break;
+		}
+	});
+});
+
+function fbannerform_submit(f) {
+    if ($("#bn_location option:selected").val() == '') {
+        alert('배너/광고 위치를 선택해 주세요.');
+        $("#bn_location").focus();
+        return false;
+    }
+
+    if ($(':radio[name="bn_period"]:checked').val() == '2') {
+	    if ( !($('#bn_start').val() && $('#bn_end').val()) ) {
+		    alert('기간제로 선택할 경우, 시작일과 종료일은 필수항목입니다.');
+		    if (!$('#bn_start').val()) {
+			    $('#bn_start').focus();
+		    }
+		    if (!$('#bn_end').val()) {
+			    $('#bn_end').focus();
+		    }
+		    return false;
+	    }
+    }
+    return true;
+}
+
+$(document).ready(function() {
+	$('.banner-image').magnificPopup({
+		delegate: 'a',
+		type: 'image',
+		tLoading: '로딩중...',
+		mainClass: 'mfp-img-mobile',
+		image: {
+			tError: '이미지를 불러올수 없습니다.'
+		}
+	});
+});
+</script>

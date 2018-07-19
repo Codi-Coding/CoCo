@@ -1,0 +1,17 @@
+<?php if (!defined("_GNUBOARD_")) exit;?>
+<div id="tab-category">
+	<div class="category-list">
+        <span{? _mpid == 'mypage' && !_t} class="active"{/}><a href="{C.G5_URL}/mypage/">마이페이지</a></span>
+        <span{? _t == 'timeline'} class="active"{/}><a href="{C.G5_URL}/mypage/?t=timeline">타임라인</a></span>
+        <span{? _t == 'favorite'} class="active"{/}><a href="{C.G5_URL}/mypage/?t=favorite">관심게시판</a></span>
+        <span{? _t == 'followinggul'} class="active"{/}><a href="{C.G5_URL}/mypage/?t=followinggul">팔로윙글</a></span>
+        <span{? _mpid == 'activity'} class="active"{/}><a href="{C.G5_URL}/mypage/activity.php">활동기록</a></span>
+        <span{? _mpid == 'config'} class="active"{/}><a href="{C.G5_URL}/mypage/config.php">환경설정</a></span>
+        <span class="fake-span"></span>
+	</div>
+	<div class="controls">
+		<button class="btn prev"><i class="fa fa-caret-left"></i></button>
+		<button class="btn next"><i class="fa fa-caret-right"></i></button>
+	</div>
+</div>
+<div class="tab-category-divider"></div>

@@ -1,0 +1,51 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.tag-menu {position:relative;border:1px solid #e5e5e5;padding:10px;margin:0px 20px 30px;background:#fff;-webkit-border-radius:3px !important;-moz-border-radius:3px !important;border-radius:3px !important}
+.tag-menu .blind {position:absolute;top:-10px;left:-100000px;display:none}
+.tag-menu .tag-list-wrap {position:relative}
+.tag-menu .list-inline {margin-left:0}
+.tag-menu .list-inline > li {padding-left:1px;padding-right:1px}
+.tag-menu .tag-list-wrap .tag-word {background:#e5e5e5;padding:2px 5px;color:#2E3340;font-size:11px;margin-bottom:5px;display:inline-block}
+.tag-menu .tag-list-wrap .tag-word:hover {background:#474A5E;color:#fff}
+.tag-menu .tag-list-wrap .tag-word i:hover {color:#FF2900}
+</style>
+
+<div class="tag-menu">
+	<div class="headline">
+		<h5><strong>태그</strong></h5>
+		<span class="pull-right tag-btn">
+			<!--{? _is_admin}--><a href="{C.G5_ADMIN_URL}/eyoom_admin/tag_list.php" target="_blank" class="btn-e btn-e-xs btn-e-red">관리</a><!--{/}-->
+			<a href="{C.G5_URL}/tag/list.php" class="btn-e btn-e-xs btn-e-dark">태그 더보기</a>
+		</span>
+	</div>
+	<div class="tag-list-wrap">
+	<!--{@ list}-->
+		<!--{? .index_ == 0}-->
+		<ul class="list-unstyled list-inline margin-bottom-0">
+		<!--{/}-->
+		    <li id="dpmenu-{.tg_id}">
+				<a href="{.href}" class="tag-word">
+					<span>{.tag}{? _is_admin}<i class="fa fa-times dpmenu-out margin-left-5" onclick="dpmenu_out('{.tg_id}');return false;"></i>{/}</span>
+				</a>
+			</li>
+		<!--{? .index_ == .size_-1}-->
+		</ul>
+		<div class="clearfix"></div>
+		<!--{/}-->
+	<!--{/}-->
+	</div>
+</div>
+
+<!--{? _is_admin}-->
+<script>
+var dpmenu_out = function(id) {
+	var url = "{C.G5_URL}/adm/eyoom_admin/tag_dpmenu.php";
+	$.post(url, {'id':id,'yn':'n'}, function(data) {
+		if(data.dpmenu) {
+			$('#dpmenu-'+id).addClass('blind');
+		}
+	},"json");
+}
+</script>
+<!--{/}-->

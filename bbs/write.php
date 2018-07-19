@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+include_once(G5_EDITOR_LIB);
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 
 if (!$board['bo_table']) {
@@ -39,7 +40,7 @@ if ($w == '') {
         if ($member['mb_id']) {
             alert('글을 쓸 권한이 없습니다.');
         } else {
-            alert("글을 쓸 권한이 없습니다.\\n회원이시라면 로그인 후 이용해 보십시오.", './login.php?'.$qstr.'&amp;url='.urlencode(G5_BBS_URL.'/board.php?bo_table='.$bo_table));
+            alert("글을 쓸 권한이 없습니다.\\n회원이시라면 로그인 후 이용해 보십시오.", './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
         }
     }
 
@@ -61,7 +62,7 @@ if ($w == '') {
         if ($member['mb_id']) {
             alert('글을 수정할 권한이 없습니다.');
         } else {
-            alert('글을 수정할 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', './login.php?'.$qstr.'&amp;url='.urlencode(G5_BBS_URL.'/board.php?bo_table='.$bo_table));
+            alert('글을 수정할 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
         }
     }
 
@@ -94,7 +95,7 @@ if ($w == '') {
         if ($member['mb_id'])
             alert('글을 답변할 권한이 없습니다.');
         else
-            alert('답변글을 작성할 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', './login.php?'.$qstr.'&amp;url='.urlencode(G5_BBS_URL.'/board.php?bo_table='.$bo_table));
+            alert('답변글을 작성할 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', './login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
     }
 
     $tmp_point = isset($member['mb_point']) ? $member['mb_point'] : 0;
@@ -164,10 +165,10 @@ if ($w == '') {
 // 그룹접근 가능
 if (!empty($group['gr_use_access'])) {
     if ($is_guest) {
-        alert("접근 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.", 'login.php?'.$qstr.'&amp;url='.urlencode(G5_BBS_URL.'/board.php?bo_table='.$bo_table));
+        alert("접근 권한이 없습니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.", 'login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
     }
 
-    if ($is_admin === 'super' || $group['gr_admin'] === $member['mb_id'] || $board['bo_admin'] === $member['mb_id']) {
+    if ($is_admin == 'super' || $group['gr_admin'] === $member['mb_id'] || $board['bo_admin'] === $member['mb_id']) {
         ; // 통과
     } else {
         // 그룹접근
@@ -182,7 +183,7 @@ if (!empty($group['gr_use_access'])) {
 if ($config['cf_cert_use'] && !$is_admin) {
     // 인증된 회원만 가능
     if ($board['bo_use_cert'] != '' && $is_guest) {
-        alert('이 게시판은 본인확인 하신 회원님만 글쓰기가 가능합니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', 'login.php?'.$qstr.'&amp;url='.urlencode(G5_BBS_URL.'/board.php?bo_table='.$bo_table));
+        alert('이 게시판은 본인확인 하신 회원님만 글쓰기가 가능합니다.\\n\\n회원이시라면 로그인 후 이용해 보십시오.', 'login.php?'.$qstr.'&amp;url='.urlencode($_SERVER['SCRIPT_NAME'].'?bo_table='.$bo_table));
     }
 
     if ($board['bo_use_cert'] == 'cert' && !$member['mb_certify']) {
@@ -212,10 +213,6 @@ else
     $write_min = (int)$board['bo_write_min'];
     $write_max = (int)$board['bo_write_max'];
 }
-
-// Meta 설정
-$is_seometa = 'write';
-$is_no_meta = true;
 
 $g5['title'] = ((G5_IS_MOBILE && $board['bo_mobile_subject']) ? $board['bo_mobile_subject'] : $board['bo_subject']).' '.$title_msg;
 
@@ -276,10 +273,8 @@ if ($member['mb_level'] >= $board['bo_link_level']) {
     $is_link = true;
 }
 
-$file_count = (int)$board['bo_upload_count'];
-
 $is_file = false;
-if ($file_count > 0 && $member['mb_level'] >= $board['bo_upload_level']) {
+if ($member['mb_level'] >= $board['bo_upload_level']) {
     $is_file = true;
 }
 
@@ -287,6 +282,8 @@ $is_file_content = false;
 if ($board['bo_use_file_content']) {
     $is_file_content = true;
 }
+
+$file_count = (int)$board['bo_upload_count'];
 
 $name     = "";
 $email    = "";
@@ -296,8 +293,8 @@ if ($w == "" || $w == "r") {
         if (isset($write['wr_name'])) {
             $name = get_text(cut_str(stripslashes($write['wr_name']),20));
         }
-		$email = get_email_address($member['mb_email']); 
-		$homepage = get_text(stripslashes($member['mb_homepage'])); 
+        $email = get_email_address($member['mb_email']);
+        $homepage = get_text(stripslashes($member['mb_homepage']));
     }
 }
 
@@ -389,43 +386,22 @@ else
 
 $captcha_html = '';
 $captcha_js   = '';
-if ($is_guest) {
+$is_use_captcha = ((($board['bo_use_captcha'] && $w !== 'u') || $is_guest) && !$is_admin) ? 1 : 0;
+
+if ($is_use_captcha) {
     $captcha_html = captcha_html();
     $captcha_js   = chk_captcha_js();
-}
-
-// 테마설정
-$at = apms_gr_thema();
-if(!defined('THEMA_PATH')) {
-	include_once(G5_LIB_PATH.'/apms.thema.lib.php');
-}
-
-// 보드설정
-$boset = array();
-$boset = apms_boset();
-
-// 에디터 별도설정
-$apms_editor = $board['as_'.MOBILE_.'editor'];
-$is_apms_editor = (G5_IS_MOBILE && !$apms_editor) ? false : true;
-
-if($config['cf_editor'] && $apms_editor) {
-	$config['cf_editor'] = $apms_editor;
-	include_once(G5_EDITOR_PATH.'/'.$config['cf_editor'].'/editor.lib.php');
-} else {
-	include_once(G5_EDITOR_LIB);
 }
 
 $is_dhtml_editor = false;
 $is_dhtml_editor_use = false;
 $editor_content_js = '';
+if(!is_mobile() || defined('G5_IS_MOBILE_DHTML_USE') && G5_IS_MOBILE_DHTML_USE)
+    $is_dhtml_editor_use = true;
 
 // 모바일에서는 G5_IS_MOBILE_DHTML_USE 설정에 따라 DHTML 에디터 적용
-//if(!is_mobile() || defined('G5_IS_MOBILE_DHTML_USE') && G5_IS_MOBILE_DHTML_USE)
-if($board['bo_use_dhtml_editor'] && $is_apms_editor)
-	$is_dhtml_editor_use = true;
-
-if($config['cf_editor'] && $is_dhtml_editor_use && $member['mb_level'] >= $board['bo_html_level']) {
-	$is_dhtml_editor = true;
+if ($config['cf_editor'] && $is_dhtml_editor_use && $board['bo_use_dhtml_editor'] && $member['mb_level'] >= $board['bo_html_level']) {
+    $is_dhtml_editor = true;
 
     if ( $w == 'u' && (! $is_member || ! $is_admin || $write['mb_id'] !== $member['mb_id']) ){
         // kisa 취약점 제보 xss 필터 적용
@@ -443,39 +419,9 @@ $editor_js .= chk_editor_js('wr_content', $is_dhtml_editor);
 // 임시 저장된 글 수
 $autosave_count = autosave_count($member['mb_id']);
 
-//--------------------------------------------------------------------------
-// 가변 파일
-$file_script = "";
-$file_length = -1;
-// 수정의 경우 파일업로드 필드가 가변적으로 늘어나야 하고 삭제 표시도 해주어야 합니다.
-if ($w == "u") {
-    for ($i=0; $i<$file['count']; $i++) {
-        if ($file[$i]['source']) {
-			$file_script .= "add_file(\"";
-			if ($is_file_content) {
-				$file_script .= "<div class='col-sm-5'><div class='form-group'><input type='text'name='bf_content[$i]' value='".addslashes(get_text($file[$i]['bf_content']))."' class='form-control input-sm' placeholder='이미지에 대한 내용을 입력하세요.'></div></div>";
-			}
-			$file_script .= "<div class='col-sm-12'><div class='form-group'><label class='checkbox-inline'><input type='checkbox' name='bf_file_del[$i]' value='1'> {$file[$i]['source']}({$file[$i]['size']}) 파일 삭제</label> | <a href='{$file[$i]['href']}'>열기</a></div></div>";
-			$file_script .= "\");\n";
-        } else {
-            $file_script .= "add_file('');\n";
-		}
-    }
-    $file_length = $file['count'] - 1;
-}
-
-if ($file_length < 0) {
-    $file_script .= "add_file('');\n";
-    $file_length = 0;
-}
-//--------------------------------------------------------------------------
-
-$is_bo_content_head = true;
-@include_once ($board_skin_path.'/config.skin.php');
 include_once(G5_PATH.'/head.sub.php');
 @include_once ($board_skin_path.'/write.head.skin.php');
 include_once('./board_head.php');
-@include_once($board_skin_path.'/board.skin.php');
 
 $action_url = https_url(G5_BBS_DIR)."/write_update.php";
 

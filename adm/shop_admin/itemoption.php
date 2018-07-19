@@ -192,12 +192,12 @@ if($po_run) {
 </div>
 
 <div class="btn_list01 btn_list">
-    <input type="button" value="선택삭제" id="sel_option_delete">
+    <input type="button" value="선택삭제" id="sel_option_delete" class="btn btn_02">
 </div>
 
 <fieldset>
     <legend>옵션 일괄 적용</legend>
-    <?php echo help('옵션의 추가금액, 재고, 통보수량, 사용여부를 일괄 적용할 수 있습니다. 단, 체크된 수정항목만 일괄 적용됩니다.'); ?>
+    <?php echo help('전체 옵션의 추가금액, 재고/통보수량 및 사용여부를 일괄 적용할 수 있습니다. 단, 체크된 수정항목만 일괄 적용됩니다.'); ?>
     <label for="opt_com_price">추가금액</label>
     <label for="opt_com_price_chk" class="sound_only">추가금액일괄수정</label><input type="checkbox" name="opt_com_price_chk" value="1" id="opt_com_price_chk" class="opt_com_chk">
     <input type="text" name="opt_com_price" value="0" id="opt_com_price" class="frm_input" size="5">

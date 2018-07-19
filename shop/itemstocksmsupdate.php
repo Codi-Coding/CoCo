@@ -8,10 +8,10 @@ $sql = " select it_id, it_name, it_soldout, it_stock_sms
 $it = sql_fetch($sql);
 
 if(!$it['it_id'])
-    alert_close('자료가 존재하지 않습니다.');
+    alert_close('상품정보가 존재하지 않습니다.');
 
 if(!$it['it_soldout'] || !$it['it_stock_sms'])
-    alert_close('재입고SMS 알림을 신청할 수 없는 자료입니다.');
+    alert_close('재입고SMS 알림을 신청할 수 없는 상품입니다.');
 
 $ss_hp = hyphen_hp_number($ss_hp);
 if(!$ss_hp)
@@ -29,7 +29,7 @@ $sql = " select count(*) as cnt
 $row = sql_fetch($sql);
 
 if($row['cnt'])
-    alert_close('해당 자료에 대하여 이전에 알림 요청을 등록한 내역이 있습니다.');
+    alert_close('해당 상품에 대하여 이전에 알림 요청을 등록한 내역이 있습니다.');
 
 // 정보입력
 $sql = " insert into {$g5['g5_shop_item_stocksms_table']}

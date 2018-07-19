@@ -1,0 +1,220 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-board-form">
+	<form name="fexboardform" id="fexboardform" action="{_action_url1}" method="post" onsubmit="return fexboardform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="bo_table" value="{board.bo_table}">
+	<input type="hidden" name="token" value="{_token}">
+	
+	<div class="headline">
+		<h4><strong>[<strong class="color-red">{board.bo_subject}</strong>] 확장필드 관리</strong></h4>
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="board-extend">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 게시판 확장필드</strong></header>
+			
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-info font-size-12 margin-bottom-0"><i class="fa fa-info-circle"></i> 게시판 확장필드는 그누보드의 기본 여분필드인 wr_1 ~ wr_10 여분필드와는 별개로 작동합니다. ex_1 ~ ex_숫자 확장필드를 원하시는 만큼 생성하여 게시판에 활용하여 다양한 게시판 스킨을 개발하실 수 있습니다.</p>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="bo_ex_cnt" class="label">현재 확장 필드수</label>
+					        <label class="input">
+					        	<i class="icon-append">개</i>
+					            <input type="text" name="bo_ex_cnt" id="bo_ex_cnt" value="{board.bo_ex_cnt}" readonly>
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 현재 추가된 확장필드의 개수입니다.</div>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="bo_exadd" class="label">확장필드 일괄 추가하기</label>
+							<label class="input input-button margin-bottom-0">
+								<input type="text" name="bo_exadd" value="" id="bo_exadd" required class="frm_input">
+								<div class="button"><input type="submit" value="추가"><i class="fa fa-plus"></i> 확장필드추가</div>
+							</label>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 한꺼번에 여러개의 확장필드를 추가할 때 사용합니다. 일괄 추가후, 아래 리스트에서 설정을 변경하실 수 있습니다.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	
+	{frm_submit}
+	
+	</form>
+</div>
+
+<div class="admin-board-exlist">
+
+	<form name="fboardexlist" id="fboardexlist" action="{_action_url2}" method="post" onsubmit="return fboardexlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="bo_table" value="{_bo_table}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{board.bo_subject}</span>] 확장필드 아이템 리스트</strong></h4>
+		<!--{? !_wmode}-->
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=board&pid=board_exform&amp;bo_table={_bo_table}&amp;wmode=1" onclick="exboard_modal(this.href, '확장필드 설정관리'); return false;" class="btn-e btn-e-purple btn-e-xs  pull-right margin-top-5"><i class="fa fa-plus"></i> 확장필드 추가하기</a>
+		<div class="clearfix"></div>
+		<!--{/}-->
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="board-exlist"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <!--{? _is_admin == 'super'}-->
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	    <!--{/}-->
+	</div>
+	</form>
+
+</div>
+
+<div class="modal fade exboard-iframe-modal" tabindex="-1" role="dialog" aria-labelledby="themeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="themeModalLabel" class="modal-title"><strong><i class="fa fa-ellipsis-v color-grey"></i> <span id="modal-title">확장필드 설정관리</span></strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="exboard-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="exboard-close-btn btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function exboard_modal(href, title) {
+    $('.exboard-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#product-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.exboard-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#exboard-iframe").attr("src", href);
+        $("#modal-title").text(title);
+        $('#exboard-iframe').height(500);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('.exboard-iframe-modal').modal('hide');
+    window.location.reload();
+};
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1)  )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label><input type='hidden' name='ex_no[{.index_}]' value='{.ex_no}'>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=board_exform&amp;bo_table={_bo_table}&amp;ex_no={.ex_no}&amp;w=u&amp;page={_page}&amp;wmode=1' onclick='exboard_modal(this.href); return false;'><u>수정</u></a>",
+	        코드복사: "<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=board_excode&amp;bo_table={_bo_table}&amp;ex_no={.ex_no}&amp;wmode=1' onclick='exboard_modal(this.href,\"코드복사하기\"); return false;' class='btn-e btn-e-xs btn-e-dark'>코드보기</a>", 
+	        필드명: "<strong>{.ex_fname}</strong><input type='hidden' name='ex_fname[{.index_}]' value='{.ex_fname}'>",
+	        타이틀: "<label for='ex_subject' class='input'><input type='text' name='ex_subject[{.index_}]' id='ex_subject_{.index_}' value='{? .ex_subject}{=get_text(.ex_subject)}{/}'></label>",
+	        폼타입: "{.form}",
+	        필드종류: "{.ex_type} {? .ex_length && .ex_type != 'text'}({.ex_length}){/}",
+	        검색사용: "<label class='checkbox' for='ex_use_search_{.index_}'><input type='checkbox' name='ex_use_search[{.index_}]' id='ex_use_search_{.index_}' value='y' {? .ex_use_search == 'y'}checked{/}><i></i></label>",
+	        필수여부: "<label class='checkbox' for='ex_required_{.index_}'><input type='checkbox' name='ex_required[{.index_}]' id='ex_required_{.index_}' value='y' {? .ex_required == 'y'}checked{/}><i></i></label>",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#board-exlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : {_rows},
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 80, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "코드복사", type: "text", align: "center", width: 80 },
+            { name: "필드명", type: "text", align: "center", width: 80 },
+            { name: "타이틀", type: "text", width: 150 },
+            { name: "폼타입", type: "text", width: 200 },
+            { name: "필드종류", type: "text", align: "center", width: 100 },
+            { name: "검색사용", type: "text", align: "center", width: 80 },
+            { name: "필수여부", type: "text", align: "center", width: 80 },
+        ]
+    });
+
+    var $chk = $("#board-exlist .jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function fboardexlist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("해당 필드에 입력되어 있는 모든 입력값들도 함께 삭제됩니다.\n\n정말로 선택한 확장필드를 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+</script>

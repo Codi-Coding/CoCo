@@ -1,0 +1,222 @@
+/*--------------------------------------
+	eyoom (이윰빌더)
+--------------------------------------*/
+
+/*----- Layout -----*/
+.wrapper .wrapper-in {width:100%;padding:0}
+.wrapper .wrapper-in .left-area {background:#252525}
+.wrapper .wrapper-in .left-area .mCSB_scrollTools {width:6px}
+.wrapper .wrapper-in .left-area .mCSB_dragger {max-height:400px !important}
+.wrapper .wrapper-in .right-area {background:#f4f4f4}
+
+/*----- Sidebar Nav Title -----*/
+.nav-title {width:230px;float:left;background:#656565;border-radius:0;height:48px;min-height:48px;border:0;margin-bottom:0}
+.nav-title .nav-title-logo {text-overflow:ellipsis;overflow:hidden;font-weight:400;font-size:16px;width:100%;color:#fff;line-height:48px;display:block;height:48px;margin:0;padding-left:12px}
+.nav-title .nav-title-logo i {border:1px solid #fff;background:#454545;width:30px;height:30px;line-height:29px;font-size:13px;text-align:center;border-radius:50% !important}
+.nav-title .nav-title-logo span {margin-left:10px}
+
+/*----- Sidebar Nav Member -----*/
+.adm-member-box {position:relative;overflow:hidden;padding:20px 12px;background:#000}
+.adm-member-photo {position:relative;float:left;width:60px;height:60px;line-height:52px;text-align:center;border:1px solid #e5e5e5;padding:2px;font-size:35px;color:#fff}
+.adm-member-info {position:relative;float:left;width:135px;margin-left:10px}
+.adm-member-info h5 {font-weight:bold;font-size:14px;color:#fff;padding:0;margin:4px 0 7px}
+.adm-member-info h6 {font-size:12px;color:#b5b5b5;padding:0;margin:0 0 3px}
+.adm-member-info p {font-size:11px;color:#b5b5b5;margin:0}
+.adm-member-info .info-left {float:left}
+.adm-member-info .info-left span {color:#FF9500}
+.adm-member-info .info-right {float:right}
+.adm-member-info .info-right span {color:#FF9500}
+
+/*----- Sidebar Nav -----*/
+.admin-menu {padding:0}
+.admin-menu span.fa {float:right;text-align:center;margin-top:3px;font-size:10px;min-width:inherit;color:#c5c5c5}
+.admin-menu .active a span.fa {text-align:right !important}
+.admin-menu .admin-menu-box {margin-bottom:50px}
+.admin-menu .admin-menu-box h3 {padding-left:23px;color:#fff;text-transform:uppercase;letter-spacing:0.5px;font-weight:bold;font-size:11px;margin-bottom:0;margin-top:0;text-shadow:1px 1px #000}
+.nav > li > a {position:relative;display:block;padding:13px 15px 12px 10px}
+.nav > li > a:focus,.nav > li > a:hover {background-color:transparent}
+.nav.navbar-nav > li > a {color:#555555 !important}
+.nav.sidebar-menu > li {position:relative;display:block;cursor:pointer;border-bottom:1px solid #323232}
+.nav.sidebar-menu > li > a {margin-bottom:0}
+.nav.sidebar-menu > li > a:hover {color:#fff !important}
+.nav.sidebar-menu > li > a > i {width:20px;text-align:center}
+.nav.sidebar-menu > li.active {border-left:2px solid #252525;background:#151515}
+.nav.sidebar-menu > li.active > a,.nav.sidebar-menu > li.active > ul {margin-left:-2px}
+.nav.sidebar-submenu {display:none}
+.nav.sidebar-submenu li.active,.nav.sidebar-submenu li:hover {background-color:rgba(255, 255, 255, 0.07)}
+.nav.sidebar-submenu li.active a,.nav.sidebar-submenu li:hover a {color:#778CFF}
+.nav.sidebar-submenu li {padding-left:29px}
+.nav.sidebar-submenu > li > a {color:rgba(255, 255, 255, 0.75);font-size:12px;padding:9px}
+.nav.sidebar-submenu > li > a,.nav.sidebar-menu > li > a {color:#E7E7E7;font-weight:500}
+.nav.sidebar-submenu li li.active,.nav.sidebar-submenu li li:hover {background:none}
+.nav.sidebar-submenu li li a.active,.nav.sidebar-submenu li li a:hover {color:#fff}
+
+/*----- Sidebar Min -----*/
+.sidebar-min .hidden-small {visibility:hidden}
+.sidebar-min .wrapper-in .left-area {min-height:100%;width:70px;padding:0;z-index:9999;position:absolute}
+.sidebar-min .wrapper-in .left-area.side-fixed {position:fixed;height:100%}
+.sidebar-min .wrapper-in .left-area .mCSB_container,.sidebar-min .wrapper-in .left-area .mCustomScrollBox {overflow:visible}
+.sidebar-min .wrapper-in .right-area {padding:70px 20px 30px;margin-left:70px;z-index:2}
+.sidebar-min .navbar.nav-title {width:70px}
+.sidebar-min .navbar.nav-title a span {display:none}
+.sidebar-min .navbar.nav-title a i {font-size:16px;margin:8px 0 0 8px}
+.sidebar-min .adm-member-box {display:none}
+.sidebar-min .nav.sidebar-menu > li {border-bottom:0}
+.sidebar-min .nav.sidebar-menu > li > a {text-align:center !important;font-weight:400;font-size:10px;padding:10px 5px}
+.sidebar-min .nav.sidebar-menu > li a i.toggle-up {display:none !important}
+.sidebar-min .nav.sidebar-menu > li a i {font-size:25px !important;text-align:center;width:100% !important;margin-bottom:5px}
+.sidebar-min .nav.sidebar-menu > li li span.fa {display:inline-block}
+.sidebar-min .nav.sidebar-menu > li.active-min {border-left:2px solid #757575}
+.sidebar-min .nav.sidebar-menu > li.active-min > a {margin-left:-2px;color:#778CFF}
+.sidebar-min .nav.sidebar-menu > li.active-min > ul {margin-left:0;border-top:1px solid #44495B}
+.sidebar-min .nav.sidebar-menu > li.active-min > ul ul {position:static;width:200px;background:none}
+.sidebar-min .nav.sidebar-menu > li.active {border-left:2px solid #757575}
+.sidebar-min .nav.sidebar-menu > li.active > ul {margin-left:0px}
+.sidebar-min .nav.sidebar-submenu {left:100%;position:absolute;top:0;width:210px;z-index:4000;background:#151515;display:none}
+.sidebar-min .nav.sidebar-submenu li {padding:0 10px}
+.sidebar-min .nav.sidebar-submenu li a {text-align:left !important}
+.sidebar-min .nav.sidebar-submenu li.active-min a {color:#778CFF}
+.sidebar-min .admin-menu .admin-menu-box {margin:0;padding-bottom:500px}
+.sidebar-min .admin-menu .admin-menu-box h3,.sidebar-min .nav.sidebar-menu span.fa {display:none}
+.sidebar-min .topbar {position:relative;display:block;margin-left:70px;z-index:99}
+.sidebar-min .footer {margin-left:70px}
+
+/*----- Sidebar Expand -----*/
+.sidebar-expand .wrapper-in .left-area {min-height:100%;width:230px;padding:0;position:absolute;display:-ms-flexbox;display:flex;z-index:1}
+.sidebar-expand .wrapper-in .left-area.side-fixed {height:100%;position:fixed}
+.sidebar-expand .wrapper-in .right-area {padding:80px 20px 40px;margin-left:230px}
+.sidebar-expand .nav.sidebar-menu > li.active {background:#000}
+.sidebar-expand .nav.sidebar-menu > li.active > a {text-shadow:rgba(0, 0, 0, 0.25) 0 -1px 0;background:linear-gradient(#353535, #252525), #151515;box-shadow:rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0}
+.sidebar-expand ul.nav.sidebar-submenu li:before {background:#252525;bottom:13px;content:"";height:13px;left:14px;margin-top:15px;position:absolute;right:auto;width:13px;border:2px solid #000;border-radius:50%}
+.sidebar-expand ul.nav.sidebar-submenu li:after {border-left:1px solid #252525;bottom:0;content:"";left:20px;position:absolute;top:0}
+.sidebar-expand ul.nav.sidebar-submenu li.active:before {background:#757575;z-index:1}
+
+/*----- Sidebar footer -----*/
+.sidebar-footer {bottom:0;display:block;padding:8px 10px;position:fixed;width:230px;background:#000;font-size:11px;color:#555555;border-top:1px solid #252525}
+
+/*----- Topbar -----*/
+.topbar-fixed .topbar {position:fixed;top:0;width:100%;z-index:999}
+.topbar-fixed.sidebar-min .topbar .topbar-nav .topbar-nav-menu {margin-right:80px}
+.topbar {position:relative;display:block;margin-left:230px}
+.topbar .topbar-nav {float:left;background:#fff;border-bottom:1px solid #d5d5d5;margin-bottom:10px;width:100%;position:relative}
+.topbar .admin-toggle {float:left;margin:0;padding-top:10px;padding-bottom:10px;width:60px;cursor:default}
+.topbar .admin-toggle a {padding:15px 20px 10px;margin:0;cursor:pointer}
+.topbar .admin-toggle a i {font-size:26px;color:#151515}
+.topbar .topbar-nav-menu {position:relative;float:right;height:48px;margin-right:20px}
+.topbar .topbar-nav-menu ul li {line-height:48px;padding-left:8px;padding-right:8px;font-size:12px}
+.topbar .topbar-nav-menu ul li a:hover {text-decoration:underline}
+.topbar .topbar-nav-menu ul li .btn-e {line-height:22px;border-radius:2px !important}
+.topbar .topbar-nav-menu ul li .btn-e:hover {text-decoration:none}
+.topbar .topbar-nav-menu ul li.screenfull {cursor:pointer}
+.topbar .topbar-nav-menu ul li.screenfull:hover {color:#005cff;text-decoration:underline}
+
+/*----- Footer -----*/
+.footer-fixed .footer {position:fixed;left:0;bottom:0;width:100%}
+.footer {background:#fff;padding:7px 20px;display:block;font-size:11px;border-top:1px solid #d5d5d5}
+.footer .copyright {float:right;font-size:11px;color:#555555}
+
+/*----- Responsive -----*/
+@media (min-width: 992px) {
+	.topbar-fixed.sidebar-expand .topbar .topbar-nav .topbar-nav-menu {margin-right:240px}
+}
+@media (max-width: 991px) {
+	.sidebar-expand .wrapper-in .right-area,.sidebar-expand .wrapper-in .topbar {width:100%;margin:0}
+	.sidebar-expand .wrapper-in .left-area {display:none}
+	.sidebar-expand .wrapper-in .right-area {padding:70px 10px 30px}
+	.sidebar-min .wrapper-in .right-area {padding:70px 10px 30px}
+	.topbar .admin-toggle {width:43px}
+	.topbar .admin-toggle a {padding:15px 10px 10px}
+	.topbar .topbar-nav-menu {margin-right:10px}
+	.topbar .topbar-nav-menu ul li.last-li {padding-right:0}
+	.footer {padding:7px 10px 6px}
+}
+@media (min-width: 768px) {
+	.footer-fixed .footer {margin-left:0}
+	.footer-fixed .sidebar-min .footer {margin-left:0}
+}
+@media (max-width: 767px) {
+	.sidebar-min .footer .copyright {margin-right:70px}
+}
+
+/*----- Bootstrap Grid -----*/
+.row {margin-right:-10px;margin-left:-10px}
+.col-lg-1,.col-lg-10,.col-lg-11,.col-lg-12,.col-lg-2,.col-lg-3,.col-lg-4,.col-lg-5,.col-lg-6,.col-lg-7,.col-lg-8,.col-lg-9,.col-md-1,.col-md-10,.col-md-11,.col-md-12,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-55,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-sm-1,.col-sm-10,.col-sm-11,.col-sm-12,.col-sm-2,.col-sm-3,.col-sm-4,.col-sm-5,.col-sm-6,.col-sm-7,.col-sm-8,.col-sm-9,.col-xs-1,.col-xs-10,.col-xs-11,.col-xs-12,.col-xs-2,.col-xs-3,.col-xs-4,.col-xs-5,.col-xs-6,.col-xs-7,.col-xs-8,.col-xs-9 {padding-right:10px;padding-left:10px}
+
+/*----- Eyoom Form -----*/
+.eyoom-form .input input {height:26px;padding:4px 10px}
+.eyoom-form input.btn-e-lg {padding:7px 16px;font-size:14px}
+.eyoom-form .icon-append, .eyoom-form .icon-prepend {width:25px;height:24px;line-height:25px;min-width:26px;background:#fcfcfd;font-style:normal}
+.eyoom-form .input .icon-append + input, .eyoom-form .textarea .icon-append + textarea {padding-right:38px}
+.eyoom-form .input-button .button {height:24px;line-height:24px;padding:0 16px}
+.eyoom-form .input-file .button {height:26px;line-height:26px;padding:0 16px}
+.eyoom-form .select select {height:26px;padding:4px 10px}
+.eyoom-form .select i {height:22px}
+.eyoom-form .select i:before {top:6px}
+.eyoom-form .select i:after {top:12px}
+.eyoom-form .label {font-size:12px;margin-bottom:3px;color:#093289}
+.eyoom-form header {background:#e5e5e5;border-bottom:1px solid #d5d5d5;padding:10px 15px}
+.eyoom-form header.border-top {border-top:1px solid #d5d5d5}
+.eyoom-form fieldset {padding:10px 15px}
+.eyoom-form section {margin-bottom:8px}
+.eyoom-form .admin-search-box {position:relative;padding:10px;border:1px solid #FF9800;background:#FFF3E0}
+.eyoom-form .admin-search-box .checkbox i, .eyoom-form .admin-search-box .icon-append, .eyoom-form .admin-search-box .icon-prepend, .eyoom-form .admin-search-box .input input, .eyoom-form .admin-search-box .radio i, .eyoom-form .admin-search-box .select select, .eyoom-form .admin-search-box .textarea textarea, .eyoom-form .admin-search-box .toggle i, .eyoom-form .admin-search-box .input-button .button {border-color:#A5A5A5}
+.eyoom-form .admin-search-box hr {margin-top:10px;margin-bottom:10px;border-top:1px dotted #ffbd5a}
+.eyoom-form .label-height {margin-top:23px}
+.eyoom-form .asSpinner .asSpinner-down, .eyoom-form .asSpinner .asSpinner-up {width:22px;height:22px;line-height:22px;font-size:11px}
+.eyoom-form .asSpinner .asSpinner-up {right:25px}
+.eyoom-form .asColorPicker-trigger {width:20px !important;height:20px !important}
+.eyoom-form .asColorPicker-clear {width:16px !important;height:16px !important;line-height:16px}
+@media screen and (max-width: 600px) {
+	.eyoom-form .col {margin-bottom:10px}
+	.eyoom-form .label-height {margin-top:0}
+}
+
+/*----- Table List eb -----*/
+.table-list-eb thead {background:#ebebeb}
+
+/*----- Ckeditor -----*/
+.board-write a.cke_button {padding:2px 5px}
+.board-write a.cke_button_on {padding:1px 4px}
+.board-write a.cke_button_off:hover, .board-write a.cke_button_off:focus, .board-write a.cke_button_off:active {padding:1px 4px}
+
+/*----- Summernote -----*/
+.eyoom-form .note-editor *, .eyoom-form .note-editor *:after, .eyoom-form .note-editor *:before {box-sizing:border-box;-moz-box-sizing:border-box}
+.eyoom-form .note-editor.panel-default>.panel-heading {background-color:#eaecee;border:0;border-bottom:1px solid #A9A9A9}
+.panel-heading.note-toolbar .note-color .dropdown-menu {padding-top:6px;padding-bottom:6px;padding-left:1px}
+
+/*----- JsGride -----*/
+.jsgrid {font-size:12px !important}
+.jsgrid a:hover {text-decoration:underline}
+.jsgrid a.btn-e:hover {text-decoration:none}
+.jsgrid .btn-e-xs, .jsgrid .btn-group-xs > .btn-e {padding:2px 8px;line-height:1}
+.jsgrid-grid-header {border-top:2px solid #353535 !important;border-bottom:1px solid #353535 !important;border-left:none !important;border-right:none !important}
+.jsgrid-grid-body {background:#fff;border-left:none !important;border-right:none !important}
+.jsgrid-selected-row td {cursor:default !important}
+.jsgrid .jsgrid-button {position:relative;display:inline-block;line-height:16px;padding:0;font-family:'Glyphicons Halflings';font-size:13px;font-style:normal;font-weight:400;cursor:pointer;background:0 0 !important;border:none;-webkit-transform:translate(0,0);-ms-transform:translate(0,0);-o-transform:translate(0,0);transform:translate(0,0);text-rendering:auto;speak:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.jsgrid-search-mode-button:before {content:"\e003";color:#171C29}
+.jsgrid-search-button:before {content:"\e003";color:#E08200}
+.jsgrid-clear-filter-button:before {content:"\e082";color:#7347CF}
+.jsgrid-edit-button:before {content:"\270f";color:#0061D6}
+.jsgrid-delete-button:before {content:"\e020";color:#DE2600}
+.jsgrid-update-button:before {content:"\e013";color:#669400}
+.jsgrid-cancel-edit-button:before {content:"\e014";color:#171C29}
+.jsgrid .input-sm {height:22px}
+.jsgrid-header-row>th {background:#e5e5e5 !important}
+.jsgrid-header-row .jsgrid-header-sort {background:#FFFCEB !important}
+.jsgrid-header-sort:before {float:right !important}
+.jsgrid-header-sort-asc:before {border-color:transparent transparent #0061D6 !important}
+.jsgrid-header-sort-desc:before {border-color:#DE2600 transparent transparent !important}
+.jsgrid-selected-row>.jsgrid-cell {background:#FFFCEB !important;border-color:#FFFCEB !important}
+.jsgrid-table .set-btn-header {background:#dadada !important;color:#E52700}
+.jsgrid-table .set-btn-field {background:#fffcf5}
+.jsgrid-table label.checkbox {padding:10px;width:12px;margin:0 auto}
+.jsgrid .checkbox i, .jsgrid .radio i {box-sizing:content-box;top:2px}
+.jsgrid label {margin-bottom:0}
+.jsgrid .eyoom-form .checkbox i, .jsgrid .eyoom-form .radio i {box-sizing:content-box;top:2px}
+
+/*----- Etc -----*/
+fieldset legend {border-bottom:0}
+label, input, button, select {vertical-align:inherit}
+.sch_word {color:crimson}
+.adm-form-wrap {position:relative;border:1px solid #d5d5d5}
+.alert fieldset {background:none}

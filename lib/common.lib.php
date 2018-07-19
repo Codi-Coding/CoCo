@@ -18,14 +18,12 @@ function get_microtime()
 // 한페이지에 보여줄 행, 현재페이지, 총페이지수, URL
 function get_paging($write_pages, $cur_page, $total_page, $url, $add="")
 {
-	global $aslang;
-
-	//$url = preg_replace('#&amp;page=[0-9]*(&amp;page=)$#', '$1', $url);
+    //$url = preg_replace('#&amp;page=[0-9]*(&amp;page=)$#', '$1', $url);
     $url = preg_replace('#&amp;page=[0-9]*#', '', $url) . '&amp;page=';
 
     $str = '';
     if ($cur_page > 1) {
-        $str .= '<a href="'.$url.'1'.$add.'" class="pg_page pg_start">'.$aslang['pg_start'].'</a>'.PHP_EOL; //처음
+        $str .= '<a href="'.$url.'1'.$add.'" class="pg_page pg_start">처음</a>'.PHP_EOL;
     }
 
     $start_page = ( ( (int)( ($cur_page - 1 ) / $write_pages ) ) * $write_pages ) + 1;
@@ -33,21 +31,21 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add="")
 
     if ($end_page >= $total_page) $end_page = $total_page;
 
-    if ($start_page > 1) $str .= '<a href="'.$url.($start_page-1).$add.'" class="pg_page pg_prev">'.$aslang['pg_prev'].'</a>'.PHP_EOL; //이전
+    if ($start_page > 1) $str .= '<a href="'.$url.($start_page-1).$add.'" class="pg_page pg_prev">이전</a>'.PHP_EOL;
 
     if ($total_page > 1) {
         for ($k=$start_page;$k<=$end_page;$k++) {
             if ($cur_page != $k)
-                $str .= '<a href="'.$url.$k.$add.'" class="pg_page">'.$k.'<span class="sound_only">'.$aslang['pg_page'].'</span></a>'.PHP_EOL; //페이지
+                $str .= '<a href="'.$url.$k.$add.'" class="pg_page">'.$k.'<span class="sound_only">페이지</span></a>'.PHP_EOL;
             else
-                $str .= '<span class="sound_only">'.$aslang['pg_now'].'</span><strong class="pg_current">'.$k.'</strong><span class="sound_only">'.$aslang['pg_page'].'</span>'.PHP_EOL; //현재 페이지
+                $str .= '<span class="sound_only">열린</span><strong class="pg_current">'.$k.'</strong><span class="sound_only">페이지</span>'.PHP_EOL;
         }
     }
 
-    if ($total_page > $end_page) $str .= '<a href="'.$url.($end_page+1).$add.'" class="pg_page pg_next">'.$aslang['pg_next'].'</a>'.PHP_EOL; //다음
+    if ($total_page > $end_page) $str .= '<a href="'.$url.($end_page+1).$add.'" class="pg_page pg_next">다음</a>'.PHP_EOL;
 
     if ($cur_page < $total_page) {
-        $str .= '<a href="'.$url.$total_page.$add.'" class="pg_page pg_end">'.$aslang['pg_end'].'</a>'.PHP_EOL; //맨끝
+        $str .= '<a href="'.$url.$total_page.$add.'" class="pg_page pg_end">맨끝</a>'.PHP_EOL;
     }
 
     if ($str)
@@ -155,12 +153,7 @@ function alert($msg='', $url='', $error=true, $post=false)
     global $g5, $config, $member;
     global $is_admin;
 
-    $msg = $msg ? strip_tags($msg, '<br>') : aslang('alert', 'is_wrong'); //올바른 방법으로 이용해 주십시오.
-
-	//프린트 모드 등 창으로 열 때
-	if(APMS_PRINT) {
-		alert_close($msg);
-	}
+    $msg = $msg ? strip_tags($msg, '<br>') : '올바른 방법으로 이용해 주십시오.';
 
     $header = '';
     if (isset($g5['title'])) {
@@ -175,7 +168,7 @@ function alert($msg='', $url='', $error=true, $post=false)
 function alert_close($msg, $error=true)
 {
     global $g5;
-
+    
     $msg = strip_tags($msg, '<br>');
 
     $header = '';
@@ -192,12 +185,12 @@ function confirm($msg, $url1='', $url2='', $url3='')
     global $g5;
 
     if (!$msg) {
-        $msg = aslang('alert', 'is_wrong'); //올바른 방법으로 이용해 주십시오.
+        $msg = '올바른 방법으로 이용해 주십시오.';
         alert($msg);
     }
 
     if(!trim($url1) || !trim($url2)) {
-        $msg = aslang('alert', 'is_url'); //$url1 과 $url2 를 지정해 주세요.
+        $msg = '$url1 과 $url2 를 지정해 주세요.';
         alert($msg);
     }
 
@@ -226,7 +219,7 @@ function url_auto_link($str)
     $attr_nofollow = (function_exists('check_html_link_nofollow') && check_html_link_nofollow('url_auto_link')) ? ' rel="nofollow"' : '';
     $str = str_replace(array("&lt;", "&gt;", "&amp;", "&quot;", "&nbsp;", "&#039;"), array("\t_lt_\t", "\t_gt_\t", "&", "\"", "\t_nbsp_\t", "'"), $str);
     //$str = preg_replace("`(?:(?:(?:href|src)\s*=\s*(?:\"|'|)){0})((http|https|ftp|telnet|news|mms)://[^\"'\s()]+)`", "<A HREF=\"\\1\" TARGET='{$config['cf_link_target']}'>\\1</A>", $str);
-    $str = preg_replace("/([^(href=\"?'?)|(src=\"?'?)]|\(|^)((http|https|ftp|telnet|news|mms):\/\/[가-힣a-zA-Z0-9\.-]+\.[가-힣\xA1-\xFEa-zA-Z0-9\.:&#!=_\?\/~\+%@;\-\|\,\(\)]+)/i", "\\1<A HREF=\"\\2\" TARGET=\"{$config['cf_link_target']}\" $attr_nofollow>\\2</A>", $str);
+    $str = preg_replace("/([^(href=\"?'?)|(src=\"?'?)]|\(|^)((http|https|ftp|telnet|news|mms):\/\/[a-zA-Z0-9\.-]+\.[가-힣\xA1-\xFEa-zA-Z0-9\.:&#!=_\?\/~\+%@;\-\|\,\(\)]+)/i", "\\1<A HREF=\"\\2\" TARGET=\"{$config['cf_link_target']}\" $attr_nofollow>\\2</A>", $str);
     $str = preg_replace("/(^|[\"'\s(])(www\.[^\"'\s()]+)/i", "\\1<A HREF=\"http://\\2\" TARGET=\"{$config['cf_link_target']}\" $attr_nofollow>\\2</A>", $str);
     $str = preg_replace("/[0-9a-z_-]+@[a-z0-9._-]{4,}/i", "<a href=\"mailto:\\0\" $attr_nofollow>\\0</a>", $str);
     $str = str_replace(array("\t_nbsp_\t", "\t_lt_\t", "\t_gt_\t", "'"), array("&nbsp;", "&lt;", "&gt;", "&#039;"), $str);
@@ -254,6 +247,7 @@ function url_auto_link($str)
 
     return $str;
 }
+
 
 // url에 http:// 를 붙인다
 function set_http($url)
@@ -358,24 +352,16 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
     else
         $list['subject'] = conv_subject($list['wr_subject'], $board['bo_subject_len'], '…');
 
-	// 확장데이터
-	if($list['as_extend']) {
-		$wr_extend = apms_unpack($list['wr_content']);
-		$list['content'] = $wr_extend['content'];
-		unset($wr_extend);
-	} else {
-		$list['content'] = $list['wr_content'];
-	}
-
-	// 목록에서 내용 미리보기 사용한 게시판만 내용을 변환함 (속도 향상) : kkal3(커피)님께서 알려주셨습니다.
-    if ($board['bo_use_list_content']) {
+    // 목록에서 내용 미리보기 사용한 게시판만 내용을 변환함 (속도 향상) : kkal3(커피)님께서 알려주셨습니다.
+    if ($board['bo_use_list_content'])
+	{
 		$html = 0;
 		if (strstr($list['wr_option'], 'html1'))
 			$html = 1;
 		else if (strstr($list['wr_option'], 'html2'))
 			$html = 2;
 
-        $list['content'] = conv_content($list['content'], $html);
+        $list['content'] = conv_content($list['wr_content'], $html);
 	}
 
     $list['comment_cnt'] = '';
@@ -385,11 +371,7 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
     // 당일인 경우 시간으로 표시함
     $list['datetime'] = substr($list['wr_datetime'],0,10);
     $list['datetime2'] = $list['wr_datetime'];
-    $list['date'] = strtotime($list['wr_datetime']);
-    $list['update'] = substr($list['as_update'],0,1);
-	$list['update'] = ($list['update'] == "0") ? 0 : strtotime($list['as_update']);
-
-	if ($list['datetime'] == G5_TIME_YMD)
+    if ($list['datetime'] == G5_TIME_YMD)
         $list['datetime2'] = substr($list['datetime2'],11,5);
     else
         $list['datetime2'] = substr($list['datetime2'],5,5);
@@ -403,29 +385,24 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
 
     $list['wr_homepage'] = get_text($list['wr_homepage']);
 
+    $tmp_name = get_text(cut_str($list['wr_name'], $config['cf_cut_name'])); // 설정된 자리수 만큼만 이름 출력
     $tmp_name2 = cut_str($list['wr_name'], $config['cf_cut_name']); // 설정된 자리수 만큼만 이름 출력
-    $tmp_name = get_text($tmp_name2); // 설정된 자리수 만큼만 이름 출력
-    if ($board['bo_use_sideview']) {
-		$lvl = ($board['as_level']) ? 'yes' : 'no';
-		$list['name'] = apms_sideview($list['mb_id'], $tmp_name2, $list['wr_email'], $list['wr_homepage'], $list['as_level'], $lvl); // APMS 용으로 교체
-	} else {
-		if ($board['as_level']) {
-			$tmp_name = xp_icon($list['mb_id'], $list['as_level']).' '.$tmp_name;
-		}
-		$list['name'] = '<span class="'.($list['mb_id']?'sv_member':'sv_guest').'">'.$tmp_name.'</span>';
-	}
+    if ($board['bo_use_sideview'])
+        $list['name'] = get_sideview($list['mb_id'], $tmp_name2, $list['wr_email'], $list['wr_homepage']);
+    else
+        $list['name'] = '<span class="'.($list['mb_id']?'sv_member':'sv_guest').'">'.$tmp_name.'</span>';
 
     $reply = $list['wr_reply'];
 
-    $list['reply'] = strlen($reply)*10;
+    $list['reply'] = strlen($reply)*20;
 
     $list['icon_reply'] = '';
     if ($list['reply'])
-        $list['icon_reply'] = '<img src="'.$skin_url.'/img/icon_reply.gif" style="margin-left:'.$list['reply'].'px;" alt="">';
+        $list['icon_reply'] = '<img src="'.$skin_url.'/img/icon_reply.gif" class="icon_reply" alt="답변글">';
 
     $list['icon_link'] = '';
     if ($list['wr_link1'] || $list['wr_link2'])
-        $list['icon_link'] = '<img src="'.$skin_url.'/img/icon_link.gif" alt="">';
+        $list['icon_link'] = '<i class="fa fa-link" aria-hidden="true"></i> ';
 
     // 분류명 링크
     $list['ca_name_href'] = G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'&amp;sca='.urlencode($list['ca_name']);
@@ -434,48 +411,16 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
     $list['comment_href'] = $list['href'];
 
     $list['icon_new'] = '';
-    if ($board['bo_new']) {
-		$new_date = date("Y-m-d H:i:s", G5_SERVER_TIME - ($board['bo_new'] * 3600));
-		if($list['wr_datetime'] >= $new_date) {
-	        $list['icon_new'] = '<img src="'.$skin_url.'/img/icon_new.gif" alt="">';
-		} else if($list['as_update'] >= $new_date) {
-	        $list['icon_new'] = '<img src="'.$skin_url.'/img/icon_new.gif" alt="">';
-		}
-	}
+    if ($board['bo_new'] && $list['wr_datetime'] >= date("Y-m-d H:i:s", G5_SERVER_TIME - ($board['bo_new'] * 3600)))
+        $list['icon_new'] = '<img src="'.$skin_url.'/img/icon_new.gif" alt="새글"> ';
 
     $list['icon_hot'] = '';
     if ($board['bo_hot'] && $list['wr_hit'] >= $board['bo_hot'])
-        $list['icon_hot'] = '<img src="'.$skin_url.'/img/icon_hot.gif" alt="">';
+        $list['icon_hot'] = '<i class="fa fa-heart" aria-hidden="true"></i> ';
 
-	$list['is_lock'] = false;
     $list['icon_secret'] = '';
-    if (strstr($list['wr_option'], 'secret')) {
-        $list['icon_secret'] = '<img src="'.$skin_url.'/img/icon_secret.gif" alt="">';
-	} else if($list['as_shingo'] < 0) {
-		$list['is_lock'] = true;
-		$list['icon_secret'] = '<img src="'.$skin_url.'/img/icon_secret.gif" alt="">';
-	}
-
-	$list['icon_image'] = '';
-	$list['icon_video'] = '';
-
-	if ($list['as_list'] == "3") {
-        $list['icon_image'] = '<img src="'.$skin_url.'/img/icon_image.gif" alt="">';
-        $list['icon_video'] = '<img src="'.$skin_url.'/img/icon_video.gif" alt="">';
-	} else if($list['as_list'] == "2") {
-        $list['icon_video'] = '<img src="'.$skin_url.'/img/icon_video.gif" alt="">';
-	} else if($list['as_list'] == "1") {
-        $list['icon_image'] = '<img src="'.$skin_url.'/img/icon_image.gif" alt="">';
-	}
-
-	$list['icon_extra'] = '';
-	if ($list['as_extra'] == "1") {
-        $list['icon_extra'] = '<img src="'.$skin_url.'/img/icon_star.gif" alt="">';
-	} else if ($list['as_extra'] == "2") {
-        $list['icon_extra'] = '<img src="'.$skin_url.'/img/icon_poll.gif" alt="">';
-	} else if ($list['as_extra'] == "3") {
-        $list['icon_extra'] = '<img src="'.$skin_url.'/img/icon_quiz.gif" alt="">';
-	}
+    if (strstr($list['wr_option'], 'secret'))
+        $list['icon_secret'] = '<i class="fa fa-lock" aria-hidden="true"></i> ';
 
     // 링크
     for ($i=1; $i<=G5_LINK_COUNT; $i++) {
@@ -492,7 +437,7 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
     }
 
     if ($list['file']['count'])
-        $list['icon_file'] = '<img src="'.$skin_url.'/img/icon_file.gif" alt="">';
+        $list['icon_file'] = '<i class="fa fa-download" aria-hidden="true"></i> ';
 
     return $list;
 }
@@ -539,6 +484,7 @@ function search_font($stx, $str)
     return preg_replace("/($pattern)/i", $replace, $str);
 }
 
+
 // 제목을 변환
 function conv_subject($subject, $len, $suffix='')
 {
@@ -572,8 +518,9 @@ function conv_content($content, $html, $filter=true)
         }
 
         $content = preg_replace($source, $target, $content);
-	    if($filter)
-		    $content = html_purifier($content);
+
+        if($filter)
+            $content = html_purifier($content);
     }
     else // text 이면
     {
@@ -586,7 +533,6 @@ function conv_content($content, $html, $filter=true)
 		$content = str_replace("\n ", "\n&nbsp;", $content);
 
         $content = get_text($content, 1);
-
         $content = url_auto_link($content);
     }
 
@@ -811,7 +757,7 @@ function subject_sort_link($col, $query_string='', $flag='asc')
     $arr_query[] = 'sfl='.$sfl;
     $arr_query[] = 'stx='.$stx;
     $arr_query[] = 'sca='.$sca;
-	$arr_query[] = 'page='.$page;
+    $arr_query[] = 'page='.$page;
     $qstr = implode("&amp;", $arr_query);
 
     return "<a href=\"{$_SERVER['SCRIPT_NAME']}?{$qstr}\">";
@@ -826,14 +772,12 @@ function get_admin($admin='super', $fields='*')
 
     $is = false;
     if ($admin == 'board') {
-		$bo_admin = explode(",", $board['bo_admin']);
-        $mb = sql_fetch("select {$fields} from {$g5['member_table']} where mb_id in ('{$bo_admin[0]}') limit 1 ");
+        $mb = sql_fetch("select {$fields} from {$g5['member_table']} where mb_id in ('{$board['bo_admin']}') limit 1 ");
         $is = true;
     }
 
     if (($is && !$mb['mb_id']) || $admin == 'group') {
-		$gr_admin = explode(",", $group['gr_admin']);
-        $mb = sql_fetch("select {$fields} from {$g5['member_table']} where mb_id in ('{$gr_admin[0]}') limit 1 ");
+        $mb = sql_fetch("select {$fields} from {$g5['member_table']} where mb_id in ('{$group['gr_admin']}') limit 1 ");
         $is = true;
     }
 
@@ -844,21 +788,6 @@ function get_admin($admin='super', $fields='*')
     return $mb;
 }
 
-// 복수관리자
-function chk_multiple_admin($mb_id, $mb_arr) {
-
-	if(!$mb_id || !$mb_arr) return false;
-
-	$mb_list = explode(",", $mb_arr);
-
-	if(count($mb_list) > 0) {
-		if(in_array($mb_id, $mb_list)) {
-			return true;
-		}
-	}
-
-	return false;
-}
 
 // 관리자인가?
 function is_admin($mb_id)
@@ -867,10 +796,9 @@ function is_admin($mb_id)
 
     if (!$mb_id) return;
 
-    if ($config['cf_admin'] == $mb_id || chk_multiple_admin($mb_id, $config['as_admin'])) return 'super';
-    if (isset($group['gr_admin']) && chk_multiple_admin($mb_id, $group['gr_admin'])) return 'group';
-    if (isset($board['bo_admin']) && chk_multiple_admin($mb_id, $board['bo_admin'])) return 'board';
-
+    if ($config['cf_admin'] == $mb_id) return 'super';
+    if (isset($group['gr_admin']) && ($group['gr_admin'] == $mb_id)) return 'group';
+    if (isset($board['bo_admin']) && ($board['bo_admin'] == $mb_id)) return 'board';
     return '';
 }
 
@@ -879,9 +807,9 @@ function is_admin($mb_id)
 // 4.00 에서는 카테고리 테이블을 없애고 보드테이블에 있는 내용으로 대체
 function get_category_option($bo_table='', $ca_name='')
 {
-    global $g5, $board, $is_admin, $aslang;
+    global $g5, $board, $is_admin;
 
-    $categories = explode("|", $board['bo_category_list'].($is_admin?"|".$aslang['ca_notice']:"")); // 구분자가 | 로 되어 있음
+    $categories = explode("|", $board['bo_category_list'].($is_admin?"|공지":"")); // 구분자가 | 로 되어 있음
     $str = "";
     for ($i=0; $i<count($categories); $i++) {
         $category = trim($categories[$i]);
@@ -947,132 +875,8 @@ function get_yn_select($name, $selected='1', $event='')
 }
 
 
-// Calculate Level - APMS : 2014.08.15
-function chk_xp_num($point, $xp_point, $max_level, $xp_rate=0) {
-
-	$info = array();
-
-	if(!$xp_rate) $xp_rate = 0;
-	$point = ($point > 0) ? $point : 0;
-	$xp_point = ($xp_point > 0) ? $xp_point : 0;
-	$max_level = ($max_level > 0) ? $max_level : 0;
-
-	if(!$point || $point < $xp_point) {
-		$level = 1;
-		$max_xp = $xp_point;
-		$min_xp = 0;
-	} else {
-		$min_xp = $xp_point;
-		for ($i=2; $i <= $max_level; $i++) {
-			$xp_plus = $xp_point + $xp_point * ($i - 1) * $xp_rate;
-			$max_xp = $min_xp + $xp_plus;
-			if($point < $max_xp) {
-				$level = $i;
-				break;
-			} else {
-				if($i == $max_level) {
-					$level = $max_level;
-					$min_xp = $point;
-					$max_xp = $point;
-				}
-			}
-			$min_xp = $max_xp;
-		}
-	}
-
-	$info = array($level, $point, $min_xp, $max_xp);
-	
-	return $info;
-}
-
-// Check XP - APMS : 2014.08.15
-function update_xp($mb_id, $point, $content, $rel_table, $rel_action) {
-	global $g5, $xp;
-
-	if(!$mb_id) return;
-
-	if(!isset($xp['exp_point'])) return;
-
-	//$point = ($point > 0) ? $point : 0;
-
-	$is_exp = false;
-	if($rel_action) {
-		$rule_action = array();
-
-		if($xp['exp_write']) 
-			$rule_action[] = "쓰기";
-
-		if($xp['exp_comment']) 
-			$rule_action[] = "댓글";
-
-		if($xp['exp_read']) 
-			$rule_action[] = "읽기";
-
-		if($xp['exp_good']) 
-			$rule_action[] = "@good";
-
-		if($xp['exp_nogood']) 
-			$rule_action[] = "@nogood";
-
-		if(!empty($rule_action) && in_array($rel_action, $rule_action)) {
-			$is_exp = true;
-		}
-	}
-
-	if(!$is_exp && $rel_table) {
-		$rule_table = array();
-
-		$rule_table[] = "@exp";
-
-		if($xp['exp_login']) 
-			$rule_table[] = "@login";
-
-		if($xp['exp_chulsuk']) 
-			$rule_table[] = "@chulsuk";
-
-		if($xp['exp_delivery']) 
-			$rule_table[] = "@delivery";
-
-		if(!empty($rule_table) && in_array($rel_table, $rule_table)) {
-			$is_exp = true;
-		}
-	}
-
-	if($is_exp) {
-
-		$mb = sql_fetch(" select as_level, as_exp from {$g5['member_table']} where mb_id = '$mb_id' ");
-
-		$exp = ($mb['as_exp'] > 0) ? $mb['as_exp'] : 0;
-		$point = $exp + $point;
-
-		//Caculate Level
-		list($level, $point, $min_xp, $max_xp) = chk_xp_num($point, $xp['xp_point'], $xp['xp_max'], $xp['xp_rate']);
-
-		//Is_member_level
-		$now_level = ($mb['as_level'] > 0) ? $mb['as_level'] : 1;
-		$level_msg = 0;
-		$sql_msg = "";
-		if($now_level != $level) {
-
-			//Level Gap
-			$level_gap = $level - $now_level;
-
-			if($level_gap > 0) { //Level Up
-				$level_msg = 1;
-			} else if($level_gap < 0) { //Level Down
-				$level_msg = 2;
-			}
-
-			$sql_msg .= ", as_msg = '$level_msg'";
-		}
-
-		//Update Member Info
-		sql_query(" update {$g5['member_table']} set as_level = '$level', as_exp = '$point' $sql_msg where mb_id = '$mb_id' ");
-	}
-}
-
 // 포인트 부여
-function insert_point($mb_id, $point, $content='', $rel_table='', $rel_id='', $rel_action='', $expire=0, $repeat=0)
+function insert_point($mb_id, $point, $content='', $rel_table='', $rel_id='', $rel_action='', $expire=0)
 {
     global $config;
     global $g5;
@@ -1092,8 +896,8 @@ function insert_point($mb_id, $point, $content='', $rel_table='', $rel_id='', $r
     // 회원포인트
     $mb_point = get_point_sum($mb_id);
 
-    // 이미 등록된 내역이라면 건너뜀 - 반복기능 추가
-    if (!$repeat && ($rel_table || $rel_id || $rel_action))
+    // 이미 등록된 내역이라면 건너뜀
+    if ($rel_table || $rel_id || $rel_action)
     {
         $sql = " select count(*) as cnt from {$g5['point_table']}
                   where mb_id = '$mb_id'
@@ -1144,10 +948,7 @@ function insert_point($mb_id, $point, $content='', $rel_table='', $rel_id='', $r
     $sql = " update {$g5['member_table']} set mb_point = '$po_mb_point' where mb_id = '$mb_id' ";
     sql_query($sql);
 
-	// XP UPDATE
-	update_xp($mb_id, $point, $content, $rel_table, $rel_action);
-
-	return 1;
+    return 1;
 }
 
 // 사용포인트 입력
@@ -1287,7 +1088,7 @@ function get_point_sum($mb_id)
         $expire_point = get_expire_point($mb_id);
         if($expire_point > 0) {
             $mb = get_member($mb_id, 'mb_point');
-            $content = aslang('log', 'expire_point'); //포인트 소멸
+            $content = '포인트 소멸';
             $rel_table = '@expire';
             $rel_id = $mb_id;
             $rel_action = 'expire'.'-'.uniqid('');
@@ -1400,10 +1201,7 @@ function delete_point($mb_id, $rel_table, $rel_id, $rel_action)
         // 포인트 UPDATE
         $sql = " update {$g5['member_table']} set mb_point = '$sum_point' where mb_id = '$mb_id' ";
         $result = sql_query($sql);
-
-		// XP UPDATE
-		update_xp($mb_id, $row['po_point'] * (-1), '', $rel_table, $rel_action);
-	}
+    }
 
     return $result;
 }
@@ -1436,12 +1234,18 @@ function get_sideview($mb_id, $name='', $email='', $homepage='')
                 $width = $config['cf_member_icon_width'];
                 $height = $config['cf_member_icon_height'];
                 $icon_file_url = G5_DATA_URL.'/member/'.$mb_dir.'/'.$mb_id.'.gif';
-                $tmp_name .= '<img src="'.$icon_file_url.'" width="'.$width.'" height="'.$height.'" alt="">';
+                $tmp_name .= '<span class="profile_img"><img src="'.$icon_file_url.'" width="'.$width.'" height="'.$height.'" alt=""></span>';
 
                 if ($config['cf_use_member_icon'] == 2) // 회원아이콘+이름
                     $tmp_name = $tmp_name.' '.$name;
             } else {
-                  $tmp_name = $tmp_name." ".$name;
+                if( defined('G5_THEME_NO_PROFILE_IMG') ){
+                    $tmp_name .= G5_THEME_NO_PROFILE_IMG;
+                } else if( defined('G5_NO_PROFILE_IMG') ){
+                    $tmp_name .= G5_NO_PROFILE_IMG;
+                }
+                if ($config['cf_use_member_icon'] == 2) // 회원아이콘+이름
+                    $tmp_name = $tmp_name.' '.$name;
             }
         } else {
             $tmp_name = $tmp_name.' '.$name;
@@ -1503,7 +1307,6 @@ function view_file_link($file, $width, $height, $content='')
     $ids++;
 
     // 파일의 폭이 게시판설정의 이미지폭 보다 크다면 게시판설정 폭으로 맞추고 비율에 따라 높이를 계산
-	/*
     if ($width > $board['bo_image_width'] && $board['bo_image_width'])
     {
         $rate = $board['bo_image_width'] / $width;
@@ -1516,12 +1319,11 @@ function view_file_link($file, $width, $height, $content='')
         $attr = ' width="'.$width.'" height="'.$height.'" ';
     else
         $attr = '';
-	*/
 
     if (preg_match("/\.({$config['cf_image_extension']})$/i", $file)) {
-        //$img = '<a href="'.G5_BBS_URL.'/view_image.php?bo_table='.$board['bo_table'].'&amp;fn='.urlencode($file).'" target="_blank" class="view_image">';
-        $img = '<img src="'.G5_DATA_URL.'/file/'.$board['bo_table'].'/'.urlencode($file).'" alt="'.$content.'">';
-		//$img .= '</a>';
+        $img = '<a href="'.G5_BBS_URL.'/view_image.php?bo_table='.$board['bo_table'].'&amp;fn='.urlencode($file).'" target="_blank" class="view_image">';
+        $img .= '<img src="'.G5_DATA_URL.'/file/'.$board['bo_table'].'/'.urlencode($file).'" alt="'.$content.'" '.$attr.'>';
+        $img .= '</a>';
 
         return $img;
     }
@@ -1987,7 +1789,7 @@ function date_select($date, $name='')
 // 경매에 시간 설정이 가능하게 되면서 추가함
 function time_select($time, $name="")
 {
-	preg_match("/([0-9]{2}):([0-9]{2}):([0-9]{2})/", $time, $m);
+    preg_match("/([0-9]{2}):([0-9]{2}):([0-9]{2})/", $time, $m);
 
     // 시
     $s .= "<select name='{$name}_h'>";
@@ -2127,10 +1929,9 @@ function bad_tag_convert($code)
 
     if ($is_admin && $member['mb_id'] != $view['mb_id']) {
         //$code = preg_replace_callback("#(\<(embed|object)[^\>]*)\>(\<\/(embed|object)\>)?#i",
-        //embed 또는 object 태그를 막지 않는 경우 필터링이 되도록 수정
-		//보안문제로 인하여 관리자 아이디로는 embed 또는 object 태그를 볼 수 없습니다. 확인하시려면 관리권한이 없는 다른 아이디로 접속하세요.
+        // embed 또는 object 태그를 막지 않는 경우 필터링이 되도록 수정
         $code = preg_replace_callback("#(\<(embed|object)[^\>]*)\>?(\<\/(embed|object)\>)?#i",
-                    create_function('$matches', 'return "<div class=\"embedx\">'.aslang('alert', 'is_embed').'</div>";'),
+                    create_function('$matches', 'return "<div class=\"embedx\">보안문제로 인하여 관리자 아이디로는 embed 또는 object 태그를 볼 수 없습니다. 확인하시려면 관리권한이 없는 다른 아이디로 접속하세요.</div>";'),
                     $code);
     }
 
@@ -2342,9 +2143,9 @@ function check_device($device)
     if ($is_admin) return;
 
     if ($device=='pc' && G5_IS_MOBILE) {
-        alert(aslang('alert', 'is_pc'), G5_URL); //PC 전용입니다.
+        alert('PC 전용 게시판입니다.', G5_URL);
     } else if ($device=='mobile' && !G5_IS_MOBILE) {
-        alert(aslang('alert', 'is_mobile'), G5_URL); //모바일 전용입니다.
+        alert('모바일 전용 게시판입니다.', G5_URL);
     }
 }
 
@@ -2356,7 +2157,7 @@ function delete_cache_latest($bo_table)
         return;
     }
 
-	$files = glob(G5_DATA_PATH.'/cache/latest-'.$bo_table.'-*');
+    $files = glob(G5_DATA_PATH.'/cache/latest-'.$bo_table.'-*');
     if (is_array($files)) {
         foreach ($files as $filename)
             unlink($filename);
@@ -2400,7 +2201,7 @@ function delete_editor_thumbnail($contents)
         return;
 
     // $contents 중 img 태그 추출
-    $matchs = get_editor_image($contents, false);
+    $matchs = get_editor_image($contents);
 
     if(!$matchs)
         return;
@@ -2571,12 +2372,6 @@ function add_javascript($javascript, $order=0)
         $html_process->merge_javascript($javascript, $order);
 }
 
-// 메타태그
-function add_metatag($metatag, $order=0)
-{
-    return;
-}
-
 class html_process {
     protected $css = array();
     protected $js  = array();
@@ -2615,32 +2410,28 @@ class html_process {
 
     function run()
     {
-        global $config, $g5, $member, $board;
+        global $config, $g5, $member;
 
         // 현재접속자 처리
-		if(isset($board['as_loc']) && $board['as_loc']) { //접속자 표시하지 않는 보드는 홈으로 표시
-			$g5['lo_location'] = addslashes($config['cf_title']);			
-			$g5['lo_url'] = addslashes(clean_xss_tags(G5_URL));
-		}
-		$tmp_sql = " select count(*) as cnt from {$g5['login_table']} where lo_ip = '{$_SERVER['REMOTE_ADDR']}' ";
-		$tmp_row = sql_fetch($tmp_sql);
+        $tmp_sql = " select count(*) as cnt from {$g5['login_table']} where lo_ip = '{$_SERVER['REMOTE_ADDR']}' ";
+        $tmp_row = sql_fetch($tmp_sql);
 
-		if ($tmp_row['cnt']) {
-			$tmp_sql = " update {$g5['login_table']} set mb_id = '{$member['mb_id']}', lo_datetime = '".G5_TIME_YMDHIS."', lo_location = '{$g5['lo_location']}', lo_url = '{$g5['lo_url']}' where lo_ip = '{$_SERVER['REMOTE_ADDR']}' ";
-			sql_query($tmp_sql, FALSE);
-		} else {
-			$tmp_sql = " insert into {$g5['login_table']} ( lo_ip, mb_id, lo_datetime, lo_location, lo_url ) values ( '{$_SERVER['REMOTE_ADDR']}', '{$member['mb_id']}', '".G5_TIME_YMDHIS."', '{$g5['lo_location']}',  '{$g5['lo_url']}' ) ";
-			sql_query($tmp_sql, FALSE);
+        if ($tmp_row['cnt']) {
+            $tmp_sql = " update {$g5['login_table']} set mb_id = '{$member['mb_id']}', lo_datetime = '".G5_TIME_YMDHIS."', lo_location = '{$g5['lo_location']}', lo_url = '{$g5['lo_url']}' where lo_ip = '{$_SERVER['REMOTE_ADDR']}' ";
+            sql_query($tmp_sql, FALSE);
+        } else {
+            $tmp_sql = " insert into {$g5['login_table']} ( lo_ip, mb_id, lo_datetime, lo_location, lo_url ) values ( '{$_SERVER['REMOTE_ADDR']}', '{$member['mb_id']}', '".G5_TIME_YMDHIS."', '{$g5['lo_location']}',  '{$g5['lo_url']}' ) ";
+            sql_query($tmp_sql, FALSE);
 
-			// 시간이 지난 접속은 삭제한다
-			sql_query(" delete from {$g5['login_table']} where lo_datetime < '".date("Y-m-d H:i:s", G5_SERVER_TIME - (60 * $config['cf_login_minutes']))."' ");
+            // 시간이 지난 접속은 삭제한다
+            sql_query(" delete from {$g5['login_table']} where lo_datetime < '".date("Y-m-d H:i:s", G5_SERVER_TIME - (60 * $config['cf_login_minutes']))."' ");
 
-			// 부담(overhead)이 있다면 테이블 최적화
-			//$row = sql_fetch(" SHOW TABLE STATUS FROM `$mysql_db` LIKE '$g5['login_table']' ");
-			//if ($row['Data_free'] > 0) sql_query(" OPTIMIZE TABLE $g5['login_table'] ");
-		}
+            // 부담(overhead)이 있다면 테이블 최적화
+            //$row = sql_fetch(" SHOW TABLE STATUS FROM `$mysql_db` LIKE '$g5['login_table']' ");
+            //if ($row['Data_free'] > 0) sql_query(" OPTIMIZE TABLE $g5['login_table'] ");
+        }
 
-		$buffer = ob_get_contents();
+        $buffer = ob_get_contents();
         ob_end_clean();
 
         $stylesheet = '';
@@ -2659,10 +2450,9 @@ class html_process {
                 if(!trim($link[1]))
                     continue;
 
-				$link[1] = str_replace('media="screen"', '', $link[1]);
-                $link[1] = preg_replace('#\.css([\'\"]?>)$#i', '.css?ver='.APMS_SVER.'$1', $link[1]);
+                $link[1] = preg_replace('#\.css([\'\"]?>)$#i', '.css?ver='.G5_CSS_VER.'$1', $link[1]);
 
-				$stylesheet .= PHP_EOL.$link[1];
+                $stylesheet .= PHP_EOL.$link[1];
             }
         }
 
@@ -2686,7 +2476,7 @@ class html_process {
                 if(!trim($js[1]))
                     continue;
 
-                $js[1] = preg_replace('#\.js([\'\"]?>)$#i', '.js?ver='.APMS_SVER.'$1', $js[1]);
+                $js[1] = preg_replace('#\.js([\'\"]?>)$#i', '.js?ver='.G5_JS_VER.'$1', $js[1]);
 
                 $javascript .= $php_eol.$js[1];
                 $php_eol = PHP_EOL;
@@ -2696,17 +2486,9 @@ class html_process {
         /*
         </title>
         <link rel="stylesheet" href="default.css">
-        <link rel="stylesheet" href="apms.css">
         밑으로 스킨의 스타일시트가 위치하도록 하게 한다.
         */
-
-		if($stylesheet) {
-			if(USE_G5_THEME) {
-				$buffer = preg_replace('#(</title>[^<]*<link[^>]+>)#', "$1$stylesheet", $buffer);
-			} else {
-				$buffer = preg_replace('#(</title>[^<]*<link[^>]+>[^<]*<link[^>]+>)#', "$1$stylesheet", $buffer);
-			}
-		}
+        $buffer = preg_replace('#(</title>[^<]*<link[^>]+>)#', "$1$stylesheet", $buffer);
 
         /*
         </head>
@@ -2880,7 +2662,7 @@ function certify_count_check($mb_id, $type)
     }
 
     if((int)$row['cnt'] >= (int)$config['cf_cert_limit'])
-        alert_close(aslang('alert', 'is_cert_limit', array($cert, $row['cnt']))); //오늘 '.$cert.' 본인확인을 '.$row['cnt'].'회 이용하셔서 더 이상 이용할 수 없습니다.
+        alert_close('오늘 '.$cert.' 본인확인을 '.$row['cnt'].'회 이용하셔서 더 이상 이용할 수 없습니다.');
 }
 
 // 1:1문의 설정로드
@@ -3133,14 +2915,14 @@ function member_delete($mb_id)
     if(preg_match('#^[0-9]{8}.*삭제함#', $mb['mb_memo']))
         return;
 
-	if ($mb['mb_recommend']) {
+    if ($mb['mb_recommend']) {
         $row = sql_fetch(" select count(*) as cnt from {$g5['member_table']} where mb_id = '".addslashes($mb['mb_recommend'])."' ");
         if ($row['cnt'])
-            insert_point($mb['mb_recommend'], $config['cf_recommend_point'] * (-1), aslang('log', 'del_recmd_point', array($mb_id)), "@member", $mb['mb_recommend'], $mb_id.' 추천인 삭제'); //$mb_id.'님의 회원자료 삭제로 인한 추천인 포인트 반환
+            insert_point($mb['mb_recommend'], $config['cf_recommend_point'] * (-1), $mb_id.'님의 회원자료 삭제로 인한 추천인 포인트 반환', "@member", $mb['mb_recommend'], $mb_id.' 추천인 삭제');
     }
 
     // 회원자료는 정보만 없앤 후 아이디는 보관하여 다른 사람이 사용하지 못하도록 함 : 061025
-    $sql = " update {$g5['member_table']} set mb_password = '', mb_level = 1, mb_email = '', mb_homepage = '', mb_tel = '', mb_hp = '', mb_zip1 = '', mb_zip2 = '', mb_addr1 = '', mb_addr2 = '', mb_addr3 = '', mb_addr_jibeon = '', mb_birth = '', mb_sex = '', mb_signature = '', mb_login_ip = '', mb_point = 0, as_photo = 0, as_level = 1, as_exp = 0, as_partner = 0, as_msg = 0, as_like = 0, as_liked = 0, as_follow = 0, as_followed = 0, as_response = 0, as_memo = 0, as_date = 0, mb_memo = '".date('Ymd', G5_SERVER_TIME)." 삭제함\n{$mb['mb_memo']}' where mb_id = '{$mb_id}' ";
+    $sql = " update {$g5['member_table']} set mb_password = '', mb_level = 1, mb_email = '', mb_homepage = '', mb_tel = '', mb_hp = '', mb_zip1 = '', mb_zip2 = '', mb_addr1 = '', mb_addr2 = '', mb_birth = '', mb_sex = '', mb_signature = '', mb_memo = '".date('Ymd', G5_SERVER_TIME)." 삭제함\n{$mb['mb_memo']}' where mb_id = '{$mb_id}' ";
     sql_query($sql);
 
     // 포인트 테이블에서 삭제
@@ -3155,12 +2937,6 @@ function member_delete($mb_id)
     // 스크랩 삭제
     sql_query(" delete from {$g5['scrap_table']} where mb_id = '$mb_id' ");
 
-	// 내글반응삭제
-	sql_query(" delete from {$g5['apms_response']} where mb_id = '$mb_id' ", false);
-
-	// 플레이목록 삭제
-	sql_query(" delete from {$g5['apms_playlist']} where mb_id = '$mb_id' ", false);
-
     // 관리권한 삭제
     sql_query(" delete from {$g5['auth_table']} where mb_id = '$mb_id' ");
 
@@ -3170,12 +2946,13 @@ function member_delete($mb_id)
     // 게시판관리자인 경우 게시판관리자를 공백으로
     sql_query(" update {$g5['board_table']} set bo_admin = '' where bo_admin = '$mb_id' ");
 
+    //소셜로그인에서 삭제 또는 해제
+    if(function_exists('social_member_link_delete')){
+        social_member_link_delete($mb_id);
+    }
+
     // 아이콘 삭제
     @unlink(G5_DATA_PATH.'/member/'.substr($mb_id,0,2).'/'.$mb_id.'.gif');
-
-	// 회원사진 삭제 : APMS --------------------------------------
-    @unlink(G5_DATA_PATH.'/apms/photo/'.substr($mb_id,0,2).'/'.$mb_id.'.jpg');
-
 }
 
 // 이메일 주소 추출
@@ -3448,7 +3225,7 @@ function get_skin_path($dir, $skin)
         $cf_theme = trim($config['cf_theme']);
 
         $theme_path = G5_PATH.'/'.G5_THEME_DIR.'/'.$cf_theme;
-        if(USE_G5_THEME && G5_IS_MOBILE) {
+        if(G5_IS_MOBILE) {
             $skin_path = $theme_path.'/'.G5_MOBILE_DIR.'/'.G5_SKIN_DIR.'/'.$dir.'/'.$match[1];
             if(!is_dir($skin_path))
                 $skin_path = $theme_path.'/'.G5_SKIN_DIR.'/'.$dir.'/'.$match[1];
@@ -3456,7 +3233,7 @@ function get_skin_path($dir, $skin)
             $skin_path = $theme_path.'/'.G5_SKIN_DIR.'/'.$dir.'/'.$match[1];
         }
     } else {
-        if(USE_G5_THEME && G5_IS_MOBILE)
+        if(G5_IS_MOBILE)
             $skin_path = G5_MOBILE_PATH.'/'.G5_SKIN_DIR.'/'.$dir.'/'.$skin;
         else
             $skin_path = G5_SKIN_PATH.'/'.$dir.'/'.$skin;
@@ -3531,7 +3308,6 @@ class str_encrypt
 
     function decrypt($str) {
         $result = '';
-		$str	= str_replace(' ', '+', $str);
         $str    = base64_decode($str);
         $length = strlen($str);
 
@@ -3544,45 +3320,6 @@ class str_encrypt
 
         return $result;
     }
-}
-
-// Amina Language
-function load_aslang($file) {
-	if(!defined('APMS_LANG_PATH')) {
-		global $config;
-
-		$lang = ($config['as_lang']) ? $config['as_lang'] : 'korean';
-
-		define('APMS_LANG_PATH', G5_PATH.'/lang/'.$lang);
-		define('APMS_LANG_URL', G5_URL.'/lang/'.$lang);
-	}
-
-	@include (APMS_LANG_PATH.'/'.$file.'.php');
-
-	return $aslang;
-}
-
-function astxt($lang, $arr='', $id='Error') {
-
-	if($lang && $arr && is_array($arr)) {
-		$arr_cnt = count($arr);
-		for($i=0; $i < $arr_cnt; $i++) {
-			$lang = preg_replace("/\[".$i."\:([^\]]*)\]/is", $arr[$i], $lang);
-		}
-	}
-
-	$lang = ($lang) ? $lang : $id;
-
-	return $lang;
-}
-
-function aslang($file, $id, $arr='') {
-
-	@include (APMS_LANG_PATH.'/'.$file.'.php');
-
-	$lang = astxt($aslang[$id], $arr, $id);
-
-	return $lang;
 }
 
 // 불법접근을 막도록 토큰을 생성하면서 토큰값을 리턴
@@ -3599,15 +3336,86 @@ function get_write_token($bo_table)
 function check_write_token($bo_table)
 {
     if(!$bo_table)
-        alert(aslang('alert', 'is_wrong'), G5_URL);
+        alert('올바른 방법으로 이용해 주십시오.', G5_URL);
 
     $token = get_session('ss_write_'.$bo_table.'_token');
     set_session('ss_write_'.$bo_table.'_token', '');
 
     if(!$token || !$_REQUEST['token'] || $token != $_REQUEST['token'])
-        alert(aslang('alert', 'is_wrong'), G5_URL);
+        alert('올바른 방법으로 이용해 주십시오.', G5_URL);
 
     return true;
+}
+
+function get_member_profile_img($mb_id='', $width='', $height='', $alt='profile_image', $title=''){
+    global $member;
+
+    static $no_profile_cache = '';
+    static $member_cache = array();
+    
+    $src = '';
+
+    if( $mb_id ){
+        if( isset($member_cache[$mb_id]) ){
+            $src = $member_cache[$mb_id];
+        } else {
+            $member_img = G5_DATA_PATH.'/member_image/'.substr($mb_id,0,2).'/'.$mb_id.'.gif';
+            if (is_file($member_img)) {
+                $member_cache[$mb_id] = $src = str_replace(G5_DATA_PATH, G5_DATA_URL, $member_img);
+            }
+        }
+    }
+
+    if( !$src ){
+        if( !empty($no_profile_cache) ){
+            $src = $no_profile_cache;
+        } else {
+            // 프로필 이미지가 없을때 기본 이미지
+            $no_profile_img = (defined('G5_THEME_NO_PROFILE_IMG') && G5_THEME_NO_PROFILE_IMG) ? G5_THEME_NO_PROFILE_IMG : G5_NO_PROFILE_IMG;
+            $tmp = array();
+            preg_match( '/src="([^"]*)"/i', $foo, $tmp );
+            $no_profile_cache = $src = isset($tmp[1]) ? $tmp[1] : G5_IMG_URL.'/no_profile.gif';
+        }
+    }
+
+    if( $src ){
+        $attributes = array('src'=>$src, 'width'=>$width, 'height'=>$height, 'alt'=>$alt, 'title'=>$title);
+
+        $output = '<img';
+        foreach ($attributes as $name => $value) {
+            if (!empty($value)) {
+                $output .= sprintf(' %s="%s"', $name, $value);
+            }
+        }
+        $output .= '>';
+
+        return $output;
+    }
+
+    return '';
+}
+
+function get_head_title($title){
+    global $g5;
+
+    if( isset($g5['board_title']) && $g5['board_title'] ){
+        $title = $g5['board_title'];
+    }
+
+    return $title;
+}
+
+function is_use_email_certify(){
+    global $config;
+
+    if( $config['cf_use_email_certify'] && function_exists('social_is_login_check') ){
+        if( $config['cf_social_login_use'] && (get_session('ss_social_provider') || social_is_login_check()) ){      //소셜 로그인을 사용한다면
+            $tmp = (defined('G5_SOCIAL_CERTIFY_MAIL') && G5_SOCIAL_CERTIFY_MAIL) ? 1 : 0;
+            return $tmp;
+        }
+    }
+
+    return $config['cf_use_email_certify'];
 }
 
 function get_call_func_cache($func, $args=array()){
@@ -3636,6 +3444,11 @@ function is_include_path_check($path='', $is_input='')
 {
     if( $path ){
         if ($is_input){
+
+            if( strpos($path, 'php://') !== false || strpos($path, 'zlib://') !== false || strpos($path, 'bzip2://') !== false || strpos($path, 'zip://') !== false ){
+                return false;
+            }
+
             try {
                 // whether $path is unix or not
                 $unipath = strlen($path)==0 || $path{0}!='/';
@@ -3685,5 +3498,19 @@ function is_include_path_check($path='', $is_input='')
     }
 
     return true;
+}
+
+function option_array_checked($option, $arr=array()){
+    $checked = '';
+
+    if( !is_array($arr) ){
+        $arr = explode(',', $arr);
+    }
+
+    if ( !empty($arr) && in_array($option, (array) $arr) ){
+        $checked = 'checked="checked"';
+    }
+
+    return $checked;
 }
 ?>

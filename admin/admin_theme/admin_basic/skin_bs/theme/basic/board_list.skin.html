@@ -1,0 +1,151 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-board-list">
+	<div class="headline">
+		<h4><strong>게시판 설정</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	{# theme_manager // 테마 매니저 }
+	
+	<form id="fsearch" name="fsearch" class="eyoom-form" action="./" method="get">
+	<div class="headline">
+		<h4><strong>[<span class="color-red">{_this_theme}</span>] 게시판 리스트</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+	
+	<div class="admin-search-box trans-col">
+		<div class="row">
+			<div class="col col-2">
+				<label for="sfl" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-0">
+					<select name="sfl" id="sfl">
+					    <option value="bo_table"{=get_selected(_GET.sfl, "bo_table")}>TABLE</option>
+					    <option value="bo_subject"{=get_selected(_GET.sfl, "bo_subject")}>제목</option>
+					    <option value="a.gr_id"{=get_selected(_GET.sfl, "a.gr_id")}>그룹ID</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="stx" value="{_stx}" id="stx" required class="frm_input">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-30"></div>
+	
+	<form name="fboardform" method="post" action="{_action_url}" onsubmit="return fboardform_submit(this);" class="eyoom-form">
+	<input type="hidden" name="theme" value="{_this_theme}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="board-list"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	</div>
+
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.No && !(client.No.indexOf(filter.No) > -1) || filter.회원구분 && !(client.회원구분.indexOf(filter.회원구분) > -1) || filter.아이디 && !(client.아이디.indexOf(filter.아이디) > -1) || filter.이름 && !(client.이름.indexOf(filter.이름) > -1) || filter.휴대전화 && !(client.휴대전화.indexOf(filter.휴대전화) > -1) || filter.전화번호 && !(client.전화번호.indexOf(filter.전화번호) > -1) || filter.이메일 && !(client.이메일.indexOf(filter.이메일) > -1) || filter.가입일 && !(client.가입일.indexOf(filter.가입일) > -1) || filter.최신로그인 && !(client.최신로그인.indexOf(filter.최신로그인) > -1) || filter.상태 && !(client.상태.indexOf(filter.상태) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ board_list}-->
+        {
+	        체크: "<label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label>",
+	        관리: "<a href='{C.EYOOM_ADMIN_URL}/?dir=theme&amp;pid=board_form&amp;w=u&amp;bo_table={.bo_table}&amp;page={_page}&amp;thema={_this_theme}'><u>수정</u></a>",
+	        그룹: "{.gr_subject}",
+	        제목: "{=get_text(.bo_subject)}",
+	        TABLE: "<input type='hidden' name='board_table[{.index_}]' value='{.bo_table}'><a href='{C.G5_BBS_URL}/board.php?bo_table={.bo_table}'><a href='{C.G5_BBS_URL}/board.php?bo_table={.bo_table}&amp;theme={_this_theme}' class='bo_href btn-e btn-e-dark' style='width:100%' target='_blank'>{.bo_table}</a>",
+	        글작성회수제한: "<label class='input'><input type='text' name='bo_write_limit[{.index_}]' id='bo_write_limit_{.index_}' value='{.bo_write_limit}'></label>",
+	        이윰스킨: "<label class='select'>{.bo_skin_select}<i></i></label>",
+	        스킨선택: "<div class='inline-group'><label for='use_gnu_skin_{.index_}_1' class='radio'><input type='radio' name='use_gnu_skin[{.index_}]' id='use_gnu_skin_{.index_}_1' value='n' {? .use_gnu_skin == 'n'}checked{/}><i></i> 이윰빌더 스킨</label><label for='use_gnu_skin_{.index_}_2' class='radio'><input type='radio' name='use_gnu_skin[{.index_}]' id='use_gnu_skin_{.index_}_2' value='y' {? .use_gnu_skin == 'y'}checked{/}><i></i> 그누보드 스킨</label></div>",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#board-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 80, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "그룹", type: "text", width: 120 },
+            { name: "제목", type: "text", width: 150 },
+            { name: "TABLE", type: "text", width: 120 },
+            { name: "글작성회수제한", type: "number", width: 120 },
+            { name: "이윰스킨", type: "text", align: "center", width: 140 },
+            { name: "스킨선택", type: "text", align: "center", width: 230 },
+        ]
+    });
+
+    var $chk = $("#board-list .jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+
+function fboardform_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    return true;
+}
+</script>

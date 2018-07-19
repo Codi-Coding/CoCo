@@ -1,0 +1,204 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-shop-wishlist #admin-shop-wishlist img {display:block;width:100% \9;max-width:100%;height:auto}
+</style>
+
+<div class="admin-shop-wishlist">
+	<div class="headline">
+		<h4><strong>보관함현황</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<form id="flist" name="flist" class="eyoom-form" action="./" method="get">
+	<input type="hidden" name="dir" value="{_dir}" id="dir">
+	<input type="hidden" name="pid" value="{_pid}" id="pid">
+	<input type="hidden" name="doc" value="{_doc}">
+	<input type="hidden" name="page" value="{_page}">
+
+	<div class="admin-search-box">
+		<div class="row">
+			<div class="col col-3">
+				<section>
+					<label for="fr_date" class="label">시작일</label>
+					<label class="input">
+						<i class="icon-append fa fa-calendar-o"></i>
+						<input type="text" name="fr_date" id="fr_date" value="{_fr_date}" required>
+					</label>
+				</section>
+			</div>
+			<div class="col col-3">
+				<section>
+					<label for="to_date" class="label">종료일</label>
+					<label class="input">
+						<i class="icon-append fa fa-calendar-o"></i>
+						<input type="text" name="to_date" id="to_date" value="{_to_date}" required>
+					</label>
+				</section>
+			</div>
+			<div class="col col-3">
+				<section class="label-height">
+					<input type="submit" value="검색" class="btn-e btn-e-dark">
+				</section>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col col-3">
+				<label for="cate_a" class="sound_only">대분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_a" id="cate_a" onchange="this.form.submit();">
+						<option value="">::대분류::</option>
+						<!--{@ _cate1}-->
+						<option value="{.ca_id}" {? _cate_a == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_b" class="sound_only">중분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_b" id="cate_b" onchange="this.form.submit();">
+						<option value="">::중분류::</option>
+						<!--{@ _cate2}-->
+						<option value="{.ca_id}" {? _cate_b == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_c" class="sound_only">소분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_c" id="cate_c" onchange="this.form.submit();">
+						<option value="">::소분류::</option>
+						<!--{@ _cate3}-->
+						<option value="{.ca_id}" {? _cate_c == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-3">
+				<label for="cate_d" class="sound_only">세분류</label>
+				<label class="select sm-margin-bottom-10">
+					<select name="cate_d" id="cate_d" onchange="this.form.submit();">
+						<option value="">::세분류::</option>
+						<!--{@ _cate4}-->
+						<option value="{.ca_id}" {? _cate_d == .ca_id}selected{/}>{.ca_name}</option>
+						<!--{/}-->
+					</select>
+					<i></i>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-20"></div>
+
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="margin-bottom-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>총 {=number_format(_total_count)}건
+			    </span>
+			</div>
+		</div>
+	</div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="admin-shop-wishlist"></div>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script src="../../../plugins/eyoom-form/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.ID)
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ wish_list}-->
+        {
+	        순위: "{.num}",
+	        상품이미지: "<div style='width:80px;margin:0 auto;'><a href='{.href}'>{.image}</a></div>",
+	        상품명: "<a href='{.href}'>{=cut_str(stripslashes(.it_name), 60, '&#133')}</a>",
+	        건수: "{.it_id_cnt}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function() {
+    $("#admin-shop-wishlist").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "순위", type: "text", align: "center", width: 40 },
+            { name: "상품이미지", type: "image", align: "center", width: 100 },
+            { name: "상품명", type: "text", width: 350 },
+            { name: "건수", type: "number", width: 60 },
+        ]
+    });
+});
+
+$(document).ready(function() {
+    $('#fr_date').datepicker({
+        dateFormat: 'yymmdd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#to_date').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    $('#to_date').datepicker({
+        dateFormat: 'yymmdd',
+        prevText: '<i class="fa fa-angle-left"></i>',
+        nextText: '<i class="fa fa-angle-right"></i>',
+        showMonthAfterYear: true,
+        monthNames: ['년 1월','년 2월','년 3월','년 4월','년 5월','년 6월','년 7월','년 8월','년 9월','년 10월','년 11월','년 12월'],
+        monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+        dayNamesMin: ['일','월','화','수','목','금','토'],
+        onSelect: function(selectedDate){
+            $('#fr_date').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+});
+</script>

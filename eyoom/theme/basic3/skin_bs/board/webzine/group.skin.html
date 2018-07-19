@@ -1,0 +1,48 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.group-latest {position:relative;overflow:hidden;border:1px solid #e5e5e5;padding:15px;min-height:193px;-webkit-border-radius:2px !important;-moz-border-radius:2px !important;border-radius:2px !important}
+.group-latest ul {margin-bottom:0}
+.group-latest li {position:relative;overflow:hidden;padding:2px 0;font-size:12px}
+.group-latest .group-subj {position:relative;width:70%;padding-right:0;padding-left:0;display:block;text-overflow:ellipsis;white-space:nowrap;word-wrap:normal;overflow:hidden;float:left}
+.group-latest .group-comment {display:inline-block;white-space:nowrap;vertical-align:baseline;text-align:center;min-width:35px;padding:1px 2px;font-size:10px;line-height:1;color:#fff;background-color:#757575;margin-right:5px}
+.group-latest .group-time {position:relative;overflow:hidden;width:30%;font-size:12px;text-align:right;color:#555;float:right}
+.group-latest .group-time .i-color {color:#b5b5b5}
+.group-latest a:hover .group-subj {text-decoration:underline}
+.group-latest a:hover .group-time i {color:#FF2900}
+</style>
+
+<div class="basic-group-skin">
+<!--{@ list}-->
+	<!--{? .index_%2==0}-->
+	<div class="row margin-bottom-20">
+	<!--{/}-->
+        <div class="col-sm-6 md-margin-bottom-20">
+			<div class="headline">
+				<h5><strong><a href="{C.G5_BBS_URL}/board.php?bo_table={.bo_table}">{.bo_subject}</a></strong></h5>
+			</div>
+			<div class="group-latest">
+				<ul class="list-unstyled">
+				<!--{@ data}-->
+					<li>
+						<a href="{..href}">
+							<div class="group-subj">
+								<!--{? ..wr_comment}--><span class="group-comment">+{=number_format(..wr_comment)}</span><!--{/}-->{..wr_subject}
+							</div>
+							<div class="group-time">
+								<i class="fa fa-clock-o {? ..new}color-red{:}i-color{/}"></i> {eb->date_time('m-d',..datetime)}
+							</div>
+						</a>
+					</li>
+				<!--{:}-->
+				<p class="text-center font-size-12 margin-top-20"><span class="color-grey"><i class="fa fa-exclamation-circle"></i> 최신글이 없습니다.</span></p>
+				<!--{/}-->
+				</ul>
+			</div>
+        </div>
+	<!--{? .index_%2==1 || .index_+1 == .size_}-->
+	</div>
+	<div class="clearfix"></div>
+	<!--{/}-->
+<!--{/}-->
+</div>

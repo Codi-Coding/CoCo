@@ -1,0 +1,111 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.mail-list {position:relative}
+.mail-list .sms-search-box {position:relative;border:1px solid #d5d5d5;padding:10px;background:#fbfbfb}
+@media screen and (max-width: 600px){
+	.mail-list .sms-search-box .col {margin-bottom:0}
+}
+.mail-list .eyoom-form .sms-search-box .input.input-button .button {color:#000}
+.mail-list .eyoom-form .sorting-select select {padding-left:84px}
+.mail-list .eyoom-form .sorting-select.input-button .button {left:1px;right:inherit;border-left:0;border-right:1px solid #a5a5a5;width:70px;padding:0;text-align:center;color:#000;background:#FFFCEB}
+.mail-list .modal-header {background:#9475CC;border-bottom:0}
+.mail-list .modal-footer {background:#f5f5f5;border-top:1px solid #c5c5c5}
+.jsgrid {font-size:12px}
+.jsgrid .jsgrid-button {position:relative;display:inline-block;width:16px;height:24px;padding:0;font-family:'Glyphicons Halflings';font-size:16px;font-style:normal;font-weight:400;cursor:pointer;background:0 0;border:none;-webkit-transform:translate(0,0);-ms-transform:translate(0,0);-o-transform:translate(0,0);transform:translate(0,0);text-rendering:auto;speak:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.jsgrid-search-mode-button:before {content:"\e003";color:#171C29}
+.jsgrid-search-button:before {content:"\e003";color:#E08200}
+.jsgrid-clear-filter-button:before {content:"\e082";color:#7347CF}
+.jsgrid-edit-button:before {content:"\270f";color:#0061D6}
+.jsgrid-delete-button:before {content:"\e020";color:#DE2600}
+.jsgrid-update-button:before {content:"\e013";color:#669400}
+.jsgrid-cancel-edit-button:before {content:"\e014";color:#171C29}
+span.label {display:inline-block;min-width:85px;padding:2px 5px;border-radius:2px !important}
+</style>
+
+<div class="mail-list">
+	<div class="headline">
+		<h4><strong>메일발송 대상 회원</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<form name="fmailselectlist" id="fmailselectlist" method="post" action="{_action_url}" class="eyoom-form">
+	<input type="hidden" name="token" value="">
+	<input type="hidden" name="ma_id" value="{_ma_id}">
+
+	<div id="mail-list"></div>
+
+	<textarea name="ma_list" style="display:none">{_ma_list}</textarea>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" value="메일보내기" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=mail_select_form&amp;ma_id={_ma_id}" class="btn-e btn-e-lg btn-e-dark">뒤로</a>
+	</div>
+
+	</form>
+
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.No && !(client.No.indexOf(filter.No) > -1) || filter.회원아이디 && !(client.회원아이디.indexOf(filter.회원아이디) > -1))
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ mail_list}-->
+        {
+	        No: "{.index_+1}",
+	        회원아이디: "{.mb_id}",
+	        이름: "{=get_text(.mb_name)}",
+	        닉네임: "{.mb_nick}",
+	        이메일: "{.mb_email}"
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(document).ready(function() {
+    $("#mail-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 10,
+        pageSize       : 20,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "No", type: "text", align: "center", width: 40 },
+            { name: "회원아이디", type: "text", width: 120 },
+            { name: "이름", type: "text", width: 120 },
+            { name: "닉네임", type: "text", width: 120 },
+            { name: "이메일", type: "text", width: 200 },
+        ]
+    })
+});
+</script>

@@ -1,0 +1,145 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-boardgroup-form">
+	<form name="fboardform" method="post" action="{_action_url}" onsubmit="return fboardgroup_check(this)" enctype="multipart/form-data" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>게시판 그룹 {_html_title}</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div class="group-form">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 게시판 그룹 설정정보</strong></header>
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-warning font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 게시판을 생성하시려면 1개 이상의 게시판그룹이 필요합니다. 게시판그룹을 이용하시면 더 효과적으로 게시판을 관리할 수 있습니다.
+					</p>
+				</div>
+			</fieldset>
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="gr_id" class="label">그룹 ID</label>
+					        <label class="input">
+					            <input type="text" name="gr_id" id="gr_id" value="{group.gr_id}" maxlength="20" {_gr_id_attr}>
+					        </label>
+					        <!--{? _w==''}-->
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 영문자, 숫자, _ 만 가능 (공백없이)</div>
+					        <!--{/}-->
+						</section>
+					</div>
+					<!--{? _w=='u'}-->
+					<div class="col col-9">
+						<section class="label-height">
+					        <a href="{C.G5_BBS_URL}/group.php?gr_id={group.gr_id}" target="_blank" class="btn-e btn-e-yellow">게시판 그룹 바로가기</a> <a href="{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=board_form&amp;gr_id={group.gr_id}" class="btn-e btn-e-dark">그룹 내 게시판 생성</a>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="gr_subject" class="label">그룹 제목</label>
+					        <label class="input">
+					            <input type="text" name="gr_subject" value="{=get_text(group.gr_subject)}" id="gr_subject" required>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="gr_device" class="label">접속기기</label>
+					        <label class="select">
+					            <select id="gr_device" name="gr_device">
+				                    <option value="both"{=get_selected(group.gr_device, 'both')}>PC와 모바일에서 모두 사용</option>
+				                    <option value="pc"{=get_selected(group.gr_device, 'pc')}>PC 전용</option>
+				                    <option value="mobile"{=get_selected(group.gr_device, 'mobile')}>모바일 전용</option>
+					            </select><i></i>
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> PC 와 모바일 사용을 구분합니다.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label {? _is_admin == 'super'}for="gr_admin"{/} class="label">그룹 관리자</label>
+					        <label class="input">
+					        	<!--{? _is_admin == 'super'}-->
+					            <input type="text" name="gr_admin" value="{gr.gr_admin}" id="gr_admin" maxlength="20">
+					            <!--{:}-->
+					            <input type="hidden" name="gr_admin" value="{gr.gr_admin}" id="gr_admin">{gr.gr_admin}
+					            <!--{/}-->
+					        </label>
+						</section>
+					</div>
+					<div class="col col-9">
+						<section>
+							<label for="gr_use_access" class="label">접근회원사용</label>
+					        <label class="checkbox">
+					            <input type="checkbox" name="gr_use_access" value="1" id="gr_use_access" {? gr.gr_use_access}checked{/}><i></i> 사용 <strong class="color-orange">[ 접근회원수 : <a href="{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=groupmember_list&amp;gr_id={_gr_id}">{=number_format(_grmember_cnt)}</a> ]</strong>
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 사용에 체크하시면 이 그룹에 속한 게시판은 접근가능한 회원만 접근이 가능합니다.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="group-form">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 여분필드 설정</strong></header>
+
+			<!--{@ gr_extra}-->
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="gr_{.key_}_subj" class="label">여분필드 {.key_} 제목</label>
+					        <label class="input">
+					        	<input type="text" name="gr_{.key_}_subj" id="gr_{.key_}_subj" value="{=get_text(.gr_subject)}">
+					        </label>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="gr_{.key_}" class="label">여분필드 {.key_} 내용</label>
+					        <label class="input">
+					        	<input type="text" name="gr_{.key_}" id="gr_{.key_}" value="{=get_text(.gr_value)}">
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			<!--{/}-->
+		</div>
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" value="확인" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=boardgroup_list&amp;{_qstr}" class="btn-e btn-e-lg btn-e-dark">목록</a>
+	</div>
+	</form>
+</div>
+
+<script>
+function fboardgroup_check(f) {
+    return true;
+}
+</script>

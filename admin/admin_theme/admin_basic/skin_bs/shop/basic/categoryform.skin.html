@@ -1,0 +1,490 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+body {background: #f3f5f7}
+.admin-shop-categoryform .alert {padding:5px 10px}
+</style>
+
+<form name="fmenu" action="{_action_url}" onsubmit="return checkform(this)" method="post" class="eyoom-form">
+<input type="hidden" name="mode" id="mode" value="update">
+<input type="hidden" name="ca_id" id="ca_id" value="{_ca_id}">
+<input type="hidden" name="ca_stock_qty" id="ca_stock_qty" value="99999">
+<input type="hidden" name="ca_explan_html" id="ca_explan_html" value="1">
+<input type="hidden" name="ca_list_mod" id="ca_list_mod" value="3">
+<input type="hidden" name="ca_list_row" id="ca_list_row" value="5">
+<input type="hidden" name="ca_mobile_list_mod" id="ca_mobile_list_mod" value="10">
+<input type="hidden" name="ca_mobile_list_row" id="ca_mobile_list_row" value="0">
+<input type="hidden" name="token" id="token" value="">
+
+<div class="admin-shop-categoryform">
+	<div class="adm-form-wrap margin-bottom-20">
+		<header><strong><i class="fa fa-caret-right"></i> 분류 등록/수정/삭제</strong><small class="font-size-12 color-grey margin-left-10">입력후 반드시 아래 적용하기 버튼을 누르세요.</small></header>
+		<!--{? _ca_id == '0' || !_ca_id}-->
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">분류 위치</label>
+				</div>
+				<div class="col col-9">
+					<div class="alert alert-info margin-bottom-0">
+					    <p>분류 루트</p>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<!--{:}-->
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">분류 코드</label>
+					<label class="input state-disabled">
+						<input type="text" disabled value="{cainfo.ca_id}" style="font-weight:bold">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">출력순서</label>
+					<label class="input">
+						<input type="text" name="ca_order" id="ca_order" value="{cainfo.ca_order}" required size="5">
+						<input type="hidden" name="ca_order_prev" id="ca_order_prev" value="{cainfo.ca_order}">
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">분류명</label>
+					<label class="input">
+						<input type="text" name="ca_name" id="ca_name" value="{cainfo.ca_name}" required size="43">
+						<input type="hidden" name="ca_name_prev" id="ca_name_prev" value="{cainfo.ca_name}">
+					</label>
+				</div>
+				<div class="col col-6">
+					<label class="label">관리회원 아이디</label>
+					<label class="input">
+						<input type="text" name="ca_mb_id" id="ca_mb_id" value="{cainfo.ca_mb_id}" size="82">
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">본인확인 체크</label>
+					<div class="inline-group">
+						<label class="radio" for="ca_cert_use_yes"><input type="radio" name="ca_cert_use" id="ca_cert_use_yes" value="1" {? cainfo.ca_cert_use == '1'}checked{/}><i></i> 사용함</label>
+						<label class="radio" for="ca_cert_use_no"><input type="radio" name="ca_cert_use" id="ca_cert_use_no" value="0" {? cainfo.ca_cert_use == '0'}checked{/}><i></i> 사용안함</label>
+					</div>
+				</div>
+				<div class="col col-6">
+					<label class="label">성인인증 체크</label>
+					<div class="inline-group">
+						<label class="radio" for="ca_adult_use_yes"><input type="radio" name="ca_adult_use" id="ca_adult_use_yes" value="1" {? cainfo.ca_adult_use == '1'}checked{/}><i></i> 사용함</label>
+						<label class="radio" for="ca_adult_use_no"><input type="radio" name="ca_adult_use" id="ca_adult_use_no" value="0" {? cainfo.ca_adult_use == '0'}checked{/}><i></i> 사용안함</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">출력스킨</label>
+					<label class="select">
+						<select name="ca_skin" id="ca_skin">
+						<!--{=get_list_skin_options("^list.[0-9]+\.skin\.php", C.G5_SHOP_SKIN_PATH, cainfo.ca_skin)}-->
+						</select>
+						<i></i>
+					</label>
+				</div>
+				<div class="col col-6">
+					<label class="label">모바일 출력스킨</label>
+					<label class="select">
+						<select name="ca_mobile_skin" id="ca_mobile_skin">
+						<!--{=get_list_skin_options("^list.[0-9]+\.skin\.php", C.G5_SHOP_SKIN_PATH, cainfo.ca_mobile_skin)}-->
+						</select>
+						<i></i>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">출력이미지 폭</label>
+					<label class="input">
+						<input type="text" name="ca_img_width" id="ca_img_width" value="{cainfo.ca_img_width}">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">출력이미지 높이</label>
+					<label class="input">
+						<input type="text" name="ca_img_height" id="ca_img_height" value="{cainfo.ca_img_height}">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 출력이미지 폭</label>
+					<label class="input">
+						<input type="text" name="ca_mobile_img_width" id="ca_mobile_img_width" value="{cainfo.ca_mobile_img_width}">
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 출력이미지 높이</label>
+					<label class="input">
+						<input type="text" name="ca_mobile_img_height" id="ca_mobile_img_height" value="{cainfo.ca_mobile_img_height}">
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">1줄당 이미지 수</label>
+					<label class="input">
+						<i class="icon-append">개</i>
+						<input type="text" name="ca_list_mod" id="ca_list_mod" value="{cainfo.ca_list_mod}" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">이미지 줄 수</label>
+					<label class="input">
+						<i class="icon-append">줄</i>
+						<input type="text" name="ca_list_row" id="ca_list_row" value="{cainfo.ca_list_row}" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 1줄당 이미지 수</label>
+					<label class="input">
+						<i class="icon-append">개</i>
+						<input type="text" name="ca_mobile_list_mod" id="ca_mobile_list_mod" value="{cainfo.ca_mobile_list_mod}" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 이미지 줄 수</label>
+					<label class="input">
+						<i class="icon-append">줄</i>
+						<input type="text" name="ca_mobile_list_row" id="ca_mobile_list_row" value="{cainfo.ca_mobile_list_row}" required>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">기본 재고수량</label>
+					<label class="input">
+						<i class="icon-append">개</i>
+						<input type="text" name="ca_stock_qty" id="ca_stock_qty" value="{cainfo.ca_stock_qty}">
+					</label>
+	                <div class="note">
+		                <strong>Note:</strong> 상품의 기본재고 수량을 설정합니다. 재고를 사용하지 않는다면 숫자를 크게 입력하여 주십시오. 예) 999999
+		            </div>
+				</div>
+				<div class="col col-6">
+					<label class="label">판매자 E-mail</label>
+					<label class="input">
+						<input type="text" name="ca_sell_email" id="ca_sell_email" value="{cainfo.ca_sell_email}">
+					</label>
+					<div class="note">
+		                <strong>Note:</strong> 운영자와 판매자가 다른 경우에 사용합니다. 이 분류에 속한 상품을 등록할 경우에 기본값으로 입력됩니다.
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">판매가능</label>
+					<div class="inline-group">
+						<label class="radio"><input type="radio" name="ca_use" id="ca_use1" value="1" {? cainfo.ca_use == '1'}checked{/}><i></i>판매진행</label>
+						<label class="radio"><input type="radio" name="ca_use" id="ca_use2" value="0" {? cainfo.ca_use == '0'}checked{/}><i></i>판매중지</label>
+					</div>
+	                <div class="note">
+		                <strong>Note:</strong> 재고가 없거나 일시적으로 판매를 중단하시려면 체크 해제하십시오. 체크 해제하시면 상품 출력을 하지 않으며, 주문도 받지 않습니다.
+		            </div>
+				</div>
+				<div class="col col-6">
+					<label class="label">쿠폰적용안함</label>
+					<label class="checkbox" for="ca_nocoupon">
+						<input type="checkbox" name="ca_nocoupon" id="ca_nocoupon" value="1" {? cainfo.ca_nocoupon == '1'}checked{/}><i></i> 예
+					</label>
+					<div class="note">
+		                <strong>Note:</strong> 설정에 체크하시면 쿠폰생성 때 분류 검색 결과에 노출되지 않습니다.
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">상단 파일경로</label>
+					<label class="input">
+						<input type="text" name="ca_include_head" id="ca_include_head" value="{cainfo.ca_include_head}">
+					</label>
+	                <div class="note">
+		                <strong>Note:</strong> 입력하지 않으면 기본 상단 파일을 사용합니다. PHP 코드를 사용할 수 있습니다.
+		            </div>
+				</div>
+				<div class="col col-6">
+					<label class="label">하단 파일경로</label>
+					<label class="input">
+						<input type="text" name="ca_include_tail" id="ca_include_tail" value="{cainfo.ca_include_tail}">
+					</label>
+					<div class="note">
+		                <strong>Note:</strong> 입력하지 않으면 기본 하단 파일을 사용합니다. PHP 코드를 사용할 수 있습니다.
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<label class="label">분류 삭제</label>
+			<div>
+				<a href="javascript:;" onclick="delete_menu('{cainfo.ca_id}','{cainfo.ca_theme}');" class="btn-e btn-e-dark">삭제하기</a>
+				<span class="margin-left-10"><i class="fa fa-exclamation-circle color-red"></i> <span class="exp color-grey">주의! 삭제시, 서브분류까지 함께 삭제됩니다.</span></span>
+			</div>
+		</fieldset>
+		<!--{/}-->
+	</div>
+
+	<!--{? !_ca_id == '0' || _ca_id}-->
+	<div class="text-center margin-bottom-30">
+		<input type="submit" value="분류 수정" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+	</div>
+	<!--{/}-->
+
+	<!--{? _depth < 5}-->
+	<div class="adm-form-wrap margin-bottom-20">
+		<header><strong><i class="fa fa-caret-right"></i> 서브 분류</strong><small class="font-size-12 color-grey margin-left-10">선택한 분류의 서브 분류를 생성합니다.</small></header>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">서브 분류명</label>
+					<label class="input">
+						<input type="text" name="subca_name" id="subca_name" value="" size="43">
+					</label>
+				</div>
+				<div class="col col-6">
+					<label class="label">관리회원 아이디</label>
+					<label class="input">
+						<input type="text" name="subca_mb_id" id="subca_mb_id" value="" size="82">
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">본인확인 체크</label>
+					<div class="inline-group">
+						<label class="radio" for="subca_cert_use_yes"><input type="radio" name="subca_cert_use" id="subca_cert_use_yes" value="1"><i></i> 사용함</label>
+						<label class="radio" for="subca_cert_use_no"><input type="radio" name="subca_cert_use" id="subca_cert_use_no" value="0" checked><i></i> 사용안함</label>
+					</div>
+				</div>
+				<div class="col col-6">
+					<label class="label">성인인증 체크</label>
+					<div class="inline-group">
+						<label class="radio" for="subca_adult_use_yes"><input type="radio" name="subca_adult_use" id="subca_adult_use_yes" value="1"><i></i> 사용함</label>
+						<label class="radio" for="subca_adult_use_no"><input type="radio" name="subca_adult_use" id="subca_adult_use_no" value="0" checked><i></i> 사용안함</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">출력스킨</label>
+					<label class="select">
+						<select name="subca_skin" id="subca_skin">
+						<!--{=get_list_skin_options("^list.[0-9]+\.skin\.php", C.G5_SHOP_SKIN_PATH, '')}-->
+						</select>
+						<i></i>
+					</label>
+				</div>
+				<div class="col col-6">
+					<label class="label">모바일 출력스킨</label>
+					<label class="select">
+						<select name="subca_mobile_skin" id="subca_mobile_skin">
+						<!--{=get_list_skin_options("^list.[0-9]+\.skin\.php", C.G5_SHOP_SKIN_PATH, '')}-->
+						</select>
+						<i></i>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">출력이미지 폭</label>
+					<label class="input">
+						<i class="icon-append">px</i>
+						<input type="text" name="subca_img_width" id="subca_img_width" value="600" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">출력이미지 높이</label>
+					<label class="input">
+						<i class="icon-append">px</i>
+						<input type="text" name="subca_img_height" id="subca_img_height" value="0" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 출력이미지 폭</label>
+					<label class="input">
+						<i class="icon-append">px</i>
+						<input type="text" name="subca_mobile_img_width" id="subca_mobile_img_width" value="600" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 출력이미지 높이</label>
+					<label class="input">
+						<i class="icon-append">px</i>
+						<input type="text" name="subca_mobile_img_height" id="subca_mobile_img_height" value="0" required>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-3">
+					<label class="label">1줄당 이미지 수</label>
+					<label class="input">
+						<i class="icon-append">개</i>
+						<input type="text" name="subca_list_mod" id="subca_list_mod" value="3" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">이미지 줄 수</label>
+					<label class="input">
+						<i class="icon-append">줄</i>
+						<input type="text" name="subca_list_row" id="subca_list_row" value="5" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 1줄당 이미지 수</label>
+					<label class="input">
+						<i class="icon-append">개</i>
+						<input type="text" name="subca_mobile_list_mod" id="subca_mobile_list_mod" value="3" required>
+					</label>
+				</div>
+				<div class="col col-3">
+					<label class="label">모바일 이미지 줄 수</label>
+					<label class="input">
+						<i class="icon-append">줄</i>
+						<input type="text" name="subca_mobile_list_row" id="subca_mobile_list_row" value="5" required>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">기본 재고수량</label>
+					<label class="input">
+						<i class="icon-append">개</i>
+						<input type="text" name="subca_stock_qty" id="subca_stock_qty" value="99999">
+					</label>
+	                <div class="note">
+		                <strong>Note:</strong> 상품의 기본재고 수량을 설정합니다. 재고를 사용하지 않는다면 숫자를 크게 입력하여 주십시오. 예) 999999
+		            </div>
+				</div>
+				<div class="col col-6">
+					<label class="label">판매자 E-mail</label>
+					<label class="input">
+						<input type="text" name="subca_sell_email" id="subca_sell_email" value="">
+					</label>
+					<div class="note">
+		                <strong>Note:</strong> 운영자와 판매자가 다른 경우에 사용합니다. 이 분류에 속한 상품을 등록할 경우에 기본값으로 입력됩니다.
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">판매가능</label>
+					<div class="inline-group">
+						<label class="radio"><input type="radio" name="subca_use" id="subca_use1" value="1" checked><i></i>판매진행</label>
+						<label class="radio"><input type="radio" name="subca_use" id="subca_use2" value="0"><i></i>판매중지</label>
+					</div>
+	                <div class="note">
+		                <strong>Note:</strong> 재고가 없거나 일시적으로 판매를 중단하시려면 체크 해제하십시오. 체크 해제하시면 상품 출력을 하지 않으며, 주문도 받지 않습니다.
+		            </div>
+				</div>
+				<div class="col col-6">
+					<label class="label">쿠폰적용안함</label>
+					<label class="checkbox" for="subca_nocoupon">
+						<input type="checkbox" name="subca_nocoupon" id="subca_nocoupon" value="1"><i></i> 예
+					</label>
+					<div class="note">
+		                <strong>Note:</strong> 설정에 체크하시면 쿠폰생성 때 분류 검색 결과에 노출되지 않습니다.
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="row">
+				<div class="col col-6">
+					<label class="label">상단 파일경로</label>
+					<label class="input">
+						<input type="text" name="subca_include_head" id="subca_include_head" value="">
+					</label>
+	                <div class="note">
+		                <strong>Note:</strong> 입력하지 않으면 기본 상단 파일을 사용합니다. PHP 코드를 사용할 수 있습니다.
+		            </div>
+				</div>
+				<div class="col col-6">
+					<label class="label">하단 파일경로</label>
+					<label class="input">
+						<input type="text" name="subca_include_tail" id="subca_include_tail" value="">
+					</label>
+					<div class="note">
+		                <strong>Note:</strong> 입력하지 않으면 기본 하단 파일을 사용합니다. PHP 코드를 사용할 수 있습니다.
+		            </div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" value="분류 생성" id="btn_submit" class="btn-e btn-e-lg btn-e-yellow" accesskey="s">
+	</div>
+	<!--{/}-->
+</div>
+
+</form>
+
+<script>
+function checkform(f) {
+	if(f.ca_name.value == '') {
+		alert('분류명은 필수항목입니다.');
+		f.ca_name.focus();
+		f.ca_name.select();
+		return false;
+	}
+
+	if ($("#ca_skin option:selected").val() == '') {
+		alert('출력스킨을 선택해 주세요.');
+		$("#ca_skin").focus();
+		return false;
+	}
+
+	if ($("#ca_mobile_skin option:selected").val() == '') {
+		alert('모바일 출력스킨을 선택해 주세요.');
+		$("#ca_mobile_skin").focus();
+		return false;
+	}
+}
+
+function delete_menu() {
+	if(confirm("본 메뉴를 삭제하시면 하위메뉴까지 모두 삭제됩니다.\n\n그래도 삭제하시겠습니까?")) {
+		var form = document.fmenu;
+        var token = get_ajax_token();
+        if(!token) {
+            alert("토큰 정보가 올바르지 않습니다.");
+            return false;
+        }
+        form.token.value = token;
+        form.mode.value = 'delete';
+		form.submit();
+	} else return false;
+}
+</script>

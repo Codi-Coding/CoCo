@@ -1,0 +1,65 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-banner-location .width-100px {width:100px}
+.admin-banner-location .padding-left-120px {padding-left:120px !important}
+</style>
+
+<div class="admin-banner-location">
+	<form name="fthemeform" method="post" action="{_action_url}" onsubmit="return fbanner_submit(this);" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="theme" id="theme" value="{? this_theme}{this_theme}{:}{_theme}{/}">
+	<input type="hidden" name="bn_no" id="bn_no" value="{banner.bn_no}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>배너/광고 위치 설정 관리</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="banner-config">
+		<div class="adm-form-wrap margin-bottom-20">
+			<header><strong><i class="fa fa-caret-right"></i> 배너/광고 창구수</strong></header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="banner_count" class="input input-button">
+								<i class="icon-append">개</i>
+						        <input type="text" name="banner_count" id="banner_count" value="{bn_count}">
+							</label>
+							<div class="note"><strong>Note:</strong> 배너/광고 창구수를 늘리려면, 창구수를 원하는 만큼 숫자를 변경해 주세요.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="adm-form-wrap margin-bottom-20">
+			<header><strong><i class="fa fa-caret-right"></i> 배너/광고 위치명 설정</strong></header>
+
+			<fieldset>
+				<!--{@ bn_loccd}-->
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="bn_loccd_{.index_}" class="input">
+								<i class="icon-prepend width-100px">배너위치 {.index_ + 1}</i>
+						        <input type="text" name="bn_loccd[{.index_ + 1}]" id="bn_loccd_{.index_ + 1}" value="{? .value_}{=get_text(.value_)}{:}배너위치 {.index_ + 1}{/}" class="padding-left-120px" required>
+							</label>
+						</section>
+					</div>
+				</div>
+				<!--{/}-->
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="text-center margin-bottom-10">
+		<input type="submit" value="적용하기" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+	</div>
+
+	</form>
+</div>

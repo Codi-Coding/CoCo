@@ -1,0 +1,283 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<div class="admin-auth-list">
+	<form id="fsearch" name="fsearch" class="eyoom-form" action="./" method="get">
+	<input type="hidden" name="sfl" value="a.mb_id" id="sfl">
+
+	<div class="headline">
+		<h4><strong>관리권한 목록</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+	<div class="admin-search-box">
+		<div class="row">
+			<div class="col col-4 margin-bottom-0">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="stx" value="{_stx}" id="stx" required placeholder="회원아이디">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-30"></div>
+
+	<form name="fauthlist" id="fauthlist" action="{_action_url}" method="post" onsubmit="return fauthlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="sst" id="sst" value="{_sst}">
+	<input type="hidden" name="sod" id="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="row">
+		<div class="col col-9">
+			<div class="padding-top-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>설정된 관리권한 {=number_format(_total_count)}건
+			    </span>
+			</div>
+		</div>
+		<div class="col col-3">
+			<section>
+				<label for="sort_list" class="select">
+					<select name="sort_list" id="sort_list" onchange="sorting_list(this.form, this.value);">
+						<option value="">:: 정렬방식선택 ::</option>
+						<option value="a.mb_id|asc" {? _sst=='a.mb_id' && _sod=='asc'}selected{/}>회원아이디 정방향 (↓)</option>
+						<option value="a.mb_id|desc" {? _sst=='a.mb_id' && _sod=='desc'}selected{/}>회원아이디 역방향 (↑)</option>
+						<option value="mb_nick|asc" {? _sst=='mb_nick' && _sod=='asc'}selected{/}>닉네임 정방향 (↓)</option>
+						<option value="mb_nick|desc" {? _sst=='mb_nick' && _sod=='desc'}selected{/}>닉네임 역방향 (↑)</option>
+					</select><i></i>
+				</label>
+			</section>
+		</div>
+	</div>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="auth-list"></div>
+
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	</div>
+	</form>
+
+	<!--{* 페이지 *}-->
+	{=eb_admin_paging('basic')}
+
+	<form name="fauthlist2" id="fauthlist2" action="{_action_url2}" method="post" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>관리권한 추가</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="auth-form">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 관리권한 설정</strong></header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-info font-size-12 margin-bottom-0">
+						<i class="fa fa-info-circle"></i> 다음 양식에서 회원에게 관리권한을 부여하실 수 있습니다.<br>
+						<i class="fa fa-info-circle"></i> 권한 <strong class="color-red">r</strong>은 읽기권한, <strong class="color-red">w</strong>는 쓰기권한, <strong class="color-red">d</strong>는 삭제권한입니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="mb_id" class="label">회원아이디</label>
+					        <label class="input">
+					            <input type="text" name="mb_id" id="mb_id" value="{_mb_id}" required>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section class="label-height">
+							<a href='{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=member_list&amp;wmode=1' class="btn-e btn-e-sm btn-e-dark" onclick="eb_modal(this.href); return false;">회원검색</a>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="mb_id" class="label">접근가능메뉴</label>
+					        <label class="select">
+					            <select id="au_menu" name="au_menu" required>
+						            <option value=''>선택하세요</option>
+						            <!--{@ auth_menu}-->
+						            <!--{? !(substr(.key_, -3) == '000' || .key_ == '-' || !.key_ )}-->
+						            <option value="{.key_}">{.key_} {.value_}</option>
+						            <!--{/}-->
+						            <!--{/}-->
+					            </select><i></i>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-5">
+						<section>
+							<label for="mb_id" class="label">권한지정</label>
+							<div class="inline-group">
+					        	<label for="r" class="checkbox"><input type="checkbox" name="r" id="r" value="r" checked><i></i> r (읽기)</label>
+					        	<label for="w" class="checkbox"><input type="checkbox" name="w" id="w" value="w"><i></i> w (쓰기)</label>
+					        	<label for="d" class="checkbox"><input type="checkbox" name="d" id="d" value="d"><i></i> d (삭제)</label>
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	<div class="text-center margin-top-30 margin-bottom-30">
+		<input type="submit" value="추가하기" class="btn-e btn-e-lg btn-e-red" accesskey="s"></button>
+	</div>
+	</form>
+</div>
+
+<div id="auth-member-modal" class="modal fade auth-member-modal" tabindex="-1" role="dialog" aria-labelledby="boardCopyLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 id="boardCopyLabel" class="modal-title"><strong><i class="fa fa-search"></i> 회원 검색</strong></h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="auth-member-iframe" width="100%" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+/*--------------------------------------
+	Modal
+--------------------------------------*/
+function eb_modal(href) {
+    $('.auth-member-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#auth-member-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.auth-member-modal').modal('show').on('shown.bs.modal', function () {
+        $("#auth-member-iframe").attr("src", href);
+        $('#auth-member-iframe').height(400);
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+window.closeModal = function(){
+    $('#auth-member-modal').modal('hide');
+};
+
+/*--------------------------------------
+	Table
+--------------------------------------*/
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ auth_list}-->
+        {
+	        체크: "<input type='hidden' name='au_menu[{.index_}]' value='{.au_menu}'><input type='hidden' name='mb_id[{.index_}]' value='{.mb_id}'><label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label>",
+	        회원아이디: "<a href='{C.EYOOM_ADMIN_URL}/?dir=config&amp;pid=auth_list&amp;sfl=a.mb_id&amp;stx={.mb_id}'>{.mb_id}</a>",
+	        닉네임: "{.mb_nick}",
+	        메뉴: "{.au_menu} {.auth_menu}",
+	        권한: "{.au_auth}",
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#auth-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+            { name: "체크", type: "text", align: "center", width: 40 },
+            { name: "회원아이디", type: "text", width: 110 },
+            { name: "닉네임", type: "text", width: 110 },
+            { name: "메뉴", type: "text", width: 300 },
+            { name: "권한", type: "text", width: 100 },
+        ]
+    });
+
+	var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+});
+
+function sorting_list(f, str) {
+    var sort = str.split('|');
+
+	$("#sst").val(sort[0]);
+	$("#sod").val(sort[1]);
+
+	if (sort[0] && sort[1]) {
+		f.action = "{C.EYOOM_ADMIN_URL}/?dir={_dir}&pid={_pid}";
+		f.submit();
+	}
+}
+
+function fauthlist_submit(f) {
+    if (!is_checked("chk[]")) {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    if(document.pressed == "선택삭제") {
+        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+    return true;
+}
+</script>

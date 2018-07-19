@@ -1,0 +1,139 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-poll-form">
+	<form name="fpoll" id="fpoll" method="post" action="{_action_url}" class="eyoom-form" enctype="multipart/form-data">
+	<input type="hidden" name="po_id" value="{_po_id}">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>투표 {_html_title}</strong></h4>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=poll_list&amp;qstr={_qstr}" class="btn-e btn-e-purple btn-e-xs pull-right margin-top-5"><i class="fa fa-list"></i> 목록보기</a>
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="poll-form">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><i class="fa fa-caret-right"></i> 투표 {_html_title}</strong></header>
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="po_subject" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 투표 제목</label>
+					        <label class="input">
+					            <input type="text" name="po_subject" id="po_subject" value="{po.po_subject}" required maxlength="125">
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<!--{@ poll_item}-->
+				<div class="row">
+					<div class="col col-10">
+						<section>
+							<label for="po_poll{.index_+1}" class="label">항목 {.index_+1}</label>
+							<label class="input">
+								<input type="text" name="po_poll{.index_+1}" id="po_poll{.index_+1}" value="{.po_poll}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-2">
+						<section>
+							<label for="po_cnt{.index_+1}" class="label">항목 {.index_+1} 투표수</label>
+					        <label class="input">
+					        	<i class="icon-append">건</i>
+					            <input type="text" name="po_cnt{.index_+1}" id="po_cnt{.index_+1}" value="{.po_cnt}">
+					        </label>
+						</section>
+					</div>
+				</div>
+				<!--{/}-->
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="po_etc" class="label">기타의견</label>
+					        <label class="input">
+					            <input type="text" name="po_etc" id="po_etc" value="{=get_text(po.po_etc)}">
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 기타 의견을 남길 수 있도록 하려면, 간단한 질문을 입력하세요.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="po_level" class="label">투표가능 회원레벨</label>
+					        <label class="select">
+					            {=get_member_level_select('po_level', 1, 10, po.po_level)}
+					            <i></i>
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 지정한 레벨 이상 투표 가능. 레벨을 1로 설정하면 손님도 투표할 수 있습니다.</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="po_point" class="label">포인트</label>
+					        <label class="input">
+					        	<i class="icon-append">점</i>
+					            <input type="text" name="po_point" id="po_point" value="{po.po_point}">
+					        </label>
+						</section>
+					</div>
+					<!--{? _w=='u'}-->
+					<div class="col col-3">
+						<section>
+							<label class="label">투표등록일</label>
+					        <label class="input">
+					            <input type="text" class="color-blue-important" value="{po.po_date}" readonly>
+					        </label>
+						</section>
+					</div>
+					<!--{/}-->
+				</div>
+			</fieldset>
+
+			<!--{? _w=='u'}-->
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="po_ips" class="label">투표참가 IP</label>
+					        <label class="textarea">
+					            <textarea name="po_ips" id="po_ips" readonly rows="5">{=preg_replace("/\n/", " / ", po.po_ips)}</textarea>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="po_ips" class="label">투표참가 회원</label>
+					        <label class="textarea">
+					            <textarea name="po_ips" id="po_ips" readonly rows="5">{=preg_replace("/\n/", " / ", po.mb_ids)}</textarea>
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			<!--{/}-->
+		</div>
+
+		<div class="text-center margin-top-30 margin-bottom-30">
+			<input type="submit" value="확인" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+			<a href="{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=poll_list&amp;qstr={_qstr}" class="btn-e btn-e-lg btn-e-dark">목록</a>
+		</div>
+	</div>
+	</form>
+</div>

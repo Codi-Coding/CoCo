@@ -1,0 +1,141 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.pg-anchor {margin-top:50px}
+@media (min-width: 768px) {
+	.pg-anchor-in.tab-e2 .nav-tabs li {width:16.6666666%}
+	.pg-anchor-in.tab-e2 .nav-tabs li a {border:1px solid #d5d5d5;border-top:1px solid #d5d5d5;font-size:12px;padding:8px;text-align:center;margin-right:0;margin-left:-1px;background:#f5f5f5;color:#959595}
+	.pg-anchor-in.tab-e2 .nav-tabs li a:hover {color:#000}
+	.pg-anchor-in.tab-e2 .nav-tabs li a:focus {color:#959595}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {z-index:1;border:1px solid #000;border-top:2px solid #000;font-weight:bold;color:#000;background:#fff}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {position:relative;display:block;height:1px;background:#000;margin-bottom:20px}
+}
+@media (max-width: 767px) {
+	.pg-anchor-in {position:relative;overflow:hidden;margin-bottom:20px;border:1px solid #757575}
+	.pg-anchor-in.tab-e2 .nav-tabs li {width:33.33333%;margin:0}
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:12px;padding:6px 0;text-align:center;border-bottom:1px solid #d5d5d5;margin-right:0;background:#f5f5f5;color:#959595}
+	.pg-anchor-in.tab-e2 .nav-tabs li a:hover {color:#000}
+	.pg-anchor-in.tab-e2 .nav-tabs li a:focus {color:#959595}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {font-weight:bold;border:0;border-bottom:1px solid #d5d5d5 !important;color:#DE2600;background:#fff}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(1) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(2) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(4) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(5) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(6) a {border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {display:none}
+}
+#shop-product-explain img {display:block:width:100% \9;max-width:100%;height:auto}
+</style>
+
+<div class="shop-product-tab">
+	{# pg_anchor_inf // pg_anchor.skin.html}
+    <div id="shop-product-info" class="shop-product-cont">
+		<div class="shop-cont-in">
+		    <!--{? it.it_basic // 상품 기본설명}-->
+			<div class="alert alert-info">
+			    <p>{it.it_basic}</p>
+			</div>
+		    <!--{/}-->
+
+		    <!--{? it.it_explan  // 상품 상세설명}-->
+		    <div id="shop-product-explain">
+		        {=conv_content(it.it_explan, 1)}
+		    </div>
+		    <!--{/}-->
+		</div>
+
+		<!--{? it.it_info_use == '1'}-->
+		<!--{? it.it_info_value}-->
+		<h6 class="margin-top-30"><strong class="font-size-13 color-grey"><i class="fa fa-info-circle"></i> 상품 정보 고시</strong></h6>
+		<!--{? C.G5_IS_MOBILE}-->
+		<p class="text-right font-size-11 margin-bottom-5 color-grey">Note! 좌우 스크롤 (<i class="fa fa-arrows-h"></i>)</p>
+		<!--{/}-->
+		<div class="table-list-eb font-size-12">
+		    <div class="table-responsive">
+		        <table class="table table-bordered">
+		            <thead>
+		                <tr>
+				            <th>항목</th>
+				            <th>내용</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+			            <!--{@ _open_goods_info}-->
+					    <tr>
+					        <td class="td-bg-grey font-size-11"><strong>{.ii_title}</strong></td>
+					        <td class="font-size-11">{.ii_value}</td>
+					    </tr>
+			            <!--{/}-->
+		            </tbody>
+		        </table>
+		    </div>
+		</div>
+	    <!--{: _is_admin}-->
+	    <p><i class="fa fa-exclamation-circle"></i> 상품 정보 고시 정보가 올바르게 저장되지 않았습니다.<br>config.php 파일의 G5_ESCAPE_FUNCTION 설정을 addslashes 로<br>변경하신 후 관리자 &gt; 상품정보 수정에서 상품 정보를 다시 저장해주세요.</p>
+		<!--{/}-->
+		<!--{/}-->
+    </div>
+
+    {# pg_anchor_use // pg_anchor.skin.html}
+    <div id="shop-product-use" class="shop-product-cont">
+        <div class="shop-cont-in">
+			{# item_use_bs}
+		</div>
+    </div>
+
+    {# pg_anchor_qa // pg_anchor.skin.html}
+    <div id="shop-product-qa" class="shop-product-cont">
+        <div class="shop-cont-in">
+			{# item_qa_bs}
+		</div>
+    </div>
+
+    {# pg_anchor_dvr // pg_anchor.skin.html}
+    <div id="shop-product-dvr" class="shop-product-cont">
+        <div class="shop-cont-in">
+			<!--{? default.de_baesong_content // 배송정보 내용이 있다면}-->
+            {=conv_content(default.de_baesong_content, 1)}
+			<!--{/}-->
+		</div>
+    </div>
+
+    {# pg_anchor_ex // pg_anchor.skin.html}
+    <div id="shop-product-ex" class="shop-product-cont">
+        <div class="shop-cont-in">
+			<!--{? default.de_change_content // 교환/반품 내용이 있다면}-->
+            {=conv_content(default.de_change_content, 1)}
+			<!--{/}-->
+		</div>
+    </div>
+
+	{# pg_anchor_rel // pg_anchor.skin.html}
+	<!--{? default.de_rel_list_use}-->
+	<!--{* 관련상품 시작 *}-->
+	<div id="shop-product-rel" class="shop-product-cont">
+		{list->run()}
+	</div>
+	<!--{* 관련상품 끝 *}-->
+	<!--{/}-->
+</div>
+
+<script src="../../../../../../js/viewimageresize.js"></script>
+<script>
+$('.pg-anchor a').on('click', function(e) {
+	e.stopPropagation();
+	var scrollTopSpace;
+	if (window.innerWidth >= 992) {
+		scrollTopSpace = 185;
+	} else {
+		scrollTopSpace = 150;
+	}
+	var tabLink = $(this).attr('href');
+	var offset = $(tabLink).offset().top;
+	$('html, body').animate({scrollTop : offset - scrollTopSpace}, 500);
+	return false;
+});
+
+$(function() {
+	// 이미지 리사이즈
+	$("#shop-product-explain").viewimageresize2();
+});
+</script>

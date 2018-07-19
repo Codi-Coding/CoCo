@@ -1,0 +1,100 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.gallery-latest {position:relative;margin-left:-10px;margin-right:-10px}
+.gallery-item {position:relative;width:25%;padding-left:10px;padding-right:10px;float:left}
+.gallery-latest .gallery-img {position:relative;overflow:hidden;margin-bottom:10px}
+.gallery-latest .img-box {position:relative;overflow:hidden;height:94px;background:#353535;line-height:94px;text-align:center}
+.gallery-latest .img-box .no-image {color:#858585;font-size:11px}
+.gallery-latest .img-comment {position:absolute;top:8px;left:8px;display:inline-block;min-width:35px;padding:0px 3px;font-size:10px;font-weight:300;line-height:13px;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;background:#757575}
+.gallery-latest .img-box .video-icon {position:absolute;top:5px;right:5px;color:#fff;font-size:20px;line-height:20px}
+.gallery-latest .img-caption {color:#fff;font-size:11px;position:absolute;left:0;bottom:-26px;display:block;z-index:1;background:rgba(0, 0, 0, 0.7);text-align:left;width:100%;height:26px;line-height:20px;margin-bottom:0;padding:3px 10px}
+.gallery-latest .img-caption span {margin-right:7px}
+.gallery-latest .img-caption span i {color:#a5a5a5}
+.gallery-latest .gallery-txt {position:relative;margin-bottom:20px}
+.gallery-latest .txt-subj {margin-bottom:5px}
+.gallery-latest .txt-subj h5 {font-size:13px;font-weight:bold;margin:0}
+.gallery-latest .gallery-txt a:hover .txt-subj h5 {color:#005cff;text-decoration:underline}
+.gallery-latest .txt-cont {position:relative;overflow:hidden;height:34px;font-size:11px;color:#858585;margin-bottom:10px}
+.gallery-latest .txt-photo {display:inline-block;width:26px;height:26px;margin-right:2px;border:1px solid #e5e5e5;padding:1px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.gallery-latest .txt-photo img {width:100%;height:auto;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.gallery-latest .txt-photo .txt-user-icon {width:22px;height:22px;font-size:14px;line-height:22px;text-align:center;background:#959595;color:#fff;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:inline-block;white-space:nowrap;vertical-align:baseline;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.gallery-latest .txt-nick {font-size:11px;color:#555555}
+.gallery-latest .txt-time {font-size:11px;color:#555555;margin-left:5px}
+.gallery-latest .txt-time .i-color {color:#b5b5b5}
+@media (max-width:660px) {
+	.gallery-item {width:33.33333%}
+}
+@media (max-width:500px) {
+	.gallery-item {width:50%}
+}
+</style>
+
+<div class="headline">
+	<h5><strong>{title}</strong></h5>
+</div>
+
+<div class="gallery-latest">
+	<div class="gallery-latest-in">
+		<!--{@ loop}-->
+		<div class="gallery-item">
+			<div class="gallery-img">
+				<a href="{.href}">
+					<div class="img-box">
+						<!--{? .image}-->
+						<img class="img-responsive" src="{.image}">
+						<!--{? .wr_comment}--><span class="img-comment">+{=number_format(.wr_comment)}</span><!--{/}-->
+						<!--{? .is_video}--><span class="video-icon"><i class="fa fa-play-circle-o"></i></span><!--{/}-->
+						<!--{:}-->
+						<span class="no-image">No Image</span>
+						<!--{/}-->
+						<div class="img-caption">
+							<span><i class="fa fa-eye"></i> {=number_format(.wr_hit)}</span>
+							<!--{? .wr_good}--><span><i class="fa fa-thumbs-up"></i> {=number_format(.wr_good)}</span><!--{/}-->
+							<!--{? .wr_nogood}--><span><i class="fa fa-thumbs-down"></i> {=number_format(.wr_nogood)}</span><!--{/}-->
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="gallery-txt">
+				<a href="{.href}">
+					<div class="txt-subj">
+						<h5 class="ellipsis">{.wr_subject}</h5>
+					</div>
+					<!--{? content == 'y'}-->
+					<p class="txt-cont">{.wr_content}</p>
+					<!--{/}-->
+					<!--{? photo == 'y'}-->
+					<span class="txt-photo">
+						<!--{? .mb_photo}-->
+						{.mb_photo}
+						<!--{:}-->
+						<span class="txt-user-icon"><i class="fa fa-user"></i></span>
+						<!--{/}-->
+					</span>
+					<!--{/}-->
+					<span class="txt-nick">{.mb_nick}</span>
+					<span class="txt-time"><i class="fa fa-clock-o {? .new}color-red{:}i-color{/}"></i> {eb->date_time('Y-m-d',.datetime)}</span>
+				</a>
+			</div>
+		</div>
+		<!--{:}-->
+		<p class="text-center color-grey font-size-13 margin-top-30"><i class="fa fa-exclamation-circle"></i> 최신글이 없습니다.</p>
+		<!--{/}-->
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<script>
+$(function(){
+    var duration = 120;
+    var $img_cap = $('.gallery-latest .gallery-img');
+    $img_cap.find('.img-box')
+        .on('mouseover', function(){
+            $(this).find('.img-caption').stop(true).animate({bottom: '0px'}, duration);
+        })
+        .on('mouseout', function(){
+            $(this).find('.img-caption').stop(true).animate({bottom: '-26px'}, duration);
+        });
+});
+</script>

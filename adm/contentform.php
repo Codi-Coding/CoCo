@@ -99,8 +99,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
     <tr>
         <th scope="row"><label for="co_mobile_skin">모바일스킨 디렉토리<strong class="sound_only">필수</strong></label></th>
         <td>
-            <?php //echo get_mobile_skin_select('content', 'co_mobile_skin', 'co_mobile_skin', $co['co_mobile_skin'], 'required'); ?>
-            <?php echo get_skin_select('content', 'co_mobile_skin', 'co_mobile_skin', $co['co_mobile_skin'], 'required'); ?>
+            <?php echo get_mobile_skin_select('content', 'co_mobile_skin', 'co_mobile_skin', $co['co_mobile_skin'], 'required'); ?>
         </td>
     </tr>
     <tr>
@@ -179,9 +178,9 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
     </table>
 </div>
 
-<div class="btn_confirm01 btn_confirm">
-    <input type="submit" value="확인" class="btn_submit" accesskey="s">
-    <a href="./contentlist.php">목록</a>
+<div class="btn_fixed_top">
+    <a href="./contentlist.php" class="btn btn_02">목록</a>
+    <input type="submit" value="확인" class="btn btn_submit" accesskey="s">
 </div>
 
 </form>

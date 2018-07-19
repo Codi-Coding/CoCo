@@ -1,0 +1,1967 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/magnific-popup/magnific-popup.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.blind {display:none;position:absolute;top:-10000px;left:-10000px}
+.admin-shop-itemform .eyoom-form header.border-top-1 {border-top:1px solid #d5d5d5}
+.admin-shop-itemform .text-emphasis {font-weight:bold !important;color:#CC2300 !important}
+.admin-shop-itemform .goods-thumb {max-width:120px;height:auto;border:1px solid #d5d5d5;padding:5px}
+.admin-shop-itemform .no-goods-thumb {width:100%;max-width:120px;height:auto;min-height:80px;border:1px dashed #d5d5d5;padding:5px}
+.admin-shop-itemform #option_fieldset {border:1px solid #959595;margin:0 -1px -1px;padding:20px 15px;background:#eeeeee}
+.admin-shop-itemform #addoption_fieldset {border:1px solid #959595;margin:0 -1px -1px;padding:20px 15px;background:#eeeeee}
+.admin-shop-itemform .relation-sbox, .admin-shop-itemform .event-box {padding:10px;background:#f5f5f5;border:1px solid #d5d5d5}
+.admin-shop-itemform .relation-sbox-margin-top {margin-top:42px}
+.admin-shop-itemform #relation ul {list-style:none;margin:0;padding:0;margin-top:20px}
+.admin-shop-itemform #relation ul li {position:relative;border-bottom:1px solid #e5e5e5;padding:5px 0}
+.admin-shop-itemform #relation ul li:first-child {border-top:1px solid #e5e5e5}
+.admin-shop-itemform #relation ul li:nth-child(odd) {background:#fbfbfb}
+.admin-shop-itemform #relation ul li img {margin-right:5px}
+.admin-shop-itemform #relation ul li .list_item_btn {position:absolute;top:20px;right:0}
+.admin-shop-itemform #reg_relation ul {list-style:none;margin:0;padding:0;margin-top:56px}
+.admin-shop-itemform #reg_relation ul li {position:relative;border-bottom:1px solid #e5e5e5;padding:5px 0}
+.admin-shop-itemform #reg_relation ul li:first-child {border-top:1px solid #e5e5e5}
+.admin-shop-itemform #reg_relation ul li:nth-child(odd) {background:#fbfbfb}
+.admin-shop-itemform #reg_relation ul li img {margin-right:5px}
+.admin-shop-itemform #reg_relation ul li .list_item_btn {position:absolute;top:20px;right:0}
+.admin-shop-itemform #event_list ul {list-style:none;padding:0;margin:0}
+.admin-shop-itemform #event_list ul li {margin-bottom:10px}
+.admin-shop-itemform #event_list ul li .add_event {width:48px;text-align:center;padding:0}
+.admin-shop-itemform #reg_event_list ul {list-style:none;padding:0;margin:0}
+.admin-shop-itemform #reg_event_list ul li {margin-bottom:10px}
+.admin-shop-itemform #reg_event_list ul li .del_event {width:48px;text-align:center;padding:0}
+@media (max-width: 600px) {
+	.admin-shop-itemform .relation-sbox-margin-top {margin-top:inherit}
+}
+@media (min-width: 1150px) {
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:12px;font-weight:bold;padding:8px 6px}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {z-index:1;border:1px solid #000;border-top:1px solid #DE2600;color:#DE2600}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {position:relative;display:block;height:1px;background:#000;margin-bottom:20px}
+}
+@media (min-width: 1400px) {
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:14px;font-weight:bold;padding:8px 10px}
+}
+@media (min-width: 1600px) {
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:14px;font-weight:bold;padding:8px 15px}
+}
+@media (max-width: 1149px) {
+	.pg-anchor-in {position:relative;overflow:hidden;margin-bottom:20px;border:1px solid #757575}
+	.pg-anchor-in.tab-e2 .nav-tabs li {width:33.33333%;margin:0}
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:12px;padding:6px 0;text-align:center;border-bottom:1px solid #d5d5d5;margin-right:0;font-weight:bold;background:#fff}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {border:0;border-bottom:1px solid #d5d5d5 !important;color:#DE2600;background:#fff1f0}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(1) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(2) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(4) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(5) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(7) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(8) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(10) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(11) a {border-right:1px solid #d5d5d5}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(13) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {display:none}
+}
+</style>
+
+<div class="admin-shop-itemform">
+	<form name="fitemform" method="post" action="{_action_url}" onsubmit="return fitemformcheck(this);" enctype="multipart/form-data" autocomplete="off" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="sca" value="{_sca}">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod"  value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx"  value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="uploading" id="uploading" value="">
+
+	<div class="headline">
+		<h4><strong>{_html_title}</strong></h4>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemlist&qstr={_qstr}" class="btn-e btn-e-xs btn-e-purple pull-right"><i class="fa fa-list"></i> 상품관리목록</a>
+		<div class="clearfix"></div>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="anc_sitfrm_cate">
+		<div class="pg-anchor">
+			{# anc_sitfrm_cate}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 상품분류 선택</strong>
+			</header>
+			
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<label for="ca_id" class="label">기본분류</label>
+						<label class="select margin-bottom-10">
+							<select name="ca_id" id="ca_id" onchange="categorychange(this.form)">
+							    <option value=''>::선택하세요::</option>
+							    <!--{@ cate}-->
+							    <option value="{.ca_id}" {? it.ca_id == .ca_id}selected{/}>{.nbsp}{.ca_name}</option>
+							    <!--{/}-->
+							</select><i></i>
+						</label>
+		                <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 기본분류를 선택하면, 판매/재고/HTML사용/판매자 E-mail 등을, 선택한 분류의 기본값으로 설정합니다.
+			            </div>
+			            <script>
+		                    var ca_use = new Array();
+		                    var ca_stock_qty = new Array();
+		                    //var ca_explan_html = new Array();
+		                    var ca_sell_email = new Array();
+		                    var ca_opt1_subject = new Array();
+		                    var ca_opt2_subject = new Array();
+		                    var ca_opt3_subject = new Array();
+		                    var ca_opt4_subject = new Array();
+		                    var ca_opt5_subject = new Array();
+		                    var ca_opt6_subject = new Array();
+		                    
+		                    {_script}
+				        </script>
+					</div>
+					<div class="col col-3">
+						<label for="ca_id2" class="label">2차 분류</label>
+						<label class="select margin-bottom-10">
+							<select name="ca_id2" id="ca_id2">
+							    <option value=''>::선택하세요::</option>
+							    <!--{@ cate}-->
+							    <option value="{.ca_id}" {? it.ca_id2 == .ca_id}selected{/}>{.nbsp}{.ca_name}</option>
+							    <!--{/}-->
+							</select><i></i>
+						</label>
+		                <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 2차 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 상품이 포함될 최하위 분류만 선택하시면 됩니다.
+			            </div>
+					</div>
+					<div class="col col-3">
+						<label for="ca_id3" class="label">3차 분류</label>
+						<label class="select margin-bottom-10">
+							<select name="ca_id3" id="ca_id3">
+							    <option value=''>::선택하세요::</option>
+							    <!--{@ cate}-->
+							    <option value="{.ca_id}" {? it.ca_id3 == .ca_id}selected{/}>{.nbsp}{.ca_name}</option>
+							    <!--{/}-->
+							</select><i></i>
+						</label>
+		                <div class="note margin-bottom-10">
+			                <strong>Note:</strong> 3차 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 상품이 포함될 최하위 분류만 선택하시면 됩니다.
+			            </div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_skin">
+		<div class="pg-anchor">
+			{# anc_sitfrm_skin}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 상품 코드 & 스킨 정보</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+					<!--{? _w == ''}-->
+					<div class="col col-8">
+						<section>
+							<label for="it_code" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 상품코드</label>
+					        <label class="input">
+					            <input type="text" name="it_id" value="{=time()}" id="it_id" required maxlength="20" class="width-50">
+					        </label>
+					        <div class="note margin-bottom-10">
+						        <strong>Note:</strong> <b class="color-red">[필수항목]</b> 상품의 코드는 10자리 숫자로 자동생성합니다.
+						        <b>직접 상품코드를 입력할 수도 있습니다.</b><br>상품코드는 영문자, 숫자, - 만 입력 가능합니다.
+						    </div>
+						</section>
+					</div>
+					<!--{:}-->
+					<div class="col col-8">
+						<div class="row">
+							<div class="col col-6">
+								<section>
+									<label for="it_code" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 상품코드</label>
+							        <label class="input">
+							            <input type="text" name="it_id" value="{it.it_id}" id="it_id" readonly="readonly">
+							        </label>
+								</section>
+							</div>
+							<div class="col col-6">
+								<section>
+									<label for="it_buttons" class="label">상품정보</label>
+									<label class="input">
+										<a href="{C.G5_SHOP_URL}/item.php?it_id={it.it_id}" target="_blank" class="btn-e btn-e-xs btn-e-dark">상품확인</a>
+										<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemuselist&sfl=a.it_id&stx={it.it_id}" class="btn-e btn-e-xs btn-e-dark">사용후기</a>
+										<a href="{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemqalist&sfl=a.it_id&stx={it.it_id}" class="btn-e btn-e-xs btn-e-dark">상품문의</a>
+									</label>
+								</section>
+							</div>
+						</div>
+						<div class="note margin-bottom-10">
+					        <strong>Note:</strong> <b class="color-red">[필수항목]</b> 상품의 코드는 10자리 숫자로 자동생성합니다.
+					        <b>직접 상품코드를 입력할 수도 있습니다.</b><br>상품코드는 영문자, 숫자, - 만 입력 가능합니다.
+					    </div>
+					</div>
+					<!--{/}-->
+
+					<div class="col col-2">
+						<section>
+							<label for="it_skin" class="label">PC용 스킨</label>
+							<label class="select">
+								{=get_skin_select('shop', 'it_skin', 'it_skin', it.it_skin)}
+								<i></i>
+							</label>
+						</section>
+					</div>
+					<div class="col col-2">
+						<section>
+							<label for="it_mobile_skin" class="label">모바일용 스킨</label>
+							<label class="select">
+								{=get_mobile_skin_select('shop', 'it_mobile_skin', 'it_mobile_skin', it.it_mobile_skin)}
+								<i></i>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_ini">
+		<div class="pg-anchor">
+			{# anc_sitfrm_ini}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 기본 정보</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="it_name" class="label"><span class="color-red"><i class="fa fa-check"></i></span> 상품명</label>
+					        <label class="input">
+					        	<i class="icon-prepend fa fa-cube"></i>
+					            <input type="text" name="it_name" id="it_name" value="{=get_text(cut_str(it.it_name, 250, ''))}" required maxlength="250">
+					        </label>
+					        <div class="note margin-bottom-10">
+						        <strong>Note:</strong> <b class="color-red">[필수항목]</b> HTML 입력이 불가합니다.
+						    </div>
+						</section>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="it_basic" class="label"> 기본설명</label>
+					        <label class="input">
+					            <i class="icon-prepend fa fa-commenting"></i>
+					            <input type="text" name="it_basic" id="it_basic" value="{=get_text(it.it_basic)}" maxlength="250">
+					        </label>
+					        <div class="note margin-bottom-10">
+						        <strong>Note:</strong> 상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력합니다. HTML 입력도 가능합니다.
+						    </div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="it_order" class="label">출력순서</label>
+							<label class="input">
+								<i class="icon-prepend fa fa-sort-numeric-asc"></i>
+								<input type="text" name="it_order" id="it_order" value="{it.it_order}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 숫자가 작을 수록 상위 노출됩니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-9">
+						<section>
+							<label for="it_type" class="label">상품유형</label>
+							<div class="inline-group">
+						        <label class="checkbox">
+						        	<input type="checkbox" name="it_type1" id="it_type1" value="1" {? it.it_type1 == '1'}checked{/}><i></i> 히트
+						        	<span class="label label-red color-white"><span class="font-size-11">히트</span></span>
+						        </label>
+						        <label class="checkbox">
+						        	<input type="checkbox" name="it_type2" id="it_type2" value="1" {? it.it_type2 == '1'}checked{/}><i></i> 추천
+						        	<span class="label label-purple color-white"><span class="font-size-11">추천</span></span>
+						        </label>
+						        <label class="checkbox">
+						        	<input type="checkbox" name="it_type3" id="it_type3" value="1" {? it.it_type3 == '1'}checked{/}><i></i> 신상품
+						        	<span class="label label-green color-white"><span class="font-size-11">신상</span></span>
+						        </label>
+						        <label class="checkbox">
+						        	<input type="checkbox" name="it_type4" id="it_type4" value="1" {? it.it_type4 == '1'}checked{/}><i></i> 인기
+						        	<span class="label label-yellow color-white"><span class="font-size-11">베스트</span></span>
+						        </label>
+						        <label class="checkbox">
+						        	<input type="checkbox" name="it_type5" id="it_type5" value="1" {? it.it_type5 == '1'}checked{/}><i></i> 할인
+						        	<span class="label label-indigo color-white"><span class="font-size-11">할인</span></span>
+						        </label>
+							</div>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 메인화면에 유형별로 출력할 때 사용합니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="it_maker" class="label">제조사</label>
+							<label class="input">
+								<i class="icon-prepend fa fa-building"></i>
+								<input type="text" name="it_maker" id="it_maker" value="{it.it_maker}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 미입력시, 상품상세에 출력되지 않습니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="it_origin" class="label">원산지</label>
+							<label class="input">
+								<i class="icon-prepend fa fa-globe"></i>
+								<input type="text" name="it_origin" id="it_origin" value="{it.it_origin}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 미입력시, 상품상세에 출력되지 않습니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="it_brand" class="label">브랜드</label>
+							<label class="input">
+								<i class="icon-prepend fa fa-tag"></i>
+								<input type="text" name="it_brand" id="it_brand" value="{it.it_brand}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 미입력시, 상품상세에 출력되지 않습니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="it_model" class="label">모델</label>
+							<label class="input">
+								<i class="icon-prepend fa fa-hashtag"></i>
+								<input type="text" name="it_model" id="it_model" value="{it.it_model}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 미입력시, 상품상세에 출력되지 않습니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-6">
+						<section>
+							<label for="ec_mall_pid" class="label">네이버쇼핑 상품ID</label>
+							<label class="input">
+								<input type="text" name="ec_mall_pid" id="ec_mall_pid" value="{it.ec_mall_pid}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 네이버 쇼핑에 입점한 경우, 네이버쇼핑 상품ID를 입력하시면 네이버페이와 연동됩니다.
+								일부 쇼핑몰의 경우 네이버쇼핑 상품ID 대신 쇼핑몰 상품ID를 입력해야 하는 경우가 있습니다.
+								네이버페이 연동과정에서 이 부분에 대한 안내가 이뤄지니 안내받은 대로 값을 입력하시면 됩니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-6">
+						<section>
+							<label for="it_sell_email" class="label">판매자 e-mail</label>
+							<label class="input">
+								<input type="text" name="it_sell_email" id="it_sell_email" value="{it.it_sell_email}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 운영자와 실제 판매자가 다른 경우 살제 판매자의 e-mail를 입력하면,
+								상품 주문 시점을 기준으로 실제 판매자에게도 주문서를 발송합니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label for="it_tel_inq" class="label">전화문의</label>
+							<label class="checkbox"><input type="checkbox" name="it_tel_inq" id="it_tel_inq" value="1" {? it.it_tel_inq}checked{/}><i></i> 예</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품금액 대신 전화문의로 표시됩니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label for="it_use" class="label">판매가능</label>
+							<label class="checkbox"><input type="checkbox" name="it_use" id="it_use" value="1" {? _w=='' || it.it_use}checked{/}><i></i> 예</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label for="it_nocoupon" class="label">쿠폰적용안함</label>
+							<label class="checkbox"><input type="checkbox" name="it_nocoupon" id="it_nocoupon" value="1" {? it.it_nocoupon}checked{/}><i></i> 예</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 체크하면 쿠폰 생성 때 상품 검색 결과에 노출이 안됩니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<header class="border-top-1">
+				<strong><i class="fa fa-caret-right"></i> 상품 설명</strong>
+			</header>
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+		                <section>
+			                <label for="it_explan" class="label">상품설명</label>
+			                {_editor_explan_html}
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+		                <section>
+			                <label for="it_mobile_explan" class="label">모바일 상품설명</label>
+			                {_editor_mobile_explan_html}
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+		                <section>
+			                <label for="it_shop_memo" class="label">상점메모</label>
+							<label class="textarea textarea-resizable">
+								<textarea rows="3" name="it_shop_memo" id="it_shop_memo">{=stripslashes(it.it_shop_memo)}</textarea>
+							</label>
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_compact">
+		<div class="pg-anchor">
+			{# anc_sitfrm_compact}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 상품요약정보</strong>
+				<small class="color-dark font-size-11 margin-left-10 font-normal">
+					전자상거래 등에서의 상품 등의 정보제공에 관한 고시에 따라 총 35개 상품군에 대해 상품 특성등을 양식에 따라 입력할 수 있습니다.
+				</small>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-4">
+		                <section>
+			                <label for="it_shop_memo" class="label">상품군 선택</label>
+							<label class="select">
+								<select id="it_info_gubun" name="it_info_gubun">
+									<option value="">상품군을 선택하세요.</option>
+									<!--{@ _item_info}-->
+									<option value="{.key_}" {? .key_ == it.it_info_gubun || .key_ == _it_info_gubun}selected{/}>{.value_.title}</option>
+									<!--{/}-->
+								</select>
+								<i></i>
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품군을 선택하면 자동으로 항목이 변환됩니다.
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-8">
+		                <section>
+			                <label for="it_info_use" class="label">상품요약정보 사용</label>
+							<label class="checkbox">
+								<input type="checkbox" name="it_info_use" id="it_info_use" value="1" {? it.it_info_use == '1'}checked{/}><i></i> 예
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 체크를 해제하시면 상품상세 페이지에 노출되지 않습니다.
+							</div>
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+		                {# iteminfo}
+	                </div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_cost">
+		<div class="pg-anchor">
+			{# anc_sitfrm_cost}
+		</div>
+
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 가격 및 재고</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_price" class="label">판매가격</label>
+							<label class="input">
+								<i class="icon-append fa">원</i>
+								<input type="text" name="it_price" id="it_price" value="{it.it_price}">
+							</label>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_cust_price" class="label">시중가격</label>
+							<label class="input">
+								<i class="icon-append fa">원</i>
+								<input type="text" name="it_cust_price" id="it_cust_price" value="{it.it_cust_price}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 미입력시, 출력하지 않습니다.
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+						<section>
+							<label for="it_soldout" class="label">상품품절</label>
+							<label class="checkbox"><input type="checkbox" name="it_soldout" id="it_soldout" value="1" {? it.it_soldout == '1'}checked{/}><i></i> 예</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 잠시 판매를 중단하거나 재고가 없을 경우
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="it_stock_sms" class="label">재입고 SMS 알림</label>
+							<label class="checkbox"><input type="checkbox" name="it_stock_sms" id="it_stock_sms" value="1" {? it.it_stock_sms == '1'}checked{/}><i></i> 예</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품보기에서 고객이 재입고 SMS 알림을 신청할 수 있게 됩니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_point_type" class="label">포인트 유형</label>
+							<label class="select">
+								<select name="it_point_type" id="it_point_type">
+				                    <option value="0" {? it.it_point_type == '0'}selected{/}>설정금액</option>
+				                    <option value="1" {? it.it_point_type == '1'}selected{/}>판매가기준 설정비율</option>
+				                    <option value="2" {? it.it_point_type == '2'}selected{/}>구매가기준 설정비율</option>
+				                </select>
+				                <i></i>
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 포인트 유형을 설정할 수 있습니다. 비율로 설정했을 경우 설정 기준금액의 %비율로 포인트가 지급됩니다.
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_point" class="label">포인트</label>
+							<label class="input">
+								<i class="icon-append fa">점</i>
+								<input type="text" name="it_point" id="it_point" value="{it.it_point}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 주문완료후 환경설정에서 설정한 주문완료 설정일 후 회원에게 부여하는 포인트입니다.
+								또, 포인트부여를 '아니오'로 설정한 경우 신용카드, 계좌이체로 주문하는 회원께는 부여하지 않습니다.
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+						<section>
+							<label for="it_supply_point" class="label">추가옵션상품 포인트</label>
+							<label class="input">
+								<i class="icon-append fa">점</i>
+								<input type="text" name="it_supply_point" id="it_supply_point" value="{it.it_supply_point}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품의 추가옵션상품 구매에 일괄적으로 지급하는 포인트입니다.
+								0으로 설정하시면 구매포인트를 지급하지 않습니다. 주문완료후 환경설정에서 설정한 주문완료 설정일 후 회원에게 부여하는 포인트입니다.
+								또, 포인트부여를 '아니오'로 설정한 경우 신용카드, 계좌이체로 주문하는 회원께는 부여하지 않습니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="it_notax" class="label">상품과세 유형</label>
+							<label class="select">
+								<select name="it_notax" id="it_notax">
+				                    <option value="0" {? it.it_notax == '0'}selected{/}>과세</option>
+				                    <option value="1" {? it.it_notax == '1'}selected{/}>비과세</option>
+				                </select>
+				                <i></i>
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품의 과세유형(과세, 비과세)을 설정합니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_stock_qty" class="label">재고수량</label>
+							<label class="input">
+								<i class="icon-append fa">개</i>
+								<input type="text" name="it_stock_qty" id="it_stock_qty" value="{? _w == ''}9999{:}{it.it_stock_qty}{/}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 주문관리에서 상품별 상태 변경에 따라 자동으로 재고를 가감합니다.
+								재고는 규격/색상별이 아닌, 상품별로만 관리됩니다. 재고수량을 0으로 설정하시면 품절상품으로 표시됩니다.
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_noti_qty" class="label">재고 통보수량</label>
+							<label class="input">
+								<i class="icon-append fa">개</i>
+								<input type="text" name="it_noti_qty" id="it_noti_qty" value="{it.it_noti_qty}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품의 재고가 통보수량보다 작을 때 쇼핑몰관리 메인화면의 재고현황에 재고부족 상품으로 표시됩니다.
+								옵션이 있는 상품은 개별 옵션의 통보수량이 적용됩니다.
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+						<section>
+							<label for="it_buy_min_qty" class="label">최소구매수량</label>
+							<label class="input">
+								<i class="icon-append fa">개</i>
+								<input type="text" name="it_buy_min_qty" id="it_buy_min_qty" value="{it.it_buy_min_qty}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품 구매시 최소 구매 수량을 설정합니다.
+							</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="it_buy_max_qty" class="label">최대구매수량</label>
+							<label class="input">
+								<i class="icon-append fa">개</i>
+								<input type="text" name="it_buy_max_qty" id="it_buy_max_qty" value="{it.it_buy_max_qty}">
+							</label>
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품 구매시 최대 구매 수량을 설정합니다.
+							</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_itemoption">
+		<div class="pg-anchor">
+			{# anc_sitfrm_itemoption}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 상품선택옵션</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+						<div class="alert alert-warning margin-bottom-0">
+						    <p>옵션항목은 콤마(,) 로 구분하여 여러개를 입력할 수 있습니다. 옷을 예로 들어 [옵션1 : 사이즈 , 옵션1 항목 : XXL,XL,L,M,S], [옵션2 : 색상 , 옵션2 항목 : 빨,파,노]<br><strong>옵션명과 옵션항목에 따옴표(', ")는 입력할 수 없습니다.</strong></p>
+						</div>
+	                </div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="opt1_subject" class="label">옵션1</label>
+							<label class="input">
+								<input type="text" name="opt1_subject" id="opt1_subject" value="{_opt_subject[0]}">
+							</label>
+		                </section>
+	                </div>
+	                <div class="col col-9">
+		                <section>
+			                <label for="opt1" class="label">옵션1 항목</label>
+							<label class="input">
+								<input type="text" name="opt1" id="opt1" value="">
+							</label>
+		                </section>
+	                </div>
+				</div>
+				<div class="row">
+	                <div class="col col-3">
+						<section>
+							<label for="opt2_subject" class="label">옵션2</label>
+							<label class="input">
+								<input type="text" name="opt2_subject" id="opt2_subject" value="{_opt_subject[1]}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-9">
+						<section>
+							<label for="opt2" class="label">옵션2 항목</label>
+							<label class="input">
+								<input type="text" name="opt2" id="opt2" value="">
+							</label>
+						</section>
+					</div>
+				</div>
+				<div class="row">
+	                <div class="col col-3">
+						<section>
+							<label for="opt3_subject" class="label">옵션3</label>
+							<label class="input">
+								<input type="text" name="opt3_subject" id="opt3_subject" value="{_opt_subject[2]}">
+							</label>
+						</section>
+					</div>
+					<div class="col col-9">
+						<section>
+							<label for="opt3" class="label">옵션3 항목</label>
+							<label class="input">
+								<input type="text" name="opt3" id="opt3" value="">
+							</label>
+						</section>
+					</div>
+				</div>
+
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+		                <div class="text-center">
+			                <button type="button" id="option_table_create" class="btn-e btn-e-lg btn-e-green">옵션목록생성</button>
+		                </div>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset id="option_fieldset" {? !_po_run}class="blind"{/}>
+                <div id="sit_option_frm">
+                	{# itemoption}
+                </div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_itemsupply">
+		<div class="pg-anchor">
+			{# anc_sitfrm_itemsupply}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 상품추가옵션</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+						<div class="alert alert-warning margin-bottom-0">
+						    <p>옵션항목은 콤마(,) 로 구분하여 여러개를 입력할 수 있습니다. 스마트폰을 예로 들어 [추가1 : 추가구성상품 , 추가1 항목 : 액정보호필름,케이스,충전기]<br><strong>옵션명과 옵션항목에 따옴표(', ")는 입력할 수 없습니다.</strong></p>
+						</div>
+	                </div>
+				</div>
+			</fieldset>
+
+			<fieldset id="sit_supply_frm">
+				<!--{@ spl_subject}-->
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="spl_subject_{.index_+1}" class="label">추가{.index_+1}</label>
+							<label class="input">
+								<input type="text" name="spl_subject[]" id="spl_subject_{.index_+1}" value="{.value_}">
+							</label>
+		                </section>
+	                </div>
+	                <div class="col col-6">
+		                <section>
+			                <label for="spl_item_{.index_+1}" class="label">추가{.index_+1} 항목</label>
+							<label class="input">
+								<input type="text" name="spl[]" id="spl_item_{.index_+1}" value="">
+							</label>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+		                <section class="label-height">
+			                <button type="button" id="add_supply_row" class="btn-e btn-e-yellow">옵션추가</button>
+			                <!--{? .size_ > 1}-->
+				            <button type="button" id="del_supply_row" class="btn-e btn-e-dark">삭제</button>
+			                <!--{/}-->
+		                </section>
+					</div>
+				</div>
+				<!--{/}-->
+			</fieldset>
+
+			<fieldset>
+                <div class="text-center">
+	                <button type="button" id="supply_table_create" class="btn-e btn-e-lg btn-e-green">옵션목록생성</button>
+                </div>
+			</fieldset>
+
+			<fieldset id="addoption_fieldset" {? !_ps_run}class="blind"{/}>
+                <div id="sit_option_addfrm">
+                	{# itemsupply}
+                </div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_sendcost">
+		<div class="pg-anchor">
+			{# anc_sitfrm_sendcost}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 배송비</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+						<div class="alert alert-info margin-bottom-0">
+						    <p>쇼핑몰설정 &gt; 배송비유형 설정보다 <strong>개별상품 배송비설정이 우선</strong> 적용됩니다.</p>
+						</div>
+	                </div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_sc_type" class="label">배송비 유형</label>
+			                <label class="select">
+			                    <select name="it_sc_type" id="it_sc_type">
+			                        <option value="0" {? it.it_sc_type == '0'}selected{/}>쇼핑몰 기본설정 사용</option>
+			                        <option value="1" {? it.it_sc_type == '1'}selected{/}>무료배송</option>
+			                        <option value="2" {? it.it_sc_type == '2'}selected{/}>조건부 무료배송</option>
+			                        <option value="3" {? it.it_sc_type == '3'}selected{/}>유료배송</option>
+			                        <option value="4" {? it.it_sc_type == '4'}selected{/}>수량별 부과</option>
+			                    </select>
+			                    <i></i>
+		                    </label>
+		                </section>
+	                </div>
+	                <div class="col col-3" id="sc_con_method">
+		                <section>
+			                <label for="it_sc_method" class="label">배송비 결제</label>
+			                <label class="select">
+			                    <select name="it_sc_method" id="it_sc_method">
+			                        <option value="0" {? it.it_sc_method == '0'}selected{/}>선불</option>
+			                        <option value="1" {? it.it_sc_method == '1'}selected{/}>착불</option>
+			                        <option value="2" {? it.it_sc_method == '2'}selected{/}>사용자선택</option>
+			                    </select>
+			                    <i></i>
+		                    </label>
+		                </section>
+	                </div>
+	                <div class="col col-3" id="sc_con_basic">
+		                <section>
+			                <label for="it_sc_price" class="label">기본배송비</label>
+			                <label class="input">
+			                	<i class="icon-append fa">원</i>
+			                    <input type="text" name="it_sc_price" value="{it.it_sc_price}" id="it_sc_price">
+		                    </label>
+		                    <div class="note margin-bottom-10">
+								<strong>Note:</strong> 무료배송 이외의 설정에 적용되는 배송비 금액입니다.
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-3" id="sc_con_minimum">
+		                <section>
+			                <label for="it_sc_minimum" class="label">배송비 상세조건</label>
+			                <label class="input">
+			                	<i class="icon-append fa">원</i>
+			                    <input type="text" name="it_sc_minimum" value="{it.it_sc_minimum}" id="it_sc_minimum">
+		                    </label>
+		                    <div class="note margin-bottom-10">
+								<strong>Note:</strong> 주문금액이 {=number_format(it.it_sc_minimum)}원 이상 무료 배송
+							</div>
+		                </section>
+	                </div>
+	                <div class="col col-3" id="sc_con_qty">
+		                <section>
+			                <label for="it_sc_qty" class="label">배송비 상세조건</label>
+			                <label class="input">
+			                    <input type="text" name="it_sc_qty" value="{it.it_sc_qty}" id="it_sc_qty">
+		                    </label>
+		                    <div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품의 주문 수량에 따라 배송비가 부과됩니다.
+								예를 들어 기본배송비가 3,000원 수량을 3으로 설정했을 경우 상품의 주문수량이 5개이면 6,000원 배송비가 부과됩니다.
+							</div>
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_img">
+		<div class="pg-anchor">
+			{# anc_sitfrm_img}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 이미지</strong>
+			</header>
+
+			<!--{@ gdimage}-->
+			<fieldset>
+				<div class="row">
+	                <div class="col col-2">
+		                <!--{? .thumb}-->
+		                <div class="goods-thumb">
+		                	{.thumb}
+		                </div>
+		                <!--{:}-->
+		                <div class="no-goods-thumb"></div>
+		                <!--{/}-->
+	                </div>
+					<div class="col col-10">
+						<section>
+							<label for="it_img{.key_}" class="label">이미지{.key_}</label>
+							<label class="input input-file">
+								<div class="button"><input type="file" name="it_img{.key_}" id="it_img{.key_}" onchange="this.parentNode.nextSibling.value = this.value">이미지 업로드</div><input type="text" readonly="">
+							</label>
+						</section>
+						<!--{? .thumb}-->
+						<label class="checkbox"><input type="checkbox" name="it_img{.key_}_del" id="it_img{.key_}_del" value="1"><i></i>파일삭제 [{.img_name}]</label>
+						<a class="goods-thumb-btn btn-e btn-e-xs btn-e-default" data-gall="goods_image_{.key_}" href="{C.G5_DATA_URL}/item/{.img_name}" title="{.img_name}">확대보기</a>
+						<!--{/}-->
+					</div>
+				</div>
+			</fieldset>
+			<!--{/}-->
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_relation">
+		<div class="pg-anchor">
+			{# anc_sitfrm_relation}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 관련상품</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+						<div class="alert alert-warning margin-bottom-0">
+						    <p>등록된 전체상품 목록에서 상품분류를 선택하면 해당 상품 리스트가 연이어 나타납니다.<br>상품리스트에서 관련 상품으로 추가하시면 선택된 관련상품 목록에 <strong>함께</strong> 추가됩니다.<br>예를 들어, A 상품에 B 상품을 관련상품으로 등록하면 B 상품에도 A 상품이 관련상품으로 자동 추가되며, <strong>확인 버튼을 누르셔야 정상 반영됩니다.</strong></p>
+						</div>
+	                </div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-6">
+		                <section>
+			                <label class="label">등록된 전체상품 목록</label>
+							<div class="inline-mix margin-top-5 margin-bottom-5">
+						        <label class="select display-inline-block width-40">
+									<select id="sch_relation">
+									    <option value=''>분류별 상품</option>
+									    <!--{@ cate}-->
+									    <option value="{.ca_id}">{.nbsp}{.ca_name}</option>
+									    <!--{/}-->
+									</select><i></i>
+						        </label>
+						        <label class="input input-button display-inline-block width-50">
+						            <input type="text" name="sch_name" id="sch_name"><div class="button"><a href="javascript:;" id="btn_search_item" onclick="return false;"><i class="fa fa-search"></i> 검색</a></div>
+						        </label>
+							</div>
+
+			                <div id="relation">
+			                	<p class="relation-sbox">상품의 분류를 선택하시거나 상품명을 입력하신 후 검색하여 주십시오.</p>
+			                </div>
+		                </section>
+	                </div>
+
+	                <div class="col col-6">
+		                <section>
+				            <label class="label">선택된 관련상품 목록</label>
+			                <div id="reg_relation" class="relation-sbox-margin-top">
+				                <!--{? rellist.size_ > 0}-->
+				                <ul>
+					                <!--{@ rellist}-->
+				                    <li>
+				                        <input type="hidden" name="re_it_id[]" value="{.it_id}">
+				                        <div class="list_item">{.image} {.it_name}</div>
+				                        <div class="list_item_btn"><button type="button" class="del_item btn-e btn-e-xs btn-e-red">삭제</button></div>
+				                    </li>
+					                <!--{/}-->
+				                </ul>
+				                <!--{:}-->
+			                	<p class="relation-sbox">선택된 상품이 없습니다.</p>
+			                	<!--{/}-->
+			                </div>
+		                </section>
+		                <input type="hidden" name="it_list" value="{_str}">
+	                </div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_event">
+		<div class="pg-anchor">
+			{# anc_sitfrm_event}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 관련이벤트</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-6">
+		                <section>
+			                <label class="label">등록된 전체이벤트 목록</label>
+			                <div id="event_list">
+			                    <div class="event-box">
+				                    <!--{? evinfo.size_ > 0}-->
+				                    <ul>
+				                    	<!--{@ evinfo}-->
+					                    <li>
+					                        <input type="hidden" name="ev_id[]" value="{.ev_id}">
+					                        <div class="list_item">{=get_text(.ev_subject)}</div>
+					                        <div class="list_item_btn"><button type="button" class="add_event btn-e btn-e-xs btn-e-red">추가</button></div>
+					                    </li>
+										<!--{/}-->
+				                    </ul>
+				                    <!--{:}-->
+				                    등록된 이벤트가 없습니다.
+				                    <!--{/}-->
+				                </div>
+		                    </div>
+		                </section>
+	                </div>
+
+	                <div class="col col-6">
+		                <section>
+			                <label class="label">선택된 관련이벤트 목록</label>
+			                <div>
+			                    <div class="event-box" id="reg_event_list">
+				                    <!--{? reg_evinfo.size_ > 0}-->
+				                    <ul>
+				                    	<!--{@ reg_evinfo}-->
+					                    <li>
+					                        <input type="hidden" name="ev_id[]" value="{.ev_id}">
+					                        <div class="list_item">{=get_text(.ev_subject)}</div>
+					                        <div class="list_item_btn"><button type="button" class="del_event btn-e btn-e-xs btn-e-red">삭제</button></div>
+					                    </li>
+										<!--{/}-->
+				                    </ul>
+				                    <!--{:}-->
+				                    선택된 이벤트가 없습니다.
+				                    <!--{/}-->
+				                </div>
+				                <input type="hidden" name="ev_list" value="{reg_ev_ids}">
+		                    </div>
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_optional">
+		<div class="pg-anchor">
+			{# anc_sitfrm_optional}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 상세설명설정</strong>
+			</header>
+
+			<fieldset>
+				<div class="row">
+	                <div class="col col-12">
+		                <section>
+			                <label for="it_head_html" class="label">상품상단내용</label>
+							{_editor_head_html}
+		                    <div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품상세설명 페이지 상단에 출력하는 HTML 내용입니다.
+							</div>
+		                </section>
+	                </div>
+				</div>
+				<div class="row">
+	                <div class="col col-12">
+		                <section>
+			                <label for="it_tail_html" class="label">상품하단내용</label>
+							{_editor_tail_html}
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 상품상세설명 페이지 하단에 출력하는 HTML 내용입니다.
+							</div>
+		                </section>
+	                </div>
+				</div>
+				<div class="row">
+	                <div class="col col-12">
+		                <section>
+			                <label for="it_mobile_head_html" class="label">모바일 상품상단내용</label>
+							{_editor_mobile_head_html}
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 모바일 상품상세설명 페이지 상단에 출력하는 HTML 내용입니다.
+							</div>
+		                </section>
+	                </div>
+				</div>
+				<div class="row">
+	                <div class="col col-12">
+		                <section>
+			                <label for="it_mobile_tail_html" class="label">모바일 상품하단내용</label>
+							{_editor_mobile_tail_html}
+							<div class="note margin-bottom-10">
+								<strong>Note:</strong> 모바일 상품상세설명 페이지 하단에 출력하는 HTML 내용입니다.
+							</div>
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<div id="anc_sitfrm_extra">
+		<div class="pg-anchor">
+			{# anc_sitfrm_extra}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 여분필드 설정</strong>
+			</header>
+
+			<fieldset>
+				<!--{@ it_extra}-->
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_{.key_}_subj" class="label">여분필드 {.key_} 제목</label>
+							<label class="input">
+								<input type="text" name="it_{.key_}_subj" id="it_{.key_}_subj" value="{.it_x_subj}">
+							</label>
+		                </section>
+	                </div>
+	                <div class="col col-9">
+		                <section>
+			                <label for="it_{.key_}" class="label">여분필드 {.key_} 값</label>
+							<label class="input">
+								<input type="text" name="it_{.key_}" id="it_{.key_}" value="{.it_x}">
+							</label>
+		                </section>
+	                </div>
+				</div>
+				<!--{/}-->
+			</fieldset>
+		</div>
+
+		<!--{? _w == 'u'}-->
+		<div class="adm-form-wrap margin-bottom-30">
+			<fieldset>
+				<div class="row">
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_time" class="label">입력일시</label>
+							<label class="input">
+								<input type="text" name="it_time" id="it_time" value="{it.it_time}" readonly disabled>
+							</label>
+		                </section>
+	                </div>
+	                <div class="col col-3">
+		                <section>
+			                <label for="it_update_time" class="label">수정일시</label>
+							<label class="input">
+								<input type="text" name="it_update_time" id="it_update_time" value="{it.it_update_time}" readonly disabled>
+							</label>
+		                </section>
+	                </div>
+				</div>
+			</fieldset>
+		</div>
+		<!--{/}-->
+	</div>
+
+	{frm_submit}
+
+	</form>
+</div>
+
+<script src="../../../plugins/eyoom-form/plugins/jquery-maskedinput/jquery.maskedinput.min.js"></script>
+<script src="../../../plugins/eyoom-form/plugins/jquery-chained/jquery.chained.remote.min.js"></script>
+<script src="../../../plugins/magnific-popup/magnific-popup.min.js"></script>
+<script>
+$('.pg-anchor a').on('click', function(e) {
+	e.stopPropagation();
+	var scrollTopSpace;
+	if (window.innerWidth >= 1100) {
+		scrollTopSpace = 70;
+	} else {
+		scrollTopSpace = 70;
+	}
+	var tabLink = $(this).attr('href');
+	var offset = $(tabLink).offset().top;
+	$('html, body').animate({scrollTop : offset - scrollTopSpace}, 500);
+	return false;
+});
+
+$(function() {
+	$('.goods-thumb-btn').magnificPopup({
+		type: 'image',
+		closeOnContentClick: true,
+		mainClass: 'mfp-img-mobile',
+		image: {
+			verticalFit: true
+		}
+	});
+
+	// 상품이미지 반응형 처리
+	$(".goods-thumb img").addClass('img-responsive');
+
+    //Corporate
+    $("#masked_corporate").mask('999-99-99999', {placeholder:'_'});
+
+	$("#cate_b").remoteChained({
+	    parents : "#cate_a",
+	    url : "/admin/inc/category.json.php"
+	});
+
+	$("#cate_c").remoteChained({
+	    parents : "#cate_b",
+	    url : "/admin/inc/category.json.php"
+	});
+
+	$("#cate_d").remoteChained({
+	    parents : "#cate_c",
+	    url : "/admin/inc/category.json.php"
+	});
+
+	$(".set-category").click(function(){
+		var ca_value = '',
+			ca_path = '',
+			cate_tg	= $("#cate_tg option:selected").val(),
+			cate_a	= $("#cate_a option:selected").val(),
+			cate_b	= $("#cate_b option:selected").val(),
+			cate_c	= $("#cate_c option:selected").val(),
+			cate_d	= $("#cate_d option:selected").val(),
+			name_a	= $("#cate_a option:selected").text(),
+			name_b	= $("#cate_b option:selected").text(),
+			name_c	= $("#cate_c option:selected").text(),
+			name_d	= $("#cate_d option:selected").text();
+		if (!cate_tg) {
+			alert("적용할 분류 대상을 선택해 주세요.");
+			$("#cate_tg").focus();
+			return;
+		} else {
+
+			if (cate_a!='0' && cate_b!='0' && cate_c!='0' && cate_d!='0') {
+				ca_value = cate_d;
+				ca_path = name_a + ' > ' + name_b + ' > ' + name_c + '> ' + name_d;
+			} else if (cate_a!='0' && cate_b!='0' && cate_c!='0') {
+				ca_value = cate_c;
+				ca_path = name_a + ' > ' + name_b + '> ' + name_c;
+			} else if (cate_a!='0' && cate_b!='0') {
+				ca_value = cate_b;
+				ca_path = name_a + ' > ' + name_b;
+			} else if (cate_a!='0') {
+				ca_value = cate_a;
+				ca_path = name_a;
+			}
+			$("#"+cate_tg).val(ca_value);
+			$("#"+cate_tg+"_path").val(ca_path);
+			return;
+		}
+	});
+});
+
+/**
+ * 상품 선택 옵션
+ */
+$(function() {
+    <!--{? it.it_id && _po_run}-->
+    //옵션항목설정
+    var arr_opt1 = new Array();
+    var arr_opt2 = new Array();
+    var arr_opt3 = new Array();
+    var opt1 = opt2 = opt3 = '';
+    var opt_val;
+
+    $(".opt-cell").each(function() {
+        opt_val = $(this).text().split(" > ");
+        opt1 = opt_val[0];
+        opt2 = opt_val[1];
+        opt3 = opt_val[2];
+
+        if(opt1 && $.inArray(opt1, arr_opt1) == -1)
+            arr_opt1.push(opt1.trim());
+
+        if(opt2 && $.inArray(opt2, arr_opt2) == -1)
+            arr_opt2.push(opt2.trim());
+
+        if(opt3 && $.inArray(opt3, arr_opt3) == -1)
+            arr_opt3.push(opt3.trim());
+    });
+
+
+    $("input[name=opt1]").val(arr_opt1.join());
+    $("input[name=opt2]").val(arr_opt2.join());
+    $("input[name=opt3]").val(arr_opt3.join());
+    <!--{/}-->
+    // 옵션목록생성
+    $("#option_table_create").click(function() {
+        var it_id = $.trim($("input[name=it_id]").val());
+        var opt1_subject = $.trim($("#opt1_subject").val());
+        var opt2_subject = $.trim($("#opt2_subject").val());
+        var opt3_subject = $.trim($("#opt3_subject").val());
+        var opt1 = $.trim($("#opt1").val());
+        var opt2 = $.trim($("#opt2").val());
+        var opt3 = $.trim($("#opt3").val());
+        var $option_table = $("#sit_option_frm");
+
+        if(!opt1_subject || !opt1) {
+            alert("옵션명과 옵션항목을 입력해 주십시오.");
+            return false;
+        }
+
+        $.post(
+            "{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemoption&smode=1",
+            { it_id: it_id, w: "{_w}", opt1_subject: opt1_subject, opt2_subject: opt2_subject, opt3_subject: opt3_subject, opt1: opt1, opt2: opt2, opt3: opt3 },
+            function(data) {
+                if(data) {
+                    $("#option_fieldset").removeClass('blind');
+                    $option_table.empty().html(data);
+                } else {
+                    $("#option_fieldset").addClass('blind');
+                    $option_table.empty();
+                }
+            }
+        );
+    });
+
+    // 모두선택
+    $(document).on("click", "input[name=opt_chk_all]", function() {
+        if($(this).is(":checked")) {
+            $("input[name='opt_chk[]']").attr("checked", true);
+        } else {
+            $("input[name='opt_chk[]']").attr("checked", false);
+        }
+    });
+
+    // 선택삭제
+    $(document).on("click", "#sel_option_delete", function() {
+        var $el = $("input[name='opt_chk[]']:checked");
+        if($el.size() < 1) {
+            alert("삭제하려는 옵션을 하나 이상 선택해 주십시오.");
+            return false;
+        }
+
+        $el.closest("tr").remove();
+    });
+
+    // 일괄적용
+    $(document).on("click", "#opt_value_apply", function() {
+        if($(".opt_com_chk:checked").size() < 1) {
+            alert("일괄 수정할 항목을 하나이상 체크해 주십시오.");
+            return false;
+        }
+
+        var opt_price = $.trim($("#opt_com_price").val());
+        var opt_stock = $.trim($("#opt_com_stock").val());
+        var opt_noti = $.trim($("#opt_com_noti").val());
+        var opt_use = $("#opt_com_use").val();
+        var $el = $("input[name='opt_chk[]']:checked");
+
+        // 체크된 옵션이 있으면 체크된 것만 적용
+        if($el.size() > 0) {
+            var $row;
+            $el.each(function() {
+                $row = $(this).closest(".row");
+
+                if($("#opt_com_price_chk").is(":checked"))
+                    $row.find("input[name='opt_price[]']").val(opt_price);
+
+                if($("#opt_com_stock_chk").is(":checked"))
+                    $row.find("input[name='opt_stock_qty[]']").val(opt_stock);
+
+                if($("#opt_com_noti_chk").is(":checked"))
+                    $row.find("input[name='opt_noti_qty[]']").val(opt_noti);
+
+                if($("#opt_com_use_chk").is(":checked"))
+                    $row.find("select[name='opt_use[]']").val(opt_use);
+            });
+        } else {
+            if($("#opt_com_price_chk").is(":checked"))
+                $("input[name='opt_price[]']").val(opt_price);
+
+            if($("#opt_com_stock_chk").is(":checked"))
+                $("input[name='opt_stock_qty[]']").val(opt_stock);
+
+            if($("#opt_com_noti_chk").is(":checked"))
+                $("input[name='opt_noti_qty[]']").val(opt_noti);
+
+            if($("#opt_com_use_chk").is(":checked"))
+                $("select[name='opt_use[]']").val(opt_use);
+        }
+    });
+});
+
+/**
+ * 상품 추가 옵션
+ */
+$(function() {
+    <!--{? it.it_id && _ps_run}-->
+    // 추가옵션의 항목 설정
+    var arr_subj = new Array();
+    var subj, spl;
+
+    $("input[name='spl_subject[]']").each(function() {
+        subj = $.trim($(this).val());
+        if(subj && $.inArray(subj, arr_subj) == -1)
+            arr_subj.push(subj);
+    });
+
+    for(i=0; i<arr_subj.length; i++) {
+        var arr_spl = new Array();
+        $(".spl-subject-cell").each(function(index) {
+            subj = $(this).text().trim();
+            if(subj == arr_subj[i]) {
+                spl = $(".spl-cell:eq("+index+")").text().trim();
+                arr_spl.push(spl);
+            }
+        });
+
+        $("input[name='spl[]']:eq("+i+")").val(arr_spl.join());
+    }
+    <!--{/}-->
+
+    // 입력필드추가
+    $("#add_supply_row").click(function() {
+        var $el = $("#sit_supply_frm .row:last");
+
+        var fld = "<div class=\"row\">\n";
+        fld += "<div class=\"col col-3\">\n";
+        fld += "<section><label for=\"\" class=\"label\">추가</label>\n";
+        fld += "<label class=\"input\"><input type=\"text\" name=\"spl_subject[]\" value=\"\">\n";
+        fld += "</label></section></div>\n";
+        fld += "<div class=\"col col-6\">\n";
+        fld += "<section><label for=\"\" class=\"label\">추가 항목</label>\n";
+        fld += "<label class=\"input\"><input type=\"text\" name=\"spl[]\" value=\"\">\n";
+        fld += "</label></section></div>\n";
+        fld += "<div class=\"col col-3\">\n";
+        fld += "<section class=\"label-height\">\n";
+        fld += "<button type=\"button\" id=\"del_supply_row\" class=\"btn-e btn-e-dark\">삭제</button>\n";
+        fld += "</section></div></div>";
+
+        $el.after(fld);
+
+        supply_sequence();
+    });
+
+    // 입력필드삭제
+    $(document).on("click", "#del_supply_row", function() {
+        $(this).closest(".row").remove();
+
+        supply_sequence();
+    });
+
+    // 옵션목록생성
+    $("#supply_table_create").click(function() {
+        var it_id = $.trim($("input[name=it_id]").val());
+        var subject = new Array();
+        var supply = new Array();
+        var subj, spl;
+        var count = 0;
+        var $el_subj = $("input[name='spl_subject[]']");
+        var $el_spl = $("input[name='spl[]']");
+        var $supply_table = $("#sit_option_addfrm");
+
+        $el_subj.each(function(index) {
+            subj = $.trim($(this).val());
+            spl = $.trim($el_spl.eq(index).val());
+
+            if(subj && spl) {
+                subject.push(subj);
+                supply.push(spl);
+                count++;
+            }
+        });
+
+        if(!count) {
+            alert("추가옵션명과 추가옵션항목을 입력해 주십시오.");
+            return false;
+        }
+
+        $.post(
+            "{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemsupply&smode=1",
+            { it_id: it_id, w: "{_w}", 'subject[]': subject, 'supply[]': supply },
+            function(data) {
+                if(data) {
+                    $("#addoption_fieldset").removeClass('blind');
+                    $supply_table.empty().html(data);
+                } else {
+                    $("#addoption_fieldset").addClass('blind');
+                    $supply_table.empty();
+                }
+            }
+        );
+    });
+
+    // 모두선택
+    $(document).on("click", "input[name=spl_chk_all]", function() {
+        if($(this).is(":checked")) {
+            $("input[name='spl_chk[]']").attr("checked", true);
+        } else {
+            $("input[name='spl_chk[]']").attr("checked", false);
+        }
+    });
+
+    // 선택삭제
+    $(document).on("click", "#sel_supply_delete", function() {
+        var $el = $("input[name='spl_chk[]']:checked");
+        if($el.size() < 1) {
+            alert("삭제하려는 옵션을 하나 이상 선택해 주십시오.");
+            return false;
+        }
+
+        $el.closest("tr").remove();
+    });
+
+    // 일괄적용
+    $(document).on("click", "#spl_value_apply", function() {
+        if($(".spl_com_chk:checked").size() < 1) {
+            alert("일괄 수정할 항목을 하나이상 체크해 주십시오.");
+            return false;
+        }
+
+        var spl_price = $.trim($("#spl_com_price").val());
+        var spl_stock = $.trim($("#spl_com_stock").val());
+        var spl_noti = $.trim($("#spl_com_noti").val());
+        var spl_use = $("#spl_com_use").val();
+        var $el = $("input[name='spl_chk[]']:checked");
+
+        // 체크된 옵션이 있으면 체크된 것만 적용
+        if($el.size() > 0) {
+            var $tr;
+            $el.each(function() {
+                $tr = $(this).closest(".row");
+
+                if($("#spl_com_price_chk").is(":checked"))
+                    $tr.find("input[name='spl_price[]']").val(spl_price);
+
+                if($("#spl_com_stock_chk").is(":checked"))
+                    $tr.find("input[name='spl_stock_qty[]']").val(spl_stock);
+
+                if($("#spl_com_noti_chk").is(":checked"))
+                    $tr.find("input[name='spl_noti_qty[]']").val(spl_noti);
+
+                if($("#spl_com_use_chk").is(":checked"))
+                    $tr.find("select[name='spl_use[]']").val(spl_use);
+            });
+        } else {
+            if($("#spl_com_price_chk").is(":checked"))
+                $("input[name='spl_price[]']").val(spl_price);
+
+            if($("#spl_com_stock_chk").is(":checked"))
+                $("input[name='spl_stock_qty[]']").val(spl_stock);
+
+            if($("#spl_com_noti_chk").is(":checked"))
+                $("input[name='spl_noti_qty[]']").val(spl_noti);
+
+            if($("#spl_com_use_chk").is(":checked"))
+                $("select[name='spl_use[]']").val(spl_use);
+        }
+    });
+});
+
+function supply_sequence() {
+    var $tr = $("#sit_supply_frm .row");
+    var seq;
+
+    $tr.each(function(index) {
+        seq = index + 1;
+        $(this).find(".col-3 .label").attr("for", "spl_subject_"+seq).text("추가"+seq);
+        $(this).find(".col-3 .input").attr("id", "spl_subject_"+seq);
+        $(this).find(".col-5 .label").attr("for", "spl_item_"+seq);
+        $(this).find(".col-5 .label").text("추가"+seq+" 항목");
+        $(this).find(".col-5 input").attr("id", "spl_item_"+seq);
+    });
+}
+
+/**
+ * 상품정보요약 - 상품정보 제공고시의 따른
+ */
+$(function() {
+    $(document).on("change", "#it_info_gubun", function() {
+        var gubun = $(this).val();
+        $.post(
+            "{C.EYOOM_ADMIN_CORE_URL}/shop/iteminfo.php",
+            { it_id: "{it.it_id}", gubun: gubun },
+            function(data) {
+                $("#sit_compact_fields").empty().html(data);
+            }
+        );
+    });
+});
+
+/**
+ * 배송비
+ */
+$(function() {
+    <!--{? it.it_sc_type == '1'}-->
+    $("#sc_con_method").hide();
+    $("#sc_con_basic").hide();
+    $("#sc_con_minimum").hide();
+    $("#sc_con_qty").hide();
+    <!--{: it.it_sc_type == '2'}-->
+    $("#sc_con_method").show();
+    $("#sc_con_basic").show();
+    $("#sc_con_minimum").show();
+    $("#sc_con_qty").hide();
+    <!--{: it.it_sc_type == '3'}-->
+    $("#sc_con_method").show();
+    $("#sc_con_basic").show();
+    $("#sc_con_minimum").hide();
+    $("#sc_con_qty").hide();
+    <!--{: it.it_sc_type == '4'}-->
+    $("#sc_con_method").show();
+    $("#sc_con_basic").show();
+    $("#sc_con_minimum").hide();
+    $("#sc_con_qty").show();
+    <!--{:}-->
+    $("#sc_con_method").hide();
+    $("#sc_con_basic").hide();
+    $("#sc_con_minimum").hide();
+    $("#sc_con_qty").hide();
+    <!--{/}-->
+    $("#it_sc_type").change(function() {
+        var type = $(this).val();
+
+        switch(type) {
+            case "1":
+				$("#sc_con_method").hide();
+		        $("#sc_con_basic").hide();
+		        $("#sc_con_minimum").hide();
+		        $("#sc_con_qty").hide();
+                break;
+            case "2":
+		        $("#sc_con_method").show();
+		        $("#sc_con_basic").show();
+		        $("#sc_con_minimum").show();
+		        $("#sc_con_qty").hide();
+                break;
+            case "3":
+		        $("#sc_con_method").show();
+		        $("#sc_con_basic").show();
+		        $("#sc_con_minimum").hide();
+		        $("#sc_con_qty").hide();
+                break;
+            case "4":
+		        $("#sc_con_method").show();
+		        $("#sc_con_basic").show();
+		        $("#sc_con_minimum").hide();
+		        $("#sc_con_qty").show();
+                break;
+            default:
+		        $("#sc_con_method").hide();
+		        $("#sc_con_basic").hide();
+		        $("#sc_con_minimum").hide();
+		        $("#sc_con_qty").hide();
+                break;
+        }
+    });
+});
+
+
+$(function() {
+	// 관련상품
+    $("#btn_search_item").click(function() {
+        var ca_id = $("#sch_relation").val();
+        var it_name = $.trim($("#sch_name").val());
+        var $relation = $("#relation");
+
+        if(ca_id == "" && it_name == "") {
+            $relation.html("<p class='relation-sbox'>상품의 분류를 선택하시거나 상품명을 입력하신 후 검색하여 주십시오.</p>");
+            return false;
+        }
+
+        $("#relation").load(
+            "{C.EYOOM_ADMIN_URL}/?dir=shop&pid=itemformrelation&smode=1",
+            { it_id: "{_it_id}", ca_id: ca_id, it_name: it_name }
+        );
+    });
+
+    $(document).on("click", "#relation .add_item", function() {
+        // 이미 등록된 상품인지 체크
+        var $li = $(this).closest("li");
+        var it_id = $li.find("input:hidden").val();
+        var it_id2;
+        var dup = false;
+        $("#reg_relation input[name='re_it_id[]']").each(function() {
+            it_id2 = $(this).val();
+            if(it_id == it_id2) {
+                dup = true;
+                return false;
+            }
+        });
+
+        if(dup) {
+            alert("이미 선택된 상품입니다.");
+            return false;
+        }
+
+        var cont = "<li>"+$li.html().replace("add_item", "del_item").replace("추가", "삭제")+"</li>";
+        var count = $("#reg_relation li").size();
+
+        if(count > 0) {
+            $("#reg_relation li:last").after(cont);
+        } else {
+            $("#reg_relation").html("<ul>"+cont+"</ul>");
+        }
+
+        $li.remove();
+    });
+
+    $(document).on("click", "#reg_relation .del_item", function() {
+        if(!confirm("상품을 삭제하시겠습니까?"))
+            return false;
+
+        $(this).closest("li").remove();
+
+        var count = $("#reg_relation li").size();
+        if(count < 1)
+            $("#reg_relation").html("<p class='relation-sbox'>선택된 상품이 없습니다.</p>");
+    });
+
+    // 이벤트
+    $(document).on("click", "#event_list .add_event", function() {
+        // 이미 등록된 이벤트인지 체크
+        var $li = $(this).closest("li");
+        var ev_id = $li.find("input:hidden").val();
+        var ev_id2;
+        var dup = false;
+        $("#reg_event_list input[name='ev_id[]']").each(function() {
+            ev_id2 = $(this).val();
+            if(ev_id == ev_id2) {
+                dup = true;
+                return false;
+            }
+        });
+
+        if(dup) {
+            alert("이미 선택된 이벤트입니다.");
+            return false;
+        }
+
+        var cont = "<li>"+$li.html().replace("add_event", "del_event").replace("추가", "삭제")+"</li>";
+        var count = $("#reg_event_list li").size();
+
+        if(count > 0) {
+            $("#reg_event_list li:last").after(cont);
+        } else {
+            $("#reg_event_list").html("<ul>"+cont+"</ul>");
+        }
+    });
+
+    $(document).on("click", "#reg_event_list .del_event", function() {
+        if(!confirm("상품을 삭제하시겠습니까?"))
+            return false;
+
+        $(this).closest("li").remove();
+
+        var count = $("#reg_event_list li").size();
+        if(count < 1)
+            $("#reg_event_list").html("선택된 이벤트가 없습니다.");
+    });
+});
+
+function fitemformcheck(f)
+{
+    if (!f.ca_id.value) {
+        alert("기본분류를 선택하십시오.");
+        f.ca_id.focus();
+        return false;
+    }
+
+    if (f.w.value == "") {
+        var error = "";
+        $.ajax({
+            url: "./ajax.it_id.php",
+            type: "POST",
+            data: {
+                "it_id": f.it_id.value
+            },
+            dataType: "json",
+            async: false,
+            cache: false,
+            success: function(data, textStatus) {
+                error = data.error;
+            }
+        });
+
+        if (error) {
+            alert(error);
+            return false;
+        }
+    }
+
+    if(f.it_point_type.value == "1" || f.it_point_type.value == "2") {
+        var point = parseInt(f.it_point.value);
+        if(point > 99) {
+            alert("포인트 비율을 0과 99 사이의 값으로 입력해 주십시오.");
+            return false;
+        }
+    }
+
+    if(parseInt(f.it_sc_type.value) > 1) {
+        if(!f.it_sc_price.value || f.it_sc_price.value == "0") {
+            alert("기본배송비를 입력해 주십시오.");
+            return false;
+        }
+
+        if(f.it_sc_type.value == "2" && (!f.it_sc_minimum.value || f.it_sc_minimum.value == "0")) {
+            alert("배송비 상세조건의 주문금액을 입력해 주십시오.");
+            return false;
+        }
+
+        if(f.it_sc_type.value == "4" && (!f.it_sc_qty.value || f.it_sc_qty.value == "0")) {
+            alert("배송비 상세조건의 주문수량을 입력해 주십시오.");
+            return false;
+        }
+    }
+
+    // 관련상품처리
+    var item = new Array();
+    var re_item = it_id = "";
+
+    $("#reg_relation input[name='re_it_id[]']").each(function() {
+        it_id = $(this).val();
+        if(it_id == "")
+            return true;
+
+        item.push(it_id);
+    });
+
+    if(item.length > 0)
+        re_item = item.join();
+
+    $("input[name=it_list]").val(re_item);
+
+    // 이벤트처리
+    var evnt = new Array();
+    var ev = ev_id = "";
+
+    $("#reg_event_list input[name='ev_id[]']").each(function() {
+        ev_id = $(this).val();
+        if(ev_id == "")
+            return true;
+
+        evnt.push(ev_id);
+    });
+
+    if(evnt.length > 0)
+        ev = evnt.join();
+
+    $("input[name=ev_list]").val(ev);
+
+    <!--{=get_editor_js('it_explan')}-->
+    <!--{=get_editor_js('it_mobile_explan')}-->
+    <!--{=get_editor_js('it_head_html')}-->
+    <!--{=get_editor_js('it_tail_html')}-->
+    <!--{=get_editor_js('it_mobile_head_html')}-->
+    <!--{=get_editor_js('it_mobile_tail_html')}-->
+
+    return true;
+}
+
+function categorychange(f)
+{
+    var idx = f.ca_id.value;
+
+    if (f.w.value == "" && idx)
+    {
+        f.it_use.checked = ca_use[idx] ? true : false;
+        f.it_stock_qty.value = ca_stock_qty[idx];
+        f.it_sell_email.value = ca_sell_email[idx];
+    }
+}
+
+categorychange(document.fitemform);
+</script>

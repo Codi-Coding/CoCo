@@ -1,0 +1,248 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<style>
+.admin-shop-personalpayform .inline-group > span {display:inline-block}
+.admin-shop-personalpayform .border-top-1 {border-top:1px solid #d5d5d5}
+.scf_cardtest_hide {display:none}
+.scf_cardtest_tip_adm_hide {display:none}
+@media (min-width: 1100px) {
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:14px;font-weight:bold;padding:8px 17px}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {z-index:1;border:1px solid #000;border-top:1px solid #DE2600;color:#DE2600}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {position:relative;display:block;height:1px;background:#000;margin-bottom:20px}
+}
+@media (max-width: 1099px) {
+	.pg-anchor-in {position:relative;overflow:hidden;margin-bottom:20px;border:1px solid #757575}
+	.pg-anchor-in.tab-e2 .nav-tabs li {width:33.33333%;margin:0}
+	.pg-anchor-in.tab-e2 .nav-tabs li a {font-size:12px;padding:6px 0;text-align:center;border-bottom:1px solid #d5d5d5;margin-right:0;font-weight:bold;background:#fff}
+	.pg-anchor-in.tab-e2 .nav-tabs li.active a {border:0;border-bottom:1px solid #d5d5d5 !important;color:#DE2600;background:#fff1f0}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(1) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(2) a {border-right:1px solid #d5d5d5;border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .nav-tabs li:nth-child(3) a {border-bottom:0 !important}
+	.pg-anchor-in.tab-e2 .tab-bottom-line {display:none}
+}
+</style>
+
+<div class="admin-shop-personalpayform">
+	<form name="fpersonalpayform" method="post" action="{_action_url}" onsubmit="return form_check(this);" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="pp_id" value="{_pp_id}">
+	<input type="hidden" name="sst" value="{_sst}">
+	<input type="hidden" name="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="wmode" value="{_wmode}">
+	<!--{? _wmode}-->
+	<input type="hidden" name="pp_use" value="1">
+	<!--{/}-->
+
+	<!--{? !_wmode}-->
+	<div class="headline">
+		<h4><strong>개인결제 관리 {_wrp_tag_st}</strong></h4>
+	</div>
+	<div class="margin-bottom-30"></div>
+	<!--{/}-->
+
+	<div id="anc_spp_info">
+		<!--{? !_wmode}-->
+		<div class="pg-anchor">
+			{# anc_spp_info}
+		</div>
+		<!--{/}-->
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 주문 정보</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-danger font-size-12">
+						<i class="fa fa-info-circle"></i> 주문 관련 기본 정보입니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label for="pp_name" class="label">이름</label>
+					        <label class="input">
+					            <input type="text" name="pp_name" id="pp_name" value="{=get_text(pp.pp_name)}" required>
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label for="pp_price" class="label">주문금액</label>
+							<label class="input">
+								<i class="icon-append">원</i>
+								<input type="text" name="pp_price" id="pp_price" value="{pp.pp_price}" required>
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label for="od_id" class="label">주문번호</label>
+					        <label class="input">
+					            <input type="text" name="od_id" id="od_id" value="{pp.od_id}" size="20">
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="pp_content" class="label">내용</label>
+					        <label class="textarea">
+					            <textarea name="pp_content" id="pp_content" style="min-height: 200px;">{=pp.pp_content}</textarea>
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+
+	<!--{? !_wmode}-->
+	<div id="anc_spp_pay">
+		<div class="pg-anchor">
+			{# anc_spp_pay}
+		</div>
+		<div class="adm-form-wrap margin-bottom-30">
+			<header>
+				<strong><i class="fa fa-caret-right"></i> 결제 정보</strong>
+			</header>
+
+			<fieldset>
+				<div class="cont-text-bg">
+					<p class="bg-danger font-size-12">
+						<i class="fa fa-info-circle"></i> 결제 관련 정보입니다.
+					</p>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label for="pp_receipt_price" class="label">결제금액</label>
+					        <label class="input">
+					        	<i class="icon-append">원</i>
+					            <input type="text" name="pp_receipt_price" id="pp_receipt_price" value="{? pp.pp_receipt_price}{pp.pp_receipt_price}{/}">
+					        </label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label for="pp_settle_case" class="label">결제방법</label>
+							<label class="select">
+								<select name="pp_settle_case" id="pp_settle_case">
+									<option value="" {? pp.pp_settle_case == ''}selected{/}>선택</option>
+									<option value="무통장" {? pp.pp_settle_case == '무통장'}selected{/}>무통장</option>
+									<option value="계좌이체" {? pp.pp_settle_case == '계좌이체'}selected{/}>계좌이체</option>
+									<option value="가상계좌" {? pp.pp_settle_case == '가상계좌'}selected{/}>가상계좌</option>
+									<option value="신용카드" {? pp.pp_settle_case == '신용카드'}selected{/}>신용카드</option>
+									<option value="휴대폰" {? pp.pp_settle_case == '휴대폰'}selected{/}>휴대폰</option>
+								</select><i></i>
+							</label>
+						</section>
+					</div>
+					<div class="col col-4">
+						<section>
+							<label class="label">결제일시</label>
+							<label class="checkbox" for="pp_receipt_chk">
+								<input type="checkbox" name="pp_receipt_chk" id="pp_receipt_chk" value="{=date('Y-m-d H:i:s', C.G5_SERVER_TIME)}" onclick="if (this.checked == true) this.form.pp_receipt_time.value=this.form.pp_receipt_chk.value; else this.form.pp_receipt_time.value = this.form.pp_receipt_time.defaultValue;"><i></i> 현재 시간으로 설정
+							</label>
+							<label class="input" for="pp_receipt_time">
+								<input type="text" name="pp_receipt_time" value="{? !is_null_time(pp.pp_receipt_time)}{pp.pp_receipt_time}{/}" id="pp_receipt_time" maxlength="19">
+							</label>
+							<div class="note">형식 : 0000-00-00 00:00:00</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<!--{? _is_cash_receipt && (pp.pp_price - pp.pp_receipt_price) == 0}-->
+			<!--{? pp.pp_receipt_price && (pp.pp_settle_case == '무통장' || pp.pp_settle_case == '가상계좌' || pp.pp_settle_case == '계좌이체')}-->
+			<fieldset>
+				<div class="row">
+					<div class="col col-4">
+						<section>
+							<label for="pp_receipt_price" class="label">현금영수증</label>
+					        <label class="input">
+					        	<a href="javascript:;" onclick="{_cash_receipt_script}">{_cash_receipt_text}</a>
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+			<!--{/}-->
+			<!--{/}-->
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="pp_shop_memo" class="label">상점메모</label>
+					        <label class="textarea">
+					            <textarea name="pp_shop_memo" id="pp_shop_memo" style="min-height: 200px;">{=pp.pp_shop_memo}</textarea>
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-2">
+						<section>
+							<label for="pp_use" class="label">사용여부</label>
+							<label class="select">
+								<select name="pp_use" id="pp_use">
+									<option value="1" {? pp.pp_use == '1'}selected{/}>사용함</option>
+									<option value="0" {? pp.pp_use == '0'}selected{/}>사용안함</option>
+								</select><i></i>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	{frm_submit}
+	<!--{/}-->
+
+	</form>
+</div>
+
+<script>
+$('.pg-anchor a').on('click', function(e) {
+	e.stopPropagation();
+	var scrollTopSpace;
+	if (window.innerWidth >= 1100) {
+		scrollTopSpace = 70;
+	} else {
+		scrollTopSpace = 70;
+	}
+	var tabLink = $(this).attr('href');
+	var offset = $(tabLink).offset().top;
+	$('html, body').animate({scrollTop : offset - scrollTopSpace}, 500);
+	return false;
+});
+
+function form_check(f) {
+    if(f.pp_price.value.replace(/[0-9]/g, "").length > 0) {
+        alert("주문금액은 숫자만 입력해 주십시오");
+        return false;
+    }
+
+    return true;
+}
+</script>

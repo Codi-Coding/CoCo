@@ -1,0 +1,65 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-coupon .table-list-eb thead {border-top:2px solid #454545}
+.shop-coupon .table-list-eb .table>thead>tr>th {padding:10px;text-align:center}
+.shop-coupon .table-list-eb .table>tbody>tr>td {padding:10px}
+.shop-coupon .table-list-eb .td-border {border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5}
+.shop-coupon .table-list-eb .td-bg-color {background:#fcfcfc}
+</style>
+<!--{? C.G5_IS_MOBILE}-->
+<style>
+.shop-coupon {padding:15px}
+</style>
+<!--{/}-->
+
+<div class="shop-coupon">
+	<h4 class="margin-bottom-20"><strong>{g5.title}</strong></h4>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="text-right font-size-11 margin-bottom-5 color-grey">Note! 좌우 스크롤 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+	<div class="table-list-eb">
+	    <div class="table-responsive">
+	        <table id="sod_list" class="table">
+		        <thead>
+		            <tr>
+			            <th>쿠폰명</th>
+			            <th>적용대상</th>
+			            <th>할인금액</th>
+			            <th>사용기한</th>
+			        </tr>
+		        </thead>
+		        <tbody>
+			        <!--{@ list}-->
+			        <tr>
+			            <td>{.cp_subject}</td>
+			            <td class="td-border td-bg-color">{.cp_target}</td>
+			            <td class="td-border">{.cp_price}</td>
+			            <td>{=substr(.cp_start, 0, 10)} ~ {=substr(.cp_end, 0, 10)}</td>
+			        </tr>
+					<!--{:}-->
+					<tr><td colspan="4" class="text-center"><span class="font-size-13 color-grey"><i class="fa fa-exclamation-circle"></i> 사용할 수 있는 쿠폰이 없습니다.</span></td></tr>
+					<!--{/}-->
+		        </tbody>
+        	</table>
+	    </div>
+    </div>
+    <!--{? C.G5_IS_MOBILE}-->
+    <div class="text-center margin-top-30 margin-bottom-30">
+	    <button type="button" onclick="window.close();" class="btn-e btn-e-lg btn-e-dark">창닫기</button>
+    </div>
+    <!--{/}-->
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+<![endif]-->

@@ -1,0 +1,285 @@
+<?php if (!defined("_GNUBOARD_")) exit; ?>
+
+<style>
+.my-post-heading {position:relative;height:40px;line-height:40px;background:#3D4254;color:#fff;font-size:16px;padding:0 0 0 90px;margin-bottom:20px}
+.my-post-heading .author-photo {position:absolute;top:-24px;left:20px;overflow:hidden;width:50px;height:50px;border:4px solid #fff;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.my-post-heading .author-photo img {display:block;width:100% \9;max-width:100%;height:auto}
+.my-post {position:relative}
+.my-post .post-item {position:relative}
+.my-post .post-item-in {position:relative;overflow:hidden;background:#fff;border:1px solid #dadada;-moz-transition:all 0.2s ease 0s;-webkit-transition:all 0.2s ease 0s;-ms-transition:all 0.2s ease 0s;-o-transition:all 0.2s ease 0s;transition:all 0.2s ease 0s;margin:1px;margin-bottom:18px}
+.my-post .post-item-in .item-category {position:relative;background:#fff;padding:10px;color:#959595;font-weight:bold;border-bottom:1px solid #ededed}
+.my-post .post-item .post-item-photo {position:relative;overflow:hidden;padding:10px 10px 0}
+.my-post .post-item .post-item-photo img {display:none}
+.my-post .post-item .post-item-photo img:first-child {display:block}
+.my-post .post-item .post-item-photo-in {position:relative;overflow:hidden}
+.my-post .post-item:hover .post-item-photo-in {box-shadow:none}
+.my-post .post-item .post-item-info {position:relative;overflow:hidden;padding:0 10px;margin-top:5px}
+.my-post .post-item .post-item-info h4 {font-size:14px;color:#000}
+.my-post .post-item:hover .post-item-info h4 {text-decoration:underline;color:#005cff}
+.my-post .post-item .post-item-info .post-cont {position:relative;overflow:hidden;height:40px;color:#757575;font-weight:200}
+.my-post .post-item .post-item-bottom {position:relative;border-top:1px solid #e5e5e5;background:#f5f5f5;box-shadow:inset 0 1px 0 0 #fff;font-size:12px;color:#000}
+.my-post .post-item .post-item-bottom .pull-left {padding:7px 10px}
+.my-post .post-item .post-item-bottom .pull-left ul {margin-bottom:0;margin-left:0}
+.my-post .post-item .post-item-bottom .pull-left ul li {padding:0;color:#c5c5c5}
+.my-post .post-item .post-item-bottom .pull-right {padding:7px 10px;border-left:1px solid #dbdbdb}
+.my-post .post-item .post-item-bottom .pull-right i {margin:0 5px}
+#infscr-loading {text-align:center;z-index:100;position:absolute;left:50%;bottom:0;width:200px;margin-left:-100px;padding:10px;background:#000;opacity:0.6;color:#fff}
+.my-post .view-infinite-more .btn-e-lg {padding:10px 50px;font-size:17px;font-weight:bold;border:1px solid #959595}
+@media (min-width: 768px) {
+	.my-post-modal {width:750px;margin:10px auto}
+	.my-post-modal .modal-header, .my-post-modal .modal-body, .my-post-modal .modal-footer {padding:10px 20px}
+}
+@media (min-width: 992px) {
+	.my-post-modal {width:970px}
+}
+@media (min-width: 1200px) {
+	.my-post-modal {width:1170px}
+	.my-post .post-item-in {width:270px}
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+	.my-post .post-item-in {width:220px}
+}
+@media (min-width: 767px) and (max-width: 991px) {
+	.my-post .post-item-in {width:226px}
+}
+</style>
+
+<div id="fakeloader"></div>
+
+{# myhomebox_bs //마이홈의 소셜정보}
+
+<div class="my-post-heading">
+	<div class="author-photo">
+		<!--{? user.mb_photo}-->{user.mb_photo}<!--{:}--><img src="./img/user.jpg"><!--{/}-->
+	</div>
+	<strong>
+		<!--{? user.mb_id == member.mb_id}-->나의 최근 게시물<!--{:}-->{user.mb_nick} 님의 최근 게시물<!--{/}-->
+	</strong>
+</div>
+
+<div class="my-post">
+	<div class="my-post-container">
+		<!--{@ list}-->
+		<div class="post-item">
+			<div class="post-item-in">
+				<div class="item-category">
+					{.bo_info.gr_name} / {.bo_info.bo_name}
+				</div>
+				<a href="{.href}" {? !C.G5_IS_MOBILE}onclick="post_modal(this.href); return false;"{:}target="_blank"{/}>
+					<!--{? .img_src}-->
+					<div class="post-item-photo">
+						<div class="post-item-photo-in">
+							<img class="img-responsive" src="{.img_src}">
+						</div>
+					</div>
+					<!--{/}-->
+					<div class="post-item-info">
+						<h4 class="ellipsis"><strong>{=get_text(.wr_subject)}</strong></h4>
+						<p class="post-cont">{=conv_subject(.wr_content,50,'…')}</p>
+					</div>
+				</a>
+				<div class="post-item-bottom clearfix">
+					<div class="pull-left">
+		                <i class="fa fa-clock-o"></i> {eb->date_time('Y-m-d H:i',.datetime)}
+					</div>
+					<div class="pull-right color-grey">
+						<i class="fa fa-eye"></i> {.wr_hit}
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+		<!--{:}-->
+		<div class="text-center color-grey font-size-14 margin-top-50"><i class="fa fa-exclamation-circle"></i> 최근 게시물이 없습니다.</div>
+		<!--{/}-->
+	</div>
+	<!--{? list}-->
+	<div id="infinite_pagination">
+	    <a class="next" href="{C.G5_URL}/?{user.mb_id}&page={page+1}"></a>
+	</div>
+	<div class="view-infinite-more text-center margin-top-20">
+		<a id="view-infinite-more" href="#" class="btn btn-default btn-e-lg">더 보기 <i class="fa fa-arrow-circle-o-down"></i></a>
+	</div>
+	<!--{/}-->
+	<div class="margin-bottom-30"></div>
+	<!--{* 게시물 상세보기 모달 시작 *}-->
+	<div class="modal fade post-iframe-modal" tabindex="-1" role="dialog" aria-hidden="true">
+	    <div class="modal-dialog my-post-modal">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+	                <h4 class="modal-title"><strong><i class="fa fa-search"></i> <!--{? user.mb_id == member.mb_id}-->나의 게시물 상세보기<!--{:}--><span class="color-blue">{user.mb_nick}</span> 님의 게시물 상세보기<!--{/}--></strong></h4>
+	            </div>
+	            <div class="modal-body">
+	                <iframe id="post-iframe" width="100%" frameborder="0"></iframe>
+	            </div>
+	            <div class="modal-footer">
+	                <button data-dismiss="modal" class="btn-e btn-e-lg btn-e-dark" type="button"><i class="fa fa-close"></i> 닫기</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!--{* 게시물 상세보기 모달 끝 *}-->
+</div>
+
+<script src="../../../plugins/fakeLoader/fakeLoader.min.js"></script>
+<script src="../../../plugins/masonry/jquery.masonry.min.js"></script>
+<script src="../../../plugins/infinite-scroll/jquery.infinitescroll.min.js"></script>
+<script>
+$("#fakeloader").fakeLoader({
+	timeToHide:3000,
+	zIndex:"10",
+	spinner:"spinner6",
+	bgColor:"#f4f4f4",
+});
+
+$(window).load(function(){
+	$('#fakeloader').fadeOut(300);
+});
+
+function post_modal(href) {
+    $('.post-iframe-modal').modal('show').on('hidden.bs.modal', function () {
+        $("#post-iframe").attr("src", "");
+        $('html').css({overflow: ''});
+    });
+    $('.post-iframe-modal').modal('show').on('shown.bs.modal', function () {
+        $("#post-iframe").attr("src", href);
+        $('#post-iframe').height(parseInt($(window).height() * 0.85));
+        $('html').css({overflow: 'hidden'});
+    });
+    return false;
+}
+
+$(document).ready(function () {
+    $(window).resize(function () {
+        $('#post-iframe').height(parseInt($(window).height() * 0.7));
+    });
+    window.closeModal = function(wr_id){
+        $('.post-iframe-modal').modal('hide');
+        if(wr_id) {
+            var w_id = wr_id.split('|');
+            for(var i=0;i<w_id.length;i++) {
+                $("#list-item-"+w_id[i]).hide();
+            }
+        }
+    };
+});
+
+$(document).ready(function(){
+    var $container = $('.my-post-container');
+
+	$container.infinitescroll({
+		navSelector  : "#infinite_pagination",
+		nextSelector : "#infinite_pagination .next",
+		itemSelector : ".post-item",
+		loading: {
+			finishedMsg: 'END',
+			msgText: "Loading...",
+			img: '../../../image/loading.gif'
+		}
+	},
+
+	function( newElements ) {
+		var $newElems = $( newElements ).css({ opacity: 0 });
+		$newElems.imagesLoaded(function(){
+			$newElems.animate({ opacity: 1 });
+			$container.masonry( 'appended', $newElems, true );
+		});
+	    var gutter = 17;
+	    var min_width = 170;
+	    $container.imagesLoaded( function(){
+	        $container.masonry({
+	            itemSelector : '.post-item',
+	            gutterWidth: gutter,
+	            isAnimated: true,
+				columnWidth: function( containerWidth ) {
+					var windowSize = $(window).width();
+					if (windowSize > 991) {
+						var box_width = (((containerWidth - 3*gutter)/4) | 0) ;
+						if (box_width < min_width) {
+							box_width = (((containerWidth - gutter)/4) | 0);
+						}
+					} else if (windowSize <= 991 && windowSize > 766) {
+						var box_width = (((containerWidth - 2*gutter)/3) | 0) ;
+						if (box_width < min_width) {
+							box_width = (((containerWidth - gutter)/3) | 0);
+						}
+					} else if (windowSize <= 766 && windowSize > 566) {
+						var box_width = (((containerWidth - 1*gutter)/2) | 0) ;
+						if (box_width < min_width) {
+							box_width = (((containerWidth - gutter)/2) | 0);
+						}
+					} else {
+						var box_width = (((containerWidth - 0*gutter)/1) | 0) ;
+						if (box_width < min_width) {
+							box_width = (((containerWidth - gutter)/1) | 0);
+						}
+					}
+
+					if (box_width < min_width) {
+						box_width = containerWidth;
+					}
+
+					$('.post-item').width(box_width);
+
+					setTimeout(function() {
+					    $('.post-item').show();
+					}, 0);
+
+					return box_width;
+				}
+	        });
+	    });
+	});
+
+	$(window).unbind('.infscr');
+
+	$('#view-infinite-more').click(function(){
+	   $container.infinitescroll('retrieve');
+	   $('#infinite_pagination').show();
+		return false;
+	});
+
+    var gutter = 17;
+    var min_width = 170;
+    $container.imagesLoaded( function(){
+        $container.masonry({
+            itemSelector : '.post-item',
+            gutterWidth: gutter,
+            isAnimated: true,
+            columnWidth: function( containerWidth ) {
+	            var windowSize = $(window).width();
+				if (windowSize > 991) {
+					var box_width = (((containerWidth - 3*gutter)/4) | 0) ;
+					if (box_width < min_width) {
+						box_width = (((containerWidth - gutter)/4) | 0);
+					}
+				} else if (windowSize <= 991 && windowSize > 766) {
+					var box_width = (((containerWidth - 2*gutter)/3) | 0) ;
+					if (box_width < min_width) {
+						box_width = (((containerWidth - gutter)/3) | 0);
+					}
+				} else if (windowSize <= 766 && windowSize > 566) {
+					var box_width = (((containerWidth - 1*gutter)/2) | 0) ;
+					if (box_width < min_width) {
+						box_width = (((containerWidth - gutter)/2) | 0);
+					}
+				} else {
+					var box_width = (((containerWidth - 0*gutter)/1) | 0) ;
+					if (box_width < min_width) {
+						box_width = (((containerWidth - gutter)/1) | 0);
+					}
+				}
+
+				if (box_width < min_width) {
+					box_width = containerWidth;
+				}
+
+				$('.post-item').width(box_width);
+
+				return box_width;
+            }
+        });
+    });
+});
+</script>

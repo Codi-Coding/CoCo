@@ -1,0 +1,77 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/bootstrap/css/bootstrap.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/font-awesome/css/font-awesome.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/eyoom-form/css/eyoom-form.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../css/custom.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.shop-item-recommend {padding:15px}
+.shop-item-recommend input {vertical-align:inherit}
+.shop-item-recommend input.btn-e-lg {padding:7px 16px;font-size:14px}
+</style>
+
+<div class="shop-item-recommend">
+	<div class="headline"><h5><strong>{g5.title}</strong></h5></div>
+	<div class="margin-bottom-30"></div>
+    <form name="fitemrecommend" method="post" action="./itemrecommendmail.php" autocomplete="off" onsubmit="return fitemrecommend_check(this);" class="eyoom-form">
+    <input type="hidden" name="token" value="{_token}">
+    <input type="hidden" name="it_id" value="{_it_id}">
+    <section>
+        <label for="to_email" class="label">추천받는 분 E-mail<strong class="sound_only"> 필수</strong></label>
+        <label class="input">
+	        <i class="icon-append fa fa-envelope-o"></i>
+            <input type="text" name="to_email" id="to_email" required size="51">
+        </label>
+    </section>
+    <div class="margin-hr-15"></div>
+    <section>
+        <label for="subject" class="label">제목<strong class="sound_only"> 필수</strong></label>
+        <label class="input">
+        	<i class="icon-append fa fa-check"></i>
+            <input type="text" name="subject" id="subject" required size="51">
+        </label>
+    </section>
+    <div class="margin-hr-15"></div>
+    <section>
+        <label for="content" class="label margin-left-5">내용<strong class="sound_only"> 필수</strong></label>
+		<label class="textarea">
+            <textarea name="content" id="content" required rows="3"></textarea>
+        </label>
+    </section>
+    <div class="text-center margin-top-30">
+        <input type="submit" id="btn_submit" value="보내기" class="btn-e btn-e-lg btn-e-red">
+        <button type="button" onclick="self.close();" class="btn-e btn-e-lg btn-e-dark"><i class="fa fa-close"></i> 닫기</button>
+    </div>
+    </form>
+</div>
+
+<script src="../../../plugins/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script>
+function fitemrecommend_check(f) {
+    return true;
+}
+
+$("input, textarea, select").on({ 'touchstart' : function() {
+	zoomDisable();
+}});
+$("input, textarea, select").on({ 'touchend' : function() {
+	setTimeout(zoomEnable, 500);
+}});
+function zoomDisable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">');
+}
+function zoomEnable(){
+	$('head meta[name=viewport]').remove();
+	$('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1">');
+}
+</script>
+<!--[if lt IE 9]>
+	<script src="../../../plugins/respond.min.js"></script>
+	<script src="../../../plugins/html5shiv.min.js"></script>
+	<script src="../../../plugins/eyoom-form/js/eyoom-form-ie8.js"></script>
+<![endif]-->

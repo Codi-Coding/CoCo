@@ -1,0 +1,189 @@
+<?php if (!defined('_GNUBOARD_')) exit; ?>
+
+<div class="admin-newwinform">
+	<form name="form" method="post" action="{_action_url}" onsubmit="return check_form(this);" enctype="multipart/form-data" class="eyoom-form">
+	<input type="hidden" name="w" value="{_w}">
+	<input type="hidden" name="nw_id" value="{_nw_id}">
+	<input type="hidden" name="token" value="">
+
+	<div class="headline">
+		<h4><strong>팝업레이어 {_html_title}</strong></h4>
+	</div>
+	<div class="cont-text-bg">
+		<p class="bg-primary font-size-12"><i class="fa fa-info-circle"></i> 초기화면 접속 시 자동으로 뜰 팝업레이어를 설정합니다.</p>
+	</div>
+	<div class="margin-bottom-30"></div>
+
+	<div id="newwin-layer">
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 팝업레이어 설정</strong></header>
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="nw_division" class="label">구분</label>
+					        <label class="select">
+					            <select name="nw_division" id="nw_division">
+					                <option value="both"  {=get_selected(nw.nw_division, 'both', true)}>커뮤니티와 쇼핑몰</option>
+					                <option value="comm"  {=get_selected(nw.nw_division, 'comm', true)}>커뮤니티</option>
+					                <option value="shop"  {=get_selected(nw.nw_division, 'shop', true)}>쇼핑몰</option>
+					            </select><i></i>
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 커뮤니티에 표시될 것인지 쇼핑몰에 표시될 것인지를 설정합니다.</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_device" class="label">접속기기</label>
+					        <label class="select">
+					            <select name="nw_device" id="nw_division">
+					                <option value="both"  {=get_selected(nw.nw_device, 'both', true)}>PC와 모바일</option>
+					                <option value="pc"  {=get_selected(nw.nw_device, 'pc', true)}>PC</option>
+					                <option value="mobile"  {=get_selected(nw.nw_device, 'mobile', true)}>모바일</option>
+					            </select><i></i>
+					        </label>
+					        <div class="note margin-bottom-10"><strong>Note:</strong> 팝업레이어가 표시될 접속기기를 설정합니다.</div>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_disable_hours" class="label">시간</label>
+							<label class="input">
+								<i class="icon-append">시간</i>
+								<input type="text" name="nw_disable_hours" id="nw_disable_hours" value="{nw.nw_disable_hours}" required>
+							</label>
+							<div class="note margin-bottom-10"><strong>Note:</strong> 고객이 다시 보지 않음을 선택할 시 몇 시간동안 팝업레이어를 보여주지 않을지 설정합니다.</div>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="nw_begin_time" class="label">시작일시</label>
+					        <label class="input">
+								<input type="text" name="nw_begin_time" id="nw_begin_time" value="{nw.nw_begin_time}" required maxlength="19">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_begin_chk" class="label hidden-xs">&nbsp;</label>
+					        <label class="checkbox">
+					            <input type="checkbox" name="nw_begin_chk" value="{=date('Y-m-d 00:00:00', C.G5_SERVER_TIME)}" id="nw_begin_chk" onclick="if (this.checked == true) this.form.nw_begin_time.value=this.form.nw_begin_chk.value; else this.form.nw_begin_time.value = this.form.nw_begin_time.defaultValue;"><i></i> 시작일시를 오늘로
+					        </label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_end_time" class="label">종료일시</label>
+					        <label class="input">
+								<input type="text" name="nw_end_time" id="nw_end_time" value="{nw.nw_end_time}" required maxlength="19">
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_end_chk" class="label hidden-xs">&nbsp;</label>
+					        <label class="checkbox">
+					            <input type="checkbox" name="nw_end_chk" value="{=date('Y-m-d 00:00:00', C.G5_SERVER_TIME+(60*60*24*7))}" id="nw_end_chk" onclick="if (this.checked == true) this.form.nw_end_time.value=this.form.nw_end_chk.value; else this.form.nw_end_time.value = this.form.nw_end_time.defaultValue;"><i></i> 종료일시를 오늘로부터 7일 후로
+					        </label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-3">
+						<section>
+							<label for="nw_left" class="label">팝업레이어 좌측 위치</label>
+					        <label class="input">
+					        	<i class="icon-append">px</i>
+								<input type="text" name="nw_left" id="nw_left" value="{nw.nw_left}" required>
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_top" class="label">팝업레이어 상단 위치</label>
+					        <label class="input">
+					        	<i class="icon-append">px</i>
+								<input type="text" name="nw_top" id="nw_top" value="{nw.nw_top}" required>
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_width" class="label">팝업레이어 넓이</label>
+					         <label class="input">
+					        	<i class="icon-append">px</i>
+								<input type="text" name="nw_width" id="nw_width" value="{nw.nw_width}" required>
+							</label>
+						</section>
+					</div>
+					<div class="col col-3">
+						<section>
+							<label for="nw_height" class="label">팝업레이어 높이</label>
+					         <label class="input">
+					        	<i class="icon-append">px</i>
+								<input type="text" name="nw_height" id="nw_height" value="{nw.nw_height}" required>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="adm-form-wrap margin-bottom-30">
+			<header><strong><i class="fa fa-caret-right"></i> 팝업레이어 제목 및 팝업내용</strong></header>
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						<section>
+							<label for="nw_subject" class="label">제목</label>
+					         <label class="input">
+								<input type="text" name="nw_subject" id="nw_subject" value="{=stripslashes(nw.nw_subject)}" required>
+							</label>
+						</section>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<div class="row">
+					<div class="col col-12">
+						{_editor_html}
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="text-center margin-top-30 margin-bottom-30">
+			<input type="submit" value="확인" id="btn_submit" class="btn-e btn-e-lg btn-e-red" accesskey="s">
+			<a href="./?dir=config&pid=newwinlist" class="btn-e btn-e-lg btn-e-dark">목록</a>
+		</div>
+
+	</div>
+	</form>
+</div>
+
+<script>
+function check_form(f) {
+    errmsg = "";
+    errfld = "";
+
+    <!--{=get_editor_js('nw_content')}-->
+
+    check_field(f.nw_subject, "제목을 입력하세요.");
+
+    if (errmsg != "") {
+        alert(errmsg);
+        errfld.focus();
+        return false;
+    }
+    return true;
+}
+</script>

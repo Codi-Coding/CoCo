@@ -1,34 +1,9 @@
 <?php
+$sub_menu = '100000';
 include_once('./_common.php');
-
-//아미나빌더 설치체크
-if(!isset($config['as_thema'])) { 
-	goto_url(G5_ADMIN_URL.'/apms_admin/apms.admin.php');
-}
-
-$is_index = true;
 
 $g5['title'] = '관리자메인';
 include_once ('./admin.head.php');
-
-$is_admin_index = '';
-if($is_admin_skin) {
-	if (defined('G5_USE_SHOP') && G5_USE_SHOP) {
-		if(is_file(ADMIN_SKIN_PATH.'/admin.index.shop.php')) {
-			$is_admin_index = ADMIN_SKIN_PATH.'/admin.index.shop.php';
-		} else if(is_file(ADMIN_SKIN_PATH.'/admin.index.php')) {
-			$is_admin_index = ADMIN_SKIN_PATH.'/admin.index.php';
-		}
-	} else if(is_file(ADMIN_SKIN_PATH.'/admin.index.php')) {
-		$is_admin_index = ADMIN_SKIN_PATH.'/admin.index.php';
-	}
-}
-
-if($is_admin_index) {
-	include_once ($is_admin_index);
-	include_once ('./admin.tail.php');
-	return;
-}
 
 $new_member_rows = 5;
 $new_point_rows = 5;

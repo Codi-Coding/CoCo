@@ -1,0 +1,131 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/slick/slick.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.product-rel-10 {position:relative;overflow:hidden}
+.product-rel-10-in {margin-left:-5px;margin-right:-5px}
+.product-rel-10 .item-rel-10 {position:relative;padding-left:5px;padding-right:5px;outline:none}
+.product-rel-10 .item-rel-10-in {position:relative;border:1px solid #e5e5e5;background:#fff;margin-bottom:20px;-webkit-transition:all 0.2s ease-in-out;-moz-transition:all 0.2s ease-in-out;-o-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out}
+.product-rel-10 .product-img {position:relative;overflow:hidden;margin:10px;background:#fff}
+.product-rel-10 .product-img:after {content:"";position:absolute;display:block;left:0;top:0;opacity:0;-moz-transition:all 0.2s ease 0s;-webkit-transition:all 0.2s ease 0s;-ms-transition:all 0.2s ease 0s;-o-transition:all 0.2s ease 0s;transition:all 0.2s ease 0s;width:100%;height:100%;background:rgba(0,0,0,0.3)}
+.product-rel-10 .product-img img {display:block;width:100% \9;max-width:100%;height:auto}
+.product-rel-10 .product-description .product-description-in {position:relative;overflow:hidden;padding:0 10px 10px}
+.product-rel-10 .product-description .product-name {position:relative;overflow:hidden;margin:10px 0 5px;height:38px}
+.product-rel-10 .product-description .product-name a {font-size:13px;font-weight:bold;color:#000}
+.product-rel-10 .product-description .product-name a:hover {color:#0078FF;text-decoration:underline}
+.product-rel-10 .product-description .title-price {font-size:13px;font-weight:bold;color:#E52700}
+.product-rel-10 .product-description .line-through {font-size:11px;color:#959595;text-decoration:line-through;margin-left:7px;font-weight:normal}
+.product-rel-10 .product-description .product-id {color:#757575;display:block;font-size:12px;margin-top:8px}
+.product-rel-10 .product-description .product-info {position:relative;overflow:hidden;height:34px;color:#959595;font-size:11px;margin-top:8px}
+.product-rel-10 .item-rel-10:hover .product-img:after {opacity:1}
+.product-rel-10 .item-rel-10:hover .product-name a {text-decoration:underline}
+.product-rel-10 .slick-next {top:inherit;bottom:-34px;right:5px;z-index:1}
+.product-rel-10 .slick-prev {top:inherit;bottom:-34px;left:5px;z-index:1}
+.product-rel-10 .slick-next:before, .product-rel-10 .slick-prev:before {font-family:FontAwesome;color:#000;font-size:16px}
+.product-rel-10 .slick-next:before {content:"\f054"}
+.product-rel-10 .slick-prev:before {content:"\f053"}
+@media (max-width:767px) {
+	.product-rel-10-in {margin-left:-2px;margin-right:-2px}
+	.product-rel-10 .item-rel-10 {padding-left:2px;padding-right:2px}
+	.product-rel-10 .product-img {margin:5px}
+	.product-rel-10 .product-description .product-description-in {padding:0 5px 10px}
+	.product-rel-10 .product-description-bottom {padding:7px 5px}
+}
+</style>
+
+<div class="product-rel-10">
+	<div class="product-rel-10-in">
+		<!--{@ list}-->
+		<div class="item-rel-10">
+			<div class="item-rel-10-in">
+		        <!--{? href}-->
+		        <a href="{.href}">
+		        <!--{/}-->
+			        <div class="product-img">
+						{.it_image}
+			        </div>
+		        <!--{? href}-->
+		        </a>
+		        <!--{/}-->
+		        <div class="product-description">
+		            <div class="product-description-in">
+		                <!--{? href}-->
+		                <h4 class="product-name">
+		                    <a href="{.href}">
+		                <!--{/}-->
+		                    <!--{? view_it_name}-->{=stripslashes(.it_name)}<!--{/}-->
+		                <!--{? href}-->
+		                	</a>
+		                </h4>
+		                <!--{/}-->
+
+		                <!--{? view_it_cust_price || view_it_price}-->
+			            <div class="product-price">
+			                <!--{? view_it_price}-->
+			                <span class="title-price">₩ {.it_tel_inq}</span>
+			                <!--{/}-->
+			                <!--{? view_it_cust_price && .it_cust_price}-->
+			                <span class="title-price line-through">₩ {.it_cust_price}</span>
+			                <!--{/}-->
+			            </div>
+			            <!--{/}-->
+
+		                <!--{? view_it_id}-->
+		                <span class="product-id">{=stripslashes(.it_id)}</span>
+		                <!--{/}-->
+
+		                <!--{? 1 //상품간략 소개, 앞숫자 0: 미출력, 앞숫자 1: 출력}-->
+		                <!--{? view_it_basic && .it_basic}-->
+		                <div class="product-info">{=stripslashes(.it_basic)}</div>
+		                <!--{/}-->
+		                <!--{/}-->
+		            </div>
+		        </div>
+		    </div>
+	    </div>
+		<!--{:}-->
+		<p class="font-size-13 color-grey margin-top-20 margin-bottom-20 margin-left-10"><i class="fa fa-exclamation-circle"></i> 등록된 상품이 없습니다.</p>
+		<!--{/}-->
+	</div>
+</div>
+
+<script src="../../../plugins/slick/slick.min.js"></script>
+<script>
+$(document).ready(function(){
+	var imgWidth = $('.product-rel-10 .product-img img').width();
+	var productImgHeight = imgWidth;
+	$('.product-rel-10 .product-img').css('height', productImgHeight);
+});
+
+$(window).resize(function () {
+	var imgWidth = $('.product-rel-10 .product-img img').width();
+	var productImgHeight = imgWidth;
+	$('.product-rel-10 .product-img').css('height', productImgHeight);
+});
+
+$('.product-rel-10-in').slick({
+	dots: true,
+	infinite: true,
+	slidesToShow: 4,
+	slidesToScroll: 4,
+	autoplay: true,
+	autoplaySpeed: 4000,
+	responsive: [
+		{
+			breakpoint: 1200,
+			settings: {
+				slidesToShow: 3,
+				slidesToScroll: 3
+			}
+		},
+		{
+			breakpoint: 768,
+			settings: {
+				slidesToShow: 2,
+				slidesToScroll: 2
+			}
+		}
+	]
+});
+</script>

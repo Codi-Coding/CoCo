@@ -1,0 +1,257 @@
+<?php if (!defined('_GNUBOARD_')) exit;
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid.min.css" type="text/css" media="screen">',0);
+add_stylesheet('<link rel="stylesheet" href="../../../plugins/jsgrid/jsgrid-theme.min.css" type="text/css" media="screen">',0);
+?>
+
+<style>
+.admin-member-list .new-member-photo {position:relative;overflow:hidden;width:26px;height:26px;border:1px solid #c5c5c5;background:#fff;padding:1px;margin:0 auto;text-align:center;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.admin-member-list .new-member-photo i {width:22px;height:22px;font-size:12px;line-height:22px;background:#b5b5b5;color:#fff;-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+.admin-member-list .new-member-photo img {-webkit-border-radius:50% !important;-moz-border-radius:50% !important;border-radius:50% !important}
+@media screen and (max-width:600px) {
+	.eyoom-form .modal-trans-col .col {width:inherit;float:left;margin-bottom:0}
+	.eyoom-form .modal-trans-col .col-2 {width:40%}
+	.eyoom-form .modal-trans-col .col-4 {width:60%}
+	.eyoom-form .modal-trans-col .col .sm-margin-bottom-10 {margin-bottom:0}
+}
+</style>
+
+<div class="admin-member-list">
+	<form id="form" name="form" class="eyoom-form" action="./" method="get">
+
+	<!--{? !_wmode}-->
+	<div class="headline">
+		<h4><strong>회원 리스트</strong></h4>
+		<a href="{C.EYOOM_ADMIN_URL}/?dir=member&pid=member_form" class="btn-e btn-e-purple btn-e-xs pull-right margin-top-5"><i class="fa fa-plus"></i> 회원 추가</a>
+		<div class="clearfix"></div>
+	</div>
+
+	<div class="cont-text-bg">
+		<p class="bg-info font-size-12"><i class="fa fa-info-circle"></i> 회원자료 삭제 시 다른 회원이 기존 회원아이디를 사용하지 못하도록 회원아이디, 이름, 닉네임은 삭제하지 않고 영구 보관합니다.</p>
+	</div>
+	<!--{/}-->
+
+	<div class="admin-search-box modal-trans-col {? !_wmode}margin-top-30{/}">
+		<div class="row">
+			<div class="col col-2">
+				<label for="sfl" class="sound_only">검색대상</label>
+				<label class="select margin-bottom-0">
+					<select name="sfl" id="sfl">
+					    <option value="mb_name"{=get_selected(_GET.sfl, "mb_name")}>이름</option>
+					    <option value="mb_id"{=get_selected(_GET.sfl, "mb_id")}>회원아이디</option>
+					    <option value="mb_nick"{=get_selected(_GET.sfl, "mb_nick")}>닉네임</option>
+					    <option value="mb_email"{=get_selected(_GET.sfl, "mb_email")}>E-MAIL</option>
+					    <option value="mb_tel"{=get_selected(_GET.sfl, "mb_tel")}>전화번호</option>
+					    <option value="mb_hp"{=get_selected(_GET.sfl, "mb_hp")}>휴대폰번호</option>
+					    <option value="mb_datetime"{=get_selected(_GET.sfl, "mb_datetime")}>가입일시</option>
+					</select>
+					<i></i>
+				</label>
+			</div>
+			<div class="col col-4">
+				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+				<input type="hidden" name="dir" value="{_dir}" id="dir">
+				<input type="hidden" name="pid" value="{_pid}" id="pid">
+				<input type="hidden" name="wmode" value="{_wmode}" id="wmode">
+				<label class="input input-button margin-bottom-0">
+					<input type="text" name="stx" value="{_stx}" id="stx" required class="frm_input">
+					<div class="button"><input type="submit" value="검색">검색</div>
+				</label>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="margin-bottom-20"></div>
+
+	<form name="fboardlist" id="fboardlist" action="{_action_url}" method="post" onsubmit="return fboardlist_submit(this);" class="eyoom-form">
+	<input type="hidden" name="sst" id="sst" value="{_sst}">
+	<input type="hidden" name="sod" id="sod" value="{_sod}">
+	<input type="hidden" name="sfl" value="{_sfl}">
+	<input type="hidden" name="stx" value="{_stx}">
+	<input type="hidden" name="page" value="{_page}">
+	<input type="hidden" name="token" value="{_token}">
+
+	<div class="row">
+		<div class="col col-9">
+			<div class="padding-top-5">
+			    <span class="font-size-12 color-grey">
+			    	<a href="{C.EYOOM_ADMIN_URL}/?dir={_dir}&amp;pid={_pid}" class="ov_listall">[전체목록]</a><span class="margin-left-10 margin-right-10 color-light-grey">|</span>총회원수 {=number_format(_total_count)}명{? !_wmode} 중,
+    <a href="{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=member_list&amp;sst=mb_intercept_date&amp;sod=desc&amp;sfl={_sfl}&amp;stx={_stx}"><u>차단 {=number_format(_intercept_count)}</u></a>명,
+    <a href="{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=member_list&amp;sst=mb_leave_date&amp;sod=desc&amp;sfl={_sfl}&amp;stx={_stx}"><u>탈퇴 {=number_format(_leave_count)}</u></a>명{/}
+			    </span>
+			</div>
+		</div>
+		<div class="col col-3">
+			<section>
+				<label for="sort_list" class="select">
+					<select name="sort_list" id="sort_list" onchange="sorting_list(this.form, this.value);">
+						<option value="">:: 정렬방식선택 ::</option>
+						<option value="mb_id|asc" {? _sst=='mb_id' && _sod=='asc'}selected{/}>회원아이디 정방향 (↓)</option>
+						<option value="mb_id|desc" {? _sst=='mb_id' && _sod=='desc'}selected{/}>회원아이디 역방향 (↑)</option>
+						<option value="mb_name|asc" {? _sst=='mb_name' && _sod=='asc'}selected{/}>이름 정방향 (↓)</option>
+						<option value="mb_name|desc" {? _sst=='mb_name' && _sod=='desc'}selected{/}>이름 역방향 (↑)</option>
+						<option value="mb_nick|asc" {? _sst=='mb_nick' && _sod=='asc'}selected{/}>닉네임 정방향 (↓)</option>
+						<option value="mb_nick|desc" {? _sst=='mb_nick' && _sod=='desc'}selected{/}>닉네임 역방향 (↑)</option>
+						<option value="mb_certify|asc" {? _sst=='mb_certify' && _sod=='asc'}selected{/}>본인확인 정방향 (↓)</option>
+						<option value="mb_certify|desc" {? _sst=='mb_certify' && _sod=='desc'}selected{/}>본인확인 역방향 (↑)</option>
+						<option value="mb_email_certify|asc" {? _sst=='mb_email_certify' && _sod=='asc'}selected{/}>메일인증 정방향 (↓)</option>
+						<option value="mb_email_certify|desc" {? _sst=='mb_email_certify' && _sod=='desc'}selected{/}>메일인증 역방향 (↑)</option>
+						<option value="mb_open|asc" {? _sst=='mb_open' && _sod=='asc'}selected{/}>정보공개 정방향 (↓)</option>
+						<option value="mb_open|desc" {? _sst=='mb_open' && _sod=='desc'}selected{/}>정보공개 역방향 (↑)</option>
+						<option value="mb_mailling|asc" {? _sst=='mb_mailling' && _sod=='asc'}selected{/}>메일수신 정방향 (↓)</option>
+						<option value="mb_mailling|desc" {? _sst=='mb_mailling' && _sod=='desc'}selected{/}>메일수신 역방향 (↑)</option>
+						<option value="mb_sms|asc" {? _sst=='mb_sms' && _sod=='asc'}selected{/}>SMS수신 정방향 (↓)</option>
+						<option value="mb_sms|desc" {? _sst=='mb_sms' && _sod=='desc'}selected{/}>SMS수신 역방향 (↑)</option>
+						<option value="mb_level|asc" {? _sst=='mb_level' && _sod=='asc'}selected{/}>권한 정방향 (↓)</option>
+						<option value="mb_level|desc" {? _sst=='mb_level' && _sod=='desc'}selected{/}>권한 역방향 (↑)</option>
+						<option value="mb_adult|asc" {? _sst=='mb_adult' && _sod=='asc'}selected{/}>성인인증 정방향 (↓)</option>
+						<option value="mb_adult|desc" {? _sst=='mb_adult' && _sod=='desc'}selected{/}>성인인증 역방향 (↑)</option>
+						<option value="mb_intercept_date|asc" {? _sst=='mb_intercept_date' && _sod=='asc'}selected{/}>접근차단 정방향 (↓)</option>
+						<option value="mb_intercept_date|desc" {? _sst=='mb_intercept_date' && _sod=='desc'}selected{/}>접근차단 역방향 (↑)</option>
+						<option value="mb_today_login|asc" {? _sst=='mb_today_login' && _sod=='asc'}selected{/}>최종접속 정방향 (↓)</option>
+						<option value="mb_today_login|desc" {? _sst=='mb_today_login' && _sod=='desc'}selected{/}>최종접속 역방향 (↑)</option>
+						<option value="mb_point|asc" {? _sst=='mb_point' && _sod=='asc'}selected{/}>포인트 정방향 (↓)</option>
+						<option value="mb_point|desc" {? _sst=='mb_point' && _sod=='desc'}selected{/}>포인트 역방향 (↑)</option>
+						<option value="mb_datetime|asc" {? _sst=='mb_datetime' && _sod=='asc'}selected{/}>가입일 정방향 (↓)</option>
+						<option value="mb_datetime|desc" {? _sst=='mb_datetime' && _sod=='desc'}selected{/}>가입일 역방향 (↑)</option>
+					</select><i></i>
+				</label>
+			</section>
+		</div>
+	</div>
+	<!--{? C.G5_IS_MOBILE}-->
+	<p class="font-size-11 color-grey text-right margin-bottom-5"><i class="fa fa-info-circle"></i> Note! 좌우스크롤 가능 (<i class="fa fa-arrows-h"></i>)</p>
+	<!--{/}-->
+
+	<div id="member-list"></div>
+
+	<!--{? !_wmode}-->
+	<div class="margin-top-20">
+	    <input type="submit" name="act_button" value="선택수정" class="btn-e btn-e-xs btn-e-red" onclick="document.pressed=this.value">
+	    <input type="submit" name="act_button" value="선택삭제" class="btn-e btn-e-xs btn-e-dark" onclick="document.pressed=this.value">
+	</div>
+	<!--{/}-->
+	</form>
+</div>
+
+<!--{* 페이지 *}-->
+{=eb_admin_paging('basic')}
+
+<script src="../../../plugins/jsgrid/jsgrid.min.js"></script>
+<script src="../../../js/jsgrid.js"></script>
+<script>
+	//<a href="./member_form.php?'.$qstr.'&amp;w=u&amp;mb_id='.$row['mb_id'].'">수정</a>
+!function () {
+    var db = {
+        deleteItem: function (deletingClient) {
+            var clientIndex = $.inArray(deletingClient, this.clients);
+            this.clients.splice(clientIndex, 1)
+        },
+        insertItem: function (insertingClient) {
+            this.clients.push(insertingClient)
+        },
+        loadData  : function (filter) {
+            return $.grep(this.clients, function (client) {
+                return !(filter.체크 && !(client.체크.indexOf(filter.체크) > -1) || filter.아이디 && !(client.아이디.indexOf(filter.아이디) > -1) || filter.이름 && !(client.이름.indexOf(filter.이름) > -1) )
+            })
+        },
+        updateItem: function (updatingClient) {}
+    };
+    window.db    = db,
+    db.clients   = [
+	    <!--{@ list}-->
+        {
+	        <!--{? !_wmode}-->
+	        체크: "<input type='hidden' name='mb_id[{.index_}]' value='{.mb_id}' id='mb_id_{.index_}'><label for='chk_{.index_}' class='checkbox'><input type='checkbox' name='chk[]' id='chk_{.index_}' value='{.index_}'><i></i></label>",
+	        관리: "{? _is_admin!='group'}<a href='{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=member_form&amp;mb_id={.mb_id}&amp;w=u{? _qstr}&amp;{_qstr}{/}'><u>수정</u></a>{/}{? config.cf_admin != .mb_id}<a href='{C.EYOOM_ADMIN_URL}/?dir=board&amp;pid=boardgroupmember_form&amp;mb_id={.mb_id}' class='margin-left-10'><u>그룹</u></a>{/}",
+	        포토: "<div class='new-member-photo'>{? !.photo_url}<i class='fa fa-user'></i>{:}<img src='{.photo_url}' class='img-responsive'>{/}</div>",
+	        <!--{/}-->
+	        아이디: "<span class='ellipsis'>{.mb_id}</span>",
+	        이름: "{=get_text(.mb_name)}",
+	        닉네임: "{=get_text(.mb_nick)}",
+	        <!--{? !_wmode}-->
+	        권한: "<label class='select'>{.mb_level}<i></i></label>",
+	        포인트: "<a href='{C.EYOOM_ADMIN_URL}/?dir=member&amp;pid=point_list&amp;sfl=mb_id&amp;stx={.mb_id}'>{=number_format(.mb_point)}</a>",
+	        메일인증: "<span class='{? .email_certify == 'Yes'}color-red{: .email_certify == 'No'}color-dark{/}'>{.email_certify}</span>",
+	        정보공개: "<label class='checkbox'><input type='checkbox' name='mb_open[{.index_}]' {?.mb_open}checked{/} value='1'><i></i></label>",
+	        메일수신: "<label class='checkbox'><input type='checkbox' name='mb_mailling[{.index_}]' {?.mb_mailling}checked{/} value='1'><i></i></label>",
+	        SMS수신: "<label class='checkbox'><input type='checkbox' name='mb_sms[{.index_}]' {?.mb_sms}checked{/} value='1'><i></i></label>",
+	        성인인증: "<label class='checkbox'><input type='checkbox' name='mb_adult[{.index_}]' {?.mb_adult}checked{/} value='1'><i></i></label><input type='hidden' name='mb_certify[{.index_}]' value='{.mb_certify}'>",
+	        접근차단: "{? empty(.mb_leave_date)}<label class='checkbox'><input type='checkbox' name='mb_intercept_date[{.index_}]' {?.mb_intercept_date}checked{/} value='{.mb_intercept_date}'><i></i></label>{/}",
+	        상태: "{.mb_status}",
+	        가입일: "{=substr(.mb_datetime,0,-9)}",
+	        최신로그인: "{=substr(.mb_today_login,0,-9)}",
+	        <!--{:}-->
+	        선택하기: "<a href='javascript:;' data-mb-id='{.mb_id}' data-dismiss='modal' class='set_mbid btn-e btn-e-xs btn-e-indigo'>선택하기</a>",
+	        <!--{/}-->
+        },
+        <!--{/}-->
+    ]
+}();
+
+$(function() {
+    $("#member-list").jsGrid({
+        filtering      : false,
+        editing        : false,
+        sorting        : false,
+        paging         : true,
+        autoload       : true,
+        controller     : db,
+        deleteConfirm  : "정말로 삭제하시겠습니까?\n한번 삭제된 데이터는 복구할수 없습니다.",
+        pageButtonCount: 5,
+        pageSize       : 15,
+        width          : "100%",
+        height         : "auto",
+        fields         : [
+	        <!--{? !_wmode}-->
+            { name: "체크", type: "text", width: 40 },
+            { name: "관리", type: "text", align: "center", width: 110, headercss: "set-btn-header", css: "set-btn-field" },
+            { name: "포토", type: "text", align: "center", width: 60 },
+            <!--{/}-->
+            { name: "아이디", type: "text", width: 100 },
+            { name: "이름", type: "text", width: 100 },
+            { name: "닉네임", type: "text", width: 100 },
+            <!--{? !_wmode}-->
+            { name: "권한", type: "text", width: 100 },
+            { name: "포인트", type: "number", width: 80 },
+            { name: "메일인증", type: "text", align: "center", width: 80 },
+            { name: "정보공개", type: "text", align: "center", width: 80 },
+            { name: "메일수신", type: "text", align: "center", width: 80 },
+            { name: "SMS수신", type: "text", align: "center", width: 80 },
+            { name: "성인인증", type: "text", align: "center", width: 80 },
+            { name: "접근차단", type: "text", align: "center", width: 80 },
+            { name: "상태", type: "text", align: "center", width: 70 },
+            { name: "가입일", type: "text", align: "center", width: 110 },
+            { name: "최신로그인", type: "text", align: "center", width: 110 },
+            <!--{:}-->
+            { name: "선택하기", type: "text", align: "center", width: 80 },
+            <!--{/}-->
+        ]
+    });
+
+	var $chk = $(".jsgrid-table th:first-child");
+	if ($chk.text() == '체크') {
+		var html = '<label for="chkall" class="checkbox"><input type="checkbox" name="chkall" id="chkall" value="1" onclick="check_all(this.form)"><i></i></label>';
+		$chk.html(html);
+	}
+
+    <!--{? _wmode}-->
+    $(".set_mbid").click(function() {
+        var mb_id = $(this).attr('data-mb-id');
+        $('#mb_id', parent.document).val(mb_id);
+        window.parent.closeModal();
+    });
+    <!--{/}-->
+});
+
+function sorting_list(f, str) {
+    var sort = str.split('|');
+
+	$("#sst").val(sort[0]);
+	$("#sod").val(sort[1]);
+
+	if (sort[0] && sort[1]) {
+		f.action = "{C.EYOOM_ADMIN_URL}/?dir={_dir}&pid={_pid}";
+		f.submit();
+	}
+}
+</script>
