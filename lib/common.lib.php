@@ -394,15 +394,15 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
 
     $reply = $list['wr_reply'];
 
-    $list['reply'] = strlen($reply)*10;
+    $list['reply'] = strlen($reply)*20;
 
     $list['icon_reply'] = '';
     if ($list['reply'])
-        $list['icon_reply'] = '<img src="'.$skin_url.'/img/icon_reply.gif" style="margin-left:'.$list['reply'].'px;" alt="답변글">';
+        $list['icon_reply'] = '<img src="'.$skin_url.'/img/icon_reply.gif" class="icon_reply" alt="답변글">';
 
     $list['icon_link'] = '';
     if ($list['wr_link1'] || $list['wr_link2'])
-        $list['icon_link'] = '<img src="'.$skin_url.'/img/icon_link.gif" alt="관련링크">';
+        $list['icon_link'] = '<i class="fa fa-link" aria-hidden="true"></i> ';
 
     // 분류명 링크
     $list['ca_name_href'] = G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'&amp;sca='.urlencode($list['ca_name']);
@@ -412,15 +412,15 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
 
     $list['icon_new'] = '';
     if ($board['bo_new'] && $list['wr_datetime'] >= date("Y-m-d H:i:s", G5_SERVER_TIME - ($board['bo_new'] * 3600)))
-        $list['icon_new'] = '<img src="'.$skin_url.'/img/icon_new.gif" alt="새글">';
+        $list['icon_new'] = '<img src="'.$skin_url.'/img/icon_new.gif" class="title_icon" alt="새글"> ';
 
     $list['icon_hot'] = '';
     if ($board['bo_hot'] && $list['wr_hit'] >= $board['bo_hot'])
-        $list['icon_hot'] = '<img src="'.$skin_url.'/img/icon_hot.gif" alt="인기글">';
+        $list['icon_hot'] = '<i class="fa fa-heart" aria-hidden="true"></i> ';
 
     $list['icon_secret'] = '';
     if (strstr($list['wr_option'], 'secret'))
-        $list['icon_secret'] = '<img src="'.$skin_url.'/img/icon_secret.gif" alt="비밀글">';
+        $list['icon_secret'] = '<i class="fa fa-lock" aria-hidden="true"></i> ';
 
     // 링크
     for ($i=1; $i<=G5_LINK_COUNT; $i++) {
@@ -437,7 +437,7 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
     }
 
     if ($list['file']['count'])
-        $list['icon_file'] = '<img src="'.$skin_url.'/img/icon_file.gif" alt="첨부파일">';
+        $list['icon_file'] = '<i class="fa fa-download" aria-hidden="true"></i> ';
 
     return $list;
 }
@@ -1234,12 +1234,18 @@ function get_sideview($mb_id, $name='', $email='', $homepage='')
                 $width = $config['cf_member_icon_width'];
                 $height = $config['cf_member_icon_height'];
                 $icon_file_url = G5_DATA_URL.'/member/'.$mb_dir.'/'.$mb_id.'.gif';
-                $tmp_name .= '<img src="'.$icon_file_url.'" width="'.$width.'" height="'.$height.'" alt="">';
+                $tmp_name .= '<span class="profile_img"><img src="'.$icon_file_url.'" width="'.$width.'" height="'.$height.'" alt=""></span>';
 
                 if ($config['cf_use_member_icon'] == 2) // 회원아이콘+이름
                     $tmp_name = $tmp_name.' '.$name;
             } else {
-                  $tmp_name = $tmp_name." ".$name;
+                if( defined('G5_THEME_NO_PROFILE_IMG') ){
+                    $tmp_name .= G5_THEME_NO_PROFILE_IMG;
+                } else if( defined('G5_NO_PROFILE_IMG') ){
+                    $tmp_name .= G5_NO_PROFILE_IMG;
+                }
+                if ($config['cf_use_member_icon'] == 2) // 회원아이콘+이름
+                    $tmp_name = $tmp_name.' '.$name;
             }
         } else {
             $tmp_name = $tmp_name.' '.$name;
@@ -1274,7 +1280,7 @@ function get_sideview($mb_id, $name='', $email='', $homepage='')
             $str2 .= "<a href=\"".G5_BBS_URL."/board.php?bo_table=".$bo_table."&amp;sca=".$sca."&amp;sfl=wr_name,1&amp;stx=".$name."\">이름으로 검색</a>\n";
     }
     if($mb_id)
-        $str2 .= "<a href=\"".G5_BBS_URL."/new.php?mb_id=".$mb_id."\">전체게시물</a>\n";
+        $str2 .= "<a href=\"".G5_BBS_URL."/new.php?mb_id=".$mb_id."\" class=\"link_new_page\" onclick=\"check_goto_new(this.href, event);\">전체게시물</a>\n";
     if($is_admin == "super" && $mb_id) {
         $str2 .= "<a href=\"".G5_ADMIN_URL."/member_form.php?w=u&amp;mb_id=".$mb_id."\" target=\"_blank\">회원정보변경</a>\n";
         $str2 .= "<a href=\"".G5_ADMIN_URL."/point_list.php?sfl=mb_id&amp;stx=".$mb_id."\" target=\"_blank\">포인트내역</a>\n";
@@ -2940,6 +2946,11 @@ function member_delete($mb_id)
     // 게시판관리자인 경우 게시판관리자를 공백으로
     sql_query(" update {$g5['board_table']} set bo_admin = '' where bo_admin = '$mb_id' ");
 
+    //소셜로그인에서 삭제 또는 해제
+    if(function_exists('social_member_link_delete')){
+        social_member_link_delete($mb_id);
+    }
+
     // 아이콘 삭제
     @unlink(G5_DATA_PATH.'/member/'.substr($mb_id,0,2).'/'.$mb_id.'.gif');
 }
@@ -3336,6 +3347,85 @@ function check_write_token($bo_table)
     return true;
 }
 
+function get_member_profile_img($mb_id='', $width='', $height='', $alt='profile_image', $title=''){
+    global $member;
+
+    static $no_profile_cache = '';
+    static $member_cache = array();
+    
+    $src = '';
+
+    if( $mb_id ){
+        if( isset($member_cache[$mb_id]) ){
+            $src = $member_cache[$mb_id];
+        } else {
+            $member_img = G5_DATA_PATH.'/member_image/'.substr($mb_id,0,2).'/'.$mb_id.'.gif';
+            if (is_file($member_img)) {
+                $member_cache[$mb_id] = $src = str_replace(G5_DATA_PATH, G5_DATA_URL, $member_img);
+            }
+        }
+    }
+
+    if( !$src ){
+        if( !empty($no_profile_cache) ){
+            $src = $no_profile_cache;
+        } else {
+            // 프로필 이미지가 없을때 기본 이미지
+            $no_profile_img = (defined('G5_THEME_NO_PROFILE_IMG') && G5_THEME_NO_PROFILE_IMG) ? G5_THEME_NO_PROFILE_IMG : G5_NO_PROFILE_IMG;
+            $tmp = array();
+            preg_match( '/src="([^"]*)"/i', $foo, $tmp );
+            $no_profile_cache = $src = isset($tmp[1]) ? $tmp[1] : G5_IMG_URL.'/no_profile.gif';
+        }
+    }
+
+    if( $src ){
+        $attributes = array('src'=>$src, 'width'=>$width, 'height'=>$height, 'alt'=>$alt, 'title'=>$title);
+
+        $output = '<img';
+        foreach ($attributes as $name => $value) {
+            if (!empty($value)) {
+                $output .= sprintf(' %s="%s"', $name, $value);
+            }
+        }
+        $output .= '>';
+
+        return $output;
+    }
+
+    return '';
+}
+
+function get_head_title($title){
+    global $g5;
+
+    if( isset($g5['board_title']) && $g5['board_title'] ){
+        $title = $g5['board_title'];
+    }
+
+    return $title;
+}
+
+function is_use_email_certify(){
+    global $config;
+
+    if( $config['cf_use_email_certify'] && function_exists('social_is_login_check') ){
+        if( $config['cf_social_login_use'] && (get_session('ss_social_provider') || social_is_login_check()) ){      //소셜 로그인을 사용한다면
+            $tmp = (defined('G5_SOCIAL_CERTIFY_MAIL') && G5_SOCIAL_CERTIFY_MAIL) ? 1 : 0;
+            return $tmp;
+        }
+    }
+
+    return $config['cf_use_email_certify'];
+}
+
+function get_real_client_ip(){
+
+    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+
+    return $_SERVER['REMOTE_ADDR'];
+}
+
 function get_call_func_cache($func, $args=array()){
     
     static $cache = array();
@@ -3363,7 +3453,7 @@ function is_include_path_check($path='', $is_input='')
     if( $path ){
         if ($is_input){
 
-            if( strpos($path, 'php://') !== false || strpos($path, 'zlib://') !== false || strpos($path, 'bzip2://') !== false || strpos($path, 'zip://') !== false ){
+            if( stripos($path, 'php://') !== false || stripos($path, 'zlib://') !== false || stripos($path, 'bzip2://') !== false || stripos($path, 'zip://') !== false || stripos($path, 'data:text/') !== false || stripos($path, 'data://') !== false ){
                 return false;
             }
 
@@ -3403,18 +3493,32 @@ function is_include_path_check($path='', $is_input='')
                 return false;
             }
 
-            if( preg_match('/\/data\/(file|editor)\/[A-Za-z0-9_]{1,20}\//', $path) ){
+            if( preg_match('/\/data\/(file|editor|qa|cache|member|member_image|session|tmp)\/[A-Za-z0-9_]{1,20}\//i', $path) ){
                 return false;
             }
         }
 
         $extension = pathinfo($path, PATHINFO_EXTENSION);
         
-        if($extension && preg_match('/(jpg|jpeg|png|gif|bmp|conf)$/', $extension)) {
+        if($extension && preg_match('/(jpg|jpeg|png|gif|bmp|conf)$/i', $extension)) {
             return false;
         }
     }
 
     return true;
+}
+
+function option_array_checked($option, $arr=array()){
+    $checked = '';
+
+    if( !is_array($arr) ){
+        $arr = explode(',', $arr);
+    }
+
+    if ( !empty($arr) && in_array($option, (array) $arr) ){
+        $checked = 'checked="checked"';
+    }
+
+    return $checked;
 }
 ?>

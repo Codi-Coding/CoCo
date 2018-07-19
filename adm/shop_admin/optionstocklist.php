@@ -27,6 +27,7 @@ if ($sel_ca_id != "") {
 
 if ($sel_field == "")  $sel_field = "b.it_name";
 if ($sort1 == "") $sort1 = "a.io_stock_qty";
+if (!in_array($sort1, array('b.it_name', 'a.io_stock_qty', 'a.io_use'))) $sort1 = "a.io_stock_qty";
 if ($sort2 == "") $sort2 = "asc";
 
 $sql_common = "  from {$g5['g5_shop_item_option_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
@@ -63,7 +64,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
-    전체 옵션 <?php echo $total_count; ?>개
+    <span class="btn_ov01"><span class="ov_txt">전체 옵션</span><span class="ov_num">  <?php echo $total_count; ?>개</span></span>
 </div>
 
 <form name="flist" class="local_sch01 local_sch">
@@ -94,15 +95,10 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 </select>
 
 <label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-<input type="text" name="search" value="<?php echo $search; ?>" required class="frm_input required">
+<input type="text" name="search" id="search" value="<?php echo $search; ?>" required class="frm_input required">
 <input type="submit" value="검색" class="btn_submit">
 
 </form>
-
-<div class="btn_add01 btn_add">
-    <a href="./itemstocklist.php" class="btn_add01 btn_add_optional">상품재고관리</a>
-    <a href="./itemsellrank.php" class="btn_add01 btn_add_optional">상품판매순위</a>
-</div>
 
 <form name="fitemstocklist" action="./optionstocklistupdate.php" method="post">
 <input type="hidden" name="sort1" value="<?php echo $sort1; ?>">
@@ -179,13 +175,13 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         $bg = 'bg'.($i%2);
     ?>
     <tr class="<?php echo $bg; ?>">
-        <td>
+        <td class="td_left">
             <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
             <input type="hidden" name="io_id[<?php echo $i; ?>]" value="<?php echo $row['io_id']; ?>">
             <input type="hidden" name="io_type[<?php echo $i; ?>]" value="<?php echo $row['io_type']; ?>">
             <a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a>
         </td>
-        <td class="td_itopt"><?php echo $option; ?></td>
+        <td class="td_left"><?php echo $option; ?></td>
         <td class="td_mng"><?php echo $type; ?></td>
         <td class="td_num<?php echo $io_stock_qty_st; ?>"><?php echo $io_stock_qty; ?></td>
         <td class="td_num"><?php echo number_format($wait_qty); ?></td>
@@ -198,11 +194,11 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="noti_qty_<?php echo $i; ?>" class="sound_only">통보수량</label>
             <input type="text" name="io_noti_qty[<?php echo $i; ?>]" value="<?php echo $row['io_noti_qty']; ?>" id="noti_qty_<?php echo $i; ?>" class="frm_input" size="8" autocomplete="off">
         </td>
-        <td class="td_chk">
+        <td class="td_chk2">
             <label for="use_<?php echo $i; ?>" class="sound_only">판매</label>
             <input type="checkbox" name="io_use[<?php echo $i; ?>]" value="1" id="use_<?php echo $i; ?>" <?php echo ($row['io_use'] ? "checked" : ""); ?>>
         </td>
-        <td class="td_mngsmall"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>">수정</a></td>
+        <td class="td_mng td_mng_s"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03">수정</a></td>
     </tr>
     <?php
     }
@@ -213,9 +209,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     </table>
 </div>
 
-<div class="btn_confirm01 btn_confirm">
-    <input type="submit" value="일괄수정" class="btn_submit">
+<div class="btn_fixed_top">
+    <a href="./itemstocklist.php" class="btn btn_02">상품재고관리</a>
+    <a href="./itemsellrank.php" class="btn btn_02">상품판매순위</a>
+    <input type="submit" value="일괄수정" class="btn_submit btn">
 </div>
+
 </form>
 
 <div class="local_desc01 local_desc">

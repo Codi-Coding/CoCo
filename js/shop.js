@@ -1,6 +1,7 @@
 var option_add = false;
 var supply_add = false;
 var isAndroid = (navigator.userAgent.toLowerCase().indexOf("android") > -1);
+var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 $(function() {
     // 선택옵션
@@ -43,7 +44,9 @@ $(function() {
             option_add = true;
         });
     } else {
-        $(document).on("mouseup", "select.it_option", function() {
+        var it_option_events = isSafari ? "mousedown" : "mouseup";
+
+        $(document).on(it_option_events, "select.it_option", function(e) {
             option_add = true;
         });
     }
@@ -145,7 +148,9 @@ $(function() {
             supply_add = true;
         });
     } else {
-        $(document).on("mouseup", "select.it_supply", function() {
+        var it_supply_events = isSafari ? "mousedown" : "mouseup";
+        
+        $(document).on(it_supply_events, "select.it_supply", function(e) {
             supply_add = true;
         });
     }
@@ -261,8 +266,13 @@ function sel_option_process(add_exec)
     info = $("select.it_option:last").val().split(",");
 
     $("select.it_option").each(function(index) {
+
         value = $(this).val();
-        item = $(this).closest("tr").find("th label").text();
+        item = $(this).closest(".get_item_options").length ? $(this).closest(".get_item_options").find("label[for^=it_option]").text() : "";
+        
+        if( !item ){
+            item = $(this).closest("tr").length ? $(this).closest("tr").find("th label").text() : "";
+        }
 
         if(!value) {
             run_error = true;
@@ -307,38 +317,44 @@ function sel_option_process(add_exec)
 // 추가옵션 추가처리
 function sel_supply_process($el, add_exec)
 {
-    var val = $el.val();
-    var item = $el.closest("tr").find("th label").text();
+    if( $el.triggerHandler( 'shop_sel_supply_process',{add_exec:add_exec} ) !== false ){
+        var val = $el.val();
+        var item = $el.closest(".get_item_supply").length ? $el.closest(".get_item_supply").find("label[for^=it_supply]").text() : "";
+        
+        if( !item ){
+            item = $el.closest("tr").length ? $el.closest("tr").find("th label").text() : "";
+        }
 
-    if(!val) {
-        alert(item+"을(를) 선택해 주십시오.");
-        return;
-    }
-
-    var info = val.split(",");
-
-    // 재고체크
-    if(parseInt(info[2]) < 1) {
-        alert(info[0]+"은(는) 재고가 부족하여 구매할 수 없습니다.");
-        return false;
-    }
-
-    var id = item+chr(30)+info[0];
-    var option = item+":"+info[0];
-    var price = info[1];
-    var stock = info[2];
-
-    // 금액 음수 체크
-    if(parseInt(price) < 0) {
-        alert("구매금액이 음수인 상품은 구매할 수 없습니다.");
-        return false;
-    }
-
-    if(add_exec) {
-        if(same_option_check(option))
+        if(!val) {
+            alert(item+"을(를) 선택해 주십시오.");
             return;
+        }
 
-        add_sel_option(1, id, option, price, stock);
+        var info = val.split(",");
+
+        // 재고체크
+        if(parseInt(info[2]) < 1) {
+            alert(info[0]+"은(는) 재고가 부족하여 구매할 수 없습니다.");
+            return false;
+        }
+
+        var id = item+chr(30)+info[0];
+        var option = item+":"+info[0];
+        var price = info[1];
+        var stock = info[2];
+
+        // 금액 음수 체크
+        if(parseInt(price) < 0) {
+            alert("구매금액이 음수인 상품은 구매할 수 없습니다.");
+            return false;
+        }
+
+        if(add_exec) {
+            if(same_option_check(option))
+                return;
+
+            add_sel_option(1, id, option, price, stock);
+        }
     }
 }
 
