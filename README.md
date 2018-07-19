@@ -1,1 +1,0 @@
-# CoCo Team Marketplace Project
