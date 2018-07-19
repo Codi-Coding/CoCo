@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+.search-box { border:1px solid #ddd; background:#fafafa; padding:20px 15px 3px; margin-bottom:15px; }
+.label-sp { margin-right:10px; }
+
+/* ¸ñ·Ï */
+.list-wrap { overflow:hidden; line-height:20px; }
+.list-wrap .txt-normal { letter-spacing:0; }
+.list-wrap .txt-short { letter-spacing:-1px; padding-right:1px; }
+.list-wrap .item-row { float:left; }
+.list-wrap .item-image { position:relative; overflow:hidden; }
+.list-wrap .item-content { padding-top:10px; margin:0px 4px; text-align:center; }
+.list-wrap .item-star { text-align:center; overflow:hidden; letter-spacing:-1px; font-size:18px; line-height:20px; height:20px; margin-bottom:4px; }
+.list-wrap .item-name { overflow:hidden; letter-spacing:-1px; padding-right:1px; text-align:center; font-size:14px; }
+.list-wrap .item-text { font-size:12px; color:#888; }
+.list-wrap .item-price { margin-top:4px; line-height:22px; }
+.list-wrap .item-price b { font-size:16px; display:inline-block; margin:0px 4px; }
+.list-wrap .item-price b i { font-size:12px; }
+.list-wrap .item-price strike { color:#888; margin:0px 4px; font-size:14px; display:inline-block; }
+.list-wrap .item-details { color:#888; margin-top:4px; padding:0px 1px; font-size:13px; text-align:center; }
+.list-wrap .item-sp { margin:0px 4px; white-space:nowrap; }
+.list-wrap .item-sp i { margin-right:2px; color:#888; }
+.list-wrap .item-sns { margin-top:15px; text-align:center; }
+.list-wrap .item-sns img { width:15%; max-width:34px; border-radius:50%; }
+.list-none { margin:0px 0px 15px; padding:80px 0px; text-align:center; color:#888; }
+.list-page { margin:30px 0px; }
+.list-page .pagination { margin:0; }

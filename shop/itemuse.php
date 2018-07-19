@@ -1,87 +1,128 @@
 <?php
-include_once('./_common.php');
+if (!defined('_GNUBOARD_')) {
+	$is_item = false;
+	include_once('./_common.php');
 
-if( !isset($it) && !get_session("ss_tv_idx") ){
-    if( !headers_sent() ){  //헤더를 보내기 전이면 검색엔진에서 제외합니다.
-        echo '<meta name="robots" content="noindex, nofollow">';
-    }
-    /*
-    if( !G5_IS_MOBILE ){    //PC 에서는 검색엔진 화면에 노출하지 않도록 수정
-        return;
-    }
-    */
+	if(USE_G5_THEME && defined('G5_THEME_PATH')) {
+		require_once(G5_SHOP_PATH.'/yc/itemuse.php');
+		return;
+	}
+
+	if( !isset($it) && !get_session("ss_tv_idx") ){
+		if( !headers_sent() ){  //헤더를 보내기 전이면 검색엔진에서 제외합니다.
+			echo '<meta name="robots" content="noindex, nofollow">';
+		}
+		/*
+		if( !G5_IS_MOBILE ){    //PC 에서는 검색엔진 화면에 노출하지 않도록 수정
+			return;
+		}
+		*/
+	}
+
+	include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+
+	$it = apms_it($it_id);
+	$ca_id = ($ca_id) ? $ca_id : $it['ca_id'];
+	$ca = sql_fetch(" select as_item_set, as_mobile_item_set from {$g5['g5_shop_category_table']} where ca_id = '{$ca_id}' ");
+	$at = apms_ca_thema($ca_id, $ca, 1);
+	if(!defined('THEMA_PATH')) {
+		include_once(G5_LIB_PATH.'/apms.thema.lib.php');
+	}
+
+	$item_skin = apms_itemview_skin($at['item'], $ca_id, $it['ca_id']);
+
+	// 출력수
+	if(!$urows) $itemrows = apms_rows('iuse_'.MOBILE_.'rows');
+
+	$wset = array();
+	if($ca['as_'.MOBILE_.'item_set']) {
+		$wset = apms_unpack($ca['as_'.MOBILE_.'item_set']);
+	}
+
+	// 데모
+	if($is_demo) {
+		@include ($demo_setup_file);
+	}
+
+	$item_skin_path = G5_SKIN_PATH.'/apms/item/'.$item_skin;
+	$item_skin_url = G5_SKIN_URL.'/apms/item/'.$item_skin;
+
+	$is_author = ($is_member && $it['pt_id'] && $it['pt_id'] == $member['mb_id']) ? true : false;
+	$author_id = ($it['pt_id']) ? $it['pt_id'] : $config['cf_admin'];
+	$author_photo = apms_photo_url($author_id);
+
+} else {
+
+	if(USE_G5_THEME && defined('G5_THEME_PATH')) {
+		require_once(G5_SHOP_PATH.'/yc/itemuse.php');
+		return;
+	}
+
+	$page = 0;
 }
 
-if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH.'/itemuse.php');
-    return;
-}
+// 후기권한 재설정
+$is_free_write = ($it['pt_review_use'] || !$default['de_item_use_write']) ? true : false;
 
-include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+$total_count = (int)$it['it_use_cnt'];
 
-// 현재페이지, 총페이지수, 한페이지에 보여줄 행, URL
-function itemuse_page($write_pages, $cur_page, $total_page, $url, $add="")
-{
-    //$url = preg_replace('#&amp;page=[0-9]*(&amp;page=)$#', '$1', $url);
-    $url = preg_replace('#&amp;page=[0-9]*#', '', $url) . '&amp;page=';
+$urows = (isset($urows) && $urows > 0) ? $urows : $itemrows['iuse_'.MOBILE_.'rows'];
+$urows = ($urows > 0) ? $urows : 15;
 
-    $str = '';
-    if ($cur_page > 1) {
-        $str .= '<a href="'.$url.'1'.$add.'" class="pg_page pg_start">처음</a>'.PHP_EOL;
-    }
-
-    $start_page = ( ( (int)( ($cur_page - 1 ) / $write_pages ) ) * $write_pages ) + 1;
-    $end_page = $start_page + $write_pages - 1;
-
-    if ($end_page >= $total_page) $end_page = $total_page;
-
-    if ($start_page > 1) $str .= '<a href="'.$url.($start_page-1).$add.'" class="pg_page pg_prev">이전</a>'.PHP_EOL;
-
-    if ($total_page > 1) {
-        for ($k=$start_page;$k<=$end_page;$k++) {
-            if ($cur_page != $k)
-                $str .= '<a href="'.$url.$k.$add.'" class="pg_page">'.$k.'</a><span class="sound_only">페이지</span>'.PHP_EOL;
-            else
-                $str .= '<span class="sound_only">열린</span><strong class="pg_current">'.$k.'</strong><span class="sound_only">페이지</span>'.PHP_EOL;
-        }
-    }
-
-    if ($total_page > $end_page) $str .= '<a href="'.$url.($end_page+1).$add.'" class="pg_page pg_next">다음</a>'.PHP_EOL;
-
-    if ($cur_page < $total_page) {
-        $str .= '<a href="'.$url.$total_page.$add.'" class="pg_page pg_end">맨끝</a>'.PHP_EOL;
-    }
-
-    if ($str)
-        return "<nav class=\"pg_wrap\"><span class=\"pg\">{$str}</span></nav>";
-    else
-        return "";
+$total_page  = ceil($total_count / $urows); // 전체 페이지 계산
+if($page > 0) {
+	;
+} else {
+	$page = 1; // 페이지가 없으면 1페이지
 }
 
 $itemuse_list = "./itemuselist.php";
-$itemuse_form = "./itemuseform.php?it_id=".$it_id;
-$itemuse_formupdate = "./itemuseformupdate.php?it_id=".$it_id;
+$itemuse_form = "./itemuseform.php?it_id=".$it_id.'&amp;ca_id='.$ca_id.'&amp;urows='.$urows;
+$itemuse_formupdate = "./itemuseformupdate.php?it_id=".$it_id.'&amp;ca_id='.$ca_id.'&amp;urows='.$urows.'&amp;page='.$page;
 
-$sql_common = " from `{$g5['g5_shop_item_use_table']}` where it_id = '{$it_id}' and is_confirm = '1' ";
+$list = array();
 
-// 테이블의 전체 레코드수만 얻음
-$sql = " select COUNT(*) as cnt " . $sql_common;
-$row = sql_fetch($sql);
-$total_count = $row['cnt'];
+if($total_count > 0) {
 
-$rows = 5;
-$total_page  = ceil($total_count / $rows); // 전체 페이지 계산
-if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
-$from_record = ($page - 1) * $rows; // 시작 레코드 구함
+	$from_record = ($page - 1) * $urows; // 시작 레코드 구함
 
-$sql = "select * $sql_common order by is_id desc limit $from_record, $rows ";
-$result = sql_query($sql);
+	if($from_record < 0)
+		$from_record = 0;
 
-$itemuse_skin = G5_SHOP_SKIN_PATH.'/itemuse.skin.php';
+	$iuse_num = $total_count - ($page - 1) * $urows;
 
-if(!file_exists($itemuse_skin)) {
-    echo str_replace(G5_PATH.'/', '', $itemuse_skin).' 스킨 파일이 존재하지 않습니다.';
-} else {
-    include_once($itemuse_skin);
+	$result = sql_query("select * from `{$g5['g5_shop_item_use_table']}` where it_id = '{$it_id}' and is_confirm = '1' order by is_id desc limit $from_record, $urows ");
+	for ($i=0; $row=sql_fetch_array($result); $i++)	{
+		$list[$i] = $row;
+		$list[$i]['is_num'] = $iuse_num;
+		$list[$i]['is_time'] = strtotime($row['is_time']);
+		$list[$i]['is_star'] = apms_get_star($row['is_score']);
+		$list[$i]['is_photo'] = apms_photo_url($row['mb_id']);
+		$list[$i]['is_href'] = './itemuselist.php?bo_table=itemuse&amp;wr_id='.$row['wr_id'];
+		$list[$i]['is_edit_href'] = $itemuse_form.'&amp;is_id='.$row['is_id'].'&amp;page='.$page.'&amp;w=u';
+		$list[$i]['is_edit_self'] = $itemuse_form.'&amp;is_id='.$row['is_id'].'&amp;page='.$page.'&amp;w=u&amp;move=1';
+		$list[$i]['is_content'] = apms_content(conv_content($row['is_content'], 1));
+		$list[$i]['is_reply'] = false;
+		if(!empty($row['is_reply_content'])) {
+			$list[$i]['is_reply'] = true;
+			$list[$i]['is_reply_name'] = get_text($row['is_reply_name']); 
+			$list[$i]['is_reply_subject'] = get_text($row['is_reply_subject']); 
+			$list[$i]['is_reply_content'] = apms_content(conv_content($row['is_reply_content'], 1));
+		}
+
+		$hash = md5($row['is_id'].$row['is_time'].$row['is_ip']);
+		$list[$i]['is_del_href'] = $itemuse_formupdate.'&amp;is_id='.$row['is_id'].'&amp;w=d&amp;hash='.$hash;
+		$list[$i]['is_del_return'] = './itemuse.php?it_id='.$it_id.'&amp;ca_id='.$ca_id.'&amp;urows='.$urows.'&amp;page='.$page;
+		$list[$i]['is_btn'] = ($is_admin || $row['mb_id'] == $member['mb_id']) ? true : false;
+
+		$iuse_num--;
+	}
 }
+
+$write_pages = (G5_IS_MOBILE) ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
+$list_page = './itemuse.php?it_id='.$it_id.'&amp;ca_id='.$ca_id.'&amp;urows='.$urows.'&amp;page=';
+
+include_once($item_skin_path.'/itemuse.skin.php');
+
+unset($list);
 ?>

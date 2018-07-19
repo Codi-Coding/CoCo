@@ -35,7 +35,11 @@ if (!$sst) {
     $sod = "desc";
 }
 
-$sql_order = " order by {$sst} {$sod} ";
+if($sst == "mb_email_certify") {
+	$sql_order = " order by {$sst} {$sod} , mb_datetime asc";
+} else {
+	$sql_order = " order by {$sst} {$sod} ";
+}
 
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} {$sql_order} ";
 $row = sql_fetch($sql);
@@ -45,6 +49,16 @@ $rows = $config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
+
+// 멤버쉽 확인 ------------------------
+$is_membership = (function_exists('apms_membership_item')) ? true : false;
+
+// 멥버쉽 회원수
+if($is_membership) {
+	$sql = " select count(*) as cnt {$sql_common} {$sql_search} and as_date > 0 {$sql_order} ";
+	$row = sql_fetch($sql);
+	$membership_count = $row['cnt'];
+}
 
 // 탈퇴회원수
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} and mb_leave_date <> '' {$sql_order} ";
@@ -64,13 +78,16 @@ include_once('./admin.head.php');
 $sql = " select * {$sql_common} {$sql_search} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$colspan = 16;
+$colspan = ($is_membership) ? 17 : 16;
 ?>
 
 <div class="local_ov01 local_ov">
     <?php echo $listall ?>
     총회원수 <?php echo number_format($total_count) ?>명 중,
-    <a href="?sst=mb_intercept_date&amp;sod=desc&amp;sfl=<?php echo $sfl ?>&amp;stx=<?php echo $stx ?>">차단 <?php echo number_format($intercept_count) ?></a>명,
+	<?php if($is_membership) { ?>
+    <a href="?sst=as_date&amp;sod=desc&amp;sfl=<?php echo $sfl ?>&amp;stx=<?php echo $stx ?>">멤버쉽 <?php echo number_format($membership_count) ?></a>명,
+	<?php } ?>
+	<a href="?sst=mb_intercept_date&amp;sod=desc&amp;sfl=<?php echo $sfl ?>&amp;stx=<?php echo $stx ?>">차단 <?php echo number_format($intercept_count) ?></a>명,
     <a href="?sst=mb_leave_date&amp;sod=desc&amp;sfl=<?php echo $sfl ?>&amp;stx=<?php echo $stx ?>">탈퇴 <?php echo number_format($leave_count) ?></a>명
 </div>
 
@@ -89,6 +106,7 @@ $colspan = 16;
     <option value="mb_datetime"<?php echo get_selected($_GET['sfl'], "mb_datetime"); ?>>가입일시</option>
     <option value="mb_ip"<?php echo get_selected($_GET['sfl'], "mb_ip"); ?>>IP</option>
     <option value="mb_recommend"<?php echo get_selected($_GET['sfl'], "mb_recommend"); ?>>추천인</option>
+    <option value="mb_1"<?php echo get_selected($_GET['sfl'], "mb_1"); ?>>여분필드1</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
@@ -131,7 +149,10 @@ $colspan = 16;
         <th scope="col" id="mb_list_mobile">휴대폰</th>
         <th scope="col" id="mb_list_auth">상태/<?php echo subject_sort_link('mb_level', '', 'desc') ?>권한</a></th>
         <th scope="col" id="mb_list_lastcall"><?php echo subject_sort_link('mb_today_login', '', 'desc') ?>최종접속</a></th>
-        <th scope="col" rowspan="2" id="mb_list_grp">접근<br>그룹</th>
+		<?php if($is_membership) { ?>
+        <th scope="col" id="as_membership"><?php echo subject_sort_link('as_date', '', 'desc') ?>멤버쉽기간(잔여시간)</a></th>
+		<?php } ?>
+		<th scope="col" rowspan="2" id="mb_list_grp">접근<br>그룹</th>
         <th scope="col" rowspan="2" id="mb_list_mng">관리</th>
     </tr>
     <tr>
@@ -145,6 +166,9 @@ $colspan = 16;
         <th scope="col" id="mb_list_tel">전화번호</th>
         <th scope="col" id="mb_list_point"><?php echo subject_sort_link('mb_point', '', 'desc') ?> 포인트</a></th>
         <th scope="col" id="mb_list_join"><?php echo subject_sort_link('mb_datetime', '', 'desc') ?>가입일</a></th>
+		<?php if($is_membership) { ?>
+		<th scope="col" id="as_membership_add">기간증감/해제</th>
+		<?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -232,7 +256,15 @@ $colspan = 16;
             <?php echo get_member_level_select("mb_level[$i]", 1, $member['mb_level'], $row['mb_level']) ?>
         </td>
         <td headers="mb_list_lastcall" class="td_date"><?php echo substr($row['mb_today_login'],2,8); ?></td>
-        <td headers="mb_list_grp" rowspan="2" class="td_numsmall"><?php echo $group ?></td>
+		<?php if($is_membership) { ?>
+			<td headers="as_membership" class="td_date">
+				<?php if($row['as_date']) { ?>
+					<?php echo date("Y/m/d", $row['as_date']);?>(<?php echo number_format(($row['as_date'] - G5_SERVER_TIME) / 3600);?>시간)
+				<?php } ?>
+				<input type="hidden" name="as_date[<?php echo $i; ?>]" value="<?php echo $row['as_date'];?>" id="as_date_<?php echo $i;?>">
+			</td>
+		<?php } ?>
+		<td headers="mb_list_grp" rowspan="2" class="td_numsmall"><?php echo $group ?></td>
         <td headers="mb_list_mng" rowspan="2" class="td_mngsmall"><?php echo $s_mod ?> <?php echo $s_grp ?></td>
     </tr>
     <tr class="<?php echo $bg; ?>">
@@ -263,7 +295,16 @@ $colspan = 16;
         <td headers="mb_list_tel" class="td_tel"><?php echo get_text($row['mb_tel']); ?></td>
         <td headers="mb_list_point" class="td_num"><a href="point_list.php?sfl=mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo number_format($row['mb_point']) ?></a></td>
         <td headers="mb_list_join" class="td_date"><?php echo substr($row['mb_datetime'],2,8); ?></td>
-    </tr>
+		<?php if($is_membership) { ?>
+			<td headers="as_membership_add" class="td_date">
+				<?php if($row['as_date']) { ?>
+					± <input type="text" name="as_date_plus[<?php echo $i; ?>]" value="" id="as_date_plus_<?php echo $i;?>" maxlength="20" class="frm_input" size="4"> 일
+					-
+					<label><input type="checkbox" name="as_date_del[<?php echo $i; ?>]" value="1" id="as_date_del_<?php echo $i;?>"> 해제</label>
+				<?php } ?>
+			</td>
+		<?php } ?>
+	</tr>
 
     <?php
     }
@@ -277,6 +318,7 @@ $colspan = 16;
 <div class="btn_list01 btn_list">
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value">
+    <input type="submit" name="act_button" value="완전삭제" onclick="document.pressed=this.value">
 </div>
 
 </form>
@@ -292,7 +334,13 @@ function fmemberlist_submit(f)
     }
 
     if(document.pressed == "선택삭제") {
-        if(!confirm("선택한 자료를 정말 삭제하시겠습니까?")) {
+        if(!confirm("선택회원의 기본정보만 삭제되며 아이디, 닉네임 기록은 남습니다.\n\n선택한 자료를 정말 삭제하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    if(document.pressed == "완전삭제") {
+        if(!confirm("선택회원의 회원정보 자체를 DB에서 완전히 삭제합니다.\n\n선택한 자료를 정말 삭제하시겠습니까?")) {
             return false;
         }
     }

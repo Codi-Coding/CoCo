@@ -6,26 +6,29 @@ add_stylesheet('<link rel="stylesheet" href="'.$poll_skin_url.'/style.css">', 0)
 ?>
 
 <!-- 설문조사 시작 { -->
-<form name="fpoll" action="<?php echo G5_BBS_URL ?>/poll_update.php" onsubmit="return fpoll_submit(this);" method="post">
-<input type="hidden" name="po_id" value="<?php echo $po_id ?>">
-<input type="hidden" name="skin_dir" value="<?php echo urlencode($skin_dir); ?>">
-<section id="poll">
-    <header>
-        <h2>설문조사</h2>
-        <?php if ($is_admin == "super") {  ?><a href="<?php echo G5_ADMIN_URL ?>/poll_form.php?w=u&amp;po_id=<?php echo $po_id ?>" class="btn_admin">설문조사 관리</a><?php }  ?>
-        <p><?php echo $po['po_subject'] ?></p>
-    </header>
+<div class="poll-skin">
+	<form class="form" name="fpoll" action="<?php echo G5_BBS_URL ?>/poll_update.php" onsubmit="return fpoll_submit(this);" method="post">
+	<input type="hidden" name="po_id" value="<?php echo $po_id ?>">
+	<input type="hidden" name="skin_dir" value="<?php echo $skin_dir ?>">
+	<b><?php echo $po['po_subject'] ?></b>
     <ul>
         <?php for ($i=1; $i<=9 && $po["po_poll{$i}"]; $i++) {  ?>
         <li><input type="radio" name="gb_poll" value="<?php echo $i ?>" id="gb_poll_<?php echo $i ?>"> <label for="gb_poll_<?php echo $i ?>"><?php echo $po['po_poll'.$i] ?></label></li>
         <?php }  ?>
     </ul>
-    <footer>
-        <input type="submit" value="투표하기">
-        <a href="<?php echo G5_BBS_URL."/poll_result.php?po_id=$po_id&amp;skin_dir=".urlencode($skin_dir); ?>" target="_blank" onclick="poll_result(this.href); return false;">결과보기</a>
-    </footer>
-</section>
-</form>
+	<div class="h15"></div>
+	<div class="text-center">
+		<div class="btn-group">
+			<button type="submit" class="btn btn-color btn-sm">투표하기</button>
+	        <a class="btn btn-black btn-sm" href="<?php echo G5_BBS_URL;?>/poll_result.php?po_id=<?php echo $po_id;?>&amp;skin_dir=<?php echo $skin_dir;?>" target="_blank" onclick="poll_result(this.href); return false;">결과보기</a>
+			<?php if($is_admin == 'super') { ?>
+				<a href="<?php echo G5_ADMIN_URL; ?>/poll_list.php" class="btn btn-black btn-sm">관리</a>
+			<?php } ?>
+		</div>
+	</div>
+	</form>
+	<div class="clearfix"></div>
+</div>
 
 <script>
 function fpoll_submit(f)

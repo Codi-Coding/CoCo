@@ -7,6 +7,9 @@ include_once(G5_LIB_PATH.'/mailer.lib.php');
 // 리퍼러 체크
 referer_check();
 
+// 토큰체크
+check_write_token('register');
+
 if (!($w == '' || $w == 'u')) {
     alert('w 값이 제대로 넘어오지 않았습니다.');
 }
@@ -95,16 +98,18 @@ if ($w == '' || $w == 'u') {
     if($w == '' && $mb_password != $mb_password_re)
         alert('비밀번호가 일치하지 않습니다.');
 
-    if ($msg = empty_mb_name($mb_name))       alert($msg, "", true, true);
+    if ($msg = empty_mb_name($mb_name))     alert($msg, "", true, true);
     if ($msg = empty_mb_nick($mb_nick))     alert($msg, "", true, true);
     if ($msg = empty_mb_email($mb_email))   alert($msg, "", true, true);
     if ($msg = reserve_mb_id($mb_id))       alert($msg, "", true, true);
     if ($msg = reserve_mb_nick($mb_nick))   alert($msg, "", true, true);
     // 이름에 한글명 체크를 하지 않는다.
-    //if ($msg = valid_mb_name($mb_name))     alert($msg, "", true, true);
+    //if ($msg = valid_mb_name($mb_name))   alert($msg, "", true, true);
     if ($msg = valid_mb_nick($mb_nick))     alert($msg, "", true, true);
     if ($msg = valid_mb_email($mb_email))   alert($msg, "", true, true);
     if ($msg = prohibit_mb_email($mb_email))alert($msg, "", true, true);
+	// 휴대폰체크
+	if ($msg = exist_mb_hp($mb_hp, $mb_id)) alert($msg, "", true, true);
 
     // 휴대폰 필수입력일 경우 휴대폰번호 유효성 체크
     if (($config['cf_use_hp'] || $config['cf_cert_hp']) && $config['cf_req_hp']) {
@@ -261,7 +266,7 @@ if ($w == '') {
         }
 
         ob_start();
-        include_once ('./register_form_update_mail1.php');
+        include_once ($misc_skin_path.'/register_form_update_mail1.php');
         $content = ob_get_contents();
         ob_end_clean();
 
@@ -277,7 +282,7 @@ if ($w == '') {
         $subject = '['.$config['cf_title'].'] '.$mb_nick .' 님께서 회원으로 가입하셨습니다.';
 
         ob_start();
-        include_once ('./register_form_update_mail2.php');
+        include_once ($misc_skin_path.'/register_form_update_mail2.php');
         $content = ob_get_contents();
         ob_end_clean();
 
@@ -408,7 +413,7 @@ if ($config['cf_use_email_certify'] && $old_email != $mb_email) {
     $certify_href = G5_BBS_URL.'/email_certify.php?mb_id='.$mb_id.'&amp;mb_md5='.$mb_md5;
 
     ob_start();
-    include_once ('./register_form_update_mail3.php');
+    include_once ($misc_skin_path.'/register_form_update_mail3.php');
     $content = ob_get_contents();
     ob_end_clean();
 
@@ -474,7 +479,11 @@ if ($msg)
     echo '<script>alert(\''.$msg.'\');</script>';
 
 if ($w == '') {
-    goto_url(G5_HTTP_BBS_URL.'/register_result.php');
+	if($pim) {
+		goto_url(G5_HTTP_BBS_URL.'/register_result.php?pim='.$pim);
+	} else {
+		goto_url(G5_HTTP_BBS_URL.'/register_result.php');
+	}
 } else if ($w == 'u') {
     $row  = sql_fetch(" select mb_password from {$g5['member_table']} where mb_id = '{$member['mb_id']}' ");
     $tmp_password = $row['mb_password'];

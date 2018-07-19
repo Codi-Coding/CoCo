@@ -23,6 +23,24 @@ sql_query(" delete from {$g5['scrap_table']} where bo_table = '{$tmp_bo_table}' 
 // 파일 삭제
 sql_query(" delete from {$g5['board_file_table']} where bo_table = '{$tmp_bo_table}' ");
 
+// 내글반응 삭제
+sql_query(" delete from {$g5['apms_response']} where bo_table = '{$tmp_bo_table}' ", false);
+
+// 태그로그 삭제
+sql_query(" delete from {$g5['apms_tag_log']} where bo_table = '{$tmp_bo_table}' ", false);
+
+// 신고글 삭제
+sql_query(" delete from {$g5['apms_shingo']} where bo_table = '{$tmp_bo_table}' ", false);
+
+// 이벤트 삭제
+sql_query(" delete from {$g5['apms_event']} where bo_table = '{$tmp_bo_table}' ", false);
+
+// 설문 삭제
+sql_query(" delete from {$g5['apms_poll']} where bo_table = '{$tmp_bo_table}' ", false);
+
+// 플레이목록 삭제
+sql_query(" delete from {$g5['apms_playlist']} where bo_table = '{$tmp_bo_table}' ", false);
+
 // 게시판 테이블 DROP
 sql_query(" drop table {$g5['write_prefix']}{$tmp_bo_table} ", FALSE);
 

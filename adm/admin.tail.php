@@ -2,8 +2,14 @@
 if (!defined('_GNUBOARD_')) exit;
 
 $print_version = defined('G5_YOUNGCART_VER') ? 'YoungCart Version '.G5_YOUNGCART_VER : 'Version '.G5_GNUBOARD_VER;
-?>
 
+if($is_admin_skin) {
+	include_once(ADMIN_SKIN_PATH.'/admin.tail.php');
+} else {
+
+// 어드민스킨 미사용시 기본스킨 출력
+
+?>
         <noscript>
             <p>
                 귀하께서 사용하시는 브라우저는 현재 <strong>자바스크립트를 사용하지 않음</strong>으로 설정되어 있습니다.<br>
@@ -20,6 +26,8 @@ $print_version = defined('G5_YOUNGCART_VER') ? 'YoungCart Version '.G5_YOUNGCART
         <a href="#">상단으로</a>
     </p>
 </footer>
+
+<?php } ?>
 
 <!-- <p>실행시간 : <?php echo get_microtime() - $begin_time; ?> -->
 

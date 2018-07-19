@@ -85,7 +85,7 @@ $colspan = 15;
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
-<input type="hidden" name="token" value="<?php echo $token ?>">
+<input type="hidden" name="token" value="">
 
 <div class="tbl_head01 tbl_wrap">
     <table>
@@ -98,7 +98,7 @@ $colspan = 15;
         </th>
         <th scope="col"><?php echo subject_sort_link('a.gr_id') ?>그룹</a></th>
         <th scope="col"><?php echo subject_sort_link('bo_table') ?>TABLE</a></th>
-        <th scope="col"><?php echo subject_sort_link('bo_skin', '', 'desc') ?>스킨</a></th>
+        <th scope="col"><?php echo subject_sort_link('bo_skin', '', 'desc') ?>PC<br>스킨</a></th>
         <th scope="col"><?php echo subject_sort_link('bo_mobile_skin', '', 'desc') ?>모바일<br>스킨</span></a></th>
         <th scope="col"><?php echo subject_sort_link('bo_subject') ?>제목</a></th>
         <th scope="col">읽기P<span class="sound_only">포인트</span></th>
@@ -138,12 +138,13 @@ $colspan = 15;
             <a href="<?php echo G5_BBS_URL ?>/board.php?bo_table=<?php echo $row['bo_table'] ?>"><?php echo $row['bo_table'] ?></a>
         </td>
         <td>
-            <label for="bo_skin_<?php echo $i; ?>" class="sound_only">스킨</label>
+            <label for="bo_skin_<?php echo $i; ?>" class="sound_only">모바일 스킨</label>
             <?php echo get_skin_select('board', 'bo_skin_'.$i, "bo_skin[$i]", $row['bo_skin']); ?>
         </td>
         <td>
             <label for="bo_mobile_skin_<?php echo $i; ?>" class="sound_only">모바일 스킨</label>
-            <?php echo get_mobile_skin_select('board', 'bo_mobile_skin_'.$i, "bo_mobile_skin[$i]", $row['bo_mobile_skin']); ?>
+            <?php //echo get_mobile_skin_select('board', 'bo_mobile_skin_'.$i, "bo_mobile_skin[$i]", $row['bo_mobile_skin']); ?>
+            <?php echo get_skin_select('board', 'bo_mobile_skin_'.$i, "bo_mobile_skin[$i]", $row['bo_mobile_skin']); // PC로 변경 ?>
         </td>
         <td>
             <label for="bo_subject_<?php echo $i; ?>" class="sound_only">게시판 제목<strong class="sound_only"> 필수</strong></label>

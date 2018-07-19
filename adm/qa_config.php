@@ -45,7 +45,10 @@ if(!sql_query(" DESCRIBE `{$g5['qa_config_table']}` ", false)) {
                   `qa_2` varchar(255) NOT NULL DEFAULT '',
                   `qa_3` varchar(255) NOT NULL DEFAULT '',
                   `qa_4` varchar(255) NOT NULL DEFAULT '',
-                  `qa_5` varchar(255) NOT NULL DEFAULT ''
+                  `qa_5` varchar(255) NOT NULL DEFAULT '',
+                  `as_admin` varchar(255) NOT NULL DEFAULT '',
+                  `as_editor` varchar(255) NOT NULL DEFAULT '',
+                  `as_mobile_editor` varchar(255) NOT NULL DEFAULT ''
                 )", true);
     sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['qa_content_table']}` (
                   `qa_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -153,7 +156,8 @@ if(!isset($qaconfig['qa_include_head'])) {
         <tr>
             <th scope="row"><label for="qa_mobile_skin">모바일 스킨 디렉토리<strong class="sound_only">필수</strong></label></th>
             <td>
-                <?php echo get_mobile_skin_select('qa', 'qa_mobile_skin', 'qa_mobile_skin', $qaconfig['qa_mobile_skin'], 'required'); ?>
+                <?php //echo get_mobile_skin_select('qa', 'qa_mobile_skin', 'qa_mobile_skin', $qaconfig['qa_mobile_skin'], 'required'); ?>
+                <?php echo get_skin_select('qa', 'qa_mobile_skin', 'qa_mobile_skin', $qaconfig['qa_mobile_skin'], 'required'); ?>
             </td>
         </tr>
         <tr>
@@ -202,12 +206,38 @@ if(!isset($qaconfig['qa_include_head'])) {
             </td>
         </tr>
         <tr>
+            <th scope="row"><label for="as_admin">관리자 추가등록</label></th>
+            <td>
+                <?php echo help('1:1 문의 관리자로 추가 등록할 회원아이디를 콤마(,)로 구분해서 입력해 주세요.<br>등록된 회원은 1:1 문의 등록시 내글반응 알림이 가며, 문의에 대한 답변이 가능합니다.'); ?>
+                <input type="text" name="as_admin" value="<?php echo $qaconfig['as_admin'] ?>" id="as_admin" class="frm_input"  size="70">
+            </td>
+        </tr>
+		<tr>
             <th scope="row"><label for="qa_use_editor">DHTML 에디터 사용</label></th>
             <td>
                 <?php echo help('글작성시 내용을 DHTML 에디터 기능으로 사용할 것인지 설정합니다. 스킨에 따라 적용되지 않을 수 있습니다.'); ?>
                 <select name="qa_use_editor" id="qa_use_editor">
                     <?php echo option_selected(0, $qaconfig['qa_use_editor'], '사용안함'); ?>
                     <?php echo option_selected(1, $qaconfig['qa_use_editor'], '사용함'); ?>
+                </select>
+				&nbsp;
+                <select name="as_editor" id="as_editor">
+                <option value="">PC 기본 에디터</option>
+				<?php
+                $arr = get_skin_dir('', G5_EDITOR_PATH);
+				for ($i=0; $i<count($arr); $i++) {
+                    echo "<option value=\"".$arr[$i]."\"".get_selected($qaconfig['as_editor'], $arr[$i]).">".$arr[$i]."</option>\n";
+                }
+                ?>
+                </select>
+				&nbsp;
+                <select name="as_mobile_editor" id="as_mobile_editor">
+                <option value="">모바일 사용안함</option>
+				<?php
+				for ($i=0; $i<count($arr); $i++) {
+                    echo "<option value=\"".$arr[$i]."\"".get_selected($qaconfig['as_mobile_editor'], $arr[$i]).">".$arr[$i]."</option>\n";
+                }
+                ?>
                 </select>
             </td>
         </tr>

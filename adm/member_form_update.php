@@ -145,7 +145,24 @@ else if ($w == 'u')
         }
     }
 
-    if ($mb_password)
+	//이용기간 체크
+	$sql_as_date = '';
+	if(isset($_POST['as_leave']) && $_POST['as_leave']) {
+		$sql_as_date = " , as_date = ''";
+	} else if($mb['as_date']) {
+		$as_date = '';
+		if($_POST['as_date_plus'] > 0) {
+			$as_date = $mb['as_date'] + (abs($_POST['as_date_plus']) * 86400);
+		} else if($_POST['as_date_plus'] < 0) {
+			$as_date = $mb['as_date'] - (abs($_POST['as_date_plus']) * 86400);
+		}
+
+		if($as_date) {
+			$sql_as_date = " , as_date = '{$as_date}'";
+		}
+	}
+
+	if ($mb_password)
         $sql_password = " , mb_password = '".get_encrypt_string($mb_password)."' ";
     else
         $sql_password = "";
@@ -159,6 +176,7 @@ else if ($w == 'u')
                 set {$sql_common}
                      {$sql_password}
                      {$sql_certify}
+                     {$sql_as_date}
                 where mb_id = '{$mb_id}' ";
     sql_query($sql);
 }

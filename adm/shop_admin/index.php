@@ -2,10 +2,21 @@
 $sub_menu = '400000';
 include_once('./_common.php');
 
+//아미나빌더 설치체크
+if(!isset($config['as_thema'])) { 
+	goto_url(G5_ADMIN_URL.'/apms_admin/apms.admin.php');
+}
+
 $max_limit = 7; // 몇행 출력할 것인지?
 
 $g5['title'] = ' 쇼핑몰관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
+
+if($is_admin_skin) {
+	if(is_file(ADMIN_SKIN_PATH.'/admin.index.shop.php')) {
+		goto_url(G5_ADMIN_URL.'/shop_admin/configform.php'); //쇼핑몰설정으로 이동
+	}
+}
 
 $pg_anchor = '<ul class="anchor sidx_anchor">
 <li><a href="#anc_sidx_ord">주문현황</a></li>

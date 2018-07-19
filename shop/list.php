@@ -1,8 +1,8 @@
 <?php
 include_once('./_common.php');
 
-if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH.'/list.php');
+if(USE_G5_THEME && defined('G5_THEME_PATH')) {
+    require_once(G5_SHOP_PATH.'/yc/list.php');
     return;
 }
 
@@ -11,13 +11,10 @@ $ca = sql_fetch($sql);
 if (!$ca['ca_id'])
     alert('등록된 분류가 없습니다.');
 
-// 테마미리보기 스킨 등의 변수 재설정
-if(defined('_THEME_PREVIEW_') && _THEME_PREVIEW_ === true) {
-    $ca['ca_skin']       = (isset($tconfig['ca_skin']) && $tconfig['ca_skin']) ? $tconfig['ca_skin'] : $ca['ca_skin'];
-    $ca['ca_img_width']  = (isset($tconfig['ca_img_width']) && $tconfig['ca_img_width']) ? $tconfig['ca_img_width'] : $ca['ca_img_width'];
-    $ca['ca_img_height'] = (isset($tconfig['ca_img_height']) && $tconfig['ca_img_height']) ? $tconfig['ca_img_height'] : $ca['ca_img_height'];
-    $ca['ca_list_mod']   = (isset($tconfig['ca_list_mod']) && $tconfig['ca_list_mod']) ? $tconfig['ca_list_mod'] : $ca['ca_list_mod'];
-    $ca['ca_list_row']   = (isset($tconfig['ca_list_row']) && $tconfig['ca_list_row']) ? $tconfig['ca_list_row'] : $ca['ca_list_row'];
+// 테마체크
+$at = apms_ca_thema($ca_id, $ca);
+if(!defined('THEMA_PATH')) {
+	include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 }
 
 // 본인인증, 성인인증체크
@@ -27,140 +24,180 @@ if(!$is_admin) {
         alert($msg, G5_SHOP_URL);
 }
 
-$g5['title'] = $ca['ca_name'].' 상품리스트';
+// 리스트 분류
+$cate = array();
+$cate = apms_item_category_array($ca_id);
+$is_cate = (count($cate) > 0) ? true : false;
 
-if ($ca['ca_include_head'])
-    @include_once($ca['ca_include_head']);
-else
-    include_once(G5_SHOP_PATH.'/_head.php');
+$thumb_w = $ca['ca_'.MOBILE_.'img_width'];
+$thumb_h = $ca['ca_'.MOBILE_.'img_height'];
+$list_mods = $ca['ca_'.MOBILE_.'list_mod'];
+$list_rows = $ca['ca_'.MOBILE_.'list_row'];
 
-// 스킨경로
-$skin_dir = G5_SHOP_SKIN_PATH;
+// 스킨설정
+$list_skin = $at['list'];
 
-if($ca['ca_skin_dir']) {
-    if(preg_match('#^theme/(.+)$#', $ca['ca_skin_dir'], $match))
-        $skin_dir = G5_THEME_PATH.'/'.G5_SKIN_DIR.'/shop/'.$match[1];
-    else
-        $skin_dir = G5_PATH.'/'.G5_SKIN_DIR.'/shop/'.$ca['ca_skin_dir'];
-
-    if(is_dir($skin_dir)) {
-        $skin_file = $skin_dir.'/'.$ca['ca_skin'];
-
-        if(!is_file($skin_file))
-            $skin_dir = G5_SHOP_SKIN_PATH;
-    } else {
-        $skin_dir = G5_SHOP_SKIN_PATH;
-    }
+$wset = array();
+if($ca['as_'.MOBILE_.'list_set']) {
+	$wset = apms_unpack($ca['as_'.MOBILE_.'list_set']);
 }
 
-define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
+// 데모
+if($is_demo) {
+	@include($demo_setup_file);
+}
 
-if ($is_admin)
-    echo '<div class="sct_admin"><a href="'.G5_ADMIN_URL.'/shop_admin/categoryform.php?w=u&amp;ca_id='.$ca_id.'" class="btn_admin">분류 관리</a></div>';
-?>
+// List
+$list_skin_path = G5_SKIN_PATH.'/apms/list/'.$list_skin;
+$list_skin_url = G5_SKIN_URL.'/apms/list/'.$list_skin;
 
-<script>
-var itemlist_ca_id = "<?php echo $ca_id; ?>";
-</script>
-<script src="<?php echo G5_JS_URL; ?>/shop.list.js"></script>
+// 추가설정
+$sql_apms_where = $sql_apms_orderby = '';
+@include_once($list_skin_path.'/list.head.skin.php');
 
-<!-- 상품 목록 시작 { -->
-<div id="sct">
+$order_by = ($sort != "") ? $sort.' '.$sortodr.' ,'.$sql_apms_orderby.' it_order, pt_num desc, it_id desc' : $sql_apms_orderby.' it_order, pt_num desc, it_id desc'; // 상품 출력순서가 있다면
+$where = "it_use = '1'";
+if(isset($type) && $type) {
+	$where .= " and it_type{$type} = '1'";
+	$qstr .= '&amp;type='.$type;
+}
+$where .= " and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%')";
+$where .= $sql_apms_where;
 
-    <?php
-    $nav_skin = $skin_dir.'/navigation.skin.php';
-    if(!is_file($nav_skin))
-        $nav_skin = G5_SHOP_SKIN_PATH.'/navigation.skin.php';
-    include $nav_skin;
+// 정렬
+$list_sort_href = './list.php?ca_id='.$ca_id.$qstr.'&amp;sort=';
 
-    // 상단 HTML
-    echo '<div id="sct_hhtml">'.conv_content($ca['ca_head_html'], 1).'</div>';
+if($sort) $qstr .= '&amp;sort='.$sort;
+if($sortodr) $qstr .= '&amp;sortodr='.$sortodr;
 
-    $cate_skin = $skin_dir.'/listcategory.skin.php';
-    if(!is_file($cate_skin))
-        $cate_skin = G5_SHOP_SKIN_PATH.'/listcategory.skin.php';
-    include $cate_skin;
+// 상위분류
+$ca_id_len = strlen($ca_id);
+$up_href = '';
+if ($ca_id_len > 2) {
+	$len1 = $ca_id_len - 2;
+	$up_href = './list.php?ca_id='.substr($ca_id,0,$len1).$qstr;
+}
 
-    // 상품 출력순서가 있다면
-    if ($sort != "")
-        $order_by = $sort.' '.$sortodr.' , it_order, it_id desc';
-    else
-        $order_by = 'it_order, it_id desc';
+$g5['title'] = $ca['ca_name'].' 리스트';
 
-    $error = '<p class="sct_noitem">등록된 상품이 없습니다.</p>';
+if (!G5_IS_MOBILE && $ca['ca_include_head']) {
+    @include_once($ca['ca_include_head']);
+} else {
+    include_once('./_head.php');
+}
 
-    // 리스트 스킨
-    $skin_file = is_include_path_check($skin_dir.'/'.$ca['ca_skin']) ? $skin_dir.'/'.$ca['ca_skin'] : $skin_dir.'/list.10.skin.php';
+// 상단 HTML
+echo '<div id="sct_hhtml">'.conv_content($ca['ca_'.MOBILE_.'head_html'], 1).'</div>'.PHP_EOL;
 
-    if (file_exists($skin_file)) {
+// 상품 리스트
+$list = array();
 
-		echo '<div id="sct_sortlst">';
-        $sort_skin = $skin_dir.'/list.sort.skin.php';
-        if(!is_file($sort_skin))
-            $sort_skin = G5_SHOP_SKIN_PATH.'/list.sort.skin.php';
-        include $sort_skin;
+if(!$list_mods) $list_mods = 3;
+if(!$list_rows) $list_rows = 5;
 
-        // 상품 보기 타입 변경 버튼
-        $sub_skin = $skin_dir.'/list.sub.skin.php';
-        if(!is_file($sub_skin))
-            $sub_skin = G5_SHOP_SKIN_PATH.'/list.sub.skin.php';
-        include $sub_skin;
-        echo '</div>';
+// 총몇개 = 한줄에 몇개 * 몇줄
+$item_rows = $list_rows * $list_mods;
 
-        // 총몇개 = 한줄에 몇개 * 몇줄
-        $items = $ca['ca_list_mod'] * $ca['ca_list_row'];
-        // 페이지가 없으면 첫 페이지 (1 페이지)
-        if ($page < 1) $page = 1;
-        // 시작 레코드 구함
-        $from_record = ($page - 1) * $items;
+// 페이지가 없으면 첫 페이지 (1 페이지)
+if ($page < 1) $page = 1;
+// 시작 레코드 구함
+$from_record = ($page - 1) * $item_rows;
 
-        $list = new item_list($skin_file, $ca['ca_list_mod'], $ca['ca_list_row'], $ca['ca_img_width'], $ca['ca_img_height']);
-        $list->set_category($ca['ca_id'], 1);
-        $list->set_category($ca['ca_id'], 2);
-        $list->set_category($ca['ca_id'], 3);
-        $list->set_is_page(true);
-        $list->set_order_by($order_by);
-        $list->set_from_record($from_record);
-        $list->set_view('it_img', true);
-        $list->set_view('it_id', false);
-        $list->set_view('it_name', true);
-        $list->set_view('it_basic', true);
-        $list->set_view('it_cust_price', true);
-        $list->set_view('it_price', true);
-        $list->set_view('it_icon', true);
-        $list->set_view('sns', true);
-        echo $list->run();
+// 전체 페이지 계산
+$row2 = sql_fetch(" select count(*) as cnt from `{$g5['g5_shop_item_table']}` where $where ");
+$total_count = $row2['cnt'];
+$total_page  = ceil($total_count / $item_rows);
 
-        // where 된 전체 상품수
-        $total_count = $list->total_count;
-        // 전체 페이지 계산
-        $total_page  = ceil($total_count / $items);
-    }
-    else
-    {
-        echo '<div class="sct_nofile">'.str_replace(G5_PATH.'/', '', $skin_file).' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</div>';
-    }
-    ?>
+$num = $total_count - ($page - 1) * $item_rows;
+$result = sql_query(" select * from `{$g5['g5_shop_item_table']}` where $where order by $order_by limit $from_record, $item_rows ");
+for ($i=0; $row=sql_fetch_array($result); $i++) { 
+	$list[$i] = $row;
+	$list[$i]['href'] = './item.php?it_id='.$row['it_id'].'&amp;ca_id='.$ca_id.$qstr.'&amp;page='.$page;
+	$list[$i]['num'] = $num;
+	$num--;
+}
 
-    <?php
-    $qstr1 .= 'ca_id='.$ca_id;
-    $qstr1 .='&amp;sort='.$sort.'&amp;sortodr='.$sortodr;
-    echo get_paging($config['cf_write_pages'], $page, $total_page, $_SERVER['SCRIPT_NAME'].'?'.$qstr1.'&amp;page=');
-    ?>
+// 네비게이션
+$nav = array();
+$len = strlen($ca_id) / 2;
+$n=0;
+for ($i=1; $i<=$len; $i++) {
+	$code = substr($ca_id,0,$i*2);
+	$nav[$n]['ca_id'] = $code;
 
-    <?php
-    // 하단 HTML
-    echo '<div id="sct_thtml">'.conv_content($ca['ca_tail_html'], 1).'</div>';
+	$row = sql_fetch(" select ca_name from {$g5['g5_shop_category_table']} where ca_id = '$code' ");
+	$nav[$n]['name'] = $row['ca_name'];
 
-?>
-</div>
-<!-- } 상품 목록 끝 -->
+	if($ca_id === $code) {
+		$nav[$n]['on'] = true;
+		$nav[$n]['cnt'] = $total_count;
+	} else {
+		$nav[$n]['on'] = false;
+		$nav[$n]['cnt'] = 0;
+	}
 
-<?php
-if ($ca['ca_include_tail'])
+	$n++;
+}
+
+$is_nav = ($n > 0) ? true : false;
+$nav_title = $ca['ca_name'];
+
+// 페이징
+$write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
+$list_page = $_SERVER['SCRIPT_NAME'].'?ca_id='.$ca_id.$qstr.'&amp;page=';
+
+// Button
+$admin_href = $config_href = $write_href = '';
+if(USE_PARTNER) {
+	if($is_admin) {
+		if(IS_PARTNER) {
+			$write_href = './myshop.php?mode=item&amp;fn='.$ca['pt_form'];
+			$admin_href = './myshop.php?mode=list&amp;sca='.$ca_id;
+		} else {
+			$write_href = G5_ADMIN_URL.'/shop_admin/itemform.php?fn='.$ca['pt_form'];
+			$admin_href = G5_ADMIN_URL.'/shop_admin/itemlist.php?ca_id='.$ca_id;
+		}
+		$config_href = G5_ADMIN_URL.'/shop_admin/categoryform.php?w=u&amp;ca_id='.$ca_id;
+	} else if (IS_PARTNER && $ca['pt_use']) {
+		$write_href = './myshop.php?mode=item&amp;fn='.$ca['pt_form'];
+		$admin_href = './myshop.php?mode=list&amp;sca='.$ca_id;
+	}
+} else {
+	if($is_admin == 'super') {
+		$write_href = G5_ADMIN_URL.'/shop_admin/itemform.php?fn='.$ca['pt_form'];
+		$admin_href = G5_ADMIN_URL.'/shop_admin/itemlist.php?ca_id='.$ca_id;
+		$config_href = G5_ADMIN_URL.'/shop_admin/categoryform.php?w=u&amp;ca_id='.$ca_id;
+	}
+}
+
+$rss_href = ($ca_id) ? G5_URL.'/rss/?cid='.urlencode($ca_id) : '';
+
+$lm = ''; // 리스트 모드
+$ls = $list_skin; // 리스트 스킨
+
+// 셋업
+$setup_href = '';
+if (!$ev_id && is_file($list_skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
+    $setup_href = './skin.setup.php?skin=list&amp;name='.urlencode($ls).'&amp;ca_id='.urlencode($ca_id);
+}
+
+// 스킨
+$list_skin_file = $list_skin_path.'/list.skin.php';
+
+if(file_exists($list_skin_file)) {
+	include_once($list_skin_file);
+} else {
+	echo '<p>'.str_replace(G5_PATH.'/', '', $list_skin_file).' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</p>';
+}
+
+// 하단 HTML
+echo '<div id="sct_thtml">'.conv_content($ca['ca_'.MOBILE_.'tail_html'], 1).'</div>'.PHP_EOL;
+
+if (!G5_IS_MOBILE && $ca['ca_include_tail'])
     @include_once($ca['ca_include_tail']);
 else
-    include_once(G5_SHOP_PATH.'/_tail.php');
+    include_once('./_tail.php');
 
-echo "\n<!-- {$ca['ca_skin']} -->\n";
+echo "\n<!-- {$ca['ca_'.MOBILE_.'skin']} -->\n";
+
 ?>

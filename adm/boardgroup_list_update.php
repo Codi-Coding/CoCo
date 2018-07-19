@@ -22,12 +22,14 @@ for ($i=0; $i<$count; $i++)
 
     if($_POST['act_button'] == '선택수정') {
         $sql = " update {$g5['group_table']}
-                    set gr_subject    = '{$_POST['gr_subject'][$k]}',
-                        gr_device     = '{$_POST['gr_device'][$k]}',
-                        gr_admin      = '{$_POST['gr_admin'][$k]}',
-                        gr_use_access = '{$_POST['gr_use_access'][$k]}',
-                        gr_order      = '{$_POST['gr_order'][$k]}'
-                  where gr_id         = '{$gr_id}' ";
+                    set gr_subject     = '{$_POST['gr_subject'][$k]}',
+                        gr_device      = '{$_POST['gr_device'][$k]}',
+                        gr_admin       = '{$_POST['gr_admin'][$k]}',
+                        gr_use_access  = '{$_POST['gr_use_access'][$k]}',
+                        gr_order       = '{$_POST['gr_order'][$k]}',
+                        as_main		   = '{$_POST['as_main'][$k]}',
+                        as_mobile_main = '{$_POST['as_mobile_main'][$k]}'
+				  where gr_id          = '{$gr_id}' ";
         if ($is_admin != 'super')
             $sql .= " and gr_admin    = '{$_POST['gr_admin'][$k]}' ";
         sql_query($sql);
@@ -41,7 +43,13 @@ for ($i=0; $i<$count; $i++)
 
         // 그룹접근 회원 삭제
         sql_query(" delete from {$g5['group_member_table']} where gr_id = '$gr_id' ");
-    }
+
+		// 그룹스킨 설정값 삭제
+		sql_query(" delete from {$g5['apms_data']} where type = '30' and data_1 = '{$gr_id}' ", false);
+
+		// 그룹내 일반메뉴 삭제
+		sql_query(" delete from {$g5['apms_page']} where gr_id = '{$gr_id}' and as_html in ('2','3') ", false);
+	}
 }
 
 goto_url('./boardgroup_list.php?'.$qstr);

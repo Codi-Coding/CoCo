@@ -48,7 +48,7 @@ if (!$sort1) {
     $sort1 = "b.ev_id";
 }
 
-if (!$sort2 || $sort2 != "asc") {
+if (!$sort2) {
     $sort2 = "desc";
 }
 
@@ -167,7 +167,10 @@ if($ev_id) {
             <label for="ev_chk_<?php echo $i; ?>" class="sound_only">이벤트 사용</label>
             <input type="checkbox" name="ev_chk[<?php echo $i; ?>]" value="1" id="ev_chk_<?php echo $i; ?>" <?php echo ($row['ev_id'] ? "checked" : ""); ?>>
         </td>
-        <td class="td_num"><a href="<?php echo $href; ?>"><?php echo $row['it_id']; ?></a></td>
+        <td class="td_code">
+			<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
+			<a href="<?php echo $href; ?>"><b><?php echo $row['it_id']; ?></b></a>
+		</td>
         <td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
     </tr>
 

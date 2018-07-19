@@ -42,13 +42,17 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
+// APMS - 2014.07.20
 $sql  = " select it_id,
                  it_name,
                  it_use,
                  it_stock_qty,
                  it_stock_sms,
                  it_noti_qty,
-                 it_soldout
+                 it_soldout,
+				 ca_id,
+				 pt_it,
+				 pt_id
            $sql_common
           order by $sort1 $sort2
           limit $from_record, $rows ";
@@ -59,6 +63,8 @@ $qstr = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 ?>
+
+<script src="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.admin.js"></script>
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
@@ -75,12 +81,15 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sel_ca_id" id="sel_ca_id">
     <option value=''>전체분류</option>
     <?php
-    $sql1 = " select ca_id, ca_name from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
+    $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
     $result1 = sql_query($sql1);
     for ($i=0; $row1=sql_fetch_array($result1); $i++) {
         $len = strlen($row1['ca_id']) / 2 - 1;
         $nbsp = "";
         for ($i=0; $i<$len; $i++) $nbsp .= "&nbsp;&nbsp;&nbsp;";
+		if($row1['as_line']) {
+			echo "<option value=\"\">".$nbsp."------------</option>\n";
+		}
         echo '<option value="'.$row1['ca_id'].'" '.get_selected($sel_ca_id, $row1['ca_id']).'>'.$nbsp.$row1['ca_name'].'</option>'.PHP_EOL;
     }
     ?>
@@ -90,6 +99,9 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <select name="sel_field" id="sel_field">
     <option value="it_name" <?php echo get_selected($sel_field, 'it_name'); ?>>상품명</option>
     <option value="it_id" <?php echo get_selected($sel_field, 'it_id'); ?>>상품코드</option>
+	<!-- APMS - 2014.07.20 -->
+	    <option value="pt_id" <?php echo get_selected($sel_field, 'pt_id'); ?>>파트너 아이디</option>
+	<!-- // -->
 </select>
 
 <label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
@@ -164,14 +176,25 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             $it_stock_qty = ''.$it_stock_qty.' !<span class="sound_only"> 재고부족 </span>';
         }
 
+		// 등록폼
+        $sql3 = " select pt_form from {$g5['g5_shop_category_table']} where ca_id = '{$row['ca_id']}' ";
+        $row3 = sql_fetch($sql3);
+		$fn = $row3['pt_form'];
+
         $bg = 'bg'.($i%2);
 
     ?>
     <tr class="<?php echo $bg; ?>">
-        <td class="td_numbig">
+		<!-- APMS - 2014.07.20 -->
+        <td class="td_numbig" style="white-space:nowrap">
             <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
-            <?php echo $row['it_id']; ?>
+			<div style="font-size:11px; letter-spacing:-1px;"><?php echo apms_pt_it($row['pt_it'],1);?></div>
+			<b><?php echo $row['it_id']; ?></b>
+			<?php if($row['pt_id']) { ?>
+				<div style="font-size:11px; letter-spacing:-1px;"><?php echo $row['pt_id'];?></div>
+			<?php } ?>
         </td>
+		<!-- // -->
         <td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str(stripslashes($row['it_name']), 60, "&#133"); ?></a></td>
         <td class="td_num<?php echo $it_stock_qty_st; ?>"><?php echo $it_stock_qty; ?></td>
         <td class="td_num"><?php echo number_format($wait_qty); ?></td>
@@ -196,7 +219,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <label for="stock_sms_<?php echo $i; ?>" class="sound_only">재입고 알림</label>
             <input type="checkbox" name="it_stock_sms[<?php echo $i; ?>]" value="1" id="stock_sms_<?php echo $i; ?>" <?php echo ($row['it_stock_sms'] ? "checked" : ""); ?>>
         </td>
-        <td class="td_mngsmall"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>">수정</a></td>
+        <td class="td_mngsmall"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;fn=<?php echo $fn;?>&amp;<?php echo $qstr; ?>">수정</a></td>
     </tr>
     <?php
     }

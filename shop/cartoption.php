@@ -1,15 +1,45 @@
 <?php
 include_once('./_common.php');
 
+if(USE_G5_THEME && defined('G5_THEME_PATH')) {
+    require_once(G5_SHOP_PATH.'/yc/cartoption.php');
+    return;
+}
+
 $pattern = '#[/\'\"%=*\#\(\)\|\+\&\!\$~\{\}\[\]`;:\?\^\,]#';
 $it_id  = preg_replace($pattern, '', $_POST['it_id']);
 
 $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' and it_use = '1' ";
 $it = sql_fetch($sql);
-$it_point = get_item_point($it);
 
 if(!$it['it_id'])
     die('no-item');
+
+$pid = ($pid) ? $pid : 'cart'; // Page ID
+$at = apms_page_thema($pid);
+include_once(G5_LIB_PATH.'/apms.thema.lib.php');
+
+$ca = sql_fetch(" select ca_skin_dir, ca_mobile_skin_dir from {$g5['g5_shop_category_table']} where ca_id = '{$it['ca_id']}' ");
+
+$skin_path = G5_SKIN_PATH.'/apms/item/'.$ca['ca_'.MOBILE_.'skin_dir'];
+$skin_url = G5_SKIN_URL.'/apms/item/'.$ca['ca_'.MOBILE_.'skin_dir'];
+if(is_file($skin_path.'/cartoption.skin.php')) {
+	$item_skin_path = $skin_path;
+	$item_skin_url = $skin_url;
+} else {
+	$skin_row = array();
+	$skin_row = apms_rows('order_'.MOBILE_.'skin');
+	$order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_row['order_'.MOBILE_.'skin'];
+	$order_skin_url = G5_SKIN_URL.'/apms/order/'.$skin_row['order_'.MOBILE_.'skin'];
+
+	// 스킨 체크
+	list($order_skin_path, $order_skin_url) = apms_skin_thema('shop/order', $order_skin_path, $order_skin_url); 
+
+	$skin_path = $order_skin_path;
+	$skin_url = $order_skin_url;
+}
+
+$it_point = get_item_point($it);
 
 // 장바구니 자료
 $cart_id = get_session('ss_cart_id');
@@ -22,157 +52,44 @@ $row2 = sql_fetch($sql2);
 
 if(!sql_num_rows($result))
     die('no-cart');
-?>
 
-<!-- 장바구니 옵션 시작 { -->
-<form name="foption" method="post" action="<?php echo G5_SHOP_URL; ?>/cartupdate.php" onsubmit="return formcheck(this);">
-<input type="hidden" name="act" value="optionmod">
-<input type="hidden" name="it_id[]" value="<?php echo $it['it_id']; ?>">
-<input type="hidden" id="it_price" value="<?php echo $row2['ct_price']; ?>">
-<input type="hidden" name="ct_send_cost" value="<?php echo $row2['ct_send_cost']; ?>">
-<input type="hidden" name="sw_direct">
-<?php
 $option_1 = get_item_options($it['it_id'], $it['it_option_subject']);
-if($option_1) {
-?>
-<section class="tbl_wrap tbl_head02">
-    <h3>선택옵션</h3>
-    <table class="sit_ov_tbl">
-    <colgroup>
-        <col class="grid_3">
-        <col>
-    </colgroup>
-    <tbody>
-    <?php // 선택옵션
-    echo $option_1;
-    ?>
-    </tbody>
-    </table>
-</section>
-<?php
-}
-?>
-
-<?php
 $option_2 = get_item_supply($it['it_id'], $it['it_supply_subject']);
-if($option_2) {
-?>
-<section class="tbl_wrap tbl_head02">
-    <h3>추가옵션</h3>
-    <table class="sit_ov_tbl">
-    <colgroup>
-        <col class="grid_3">
-        <col>
-    </colgroup>
-    <tbody>
-    <?php // 추가옵션
-    echo $option_2;
-    ?>
-    </tbody>
-    </table>
-</section>
-<?php
+
+$io = array();
+$option = array();
+
+$option['it_id'] = $it['it_id'];
+$option['ct_price'] = $row2['ct_price'];
+$option['ct_send_cost'] = $row2['ct_send_cost'];
+
+for($i=0; $row=sql_fetch_array($result); $i++) {
+	if(!$row['io_id'])
+		$it_stock_qty = get_it_stock_qty($row['it_id']);
+	else
+		$it_stock_qty = get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
+
+	if($row['io_price'] < 0)
+		$io_price = '('.number_format($row['io_price']).'원)';
+	else
+		$io_price = '(+'.number_format($row['io_price']).'원)';
+
+	$cls = 'opt';
+	if($row['io_type'])
+		$cls = 'spl';
+
+	$io[$i] = $row;
+	$io[$i]['cls'] = $cls;
+	$io[$i]['it_stock_qty'] = $it_stock_qty;
+	$io[$i]['io_price'] = $row['io_price'];
+	$io[$i]['io_display_price'] = $io_price;
+	$io[$i]['pt_msg1'] = $row['pt_msg1'];
+	$io[$i]['pt_msg2'] = $row['pt_msg2'];
+	$io[$i]['pt_msg3'] = $row['pt_msg3'];
 }
+
+$action_url = G5_SHOP_URL.'/cartupdate.php';
+
+include_once($skin_path.'/cartoption.skin.php');
+
 ?>
-
-<div id="sit_sel_option">
-    <ul id="sit_opt_added">
-        <?php
-        for($i=0; $row=sql_fetch_array($result); $i++) {
-            if(!$row['io_id'])
-                $it_stock_qty = get_it_stock_qty($row['it_id']);
-            else
-                $it_stock_qty = get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
-
-            if($row['io_price'] < 0)
-                $io_price = '('.number_format($row['io_price']).'원)';
-            else
-                $io_price = '(+'.number_format($row['io_price']).'원)';
-
-            $cls = 'opt';
-            if($row['io_type'])
-                $cls = 'spl';
-        ?>
-        <li class="sit_<?php echo $cls; ?>_list">
-            <input type="hidden" name="io_type[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['io_type']; ?>">
-            <input type="hidden" name="io_id[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['io_id']; ?>">
-            <input type="hidden" name="io_value[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['ct_option']; ?>">
-            <input type="hidden" class="io_price" value="<?php echo $row['io_price']; ?>">
-            <input type="hidden" class="io_stock" value="<?php echo $it_stock_qty; ?>">
-            <span class="sit_opt_subj"><?php echo $row['ct_option']; ?></span>
-            <span class="sit_opt_prc"><?php echo $io_price; ?></span>
-            <div>
-                <label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
-                <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="frm_input" size="5">
-                <button type="button" class="sit_qty_plus btn_frmline">증가</button>
-                <button type="button" class="sit_qty_minus btn_frmline">감소</button>
-                <button type="button" class="btn_frmline">삭제</button>
-            </div>
-        </li>
-        <?php
-        }
-        ?>
-    </ul>
-</div>
-
-<div id="sit_tot_price"></div>
-
-<div class="btn_confirm">
-    <input type="submit" value="선택사항적용" class="btn_submit">
-    <button type="button" id="mod_option_close" class="btn_cancel">닫기</button>
-</div>
-</form>
-
-<script>
-function formcheck(f)
-{
-    var val, io_type, result = true;
-    var sum_qty = 0;
-    var min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);
-    var max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
-    var $el_type = $("input[name^=io_type]");
-
-    $("input[name^=ct_qty]").each(function(index) {
-        val = $(this).val();
-
-        if(val.length < 1) {
-            alert("수량을 입력해 주십시오.");
-            result = false;
-            return false;
-        }
-
-        if(val.replace(/[0-9]/g, "").length > 0) {
-            alert("수량은 숫자로 입력해 주십시오.");
-            result = false;
-            return false;
-        }
-
-        if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
-            alert("수량은 1이상 입력해 주십시오.");
-            result = false;
-            return false;
-        }
-
-        io_type = $el_type.eq(index).val();
-        if(io_type == "0")
-            sum_qty += parseInt(val);
-    });
-
-    if(!result) {
-        return false;
-    }
-
-    if(min_qty > 0 && sum_qty < min_qty) {
-        alert("선택옵션 개수 총합 "+number_format(String(min_qty))+"개 이상 주문해 주십시오.");
-        return false;
-    }
-
-    if(max_qty > 0 && sum_qty > max_qty) {
-        alert("선택옵션 개수 총합 "+number_format(String(max_qty))+"개 이하로 주문해 주십시오.");
-        return false;
-    }
-
-    return true;
-}
-</script>
-<!-- } 장바구니 옵션 끝 -->

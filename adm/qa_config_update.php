@@ -72,7 +72,10 @@ $sql = " update {$g5['qa_config_table']}
                 qa_2                    = '{$_POST['qa_2']}',
                 qa_3                    = '{$_POST['qa_3']}',
                 qa_4                    = '{$_POST['qa_4']}',
-                qa_5                    = '{$_POST['qa_5']}' ";
+                qa_5                    = '{$_POST['qa_5']}',
+                as_admin                = '{$_POST['as_admin']}',
+                as_editor               = '{$_POST['as_editor']}',
+                as_mobile_editor        = '{$_POST['as_mobile_editor']}' ";
 sql_query($sql);
 
 if($error_msg){

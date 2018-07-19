@@ -9,7 +9,7 @@ if (!$config['cf_icode_server_ip'])   $config['cf_icode_server_ip'] = '211.172.2
 if (!$config['cf_icode_server_port']) $config['cf_icode_server_port'] = '7295';
 
 if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
-    $userinfo = get_icode_userinfo($config['cf_icode_id'], $config['cf_icode_pw']);
+	$userinfo = get_icode_userinfo($config['cf_icode_id'], $config['cf_icode_pw']);
 }
 
 $g5['title'] = '쇼핑몰설정';
@@ -17,6 +17,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $pg_anchor = '<ul class="anchor">
 <li><a href="#anc_scf_info">사업자정보</a></li>
+<li><a href="#anc_scf_lay">인덱스설정</a></li>
 <li><a href="#anc_scf_skin">스킨설정</a></li>
 <li><a href="#anc_scf_index">쇼핑몰 초기화면</a></li>
 <li><a href="#anc_mscf_index">모바일 초기화면</a></li>
@@ -30,6 +31,12 @@ $frm_submit = '<div class="btn_confirm01 btn_confirm">
     <input type="submit" value="확인" class="btn_submit" accesskey="s">
     <a href="'.G5_SHOP_URL.'">쇼핑몰</a>
 </div>';
+
+// index 선택 설정 필드추가
+if(!isset($default['de_root_index_use'])) {
+    sql_query(" ALTER TABLE `{$g5['g5_shop_default_table']}`
+                    ADD `de_root_index_use` tinyint(4) NOT NULL DEFAULT '0' AFTER `de_admin_info_email` ", true);
+}
 
 // 무이자 할부 사용설정 필드 추가
 if(!isset($default['de_card_noint_use'])) {
@@ -248,11 +255,42 @@ if(!isset($default['de_listtype_list_skin'])) {
 
 <?php echo $frm_submit; ?>
 
+<section id="anc_scf_lay">
+    <h2 class="h2_frm">인덱스설정</h2>
+    <?php echo $pg_anchor; ?>
+    <div class="local_desc02 local_desc">
+        <p>쇼핑몰의 접속경로를 <?php echo G5_SHOP_URL;?> 에서 <?php echo G5_URL;?> 으로 변경하시려면 사용으로 설정해 주십시오.</p>
+    </div>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>인덱스설정</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="de_root_index_use">루트 index 사용</label></th>
+            <td>
+                <select name="de_root_index_use" id="de_root_index_use">
+                    <option value="0" <?php echo get_selected($default['de_root_index_use'], 0); ?>>사용안함</option>
+                    <option value="1" <?php echo get_selected($default['de_root_index_use'], 1); ?>>사용</option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<?php echo $frm_submit; ?>
+
 <section id="anc_scf_skin">
     <h2 class="h2_frm">스킨설정</h2>
     <?php echo $pg_anchor; ?>
     <div class="local_desc02 local_desc">
-        <p>상품 분류리스트, 상품상세보기 등 에서 사용할 스킨을 설정합니다.</p>
+		<p>그누 테마 적용시 상품 분류리스트, 상품상세보기 등 에서 사용할 스킨을 설정합니다.</p>
     </div>
 
     <div class="tbl_frm01 tbl_wrap">
@@ -267,20 +305,20 @@ if(!isset($default['de_listtype_list_skin'])) {
             <th scope="row"><label for="de_shop_skin">PC용 스킨</label></th>
             <td colspan="3">
                 <?php echo get_skin_select('shop', 'de_shop_skin', 'de_shop_skin', $default['de_shop_skin'], 'required'); ?>
-            </td>
+			</td>
         </tr>
         <tr>
             <th scope="row"><label for="de_shop_mobile_skin">모바일용 스킨</label></th>
             <td colspan="3">
                 <?php echo get_mobile_skin_select('shop', 'de_shop_mobile_skin', 'de_shop_mobile_skin', $default['de_shop_mobile_skin'], 'required'); ?>
-            </td>
+			</td>
         </tr>
         </tbody>
         </table>
     </div>
 </section>
 
-<?php echo preg_replace('#</div>$#i', '<button type="button" class="get_shop_skin">테마 스킨설정 가져오기</button></div>', $frm_submit); ?>
+<?php echo (USE_G5_THEME) ? preg_replace('#</div>$#i', '<button type="button" class="get_shop_skin">테마설정 가져오기</button></div>', $frm_submit) : $frm_submit; ?>
 
 <section id="anc_scf_index">
     <h2 class="h2_frm">쇼핑몰 초기화면</h2>
@@ -400,7 +438,7 @@ if(!isset($default['de_listtype_list_skin'])) {
     </div>
 </section>
 
-<?php echo preg_replace('#</div>$#i', '<button type="button" class="shop_pc_index">테마설정 가져오기</button></div>', $frm_submit); ?>
+<?php echo (USE_G5_THEME) ? preg_replace('#</div>$#i', '<button type="button" class="shop_pc_index">테마설정 가져오기</button></div>', $frm_submit) : $frm_submit; ?>
 
 <section id="anc_mscf_index">
     <h2 class="h2_frm">모바일 쇼핑몰 초기화면 설정</h2>
@@ -519,7 +557,7 @@ if(!isset($default['de_listtype_list_skin'])) {
     </div>
 </section>
 
-<?php echo preg_replace('#</div>$#i', '<button type="button" class="shop_mobile_index">테마설정 가져오기</button></div>', $frm_submit); ?>
+<?php echo (USE_G5_THEME) ? preg_replace('#</div>$#i', '<button type="button" class="shop_mobile_index">테마설정 가져오기</button></div>', $frm_submit) : $frm_submit; ?>
 
 <section id ="anc_scf_payment">
     <h2 class="h2_frm">결제설정</h2>
@@ -562,7 +600,7 @@ if(!isset($default['de_listtype_list_skin'])) {
         <tr>
             <th scope="row"><label for="de_vbank_use">가상계좌 결제사용</label></th>
             <td>
-                <?php echo help("주문별로 유일하게 생성되는 일회용 계좌번호입니다. 주문자가 가상계좌에 입금시 상점에 실시간으로 통보가 되므로 업무처리가 빨라집니다.", 50); ?>
+				<?php echo help("주문별로 유일하게 생성되는 일회용 계좌번호입니다. 주문자가 가상계좌에 입금시 상점에 실시간으로 통보가 되므로 업무처리가 빨라집니다.", 50); ?>
                 <select name="de_vbank_use" id="de_vbank_use">
                     <option value="0" <?php echo get_selected($default['de_vbank_use'], 0); ?>>사용안함</option>
                     <option value="1" <?php echo get_selected($default['de_vbank_use'], 1); ?>>사용</option>
@@ -581,7 +619,7 @@ if(!isset($default['de_listtype_list_skin'])) {
                 <?php echo help("KG이니시스 가상계좌 사용시 다음 주소를 <strong><a href=\"https://iniweb.inicis.com/\" target=\"_blank\">KG이니시스 관리자</a> &gt; 거래조회 &gt; 가상계좌 &gt; 입금통보방식선택 &gt; URL 수신 설정</strong>에 넣으셔야 상점에 자동으로 입금 통보됩니다."); ?>
                 <?php echo G5_SHOP_URL; ?>/settle_inicis_common.php</td>
         </tr>
-        <tr>
+		<tr>
             <th scope="row"><label for="de_hp_use">휴대폰결제사용</label></th>
             <td>
                 <?php echo help("주문시 휴대폰 결제를 가능하게 할것인지를 설정합니다.", 50); ?>
@@ -621,7 +659,7 @@ if(!isset($default['de_listtype_list_skin'])) {
                 </select>
             </td>
         </tr>
-        <tr>
+		<tr>
             <th scope="row"><label for="de_taxsave_use">현금영수증<br>발급사용</label></th>
             <td>
                 <?php echo help("관리자는 설정에 관계없이 <a href=\"".G5_ADMIN_URL."/shop_admin/orderlist.php\">주문내역</a> &gt; 보기에서 발급이 가능합니다.\n현금영수증 발급 취소는 PG사에서 지원하는 현금영수증 취소 기능을 사용하시기 바랍니다.", 50); ?>
@@ -635,8 +673,10 @@ if(!isset($default['de_listtype_list_skin'])) {
             <th scope="row"><label for="cf_use_point">포인트 사용</label></th>
             <td>
                 <?php echo help("<a href=\"".G5_ADMIN_URL."/config_form.php#frm_board\" target=\"_blank\">환경설정 &gt; 기본환경설정</a>과 동일한 설정입니다."); ?>
-                <input type="checkbox" name="cf_use_point" value="1" id="cf_use_point"<?php echo $config['cf_use_point']?' checked':''; ?>> 사용
-            </td>
+				<input type="checkbox" name="cf_use_point" value="1" id="cf_use_point"<?php echo $config['cf_use_point']?' checked':''; ?>> 사용
+				&nbsp;
+				<input type="checkbox" name="as_point" value="1" id="as_point"<?php echo $default['as_point']?' checked':''; ?>> 포인트결제 사용
+			</td>
         </tr>
         <tr>
             <th scope="row"><label for="de_settle_min_point">결제 최소포인트</label></th>
@@ -769,7 +809,7 @@ if(!isset($default['de_listtype_list_skin'])) {
                 <input type="checkbox" name="de_inicis_lpay_use" value="1" id="de_inicis_lpay_use"<?php echo $default['de_inicis_lpay_use']?' checked':''; ?>> <label for="de_inicis_lpay_use">사용</label>
             </td>
         </tr>
-        <tr class="pg_info_fld inicis_info_fld">
+		<tr class="pg_info_fld inicis_info_fld">
             <th scope="row">
                 <label for="de_inicis_cartpoint_use">KG이니시스 신용카드 포인트 결제</label>
             </th>
@@ -778,7 +818,7 @@ if(!isset($default['de_listtype_list_skin'])) {
                 <input type="checkbox" name="de_inicis_cartpoint_use" value="1" id="de_inicis_cartpoint_use"<?php echo $default['de_inicis_cartpoint_use']?' checked':''; ?>> <label for="de_inicis_cartpoint_use">사용</label>
             </td>
         </tr>
-        <tr class="kakao_info_fld">
+		<tr class="kakao_info_fld">
             <th scope="row">
                 <label for="de_kakaopay_mid">카카오페이 상점MID</label>
                 <a href="http://sir.kr/main/service/kakaopay.php" target="_blank" class="kakao_btn">카카오페이 서비스신청하기</a>
@@ -879,7 +919,7 @@ if(!isset($default['de_listtype_list_skin'])) {
                 <input type="text" name="de_naverpay_sendcost" value="<?php echo $default['de_naverpay_sendcost']; ?>" id="de_naverpay_sendcost" class="frm_input" size="70">
              </td>
         </tr>
-        <tr>
+		<tr>
             <th scope="row">에스크로 사용</th>
             <td>
                 <?php echo help("에스크로 결제를 사용하시려면, 반드시 결제대행사 상점 관리자 페이지에서 에스크로 서비스를 신청하신 후 사용하셔야 합니다.\n에스크로 사용시 배송과의 연동은 되지 않으며 에스크로 결제만 지원됩니다."); ?>
@@ -933,13 +973,13 @@ if(!isset($default['de_listtype_list_skin'])) {
                     <ul id="inicis_cardtest_tip" class="scf_cardtest_tip_adm scf_cardtest_tip_adm_hide">
                         <li><b>일반결제</b>의 테스트 사이트 mid는 <b>INIpayTest</b> 이며, <b>에스크로 결제</b>의 테스트 사이트 mid는 <b>iniescrow0</b> 입니다.</li>
                     </ul>
-                </div>
+				</div>
             </td>
         </tr>
         <tr>
             <th scope="row"><label for="de_tax_flag_use">복합과세 결제</label></th>
             <td>
-                 <?php echo help("복합과세(과세, 비과세) 결제를 사용하려면 체크하십시오.\n복합과세 결제를 사용하기 전 PG사에 별도로 결제 신청을 해주셔야 합니다. 사용시 PG사로 문의하여 주시기 바랍니다."); ?>
+				<?php echo help("복합과세(과세, 비과세) 결제를 사용하려면 체크하십시오.\n복합과세 결제를 사용하기 전 PG사에 별도로 결제 신청을 해주셔야 합니다. 사용시 PG사로 문의하여 주시기 바랍니다."); ?>
                 <input type="checkbox" name="de_tax_flag_use" value="1" id="de_tax_flag_use"<?php echo $default['de_tax_flag_use']?' checked':''; ?>> 사용
             </td>
         </tr>
@@ -1015,7 +1055,7 @@ if(!isset($default['de_listtype_list_skin'])) {
         <tr>
              <th scope="row"><label for="de_hope_date_after">희망배송일지정</label></th>
             <td>
-                <?php echo help("오늘을 포함하여 설정한 날 이후부터 일주일 동안을 달력 형식으로 노출하여 선택할수 있도록 합니다."); ?>
+				<?php echo help("오늘을 포함하여 설정한 날 이후부터 일주일 동안을 달력 형식으로 노출하여 선택할수 있도록 합니다."); ?>
                 <input type="text" name="de_hope_date_after" value="<?php echo $default['de_hope_date_after']; ?>" id="de_hope_date_after" class="frm_input" size="5"> 일
             </td>
         </tr>
@@ -1086,10 +1126,19 @@ if(!isset($default['de_listtype_list_skin'])) {
             <th scope="row">검색상품출력</th>
             <td>
                 <label for="de_search_list_skin">스킨</label>
-                <select name="de_search_list_skin" id="de_search_list_skin">
-                    <?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_SHOP_SKIN_PATH, $default['de_search_list_skin']); ?>
-                </select>
-                <label for="de_search_img_width">이미지폭</label>
+				<select name="de_search_list_skin" id="de_search_list_skin">
+				<?php 
+					if(USE_G5_THEME) {
+						echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_SHOP_SKIN_PATH, $default['de_search_list_skin']);
+					} else {
+						$listskin = get_skin_dir('search', G5_SKIN_PATH.'/apms');
+						for ($k=0; $k<count($listskin); $k++) {
+							echo "<option value=\"".$listskin[$k]."\"".get_selected($default['de_search_list_skin'], $listskin[$k]).">".$listskin[$k]."</option>\n";
+						}
+					}
+				?>
+				</select>
+				<label for="de_search_img_width">이미지폭</label>
                 <input type="text" name="de_search_img_width" value="<?php echo $default['de_search_img_width']; ?>" id="de_search_img_width" class="frm_input" size="3">
                 <label for="de_search_img_height">이미지높이</label>
                 <input type="text" name="de_search_img_height" value="<?php echo $default['de_search_img_height']; ?>" id="de_search_img_height" class="frm_input" size="3">
@@ -1104,7 +1153,15 @@ if(!isset($default['de_listtype_list_skin'])) {
             <td>
                 <label for="de_mobile_search_list_skin">스킨</label>
                 <select name="de_mobile_search_list_skin" id="de_mobile_search_list_skin">
-                    <?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_MSHOP_SKIN_PATH, $default['de_mobile_search_list_skin']); ?>
+				<?php 
+					if(USE_G5_THEME) {
+						echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_MSHOP_SKIN_PATH, $default['de_mobile_search_list_skin']);
+					} else {
+						for ($k=0; $k<count($listskin); $k++) {
+							echo "<option value=\"".$listskin[$k]."\"".get_selected($default['de_mobile_search_list_skin'], $listskin[$k]).">".$listskin[$k]."</option>\n";
+						}
+					}
+				?>
                 </select>
                 <label for="de_mobile_search_img_width">이미지폭</label>
                 <input type="text" name="de_mobile_search_img_width" value="<?php echo $default['de_mobile_search_img_width']; ?>" id="de_mobile_search_img_width" class="frm_input" size="3">
@@ -1150,7 +1207,7 @@ if(!isset($default['de_listtype_list_skin'])) {
                 <input type="text" name="de_mobile_listtype_list_row" value="<?php echo $default['de_mobile_listtype_list_row']; ?>" id="de_mobile_listtype_list_row" class="frm_input" size="3">
             </td>
         </tr>
-        <tr>
+		<tr>
             <th scope="row">이미지(소)</th>
             <td>
                 <?php echo help("분류리스트에서 보여지는 사이즈를 설정하시면 됩니다. 분류관리의 출력 이미지폭, 높이의 기본값으로 사용됩니다. 높이를 0 으로 설정하시면 폭에 비례하여 높이를 썸네일로 생성합니다."); ?>
@@ -1351,7 +1408,7 @@ if(!isset($default['de_listtype_list_skin'])) {
     </div>
 </section>
 
-<?php echo preg_replace('#</div>$#i', '<button type="button" class="shop_etc">테마설정 가져오기</button></div>', $frm_submit); ?>
+<?php echo (USE_G5_THEME) ? preg_replace('#</div>$#i', '<button type="button" class="shop_etc">테마설정 가져오기</button></div>', $frm_submit) : $frm_submit; ?>
 
 <?php if (file_exists($logo_img) || file_exists($logo_img2) || file_exists($mobile_logo_img) || file_exists($mobile_logo_img2)) { ?>
 <script>
@@ -1476,7 +1533,7 @@ function byte_check(el_cont, el_byte)
                 </select>
             </td>
         </tr>
-        <tr>
+		<tr>
             <th scope="row"><label for="de_sms_hp">관리자 휴대폰번호</label></th>
             <td>
                 <?php echo help("주문서작성시 쇼핑몰관리자가 문자메세지를 받아볼 번호를 숫자만으로 입력하세요. 예) 0101234567"); ?>
@@ -1557,7 +1614,7 @@ function byte_check(el_cont, el_byte)
             for ($i=1; $i<=5; $i++) {
             ?>
             <section class="scf_sms_box">
-                <h4><?php echo $scf_sms_title[$i]; ?></h4>
+                <h4><?php echo $scf_sms_title[$i];?></h4>
                 <input type="checkbox" name="de_sms_use<?php echo $i; ?>" value="1" id="de_sms_use<?php echo $i; ?>" <?php echo ($default["de_sms_use".$i] ? " checked" : ""); ?>>
                 <label for="de_sms_use<?php echo $i; ?>"><span class="sound_only"><?php echo $scf_sms_title[$i]; ?></span>사용</label>
                 <div class="scf_sms_img">
@@ -1590,7 +1647,7 @@ function fconfig_check(f)
 }
 
 $(function() {
-    //$(".pg_info_fld").hide();
+   //$(".pg_info_fld").hide();
     $(".pg_vbank_url").hide();
     <?php if($default['de_pg_service']) { ?>
     //$(".<?php echo $default['de_pg_service']; ?>_info_fld").show();
@@ -1728,7 +1785,7 @@ if($default['de_iche_use'] || $default['de_vbank_use'] || $default['de_hp_use'] 
             echo '</script>'.PHP_EOL;
         }
 
-        $is_linux = true;
+		$is_linux = true;
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
             $is_linux = false;
 

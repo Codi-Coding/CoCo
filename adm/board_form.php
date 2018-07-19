@@ -76,6 +76,36 @@ if (!isset($board['bo_mobile_subject'])) {
     sql_query(" ALTER TABLE `{$g5['board_table']}` ADD `bo_mobile_subject` VARCHAR(255) NOT NULL DEFAULT '' AFTER `bo_subject` ", false);
 }
 
+if ($w == 'u') {
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_type` tinyint(4) NOT NULL DEFAULT '0' ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_shingo` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_type` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_img` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_shingo` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_list` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_img` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_publish` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_list` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_extra` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_publish` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_extend` tinyint(4) NOT NULL DEFAULT '0' AFTER `as_extra` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_level` int(11) NOT NULL DEFAULT '1' AFTER `as_extend` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_download` int(11) NOT NULL DEFAULT '0' AFTER `as_level` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_down` int(11) NOT NULL DEFAULT '0' AFTER `as_download` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_view` int(11) NOT NULL DEFAULT '0' AFTER `as_down` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_lucky` int(11) NOT NULL DEFAULT '0' AFTER `as_view` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_poll` int(11) NOT NULL DEFAULT '0' AFTER `as_lucky` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_star_score` int(11) NOT NULL DEFAULT '0' AFTER `as_poll` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_star_cnt` int(11) NOT NULL DEFAULT '0' AFTER `as_star_score` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_choice` int(11) NOT NULL DEFAULT '0' AFTER `as_star_score` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` DROP COLUMN `as_choice_mb` ", false);
+	//sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_choice_mb` varchar(20) NOT NULL DEFAULT '' AFTER `as_choice` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_choice_cnt` int(11) NOT NULL DEFAULT '0' AFTER `as_choice` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_re_mb` varchar(255) NOT NULL DEFAULT '' AFTER `as_choice_cnt` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_re_name` varchar(255) NOT NULL AFTER `as_re_mb` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_tag` varchar(255) NOT NULL AFTER `as_re_name` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_map` varchar(255) NOT NULL AFTER `as_tag` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_icon` varchar(255) NOT NULL AFTER `as_map` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_thumb` varchar(255) NOT NULL AFTER `as_icon` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_video` varchar(255) NOT NULL AFTER `as_thumb` ", false);
+	sql_query(" ALTER TABLE `{$g5['write_prefix']}{$board['bo_table']}` ADD `as_update` datetime NOT NULL default '0000-00-00 00:00:00' AFTER `as_video` ", false);
+}
+
 $required = "";
 $readonly = "";
 if ($w == '') {
@@ -143,6 +173,7 @@ include_once ('./admin.head.php');
 
 $pg_anchor = '<ul class="anchor">
     <li><a href="#anc_bo_basic">기본 설정</a></li>
+    <li><a href="#anc_bo_apms">아미나 설정</a></li>
     <li><a href="#anc_bo_auth">권한 설정</a></li>
     <li><a href="#anc_bo_function">기능 설정</a></li>
     <li><a href="#anc_bo_design">디자인/양식</a></li>
@@ -153,9 +184,10 @@ $pg_anchor = '<ul class="anchor">
 $frm_submit = '<div class="btn_confirm01 btn_confirm">
     <input type="submit" value="확인" class="btn_submit" accesskey="s">
     <a href="./board_list.php?'.$qstr.'">목록</a>'.PHP_EOL;
-if ($w == 'u') $frm_submit .= '<a href="./board_copy.php?bo_table='.$bo_table.'" id="board_copy" target="win_board_copy">게시판복사</a>
+if ($w == 'u') $frm_submit .= '    <a href="./board_copy.php?bo_table='.$bo_table.'" id="board_copy" target="win_board_copy">게시판복사</a>
     <a href="'.G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'" class="btn_frmline">게시판 바로가기</a>
-    <a href="./board_thumbnail_delete.php?bo_table='.$board['bo_table'].'&amp;'.$qstr.'" onclick="return delete_confirm2(\'게시판 썸네일 파일을 삭제하시겠습니까?\');">게시판 썸네일 삭제</a>'.PHP_EOL;
+    <a href="./board_thumbnail_delete.php?bo_table='.$board['bo_table'].'&amp;'.$qstr.'" onclick="return delete_confirm2(\'게시판 썸네일 파일을 삭제하시겠습니까?\');">게시판 썸네일 삭제</a>
+    '.PHP_EOL;
 $frm_submit .= '</div>';
 ?>
 
@@ -261,6 +293,343 @@ $frm_submit .= '</div>';
 
 <?php echo $frm_submit; ?>
 
+<section id="anc_bo_apms">
+    <h2 class="h2_frm">아미나 설정</h2>
+    <?php echo $pg_anchor ?>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>아미나 설정</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+		<tr>
+            <th scope="row"><label for="as_title">페이지 타이틀</label></th>
+            <td>
+                <?php echo help('각 게시판 페이지 상단에 출력되는 타이틀입니다.') ?>
+				<input type="text" name="as_title" value="<?php echo $board['as_title'] ?>" id="as_title" class="frm_input" size="80">
+				<a href="<?php echo G5_BBS_URL;?>/ficon.php?fid=as_title" class="btn_frmline win_scrap">아이콘 선택</a>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_title" value="1" id="chk_grp_as_title">
+                <label for="chk_grp_as_title">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_title" value="1" id="chk_all_as_title">
+                <label for="chk_all_as_title">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="as_desc">페이지 설명글</label></th>
+            <td>
+				<input type="text" name="as_desc" value="<?php echo $board['as_desc'] ?>" id="as_desc" class="frm_input" size="80">
+				<a href="<?php echo G5_BBS_URL;?>/ficon.php?fid=as_desc" class="btn_frmline win_scrap">아이콘 선택</a>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_desc" value="1" id="chk_grp_as_desc">
+                <label for="chk_grp_as_desc">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_desc" value="1" id="chk_all_as_desc">
+                <label for="chk_all_as_desc">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label>추가설정</label></th>
+            <td>
+				보드 추가설정을 그룹 또는 전체 보드에 일괄 적용합니다.
+			</td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_boset" value="1" id="chk_grp_as_boset">
+                <label for="chk_grp_as_boset">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_boset" value="1" id="chk_all_as_boset">
+                <label for="chk_all_as_boset">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_min">접근레벨</label></th>
+            <td>
+				<input type="text" name="as_min" value="<?php echo $board['as_min'] ?>" id="as_min" class="frm_input" size="4"> 레벨부터
+				<input type="text" name="as_max" value="<?php echo $board['as_max'] ?>" id="as_max" class="frm_input" size="4"> 레벨까지 회원만 게시판 접근이 가능합니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_level" value="1" id="chk_grp_as_level">
+                <label for="chk_grp_as_level">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_level" value="1" id="chk_all_as_level">
+                <label for="chk_all_as_level">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="as_grade">접근등급</label></th>
+            <td>
+                <?php echo get_member_level_select('as_grade', 1, 10, $board['as_grade']) ?> 등급
+				<select id="as_equal" name="as_equal">
+					<option value="0">이상 회원만</option>
+					<option value="1"<?php if($board['as_equal'] == "1") echo " selected";?>>회원만</option>
+				</select>
+				게시판 접근이 가능합니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_grade" value="1" id="chk_grp_as_grade">
+                <label for="chk_grp_as_grade">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_grade" value="1" id="chk_all_as_grade">
+                <label for="chk_all_as_grade">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_comment_rows">댓글페이징</label></th>
+            <td>
+				<input type="text" name="as_comment_rows" value="<?php echo $board['as_comment_rows'] ?>" id="as_comment_rows" class="frm_input" size="4"> 개 PC 페이지당,
+				<input type="text" name="as_comment_mobile_rows" value="<?php echo $board['as_comment_mobile_rows'] ?>" id="as_comment_mobile_rows" class="frm_input" size="4"> 개 모바일 페이지당 댓글을 출력합니다. (0 입력시 페이징 없는 그누보드 기본형태 댓글을 사용)
+			</td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_comment_rows" value="1" id="chk_grp_as_comment_rows">
+                <label for="chk_grp_as_comment_rows">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_comment_rows" value="1" id="chk_all_as_comment_rows">
+                <label for="chk_all_as_comment_rows">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_best_cmt">댓글베스트</label></th>
+            <td>
+				<input type="text" name="as_best_cmt" value="<?php echo $board['as_best_cmt'] ?>" id="as_best_cmt" class="frm_input" size="4">
+				개 이상 추천받은 댓글 중
+				<input type="text" name="as_rank_cmt" value="<?php echo $board['as_rank_cmt'] ?>" id="as_rank_cmt" class="frm_input" size="4">
+				위까지 베스트 댓글로 출력합니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_best_cmt" value="1" id="chk_grp_as_best_cmt">
+                <label for="chk_grp_as_best_cmt">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_best_cmt" value="1" id="chk_all_as_best_cmt">
+                <label for="chk_all_as_best_cmt">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_shingo">블라인드</label></th>
+            <td>
+				<input type="text" name="as_shingo" value="<?php echo $board['as_shingo'] ?>" id="as_shingo" class="frm_input" size="4"> 개 이상 신고가 접수되면 블라인드처리합니다. (최고 120개)
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_shingo" value="1" id="chk_grp_as_shingo">
+                <label for="chk_grp_as_shingo">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_shingo" value="1" id="chk_all_as_shingo">
+                <label for="chk_all_as_shingo">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_rev_cmt">댓글역순</label></th>
+            <td>
+				<label><input type="checkbox" name="as_rev_cmt" value="1" id="as_rev_cmt" <?php echo $board['as_rev_cmt']?'checked':''; ?>>
+				최근 댓글부터 출력합니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_rev_cmt" value="1" id="chk_grp_as_rev_cmt">
+                <label for="chk_grp_as_rev_cmt">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_rev_cmt" value="1" id="chk_all_as_rev_cmt">
+                <label for="chk_all_as_rev_cmt">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_notice">새글등록</label></th>
+            <td>
+                <label><input type="checkbox" name="as_new" value="1" id="as_new" <?php echo $board['as_new']?'checked':''; ?>>
+				새글DB에 글/댓글을 등록하지 않습니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_new" value="1" id="chk_grp_as_new">
+                <label for="chk_grp_as_new">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_new" value="1" id="chk_all_as_new">
+                <label for="chk_all_as_new">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_notice">새글알림</label></th>
+            <td>
+                <label><input type="checkbox" name="as_notice" value="1" id="as_notice" <?php echo $board['as_notice']?'checked':''; ?>>
+				새글등록시 최고/그룹/보드 관리자의 내글반응에 새글알림을 보냅니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_notice" value="1" id="chk_grp_as_notice">
+                <label for="chk_grp_as_notice">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_notice" value="1" id="chk_all_as_notice">
+                <label for="chk_all_as_notice">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_autoplay">코드출력</label></th>
+            <td>
+                <label><input type="checkbox" name="as_code" value="1" id="as_code" <?php echo $board['as_code']?'checked':''; ?>>
+				글내용에 SyntaxHighlighter를 적용합니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_code" value="1" id="chk_grp_as_code">
+                <label for="chk_grp_as_code">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_code" value="1" id="chk_all_as_code">
+                <label for="chk_all_as_code">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_autoplay">자동실행</label></th>
+            <td>
+                <label><input type="checkbox" name="as_autoplay" value="1" id="as_autoplay" <?php echo $board['as_autoplay']?'checked':''; ?>>
+				첨부파일의 동영상, 오디오를 자동실행합니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_autoplay" value="1" id="chk_grp_as_autoplay">
+                <label for="chk_grp_as_autoplay">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_autoplay" value="1" id="chk_all_as_autoplay">
+                <label for="chk_all_as_autoplay">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_purifier">글필터링</label></th>
+            <td>
+                <label><input type="checkbox" name="as_purifier" value="1" id="as_purifier" <?php echo $board['as_purifier']?'checked':''; ?>>
+				Htmlpurifier로 글내용을 필터링하지 않습니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_purifier" value="1" id="chk_grp_as_purifier">
+                <label for="chk_grp_as_purifier">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_purifier" value="1" id="chk_all_as_purifier">
+                <label for="chk_all_as_purifier">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_torrent">토렌트</label></th>
+            <td>
+                <label><input type="checkbox" name="as_torrent" value="1" id="as_torrent" <?php echo $board['as_torrent']?'checked':''; ?>>
+				첨부파일의 토렌트 시드정보를 출력합니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_torrent" value="1" id="chk_grp_as_torrent">
+                <label for="chk_grp_as_torrent">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_torrent" value="1" id="chk_all_as_torrent">
+                <label for="chk_all_as_torrent">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="as_exif">Exif 정보</label></th>
+            <td>
+                <label><input type="checkbox" name="as_exif" value="1" id="as_exif" <?php echo $board['as_exif']?'checked':''; ?>>
+				첨부 이미지 또는 에디트 이미지의 Exif 정보를 출력합니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_exif" value="1" id="chk_grp_as_exif">
+                <label for="chk_grp_as_exif">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_exif" value="1" id="chk_all_as_exif">
+                <label for="chk_all_as_exif">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_lightbox">원본이미지</label></th>
+            <td>
+                <select id="as_lightbox" name="as_lightbox">
+                    <?php echo option_selected(0, $board['as_lightbox'], "새창으로 보기"); ?>
+                    <?php echo option_selected(1, $board['as_lightbox'], "라이트박스로 보기"); ?>
+                    <?php echo option_selected(2, $board['as_lightbox'], "새창+외부이미지 제외"); ?>
+                    <?php echo option_selected(3, $board['as_lightbox'], "라이트박스+외부이미지 제외"); ?>
+                    <?php echo option_selected(4, $board['as_lightbox'], "사용안함"); ?>
+                </select>
+				※ 너비가 600px 보다 작은 이미지는 제외되며, 사용안함 설정시 글내용의 모든 이미지에 자유롭게 링크할 수 있습니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_lightbox" value="1" id="chk_grp_as_lightbox">
+                <label for="chk_grp_as_lightbox">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_lightbox" value="1" id="chk_all_as_lightbox">
+                <label for="chk_all_as_lightbox">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_lucky">럭키포인트</label></th>
+            <td>
+                <label><input type="checkbox" name="as_lucky" value="1" id="as_lucky" <?php echo $board['as_lucky']?'checked':''; ?>>
+				댓글 등록시 럭키포인트를 적용합니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_lucky" value="1" id="chk_grp_as_lucky">
+                <label for="chk_grp_as_lucky">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_lucky" value="1" id="chk_all_as_lucky">
+                <label for="chk_all_as_lucky">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_good">자동글추천</label></th>
+            <td>
+                <label><input type="checkbox" name="as_good" value="1" id="as_good" <?php echo $board['as_good']?'checked':''; ?>>
+				댓글 등록시 자동 글추천/비추천 기능을 사용합니다. 단, 게시판 기능설정에서 추천/비추천 기능 사용시에만 작동합니다. </label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_good" value="1" id="chk_grp_as_good">
+                <label for="chk_grp_as_good">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_good" value="1" id="chk_all_as_good">
+                <label for="chk_all_as_good">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_lucky">외부이미지</label></th>
+            <td>
+                <label><input type="checkbox" name="as_save" value="1" id="as_save" <?php echo $board['as_save']?'checked':''; ?>>
+				글등록시 외부이미지를 서버로 수집합니다.</label>
+				<span style="float:right;">
+					<label><input type="checkbox" name="as_save_all" value="1" id="as_save_all">
+					게시물 전체 외부이미지 재수집 실행하기</label>
+				</span>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_save" value="1" id="chk_grp_as_save">
+                <label for="chk_grp_as_save">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_save" value="1" id="chk_all_as_save">
+                <label for="chk_all_as_save">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_resize">리사이징</label></th>
+            <td>
+				<input type="text" name="as_resize_kb" value="<?php echo $board['as_resize_kb'] ?>" id="as_resize_kb" class="frm_input" size="4"> KB 보다 큰 이미지는 글등록시
+				<input type="text" name="as_resize" value="<?php echo $board['as_resize'] ?>" id="as_resize" class="frm_input" size="4"> px 너비로 자동으로 리사이징 합니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_resize" value="1" id="chk_grp_as_resize">
+                <label for="chk_grp_as_resize">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_resize" value="1" id="chk_all_as_resize">
+                <label for="chk_all_as_resize">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="as_loc">현재접속자</label></th>
+            <td>
+                <label><input type="checkbox" name="as_loc" value="1" id="as_loc" <?php echo $board['as_loc']?'checked':''; ?>>
+				현재접속자 페이지에 보드 접속정보를 노출하지 않습니다.</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_loc" value="1" id="chk_grp_as_loc">
+                <label for="chk_grp_as_loc">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_loc" value="1" id="chk_all_as_loc">
+                <label for="chk_all_as_loc">전체적용</label>
+            </td>
+        </tr>
+		<?php if(USE_PARTNER) { ?>
+		<tr>
+            <th scope="row"><label for="as_partner">파트너전용</label></th>
+            <td>
+                <label><input type="checkbox" name="as_partner" value="1" id="as_partner" <?php echo $board['as_partner']?'checked':''; ?>>
+                파트너 전용 게시판으로 사용합니다.</label>
+
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_partner" value="1" id="chk_grp_as_partner">
+                <label for="chk_grp_as_partner">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_partner" value="1" id="chk_all_as_partner">
+                <label for="chk_all_as_partner">전체적용</label>
+            </td>
+        </tr>
+		<?php } ?>
+		</tbody>
+        </table>
+    </div>
+</section>
+
+<?php echo $frm_submit; ?>
+
 <section id="anc_bo_auth">
     <h2 class="h2_frm">게시판 권한 설정</h2>
     <?php echo $pg_anchor ?>
@@ -277,7 +646,8 @@ $frm_submit .= '</div>';
         <tr>
             <th scope="row"><label for="bo_admin">게시판 관리자</label></th>
             <td>
-                <input type="text" name="bo_admin" value="<?php echo $board['bo_admin'] ?>" id="bo_admin" class="frm_input" maxlength="20">
+                <?php echo help('복수관리자는 회원아이디를 콤마(,)로 구분해서 등록해 주세요.') ?>
+                <input type="text" name="bo_admin" value="<?php echo $board['bo_admin'] ?>" id="bo_admin" class="frm_input" size="80" maxlength="255">
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_admin" value="1" id="chk_grp_admin">
@@ -300,6 +670,18 @@ $frm_submit .= '</div>';
             </td>
         </tr>
         <tr>
+            <th scope="row"><label for="as_search">글검색 권한</label></th>
+            <td>
+                <?php echo get_member_level_select('as_search', 1, 10, $board['as_search']) ?>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_as_search" value="1" id="chk_grp_as_search">
+                <label for="chk_grp_as_search">그룹적용</label>
+                <input type="checkbox" name="chk_all_as_search" value="1" id="chk_all_as_search">
+                <label for="chk_all_as_search">전체적용</label>
+            </td>
+        </tr>
+		<tr>
             <th scope="row"><label for="bo_read_level">글읽기 권한</label></th>
             <td>
                 <?php echo get_member_level_select('bo_read_level', 1, 10, $board['bo_read_level']) ?>
@@ -443,8 +825,11 @@ $frm_submit .= '</div>';
         <tr>
             <th scope="row"><label for="bo_use_sideview">글쓴이 사이드뷰</label></th>
             <td>
-                <input type="checkbox" name="bo_use_sideview" value="1" id="bo_use_sideview" <?php echo $board['bo_use_sideview']?'checked':''; ?>>
-                사용 (글쓴이 클릭시 나오는 레이어 메뉴)
+                <label><input type="checkbox" name="bo_use_sideview" value="1" id="bo_use_sideview" <?php echo $board['bo_use_sideview']?'checked':''; ?>>
+                사용 (글쓴이 클릭시 나오는 레이어 메뉴)</label>
+				&nbsp;
+                <label><input type="checkbox" name="as_level" value="1" id="as_level" <?php echo $board['as_level']?'checked':''; ?>>
+                레벨아이콘 출력</label>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_use_sideview" value="1" id="chk_grp_use_sideview">
@@ -476,7 +861,26 @@ $frm_submit .= '</div>';
                 <?php echo help('글작성시 내용을 DHTML 에디터 기능으로 사용할 것인지 설정합니다. 스킨에 따라 적용되지 않을 수 있습니다.') ?>
                 <input type="checkbox" name="bo_use_dhtml_editor" value="1" <?php echo $board['bo_use_dhtml_editor']?'checked':''; ?> id="bo_use_dhtml_editor">
                 사용
-            </td>
+				&nbsp;
+                <select name="as_editor" id="as_editor">
+                <option value="">PC 기본 에디터</option>
+				<?php
+                $arr = get_skin_dir('', G5_EDITOR_PATH);
+				for ($i=0; $i<count($arr); $i++) {
+                    echo "<option value=\"".$arr[$i]."\"".get_selected($board['as_editor'], $arr[$i]).">".$arr[$i]."</option>\n";
+                }
+                ?>
+                </select>
+				&nbsp;
+                <select name="as_mobile_editor" id="as_mobile_editor">
+                <option value="">모바일 사용안함</option>
+				<?php
+				for ($i=0; $i<count($arr); $i++) {
+                    echo "<option value=\"".$arr[$i]."\"".get_selected($board['as_mobile_editor'], $arr[$i]).">".$arr[$i]."</option>\n";
+                }
+                ?>
+                </select>
+			</td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_use_dhtml_editor" value="1" id="chk_grp_use_dhtml_editor">
                 <label for="chk_grp_use_dhtml_editor">그룹적용</label>
@@ -595,8 +999,14 @@ $frm_submit .= '</div>';
         <tr>
             <th scope="row"><label for="bo_use_list_view">전체목록보이기 사용</label></th>
             <td>
-                <input type="checkbox" name="bo_use_list_view" value="1" id="bo_use_list_view" <?php echo $board['bo_use_list_view']?'checked':''; ?>>
-                사용
+                <select id="bo_use_list_view" name="bo_use_list_view">
+                    <?php
+						echo option_selected("",  $board['bo_use_list_view'], "출력안함");
+						echo option_selected("1",  $board['bo_use_list_view'], "모두출력");
+						echo option_selected("2",  $board['bo_use_list_view'], "PC만 출력");
+						echo option_selected("3",  $board['bo_use_list_view'], "모바일만 출력");
+					?>
+                </select>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_use_list_view" value="1" id="chk_grp_use_list_view">
@@ -748,8 +1158,20 @@ $frm_submit .= '</div>';
         <tr>
             <th scope="row"><label for="bo_use_search">전체 검색 사용</label></th>
             <td>
-                <input type="checkbox" name="bo_use_search" value="1" id="bo_use_search" <?php echo $board['bo_use_search']?'checked':''; ?>>
-                사용
+				<?php echo help('권한 1은 비회원, 2 이상 회원입니다. 권한은 10 이 가장 높습니다.') ?>
+				<select id="bo_use_search" name="bo_use_search">
+					<option value="0">사용안함</option>
+					<option value="1"<?php if($board['bo_use_search'] == "1") echo " selected";?>>1</option>
+					<option value="2"<?php if($board['bo_use_search'] == "2") echo " selected";?>>2</option>
+					<option value="3"<?php if($board['bo_use_search'] == "3") echo " selected";?>>3</option>
+					<option value="4"<?php if($board['bo_use_search'] == "4") echo " selected";?>>4</option>
+					<option value="5"<?php if($board['bo_use_search'] == "5") echo " selected";?>>5</option>
+					<option value="6"<?php if($board['bo_use_search'] == "6") echo " selected";?>>6</option>
+					<option value="7"<?php if($board['bo_use_search'] == "7") echo " selected";?>>7</option>
+					<option value="8"<?php if($board['bo_use_search'] == "8") echo " selected";?>>8</option>
+					<option value="9"<?php if($board['bo_use_search'] == "9") echo " selected";?>>9</option>
+					<option value="10"<?php if($board['bo_use_search'] == "10") echo " selected";?>>10</option>
+				</select>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_use_search" value="1" id="chk_grp_use_search">
@@ -816,7 +1238,7 @@ $frm_submit .= '</div>';
             </td>
         </tr>
         <?php if ($is_admin === 'super'){   // 슈퍼관리자인 경우에만 수정 가능 ?>
-        <tr>
+		<tr>
             <th scope="row"><label for="bo_include_head">상단 파일 경로</label></th>
             <td>
                 <input type="text" name="bo_include_head" value="<?php echo $board['bo_include_head'] ?>" id="bo_include_head" class="frm_input" size="50">
@@ -889,7 +1311,7 @@ $frm_submit .= '</div>';
             </td>
         </tr>
         <?php }     //end if $is_admin === 'super' ?>
-         <tr>
+		 <tr>
             <th scope="row"><label for="bo_insert_content">글쓰기 기본 내용</label></th>
             <td>
                 <textarea id="bo_insert_content" name="bo_insert_content" rows="5"><?php echo $board['bo_insert_content'] ?></textarea>
@@ -1089,7 +1511,8 @@ $frm_submit .= '</div>';
                 <?php echo help('리스트에서 기본으로 정렬에 사용할 필드를 선택합니다. "기본"으로 사용하지 않으시는 경우 속도가 느려질 수 있습니다.') ?>
                 <select id="bo_sort_field" name="bo_sort_field">
                     <option value="" <?php echo get_selected($board['bo_sort_field'], ""); ?>>wr_num, wr_reply : 기본</option>
-                    <option value="wr_datetime asc" <?php echo get_selected($board['bo_sort_field'], "wr_datetime asc"); ?>>wr_datetime asc : 날짜 이전것 부터</option>
+                    <option value="wr_num desc, wr_reply" <?php echo get_selected($board['bo_sort_field'], "wr_num desc, wr_reply"); ?>>wr_num desc, wr_reply : 기본 역순</option>
+					<option value="wr_datetime asc" <?php echo get_selected($board['bo_sort_field'], "wr_datetime asc"); ?>>wr_datetime asc : 날짜 이전것 부터</option>
                     <option value="wr_datetime desc" <?php echo get_selected($board['bo_sort_field'], "wr_datetime desc"); ?>>wr_datetime desc : 날짜 최근것 부터</option>
                     <option value="wr_hit asc, wr_num, wr_reply" <?php echo get_selected($board['bo_sort_field'], "wr_hit asc, wr_num, wr_reply"); ?>>wr_hit asc : 조회수 낮은것 부터</option>
                     <option value="wr_hit desc, wr_num, wr_reply" <?php echo get_selected($board['bo_sort_field'], "wr_hit desc, wr_num, wr_reply"); ?>>wr_hit desc : 조회수 높은것 부터</option>
@@ -1120,7 +1543,7 @@ $frm_submit .= '</div>';
     </div>
 </section>
 
-<?php echo preg_replace('#</div>$#i', '<button type="button" class="get_theme_galc">테마 이미지설정 가져오기</button></div>', $frm_submit); ?>
+<?php echo (USE_G5_THEME) ? preg_replace('#</div>$#i', '<button type="button" class="get_theme_galc">테마 이미지설정 가져오기</button></div>', $frm_submit) : $frm_submit; ?>
 
 <section id="anc_bo_point">
     <h2 class="h2_frm">게시판 포인트 설정</h2>

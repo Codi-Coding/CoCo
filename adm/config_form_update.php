@@ -125,7 +125,7 @@ $sql = " update {$g5['config_table']}
                 cf_cert_req = '{$_POST['cf_cert_req']}',
                 cf_sms_use = '{$_POST['cf_sms_use']}',
                 cf_sms_type = '{$_POST['cf_sms_type']}',
-                cf_icode_id = '{$_POST['cf_icode_id']}',
+				cf_icode_id = '{$_POST['cf_icode_id']}',
                 cf_icode_pw = '{$_POST['cf_icode_pw']}',
                 cf_icode_server_ip = '{$_POST['cf_icode_server_ip']}',
                 cf_icode_server_port = '{$_POST['cf_icode_server_port']}',
@@ -154,7 +154,11 @@ $sql = " update {$g5['config_table']}
                 cf_7 = '{$_POST['cf_7']}',
                 cf_8 = '{$_POST['cf_8']}',
                 cf_9 = '{$_POST['cf_9']}',
-                cf_10 = '{$_POST['cf_10']}' ";
+                cf_10 = '{$_POST['cf_10']}',
+                as_tag_skin = '{$_POST['as_tag_skin']}',
+                as_mobile_tag_skin = '{$_POST['as_mobile_tag_skin']}',
+                as_misc_skin = '{$_POST['as_misc_skin']}',
+                as_lang = '{$_POST['as_lang']}'	";
 sql_query($sql);
 
 //sql_query(" OPTIMIZE TABLE `$g5[config_table]` ");
