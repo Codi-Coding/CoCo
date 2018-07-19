@@ -1,6 +1,4 @@
-!.gitignore
 /.htaccess
-data/
 test/
 sirgle/
 test.php
