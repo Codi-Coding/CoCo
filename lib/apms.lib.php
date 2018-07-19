@@ -254,7 +254,7 @@ function apms_member($mb_id, $lvl='yes', $realname='') {
 		$info['memo'] = $info['as_memo'];
 
 		if(USE_PARTNER) {
-			if($is_admin == 'super' && $member['mb_id'] == $mb_id) {
+			if($is_admin === 'super' && $member['mb_id'] === $mb_id) {
 				$info['partner'] = 1;
 			} else {
 				$info['partner'] = ($info['as_partner'] || $info['as_marketer']) ? 1 : 0;
@@ -506,6 +506,12 @@ function apms_post_star($list, $opt='') {
 
 // 확장자 파악하기
 function apms_get_ext($str) {
+
+	if(preg_match('/(http|https)\:\/\//i', $str)) {
+		$p = @parse_url($str);
+		$str = $p['path'];
+	}
+
 	$f = explode(".", basename($str));
 	$l = sizeof($f);
 	if($l > 1) {
@@ -518,6 +524,11 @@ function apms_get_ext($str) {
 function apms_get_filename($str) {
 
 	$file = array();
+
+	if(preg_match('/(http|https)\:\/\//i', $str)) {
+		$p = @parse_url($str);
+		$str = $p['path'];
+	}
 
 	$f = explode(".", basename($str));
 	$l = sizeof($f);
@@ -990,7 +1001,7 @@ function apms_video_imgurl($url, $vid, $type) {
 			$vid .= "&outKey=".$query['outKey'];
 		
 			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "http://serviceapi.{$url_type}.naver.com/flash/videoInfo.nhn?vid=".$vid);
+			curl_setopt($ch, CURLOPT_URL, "https://serviceapi.{$url_type}.naver.com/flash/videoInfo.nhn?vid=".$vid);
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
@@ -1456,6 +1467,8 @@ function apms_jwplayer($file, $img='', $caption='', $title=''){
 
 	$video = array("mp4", "m4v", "f4v", "mov", "flv", "webm");
 	$audio = array("acc", "m4a", "f4a", "mp3", "ogg", "oga");
+
+	$file = str_replace("&amp;", "&", $file);
 	$ext = apms_get_ext($file);
 	if($ext == "rss") {
 		$is_type = 'plist';
@@ -1601,10 +1614,10 @@ function apms_video($vid, $opt='') {
 			$show = '<iframe src="https://www.facebook.com/video/embed?video_id='.urlencode($video['vid']).'" width="'.$video['width'].'" height="'.$video['height'].'" frameborder="0"'.$fullscreen.'></iframe>';
 		} else if($video['type'] == "naver"){ // Naver - 라니안님 코드 반영
 			$autoplay = ($autoplayvideo || $video['auto']) ? '&isp=1' : '';
-			$show = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="http://serviceapi.nmv.naver.com/flash/convertIframeTag.nhn?vid='.$video['vid'].'&outKey='.$video['outKey'].'&wmode=opaque'.$autoplay.'" frameborder="no" scrolling="no"'.$fullscreen.'></iframe>';
+			$show = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="https://serviceapi.nmv.naver.com/flash/convertIframeTag.nhn?vid='.$video['vid'].'&outKey='.$video['outKey'].'&wmode=opaque'.$autoplay.'" frameborder="no" scrolling="no"'.$fullscreen.'></iframe>';
 		} else if($video['type'] == "tvcast"){
 			$autoplay = ($autoplayvideo || $video['auto']) ? '&isp=1' : '';
-			$show = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="http://serviceapi.rmcnmv.naver.com/flash/outKeyPlayer.nhn?vid='.$video['vid'].'&outKey='.$video['outKey'].'&controlBarMovable=true&jsCallable=true&skinName=tvcast_white&wmode=opaque'.$autoplay.'" frameborder="no" scrolling="no" marginwidth="0" marginheight="0"'.$fullscreen.'></iframe>';
+			$show = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="https://serviceapi.rmcnmv.naver.com/flash/outKeyPlayer.nhn?vid='.$video['vid'].'&outKey='.$video['outKey'].'&controlBarMovable=true&jsCallable=true&skinName=tvcast_white&wmode=opaque'.$autoplay.'" frameborder="no" scrolling="no" marginwidth="0" marginheight="0"'.$fullscreen.'></iframe>';
 		} else if($video['type'] == "vid"){ // Vid.me
 			$autoplay = ($autoplayvideo || $video['auto']) ? '&amp;autoplay=1' : '';
 			$show = '<iframe src="https://vid.me/e/'.$video['vid'].'?stats=1&amp;tools=1'.$autoplay.'" width="'.$video['width'].'" height="'.$video['height'].'" frameborder="0" scrolling="no"'.$fullscreen.'></iframe>';
@@ -1883,7 +1896,7 @@ function xp_icon($xp_id, $xp_level, $icon='') {
 	if(!isset($xp['xp_icon'])) return;
 
 	$xp_icon = '';
-	if($xp_id == "@member") {
+	if($xp_id === "@member") {
 		$xp_icon = $xp_level;
 	} else {
 		if(!$xp_id) {
@@ -1900,7 +1913,7 @@ function xp_icon($xp_id, $xp_level, $icon='') {
 
 			$chk_admin = $mb_admin ? is_admin($xp_id) : '';
 
-			if($chk_admin || $xp_id == "@admin") {
+			if($chk_admin || $xp_id === "@admin") {
 				$xp_icon = 'admin';
 			} else if($xp_id == "@special") {
 				$xp_icon = 'special';
@@ -2004,14 +2017,14 @@ function apms_page_thema($id, $type=0) {
 	if($row['gr_id']) {
 		if($gr_id != $row['gr_id']) {
 			$group = sql_fetch(" select * from {$g5['group_table']} where gr_id = '{$row['gr_id']}' ", false);
-			if($is_admin != 'super' && !$is_guest) {
+			if($is_admin !== 'super' && !$is_guest) {
 				$is_admin = (chk_multiple_admin($member['mb_id'], $group['gr_admin'])) ? 'group' : '';
 			}
 		}
 	}
 
 	$is_nav = '';
-	if($is_admin == "super" || $is_admin == "group") {
+	if($is_admin === "super" || $is_admin === "group") {
 		if($row['as_html'] == "3") {
 			$row1 = sql_fetch(" select bo_subject from {$g5['apms_page']} where id = '{$row['as_code']}' ", false);
 			$is_nav = $row1['bo_subject'];
@@ -2823,12 +2836,15 @@ function apms_chk_stats($s='') {
 	$lnb['now_total'] = $row['total_cnt'];
 	$lnb['now_mb'] = $row['mb_cnt'];
 
+
 	//오늘 가입자
-	$row = sql_fetch(" select count(*) as cnt from {$g5['member_table']} where left(mb_datetime,10) = '".date("Y-m-d", G5_SERVER_TIME)."' ", false); 
+	$tday = date("Y-m-d", G5_SERVER_TIME);
+	$row = sql_fetch(" select count(*) as cnt from {$g5['member_table']} where mb_datetime between '{$tday} 00:00:00' and '{$tday} 23:59:59' ", false); 
 	$lnb['join_today'] = $row['cnt'];
 
 	//어제 가입자
-	$row = sql_fetch(" select count(*) as cnt from {$g5['member_table']} where left(mb_datetime,10) = '".date("Y-m-d", G5_SERVER_TIME - 86400)."' ", false); 
+	$yday = date("Y-m-d", G5_SERVER_TIME - 86400);
+	$row = sql_fetch(" select count(*) as cnt from {$g5['member_table']} where mb_datetime between '{$yday} 00:00:00' and '{$yday} 23:59:59' ", false);
 	$lnb['join_yesterday'] = $row['cnt'];
 
 	//전체회원
@@ -3376,7 +3392,7 @@ function apms_chk_auto_menu($s='', $mobile='', $type='') {
 		$n++;
 	}
 
-	$gr_cnt = count($gr);
+	$gr_cnt = $n;
 
 	if($gr_in) $gr_in = "and find_in_set(gr_id,'{$gr_in}')";
 
@@ -3422,7 +3438,12 @@ function apms_chk_auto_menu($s='', $mobile='', $type='') {
 
 		//게시판과 문서 정리
 		$bo = $pg[$row['gr_id']];
-		$bo_cnt = count($bo);
+		$bo_cnt = 0;
+		if(!empty($bo) && is_array($bo)) {
+			foreach ($bo as $boitem) {
+				$bo_cnt++;
+			}
+		}
 
 		if($bo_cnt > 0) $bo = apms_sort($bo, 'as_order');
 
@@ -3735,7 +3756,12 @@ function apms_auto_menu($mode='') {
 		}
 	}
 
-	$cnt = count($tmp);
+	if(is_array($tmp)) {
+		$cnt = count($tmp);
+	} else {
+		$tmp = array();
+		$cnt = 0;
+	}
 
 	$it_ca = $it_ca2 = $it_ca3 = '';
 	if($ca_id) {
@@ -3747,7 +3773,7 @@ function apms_auto_menu($mode='') {
 	$l = 1;
 	for($i=1; $i < $cnt; $i++) {
 
-		if(!$is_admin && $tmp[$i]['show']) {
+		if($is_admin !== 'super' && $tmp[$i]['show']) {
 			if(apms_auth($tmp[$i]['grade'], $tmp[$i]['equal'], $tmp[$i]['min'], $tmp[$i]['max'], 1)) continue;
 		}
 
@@ -3763,7 +3789,7 @@ function apms_auto_menu($mode='') {
 				$m = 0;
 				for($j=0; $j < count($tmp[$i]['sub']); $j++) {
 
-					if(!$is_admin && $tmp[$i]['sub'][$j]['show']) {
+					if($is_admin !== 'super' && $tmp[$i]['sub'][$j]['show']) {
 						if(apms_auth($tmp[$i]['sub'][$j]['grade'], $tmp[$i]['sub'][$j]['equal'], $tmp[$i]['sub'][$j]['min'], $tmp[$i]['sub'][$j]['max'], 1)) continue;
 					}
 
@@ -3823,7 +3849,7 @@ function apms_auto_menu($mode='') {
 
 					if(!trim($tmp[$i]['sub'][$j]['gr_id'])) continue;
 
-					if(!$is_admin && $tmp[$i]['sub'][$j]['show']) {
+					if($is_admin !== 'super' && $tmp[$i]['sub'][$j]['show']) {
 						if(apms_auth($tmp[$i]['sub'][$j]['grade'], $tmp[$i]['sub'][$j]['equal'], $tmp[$i]['sub'][$j]['min'], $tmp[$i]['sub'][$j]['max'], 1)) continue;
 					}
 
@@ -3835,7 +3861,7 @@ function apms_auto_menu($mode='') {
 						$n = 0;
 						for($k=0; $k < count($tmp[$i]['sub'][$j]['sub']); $k++) {
 
-							if(!$is_admin && $tmp[$i]['sub'][$j]['subj'][$k]['show']) {
+							if($is_admin !== 'super' && $tmp[$i]['sub'][$j]['subj'][$k]['show']) {
 								if(apms_auth($tmp[$i]['sub'][$j]['subj'][$k]['grade'], $tmp[$i]['sub'][$j]['subj'][$k]['equal'], $tmp[$i]['sub'][$j]['subj'][$k]['min'], $tmp[$i]['sub'][$j]['subj'][$k]['max'], 1)) continue;
 							}
 
@@ -4517,17 +4543,17 @@ function apms_sql_term($term, $field) {
 			$sql_term = " and $field >= '{$chk_term}' ";
 		} else {
 			$day = getdate();
-			$today = $day['year'].'-'.sprintf("%02d",$day['mon']).'-'.sprintf("%02d",$day['mday']).' 00:00:01';	// 오늘
-			$yesterday = date("Y-m-d", (G5_SERVER_TIME - 86400)).' 00:00:01'; // 어제
-			$nowmonth = $day['year'].'-'.sprintf("%02d",$day['mon']).'-01 00:00:01'; // 이번달
+			$today = $day['year'].'-'.sprintf("%02d",$day['mon']).'-'.sprintf("%02d",$day['mday']).' 00:00:00';	// 오늘
+			$yesterday = date("Y-m-d", (G5_SERVER_TIME - 86400)).' 00:00:00'; // 어제
+			$nowmonth = $day['year'].'-'.sprintf("%02d",$day['mon']).'-01 00:00:00'; // 이번달
 
 			// 지난달
 			if($day['mon'] == "1") { //1월이면
 				$prevyear = $day['year'] - 1;
-				$prevmonth = $prevyear.'-12-01 00:00:01';
+				$prevmonth = $prevyear.'-12-01 00:00:00';
 			} else {
 				$prev = $day['mon'] - 1;
-				$prevmonth = $day['year'].'-'.sprintf("%02d",$prev).'-01 00:00:01';
+				$prevmonth = $day['year'].'-'.sprintf("%02d",$prev).'-01 00:00:00';
 			}
 
 			switch($term) {
@@ -5322,7 +5348,7 @@ function apms_get_extra($type, $bo_table, $wr_id) {
 function apms_admin($mb_list='') {
 	global $is_admin, $member;
 
-	$ok = ($is_admin == 'super' || chk_multiple_admin($member['mb_id'], $mb_list)) ? true : false;
+	$ok = ($is_admin === 'super' || chk_multiple_admin($member['mb_id'], $mb_list)) ? true : false;
 
 	return $ok;
 }

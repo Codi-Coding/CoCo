@@ -214,7 +214,7 @@ $list_cnt = count($list);
 						<?php 
 							$sns_url  = G5_SHOP_URL.'/item.php?it_id='.$list[$i]['it_id'];
 							$sns_title = get_text($list[$i]['it_name']);
-							$sns_img = $list_skin_url.'/img';
+							$sns_img = $skin_url.'/img';
 							echo  get_sns_share_link('facebook', $sns_url, $sns_title, $sns_img.'/sns_fb.png').' ';
 							echo  get_sns_share_link('twitter', $sns_url, $sns_title, $sns_img.'/sns_twt.png').' ';
 							echo  get_sns_share_link('googleplus', $sns_url, $sns_title, $sns_img.'/sns_goo.png').' ';

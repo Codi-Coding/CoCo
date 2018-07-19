@@ -104,6 +104,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 							<label><input type="radio" id="od_settle_samsung_pay" data-case="samsungpay" name="od_settle_case" value="삼성페이"> <span class="samsung_pay">삼성페이</span></label>
 						<?php } ?>
 
+						<?php if($is_inicis_lpay) { ?>
+							<label><input type="radio" id="od_settle_inicislpay" data-case="lpay" name="od_settle_case" value="lpay"> <span class="inicis_lpay">L.pay</span></label>
+						<?php } ?>
+
 					</div>
 				</div>
 

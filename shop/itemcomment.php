@@ -101,7 +101,7 @@ if($total_count > 0) {
 		$list[$i]['content'] = $list[$i]['content1']= '비밀댓글 입니다.';
 		if($row['as_shingo'] < 0) {
 			$shingo_txt = '<p><b>블라인더 처리된 댓글입니다.</b></p>';
-			if($is_admin || ($row['mb_id'] && $row['mb_id'] == $member['mb_id'])) {
+			if($is_admin || ($row['mb_id'] && $row['mb_id'] === $member['mb_id'])) {
 				; // 관리자 또는 글쓴이는 통과
 			} else {
 				$is_cmt_shingo = true;
@@ -112,8 +112,8 @@ if($total_count > 0) {
 		$list[$i]['content'] = $list[$i]['content1']= '비밀댓글 입니다.';
 		if (!strstr($row['wr_option'], 'secret') || 
 			$is_admin || 
-			($it['pt_id'] && $it['pt_id'] == $member['mb_id']) ||
-			($row['mb_id'] && $row['mb_id'] == $member['mb_id'])) {
+			($it['pt_id'] && $it['pt_id'] === $member['mb_id']) ||
+			($row['mb_id'] && $row['mb_id'] === $member['mb_id'])) {
 
 			if($is_cmt_shingo) {
 				$list[$i]['content1'] = '블라인더 처리된 댓글입니다'; 
@@ -127,11 +127,11 @@ if($total_count > 0) {
 			// 대댓글의 비밀글을 원댓글쓴이에게도 보이기
 			$is_pre_commenter = false;
 			if($row['wr_comment_reply'] && $member['mb_id']) {
-				if($row['wr_re_mb'] && $row['wr_re_mb'] == $member['mb_id']) {
+				if($row['wr_re_mb'] && $row['wr_re_mb'] === $member['mb_id']) {
 					$is_pre_commenter = true;
 				} else {
 					$pre_comment = sql_fetch(" select mb_id from {$g5['apms_comment']} where wr_id = '{$row['wr_comment']}' and wr_comment_reply = '".substr($row['wr_comment_reply'],0,-1)."' "); 
-					if($pre_comment['mb_id'] && $pre_comment['mb_id'] == $member['mb_id']) {
+					if($pre_comment['mb_id'] && $pre_comment['mb_id'] === $member['mb_id']) {
 						$is_pre_commenter = true;
 					}
 				}
@@ -150,8 +150,10 @@ if($total_count > 0) {
 		}
 
 		if($is_content) {
-			$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" onclick=\"apms_image(this.href); return false;\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $list[$i]['content']);
-			$list[$i]['content'] = apms_content($list[$i]['content']);
+			//$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" onclick=\"apms_image(this.href); return false;\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $list[$i]['content']);
+			$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<img src=\"$1://$2.$3\" alt=\"\">", $list[$i]['content']);
+
+			$list[$i]['content'] = apms_content(get_view_thumbnail($list[$i]['content']));
 
 			//럭키포인트
 			if($row['wr_lucky']) {
@@ -179,7 +181,7 @@ if($total_count > 0) {
 			$token = '';
 
 			if ($member['mb_id']) {
-				if ($row['mb_id'] == $member['mb_id'] || $is_admin) {
+				if ($row['mb_id'] === $member['mb_id'] || $is_admin) {
 	                set_session('it_delete_comment_'.$row['wr_id'].'_token', $token = uniqid(time()));
 					$list[$i]['del_href']  = './itemcommentdelete.php?it_id='.$it_id.'&comment_id='.$row['wr_id'].'&token='.$token;
 					$list[$i]['del_return']  = './itemcomment.php?it_id='.$it_id.'&ca_id='.$ca_id.'&crows='.$crows.'&page='.$page;

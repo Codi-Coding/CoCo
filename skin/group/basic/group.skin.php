@@ -55,7 +55,7 @@ if(!isset($wset['title']) || (isset($wset['title']) && !$wset['title'])) {
 <?php 
 // 보드추출
 $bo_device = (G5_IS_MOBILE) ? 'pc' : 'mobile';
-$sql = " select bo_table, bo_subject from {$g5[board_table]} where gr_id = '{$gr_id}' and bo_list_level <= '{$member[mb_level]}' and bo_device <> '{$bo_device}' and as_show = '1' ";
+$sql = " select bo_table, bo_subject from {$g5['board_table']} where gr_id = '{$gr_id}' and bo_list_level <= '{$member['mb_level']}' and bo_device <> '{$bo_device}' and as_show = '1' ";
 if(!$is_admin) $sql .= " and bo_use_cert = '' ";
 $sql .= " order by as_order, bo_order ";
 $result = sql_query($sql);

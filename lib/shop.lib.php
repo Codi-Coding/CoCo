@@ -633,6 +633,10 @@ function it_img_upload($srcfile, $filename, $dir)
     if($size[2] < 1 || $size[2] > 3)
         return '';
 
+    //php파일도 getimagesize 에서 Image Type Flag 를 속일수 있다
+    if (!preg_match('/\.(gif|jpe?g|png)$/i', $filename))
+        return '';
+
     if(!is_dir($dir)) {
         @mkdir($dir, G5_DIR_PERMISSION);
         @chmod($dir, G5_DIR_PERMISSION);
@@ -2256,6 +2260,37 @@ function make_order_field($data, $exclude)
     }
 
     return $field;
+}
+
+//이니시스의 삼성페이 또는 L.pay 결제가 활성화 되어 있는지 체크합니다.
+function is_inicis_simple_pay(){
+    global $default;
+
+    if ( $default['de_samsung_pay_use'] || $default['de_inicis_lpay_use'] ){
+        return true;
+    }
+
+    return false;
+}
+
+//이니시스의 삼성페이 또는 L.pay 결제인지 확인합니다.
+function is_inicis_order_pay($type){
+
+    if( in_array($type, array('삼성페이', 'lpay') ) ){
+        return true;
+    }
+
+    return false;
+}
+
+//결제방식 이름을 체크하여 치환 대상인 문자열은 따로 리턴합니다.
+function check_pay_name_replace($payname){
+
+    if( $payname === 'lpay' ){
+        return 'L.pay';
+    }
+
+    return $payname;
 }
 
 // 다운로드한 쿠폰인지

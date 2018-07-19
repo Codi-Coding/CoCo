@@ -28,7 +28,8 @@ for ($i=0; $i<$ext_cnt; $i++) {
 
 function g5_path()
 {
-    $result['path'] = str_replace('\\', '/', dirname(__FILE__));
+    $chroot = substr($_SERVER['SCRIPT_FILENAME'], 0, strpos($_SERVER['SCRIPT_FILENAME'], dirname(__FILE__)));
+    $result['path'] = str_replace('\\', '/', $chroot.dirname(__FILE__));
     $tilde_remove = preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $_SERVER['SCRIPT_NAME']);
     $document_root = str_replace($tilde_remove, '', $_SERVER['SCRIPT_FILENAME']);
     $pattern = '/' . preg_quote($document_root, '/') . '/i';
@@ -138,7 +139,7 @@ if (file_exists($dbconfig_file)) {
 
     sql_set_charset('utf8', $connect_db);
     if(defined('G5_MYSQL_SET_MODE') && G5_MYSQL_SET_MODE) sql_query("SET SESSION sql_mode = ''");
-    if (defined(G5_TIMEZONE)) sql_query(" set time_zone = '".G5_TIMEZONE."'");
+    if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'");
 } else {
 ?>
 
@@ -226,7 +227,7 @@ if (isset($_REQUEST['PHPSESSID']) && $_REQUEST['PHPSESSID'] != session_id())
 // QUERY_STRING
 $qstr = '';
 
-if (isset($_REQUEST['sca']) && $_REQUEST['sca'])  {
+if (isset($_REQUEST['sca']))  {
     $sca = clean_xss_tags(trim($_REQUEST['sca']));
     if ($sca) {
         //$sca = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", "", $sca);
@@ -237,7 +238,7 @@ if (isset($_REQUEST['sca']) && $_REQUEST['sca'])  {
     $sca = '';
 }
 
-if (isset($_REQUEST['sfl']) && $_REQUEST['sfl'])  {
+if (isset($_REQUEST['sfl']))  {
     $sfl = trim($_REQUEST['sfl']);
     $sfl = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*\s]/", "", $sfl);
     if ($sfl)
@@ -247,15 +248,15 @@ if (isset($_REQUEST['sfl']) && $_REQUEST['sfl'])  {
 }
 
 
-if (isset($_REQUEST['stx']) && $_REQUEST['stx'])  { // search text (검색어)
+if (isset($_REQUEST['stx']))  { // search text (검색어)
     $stx = get_search_string(trim($_REQUEST['stx']));
-    if ($stx)
+    if ($stx || $stx === '0')
         $qstr .= '&amp;stx=' . urlencode(cut_str($stx, 20, ''));
 } else {
     $stx = '';
 }
 
-if (isset($_REQUEST['sst']) && $_REQUEST['sst'])  {
+if (isset($_REQUEST['sst']))  {
     $sst = trim($_REQUEST['sst']);
     $sst = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*\s]/", "", $sst);
     if ($sst)
@@ -264,7 +265,7 @@ if (isset($_REQUEST['sst']) && $_REQUEST['sst'])  {
     $sst = '';
 }
 
-if (isset($_REQUEST['sod']) && $_REQUEST['sod'])  { // search order (검색 오름, 내림차순)
+if (isset($_REQUEST['sod']))  { // search order (검색 오름, 내림차순)
     $sod = preg_match("/^(asc|desc)$/i", $sod) ? $sod : '';
     if ($sod)
         $qstr .= '&amp;sod=' . urlencode($sod);
@@ -272,7 +273,7 @@ if (isset($_REQUEST['sod']) && $_REQUEST['sod'])  { // search order (검색 오�
     $sod = '';
 }
 
-if (isset($_REQUEST['sop']) && $_REQUEST['sop'])  { // search operator (검색 or, and 오퍼레이터)
+if (isset($_REQUEST['sop']))  { // search operator (검색 or, and 오퍼레이터)
     $sop = preg_match("/^(or|and)$/i", $sop) ? $sop : '';
     if ($sop)
         $qstr .= '&amp;sop=' . urlencode($sop);
@@ -280,7 +281,7 @@ if (isset($_REQUEST['sop']) && $_REQUEST['sop'])  { // search operator (검색 o
     $sop = '';
 }
 
-if (isset($_REQUEST['spt']) && $_REQUEST['spt'])  { // search part (검색 파트[구간])
+if (isset($_REQUEST['spt']))  { // search part (검색 파트[구간])
     $spt = (int)$spt;
     if ($spt)
         $qstr .= '&amp;spt=' . urlencode($spt);
@@ -288,7 +289,7 @@ if (isset($_REQUEST['spt']) && $_REQUEST['spt'])  { // search part (검색 파�
     $spt = '';
 }
 
-if (isset($_REQUEST['page']) && $_REQUEST['page']) { // 리스트 페이지
+if (isset($_REQUEST['page'])) { // 리스트 페이지
     $page = (int)$_REQUEST['page'];
     if ($page)
         $qstr .= '&amp;page=' . urlencode($page);
@@ -296,19 +297,19 @@ if (isset($_REQUEST['page']) && $_REQUEST['page']) { // 리스트 페이지
     $page = '';
 }
 
-if (isset($_REQUEST['w']) && $_REQUEST['w']) {
+if (isset($_REQUEST['w'])) {
     $w = substr($w, 0, 2);
 } else {
     $w = '';
 }
 
-if (isset($_REQUEST['wr_id']) && $_REQUEST['wr_id']) {
+if (isset($_REQUEST['wr_id'])) {
     $wr_id = (int)$_REQUEST['wr_id'];
 } else {
     $wr_id = 0;
 }
 
-if (isset($_REQUEST['bo_table']) && $_REQUEST['bo_table']) {
+if (isset($_REQUEST['bo_table'])) {
     $bo_table = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['bo_table']));
     $bo_table = substr($bo_table, 0, 20);
 } else {
@@ -316,7 +317,7 @@ if (isset($_REQUEST['bo_table']) && $_REQUEST['bo_table']) {
 }
 
 // URL ENCODING
-if (isset($_REQUEST['url']) && $_REQUEST['url']) {
+if (isset($_REQUEST['url'])) {
     $url = strip_tags(trim($_REQUEST['url']));
     $urlencode = urlencode($url);
 } else {
@@ -328,7 +329,7 @@ if (isset($_REQUEST['url']) && $_REQUEST['url']) {
     }
 }
 
-if (isset($_REQUEST['gr_id']) && $_REQUEST['gr_id']) {
+if (isset($_REQUEST['gr_id'])) {
     if (!is_array($_REQUEST['gr_id'])) {
         $gr_id = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['gr_id']));
     }
@@ -362,23 +363,25 @@ if ($_SESSION['ss_mb_id']) { // 로그인중이라면
         if (strtolower($tmp_mb_id) != strtolower($config['cf_admin'])) {
             $sql = " select mb_password, mb_intercept_date, mb_leave_date, mb_email_certify from {$g5['member_table']} where mb_id = '{$tmp_mb_id}' ";
             $row = sql_fetch($sql);
-            $key = md5($_SERVER['SERVER_ADDR'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . $row['mb_password']);
-            // 쿠키에 저장된 키와 같다면
-            $tmp_key = get_cookie('ck_auto');
-            if ($tmp_key === $key && $tmp_key) {
-                // 차단, 탈퇴가 아니고 메일인증이 사용이면서 인증을 받았다면
-                if ($row['mb_intercept_date'] == '' &&
-                    $row['mb_leave_date'] == '' &&
-                    (!$config['cf_use_email_certify'] || preg_match('/[1-9]/', $row['mb_email_certify'])) ) {
-                    // 세션에 회원아이디를 저장하여 로그인으로 간주
-                    set_session('ss_mb_id', $tmp_mb_id);
+            if($row['mb_password']){
+                $key = md5($_SERVER['SERVER_ADDR'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . $row['mb_password']);
+                // 쿠키에 저장된 키와 같다면
+                $tmp_key = get_cookie('ck_auto');
+                if ($tmp_key === $key && $tmp_key) {
+                    // 차단, 탈퇴가 아니고 메일인증이 사용이면서 인증을 받았다면
+                    if ($row['mb_intercept_date'] == '' &&
+                        $row['mb_leave_date'] == '' &&
+                        (!$config['cf_use_email_certify'] || preg_match('/[1-9]/', $row['mb_email_certify'])) ) {
+                        // 세션에 회원아이디를 저장하여 로그인으로 간주
+                        set_session('ss_mb_id', $tmp_mb_id);
 
-                    // 페이지를 재실행
-                    echo "<script type='text/javascript'> window.location.reload(); </script>";
-                    exit;
+                        // 페이지를 재실행
+                        echo "<script type='text/javascript'> window.location.reload(); </script>";
+                        exit;
+                    }
                 }
             }
-            // $row 배열변수 해제
+			// $row 배열변수 해제
             unset($row);
         }
     }
@@ -488,12 +491,17 @@ if($use_g5_theme && isset($config['cf_theme']) && trim($config['cf_theme'])) {
 }
 
 // 테마 설정 로드
-if(USE_G5_THEME && is_file(G5_THEME_PATH.'/theme.config.php'))
+if(USE_G5_THEME && defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/theme.config.php'))
     include_once(G5_THEME_PATH.'/theme.config.php');
 
 // 쇼핑몰 설정
 if (defined('G5_USE_SHOP') && G5_USE_SHOP)
     include_once(G5_PATH.'/shop.config.php');
+
+// 테마 상수설정
+if(!defined('G5_COMMUNITY_USE')) {
+	define('G5_COMMUNITY_USE', true);
+}
 
 //=====================================================================================
 // 사용기기 설정

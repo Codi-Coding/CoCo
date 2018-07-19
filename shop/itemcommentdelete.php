@@ -22,10 +22,10 @@ $write = sql_fetch(" select * from {$comment_table} where wr_id = '{$comment_id}
 if (!$write['wr_id'])
     apms_alert('1|등록된 댓글이 아닙니다.');
 
-if ($is_admin == 'super') { // 최고관리자 통과
+if ($is_admin === 'super') { // 최고관리자 통과
     ;
 } else if ($member['mb_id']) {
-    if ($member['mb_id'] != $write['mb_id'])
+    if ($member['mb_id'] !== $write['mb_id'])
         apms_alert('1|자신의 댓글이 아니므로 삭제할 수 없습니다.');
 } else {
 	apms_alert('1|로그인한 회원만 삭제할 수 있습니다.');

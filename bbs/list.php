@@ -33,7 +33,11 @@ if ($sop != 'and' && $sop != 'or')
 
 // 분류 선택 또는 검색어가 있다면
 $stx = trim($stx);
-if ($sca || $stx) {
+//검색인지 아닌지 구분하는 변수 초기화
+$is_search_bbs = false;
+
+if ($sca || $stx || $stx === '0') {     //검색이면
+    $is_search_bbs = true;      //검색구분변수 true 지정
     $sql_search = get_sql_search($sca, $sfl, $stx, $sop);
 
 	// 가장 작은 번호를 얻어서 변수에 저장 (하단의 페이징에서 사용)
@@ -169,7 +173,7 @@ if ($sst) {
     $sql_order = " order by {$sql_apms_orderby} {$sst} {$sod} ";
 }
 
-if ($sca || $stx) {
+if ($is_search_bbs) {
     $sql = " select distinct wr_parent from {$write_table} where {$sql_search} {$sql_order} limit {$from_record}, $page_rows ";
 } else {
     $sql = " select * from {$write_table} where wr_is_comment = 0 {$sql_apms_where} ";
@@ -209,7 +213,7 @@ $write_pages = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['c
 $list_href = '';
 $prev_part_href = '';
 $next_part_href = '';
-if ($sca || $stx) {
+if ($is_search_bbs) {
     $list_href = './board.php?bo_table='.$bo_table;
 
     $patterns = array('#&amp;page=[0-9]*#', '#&amp;spt=[0-9\-]*#');

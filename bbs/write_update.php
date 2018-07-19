@@ -64,6 +64,12 @@ if (isset($_POST['wr_link2'])) {
     $wr_link2 = preg_replace("#[\\\]+$#", "", $wr_link2);
 }
 
+$as_icon = '';
+if (isset($_POST['as_icon'])) {
+    $as_icon = trim(strip_tags($_POST['as_icon']));
+    $as_icon = preg_replace("#[\\\]+$#", "", $as_icon);
+}
+
 $msg = implode('<br>', $msg);
 if ($msg) {
     alert($msg);
@@ -160,16 +166,21 @@ $boset = apms_boset();
 
 if ($w == '' || $w == 'u') {
 
+    // 외부에서 글을 등록할 수 있는 버그가 존재하므로 공지는 관리자만 등록이 가능해야 함
+    if (!$is_admin && $notice) {
+        alert('관리자만 공지할 수 있습니다.');
+    }
+
+    //회원 자신이 쓴글을 수정할 경우 공지가 풀리는 경우가 있음 
+    if($w == 'u' && !$is_admin && $board['bo_notice'] && in_array($wr['wr_id'], $notice_array)){
+        $notice = 1;
+    }
+
     // 김선용 1.00 : 글쓰기 권한과 수정은 별도로 처리되어야 함
-    if($w =='u' && $member['mb_id'] && $wr['mb_id'] == $member['mb_id']) {
+    if($w =='u' && $member['mb_id'] && $wr['mb_id'] === $member['mb_id']) {
         ;
     } else if ($member['mb_level'] < $board['bo_write_level']) {
         alert('글을 쓸 권한이 없습니다.');
-    }
-
-	// 외부에서 글을 등록할 수 있는 버그가 존재하므로 공지는 관리자만 등록이 가능해야 함
-	if (!$is_admin && $notice) {
-		alert('관리자만 공지할 수 있습니다.');
     }
 
 } else if ($w == 'r') {
@@ -224,7 +235,18 @@ if ($is_guest && !chk_captcha()) {
 }
 
 if ($w == '' || $w == 'r') {
-    if (isset($_SESSION['ss_datetime'])) {
+	//포인트 제한
+	if($w == 'r') {
+		if ($member['mb_id'] && $member['mb_point'] + $board['bo_comment_point'] < 0) {
+		    alert('보유하신 포인트('.number_format($member['mb_point']).')가 없거나 모자라서 답글 등록('.number_format($board['bo_comment_point']).')이 불가합니다.\\n\\n포인트를 적립하신 후 다시 답글을 등록해 주십시오.');
+		}
+	} else {
+		if ($member['mb_id'] && $member['mb_point'] + $board['bo_write_point'] < 0) {
+		    alert('보유하신 포인트('.number_format($member['mb_point']).')가 없거나 모자라서 게시물 등록('.number_format($board['bo_write_point']).')이 불가합니다.\\n\\n포인트를 적립하신 후 다시 게시물을 등록해 주십시오.');
+		}
+	}
+
+	if (isset($_SESSION['ss_datetime'])) {
         if ($_SESSION['ss_datetime'] >= (G5_SERVER_TIME - $config['cf_delay_sec']) && !$is_admin)
             alert('너무 빠른 시간내에 게시물을 연속해서 올릴 수 없습니다.');
     }
@@ -382,22 +404,22 @@ if ($w == '' || $w == 'r') {
 
     $return_url = './board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id;
 
-    if ($is_admin == 'super') // 최고관리자 통과
+    if ($is_admin === 'super') // 최고관리자 통과
         ;
-    else if ($is_admin == 'group') { // 그룹관리자
+    else if ($is_admin === 'group') { // 그룹관리자
         $mb = get_member($write['mb_id']);
         if (!chk_multiple_admin($member['mb_id'], $group['gr_admin'])) // 자신이 관리하는 그룹인가?
             alert('자신이 관리하는 그룹의 게시판이 아니므로 수정할 수 없습니다.', $return_url);
         else if ($member['mb_level'] < $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
             alert('자신의 권한보다 높은 권한의 회원이 작성한 글은 수정할 수 없습니다.', $return_url);
-    } else if ($is_admin == 'board') { // 게시판관리자이면
+    } else if ($is_admin === 'board') { // 게시판관리자이면
         $mb = get_member($write['mb_id']);
         if (!chk_multiple_admin($member['mb_id'], $board['bo_admin'])) // 자신이 관리하는 게시판인가?
             alert('자신이 관리하는 게시판이 아니므로 수정할 수 없습니다.', $return_url);
         else if ($member['mb_level'] < $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
             alert('자신의 권한보다 높은 권한의 회원이 작성한 글은 수정할 수 없습니다.', $return_url);
     } else if ($member['mb_id']) {
-        if ($member['mb_id'] != $write['mb_id'])
+        if ($member['mb_id'] !== $write['mb_id'])
             alert('자신의 글이 아니므로 수정할 수 없습니다.', $return_url);
     } else {
         if ($write['mb_id'])
@@ -406,7 +428,7 @@ if ($w == '' || $w == 'r') {
 
     if ($member['mb_id']) {
         // 자신의 글이라면
-        if ($member['mb_id'] == $wr['mb_id']) {
+        if ($member['mb_id'] === $wr['mb_id']) {
             $mb_id = $member['mb_id'];
             $wr_name = addslashes(clean_xss_tags($board['bo_use_name'] ? $member['mb_name'] : $member['mb_nick']));
             $wr_email = addslashes($member['mb_email']);
@@ -620,7 +642,7 @@ for ($i=0; $i<count($_FILES['bf_file']['name']); $i++) {
         $upload[$i]['filesize'] = $filesize;
 
         // 아래의 문자열이 들어간 파일은 -x 를 붙여서 웹경로를 알더라도 실행을 하지 못하도록 함
-        $filename = preg_replace("/\.(php|phtm|htm|cgi|pl|exe|jsp|asp|inc)/i", "$0-x", $filename);
+        $filename = preg_replace("/\.(php|pht|phtm|htm|cgi|pl|exe|jsp|asp|inc)/i", "$0-x", $filename);
 
         shuffle($chars_array);
         $shuffle = implode('', $chars_array);

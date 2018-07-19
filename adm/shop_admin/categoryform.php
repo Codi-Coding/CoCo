@@ -308,8 +308,8 @@ if(USE_G5_THEME) {
         <tr>
             <th scope="row"><label for="pt_cate">파트너 아이디</label></th>
             <td>
-                <?php echo help("상품등록시 등록 파트너에게만 분류가 노출됩니다."); ?>
-				<input type="text" name="pt_cate" value="<?php echo $ca['pt_cate']; ?>" id="pt_cate" class="frm_input" maxlength="20">
+                <?php echo help("상품등록시 등록 파트너에게만 분류가 노출되며, 복수등록시 콤마(,)로 파트너아이디를 구분해 주세요."); ?>
+				<input type="text" name="pt_cate" value="<?php echo $ca['pt_cate']; ?>" id="pt_cate" class="frm_input" size="38">
 			</td>
         </tr>
         <tr>

@@ -59,8 +59,8 @@ $sql = " select * from {$g5[memo_table]}
             order by me_id desc
             limit 1 ";
 $next = sql_fetch($sql);
-if ($next[me_id])
-    $next_link = './memo_view.php?kind='.$kind.'&amp;me_id='.$next['me_id'].$qstr;
+if ($next['me_id'])
+    $next_link = './memo_view.php?kind='.$kind.'&amp;me_id='.$next['me_id'];
 else
     //$next_link = 'javascript:alert(\'쪽지의 마지막입니다.\');';
     $next_link = '';
@@ -68,6 +68,15 @@ else
 $mb = get_member($memo['me_'.$unkind.'_mb_id']);
 $nick = ($mb['mb_open']) ? apms_sideview($mb['mb_id'], $mb['mb_nick'], $mb['mb_email'], $mb['mb_homepage']) : apms_sideview($mb['mb_id'], $mb['mb_nick'], '', '');
 $memo_content = apms_content(conv_content($memo['me_memo'], 0));
+
+$list_link = './memo.php?kind='.$kind;
+
+if(isset($page) && $page){
+	$page = (int)$page;
+    $prev_link .= '&amp;page='.$page;
+    $next_link .= '&amp;page='.$page;
+    $list_link .= '&amp;page='.$page;
+}
 
 // Page ID
 $pid = ($pid) ? $pid : '';

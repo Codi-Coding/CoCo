@@ -6,6 +6,11 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     return;
 }
 
+if( isset($sfl) && ! in_array($sfl, array('b.it_name', 'a.it_id', 'a.is_subject', 'a.is_content', 'a.is_name', 'a.mb_id')) ){
+    //다른값이 들어가있다면 초기화
+    $sfl = '';
+}
+
 // Page ID
 $pid = ($pid) ? $pid : 'iuse';
 $at = apms_page_thema($pid);
@@ -44,9 +49,6 @@ if($is_use_sub) {
 } else {
 	include_once('./_head.php');
 }
-
-//$sfl = trim($_REQUEST['sfl']);
-//$stx = trim($_REQUEST['stx']);
 
 $sql_common = " from `{$g5['g5_shop_item_use_table']}` a join `{$g5['g5_shop_item_table']}` b on (a.it_id=b.it_id) ";
 $sql_search = " where a.is_confirm = '1' ";

@@ -8,8 +8,8 @@ $at = array();
 $xp = array();
 
 // APMS Version
-$yc5_ver = (defined('G5_USE_SHOP')) ? ' / 영카트 5.2.9.6' : '';
-define('APMS_VERSION', '아미나빌더 1.7.20 / 그누보드 5.2.9.6'.$yc5_ver);
+$yc5_ver = (defined('G5_USE_SHOP')) ? ' / 영카트 5.2.9.8.4' : '';
+define('APMS_VERSION', '아미나빌더 1.7.26 / 그누보드 5.2.9.8.4'.$yc5_ver);
 define('APMS_SVER', '171013');
 
 // USE YC5
@@ -17,11 +17,18 @@ if (defined('G5_USE_SHOP') && G5_USE_SHOP) {
 	define('IS_YC', true);
 	@include_once(G5_EXTEND_PATH.'/shop.extend.php');
 	if($default['as_partner']) {
-		//MKT ID
-		if (isset($_REQUEST['mkt']) && $_REQUEST['mkt'])  {
-			set_session('mkt_id', $_REQUEST['mkt']);
+		//MKT Check
+		if($config['cf_use_recommend']) {
+			if (isset($_REQUEST['mkt']) && $_REQUEST['mkt'])  {
+				$_REQUEST['mkt'] = get_text(clean_xss_tags($_REQUEST['mkt']));
+				set_cookie('mkt_id', $_REQUEST['mkt'], 86400 * 15); // 15일동안 쿠키 유지
+				//set_session('mkt_id', $_REQUEST['mkt']);
+			}
+			define('APMS_MKT', get_cookie('mkt_id'));
+			//define('APMS_MKT', get_session('mkt_id'));
+		} else {
+			define('APMS_MKT', '');
 		}
-		define('APMS_MKT', get_session('mkt_id'));
 		define('USE_PARTNER', true);
 	} else {
 		define('USE_PARTNER', false);
@@ -164,7 +171,7 @@ $misc_skin_url = get_skin_url('misc', $config['as_misc_skin']);
 $is_designer = apms_admin($xp['xp_designer']);
 
 // Auth
-if($is_designer || $is_admin == 'group') {
+if($is_designer || $is_admin === 'group') {
 	;
 } else {
 	$chk_auth = '';
@@ -201,8 +208,6 @@ $at_href['login'] = ($urlencode) ? G5_BBS_URL.'/login.php?url='.$urlencode : G5_
 $at_href['login_check'] = G5_HTTPS_BBS_URL.'/login_check.php';
 $at_href['logout'] = G5_BBS_URL.'/logout.php';
 $at_href['point'] = G5_BBS_URL.'/point.php';
-$at_href['coupon'] = G5_SHOP_URL.'/coupon.php';
-$at_href['couponzone'] = G5_SHOP_URL.'/couponzone.php';
 $at_href['memo'] = G5_BBS_URL.'/memo.php';
 $at_href['scrap'] = G5_BBS_URL.'/scrap.php';
 $at_href['edit'] = G5_BBS_URL.'/member_confirm.php?url=register_form.php';
@@ -218,9 +223,18 @@ $at_href['switcher_submit'] = G5_BBS_URL.'/switcher.update.php';
 $at_href['faq'] = G5_BBS_URL.'/faq.php';
 $at_href['new'] = G5_BBS_URL.'/new.php';
 $at_href['search'] = G5_BBS_URL.'/search.php';
-$at_href['mypage'] = (IS_YC) ? G5_SHOP_URL.'/mypage.php' : G5_BBS_URL.'/mypage.php';
 $at_href['tag'] = G5_BBS_URL.'/tag.php';
 $at_href['example'] = G5_URL.'/example.php';
+
+if(IS_YC) {
+	$at_href['coupon'] = G5_SHOP_URL.'/coupon.php';
+	$at_href['couponzone'] = G5_SHOP_URL.'/couponzone.php';
+	$at_href['mypage'] = G5_SHOP_URL.'/mypage.php';
+} else {
+	$at_href['coupon'] = '#';
+	$at_href['couponzone'] = '#';
+	$at_href['mypage'] = G5_BBS_URL.'/mypage.php';
+}
 
 // IE Version
 if(preg_match("/MSIE ([0-9]{1,}[\.0-9]{0,})/", $_SERVER['HTTP_USER_AGENT'], $ie_version)){

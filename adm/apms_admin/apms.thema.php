@@ -1,7 +1,7 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
 
-$is_use_partner = (file_exists(G5_SHOP_PATH.'/partner/index.php')) ? true : false;
+$is_use_partner = (defined('G5_SHOP_PATH') && file_exists(G5_SHOP_PATH.'/partner/index.php')) ? true : false;
 
 //SEO 저장파일
 $seometa_file = G5_DATA_PATH.'/seometa.php';

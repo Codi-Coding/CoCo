@@ -316,9 +316,9 @@ else if ($w == 'cu') // 댓글 수정
     $comment_reply = substr($reply_array['wr_comment_reply'], 0, $len);
     //print_r2($GLOBALS); exit;
 
-    if ($is_admin == 'super') // 최고관리자 통과
+    if ($is_admin === 'super') // 최고관리자 통과
         ;
-    else if ($is_admin == 'group') { // 그룹관리자
+    else if ($is_admin === 'group') { // 그룹관리자
         $mb = get_member($comment['mb_id']);
         if (chk_multiple_admin($member['mb_id'], $group['gr_admin'])) { // 자신이 관리하는 그룹인가?
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
@@ -327,7 +327,7 @@ else if ($w == 'cu') // 댓글 수정
                 alert('그룹관리자의 권한보다 높은 회원의 댓글이므로 수정할 수 없습니다.');
         } else
             alert('자신이 관리하는 그룹의 게시판이 아니므로 댓글을 수정할 수 없습니다.');
-    } else if ($is_admin == 'board') { // 게시판관리자이면
+    } else if ($is_admin === 'board') { // 게시판관리자이면
         $mb = get_member($comment['mb_id']);
         if (chk_multiple_admin($member['mb_id'], $board['bo_admin'])) { // 자신이 관리하는 게시판인가?
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
@@ -337,7 +337,7 @@ else if ($w == 'cu') // 댓글 수정
         } else
             alert('자신이 관리하는 게시판이 아니므로 댓글을 수정할 수 없습니다.');
     } else if ($member['mb_id']) {
-        if ($member['mb_id'] != $comment['mb_id'])
+        if ($member['mb_id'] !== $comment['mb_id'])
             alert('자신의 글이 아니므로 수정할 수 없습니다.');
     } else {
         if($comment['wr_password'] != $wr_password)
@@ -370,7 +370,8 @@ else if ($w == 'cu') // 댓글 수정
                      wr_2 = '$wr_2',
                      wr_3 = '$wr_3',
                      wr_4 = '$wr_4',
-                     wr_6 = '$wr_6',
+                     wr_5 = '$wr_5',
+					 wr_6 = '$wr_6',
                      wr_7 = '$wr_7',
                      wr_8 = '$wr_8',
                      wr_9 = '$wr_9',
@@ -385,7 +386,7 @@ else if ($w == 'cu') // 댓글 수정
 // 자동 글추천 또는 비추천 기능
 if ($board['as_good'] && isset($wr_good)) {
 	if (($board['bo_use_good'] && $wr_good == 'good') || ($board['bo_use_nogood'] && $wr_good == 'nogood')) {
-		if($is_member && $w != 'cu' && $wr['mb_id'] != $member['mb_id']) {
+		if($is_member && $w != 'cu' && $wr['mb_id'] !== $member['mb_id']) {
 			// 내역확인
 			$row = sql_fetch(" select bg_flag from {$g5['board_good_table']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and mb_id = '{$member['mb_id']}' and bg_flag in ('good', 'nogood') ");
 			if (!$row['bg_flag']) {

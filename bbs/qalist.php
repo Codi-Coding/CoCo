@@ -105,10 +105,12 @@ if(is_file($skin_file)) {
     }
 
     $is_checkbox = false;
-    $admin_href = '';
-    if($is_admin) {
-        $is_checkbox = true;
-        $admin_href = G5_ADMIN_URL.'/qa_config.php';
+	$admin_href = '';
+	$token = '';
+	if($is_admin) {
+		set_session('ss_qa_delete_token', $token = uniqid(time()));
+		$is_checkbox = true;
+		$admin_href = G5_ADMIN_URL.'/qa_config.php';
     }
 
     $list_href = G5_BBS_URL.'/qalist.php';

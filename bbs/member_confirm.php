@@ -39,7 +39,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 $url = clean_xss_tags($_GET['url']);
 
 // url 체크
-check_url_host($url);
+check_url_host($url, '', G5_URL, true);
 
 $url = get_text($url);
 

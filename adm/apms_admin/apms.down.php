@@ -16,9 +16,12 @@ $filepath = addslashes($filepath);
 if (!is_file($filepath) || !file_exists($filepath))
     alert('파일이 존재하지 않습니다.');
 
-
-//$original = urlencode($filename);
-$original = iconv('utf-8', 'euc-kr', $filename); // SIR 잉끼님 제안코드
+//파일명에 한글이 있는 경우
+if(preg_match("/[\xA1-\xFE][\xA1-\xFE]/", $filename)){
+    $original = iconv('utf-8', 'euc-kr', $filename); // SIR 잉끼님 제안코드
+} else {
+    $original = urlencode($filename);
+}
 
 if(preg_match("/msie/i", $_SERVER['HTTP_USER_AGENT']) && preg_match("/5\.5/", $_SERVER['HTTP_USER_AGENT'])) {
     header("content-type: doesn/matter");

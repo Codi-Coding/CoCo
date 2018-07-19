@@ -4,6 +4,13 @@ include_once('./_common.php');
 if($is_guest)
     alert('회원이시라면 로그인 후 이용해 주십시오.', G5_URL);
 
+$delete_token = get_session('ss_qa_delete_token');
+set_session('ss_qa_delete_token', '');
+
+//관리자가 아닌경우에는 토큰을 검사합니다.
+if (!$is_admin && !($token && $delete_token == $token))
+    alert('토큰 에러로 삭제 불가합니다.');
+
 $tmp_array = array();
 if ($qa_id) // 건별삭제
     $tmp_array[0] = $qa_id;
@@ -15,7 +22,7 @@ if(!$count)
     alert('삭제할 게시글을 하나이상 선택해 주십시오.');
 
 for($i=0; $i<$count; $i++) {
-    $qa_id = $tmp_array[$i];
+    $qa_id = (int)$tmp_array[$i];
 
     $sql = " select qa_id, mb_id, qa_type, qa_status, qa_parent, qa_content, qa_file1, qa_file2
                 from {$g5['qa_content_table']}
@@ -26,11 +33,11 @@ for($i=0; $i<$count; $i++) {
         continue;
 
     // 자신의 글이 아니면 건너뜀
-    if($is_admin != 'super' && $row['mb_id'] != $member['mb_id'])
+    if($is_admin !== 'super' && $row['mb_id'] !== $member['mb_id'])
         continue;
 
     // 답변이 달린 글은 삭제못함
-    if($is_admin != 'super' && !$row['qa_type'] && $row['qa_status'])
+    if($is_admin !== 'super' && !$row['qa_type'] && $row['qa_status'])
         continue;
 
     // 첨부파일 삭제

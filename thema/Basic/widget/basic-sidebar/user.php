@@ -148,13 +148,13 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			<div class="form-group">	
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-user gray"></i></span>
-					<input type="text" name="mb_id" id="mb_id" class="form-control input-sm" placeholder="아이디" tabindex="91">
+					<input type="text" name="mb_id" id="sidebar_mb_id" class="form-control input-sm" placeholder="아이디" tabindex="91">
 				</div>
 			</div>
 			<div class="form-group">	
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-lock gray"></i></span>
-					<input type="password" name="mb_password" id="mb_password" class="form-control input-sm" placeholder="비밀번호" tabindex="92">
+					<input type="password" name="mb_password" id="sidebar_mb_password" class="form-control input-sm" placeholder="비밀번호" tabindex="92">
 				</div>
 			</div>
 			<div class="form-group">
@@ -162,7 +162,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			</div>	
 
 			<label class="text-muted" style="letter-spacing:-1px;">
-				<input type="checkbox" name="auto_login" value="1" id="remember_me" class="remember-me" tabindex="94">
+				<input type="checkbox" name="auto_login" value="1" id="sidebar_remember_me" class="remember-me" tabindex="94">
 				자동로그인 및 로그인 상태 유지
 			</label>
 		</form>

@@ -76,17 +76,17 @@ if (typeof(SIDEVIEW_JS) == 'undefined') { // 한번만 실행
         if (g5_is_member) {
             // 자기소개
             if (mb_id) 
-                this.insertTail("info", "<a href=\""+g5_bbs_url+"/profile.php?mb_id="+mb_id+"\" onclick=\"win_profile(this.href); return false;\">"+aslang[2]+"</a>");
+                this.insertTail("info", "<a href=\""+g5_bbs_url+"/profile.php?mb_id="+mb_id+"\" rel=\"nofollow\" onclick=\"win_profile(this.href); return false;\">"+aslang[2]+"</a>");
             // 홈페이지
             if (homepage) 
                 this.insertTail("homepage", "<a href=\""+homepage+"\" target=\"_blank\">"+aslang[3]+"</a>");
 			// 쪽지보내기
             if (mb_id) 
                 // 불여우 자바스크립트창이 뜨는 오류를 수정
-                this.insertTail("memo", "<a href=\""+g5_bbs_url+"/memo_form.php?me_recv_mb_id="+mb_id+"\" onclick=\"win_memo(this.href); return false;\">"+aslang[4]+"</a>");
+                this.insertTail("memo", "<a href=\""+g5_bbs_url+"/memo_form.php?me_recv_mb_id="+mb_id+"\" rel=\"nofollow\" onclick=\"win_memo(this.href); return false;\">"+aslang[4]+"</a>");
             // 메일보내기
             if (email) 
-                this.insertTail("mail", "<a href=\""+g5_bbs_url+"/formmail.php?mb_id="+mb_id+"&name="+encodeURI(name)+"&email="+email+"\" onclick=\"win_email(this.href); return false;\">"+aslang[5]+"</a>");
+                this.insertTail("mail", "<a href=\""+g5_bbs_url+"/formmail.php?mb_id="+mb_id+"&name="+encodeURI(name)+"&email="+email+"\" rel=\"nofollow\" onclick=\"win_email(this.href); return false;\">"+aslang[5]+"</a>");
         }
 
 		var pim_target = '';
@@ -96,23 +96,23 @@ if (typeof(SIDEVIEW_JS) == 'undefined') { // 한번만 실행
 		// 게시판테이블 아이디가 넘어왔을 경우
         if (g5_bo_table) {
             if (mb_id) { // 회원일 경우 아이디로 검색
-                this.insertTail("mb_id", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=mb_id,1&stx="+mb_id+"\""+pim_target+">"+aslang[6]+"</a>");
-                this.insertTail("mb_cid", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=mb_id,0&stx="+mb_id+"\""+pim_target+">"+aslang[7]+"</a>");
+                this.insertTail("mb_id", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=mb_id,1&stx="+mb_id+"\""+pim_target+" rel=\"nofollow\">"+aslang[6]+"</a>");
+                this.insertTail("mb_cid", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=mb_id,0&stx="+mb_id+"\""+pim_target+" rel=\"nofollow\">"+aslang[7]+"</a>");
 			} else { // 비회원일 경우 이름으로 검색
-                this.insertTail("name", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=wr_name,1&stx="+name+"\""+pim_target+">"+aslang[6]+"</a>");
-                this.insertTail("cname", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=wr_name,0&stx="+name+"\""+pim_target+">"+aslang[7]+"</a>");
+                this.insertTail("name", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=wr_name,1&stx="+name+"\""+pim_target+" rel=\"nofollow\">"+aslang[6]+"</a>");
+                this.insertTail("cname", "<a href=\""+g5_bbs_url+"/board.php?bo_table="+g5_bo_table+"&sca="+g5_sca+"&sfl=wr_name,0&stx="+name+"\""+pim_target+" rel=\"nofollow\">"+aslang[7]+"</a>");
 			}
 		}
         if (mb_id)
-            this.insertTail("new", "<a href=\""+g5_bbs_url+"/new.php?mb_id="+mb_id+"\""+pim_target+">"+aslang[8]+"</a>");
+            this.insertTail("new", "<a href=\""+g5_bbs_url+"/new.php?mb_id="+mb_id+"\""+pim_target+" rel=\"nofollow\">"+aslang[8]+"</a>");
 
         // 최고관리자일 경우
         if (g5_is_admin == "super") {
             // 포인트내역과 1:1문의
             if (mb_id) {
-                this.insertTail("qna", "<a href=\""+g5_bbs_url+"/qalist.php?qmb="+mb_id+"\">"+aslang[40]+"</a>");
-				this.insertTail("point", "<a href=\""+g5_admin_url+"/point_list.php?sfl=mb_id&stx="+mb_id+"\" target=\"_blank\">"+aslang[9]+"</a>");
-                this.insertTail("modify", "<a href=\""+g5_admin_url+"/member_form.php?w=u&mb_id="+mb_id+"\" target=\"_blank\">"+aslang[10]+"</a>");
+                this.insertTail("qna", "<a href=\""+g5_bbs_url+"/qalist.php?qmb="+mb_id+"\" rel=\"nofollow\">"+aslang[40]+"</a>");
+				this.insertTail("point", "<a href=\""+g5_admin_url+"/point_list.php?sfl=mb_id&stx="+mb_id+"\" target=\"_blank\" rel=\"nofollow\">"+aslang[9]+"</a>");
+                this.insertTail("modify", "<a href=\""+g5_admin_url+"/member_form.php?w=u&mb_id="+mb_id+"\" target=\"_blank\" rel=\"nofollow\">"+aslang[10]+"</a>");
 			}
 		}
     }

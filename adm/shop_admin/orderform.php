@@ -588,7 +588,7 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
                 </tr>
                 <?php } ?>
 
-                <?php if ($od['od_settle_case'] == '간편결제' || ($od['od_pg'] == 'inicis' && $od['od_settle_case'] == '삼성페이') ) { ?>
+                <?php if ($od['od_settle_case'] == '간편결제' || ($od['od_pg'] == 'inicis' && is_inicis_order_pay($od['od_settle_case']) ) ) { ?>
                 <tr>
                     <th scope="row" class="sodr_sppay"><?php echo $s_receipt_way; ?> 결제금액</th>
                     <td>
@@ -934,7 +934,7 @@ $is_use_partner = (defined('USE_PARTNER') && USE_PARTNER) ? true : false;
                 </tr>
                 <?php } ?>
 
-                <?php if ($od['od_settle_case'] == '간편결제' || ($od['od_pg'] == 'inicis' && $od['od_settle_case'] == '삼성페이')) { ?>
+                <?php if ($od['od_settle_case'] == '간편결제' || ($od['od_pg'] == 'inicis' && is_inicis_order_pay($od['od_settle_case']) )) { ?>
                 <tr>
                     <th scope="row" class="sodr_sppay"><label for="od_receipt_price"><?php echo $s_receipt_way; ?> 결제금액</label></th>
                     <td>
@@ -1258,7 +1258,7 @@ function form_submit(f)
 
     var msg = "";
 
-    <?php if($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == 'KAKAOPAY' || $od['od_settle_case'] == '간편결제' || ($od['od_pg'] == 'inicis' && $od['od_settle_case'] == '삼성페이')) { ?>
+    <?php if($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == 'KAKAOPAY' || $od['od_settle_case'] == '간편결제' || ($od['od_pg'] == 'inicis' && is_inicis_order_pay($od['od_settle_case']) )) { ?>
     if(status == "취소" || status == "반품" || status == "품절") {
         var $ct_chk = $("input[name^=ct_chk]");
         var chk_cnt = $ct_chk.size();

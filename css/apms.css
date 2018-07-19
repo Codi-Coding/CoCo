@@ -57,6 +57,9 @@
 }
 
 /* Exif -------------------------------------------------------- */
+.img-tag {
+	max-width:100%; border:0;
+}
 .img-exif {
 	margin:0px auto 30px;
 	max-width: 100%;

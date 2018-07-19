@@ -29,9 +29,9 @@ for ($i=$chk_count-1; $i>=0; $i--)
 {
     $write = sql_fetch(" select * from $write_table where wr_id = '$tmp_array[$i]' ");
 
-    if ($is_admin == 'super') // 최고관리자 통과
+    if ($is_admin === 'super') // 최고관리자 통과
         ;
-    else if ($is_admin == 'group') // 그룹관리자
+    else if ($is_admin === 'group') // 그룹관리자
     {
         $mb = get_member($write['mb_id']);
         if (chk_multiple_admin($member['mb_id'], $group['gr_admin'])) // 자신이 관리하는 그룹인가?
@@ -44,7 +44,7 @@ for ($i=$chk_count-1; $i>=0; $i--)
         else
             continue;
     }
-    else if ($is_admin == 'board') // 게시판관리자이면
+    else if ($is_admin === 'board') // 게시판관리자이면
     {
         $mb = get_member($write['mb_id']);
         if (chk_multiple_admin($member['mb_id'], $board['bo_admin'])) // 자신이 관리하는 게시판인가?
@@ -55,7 +55,7 @@ for ($i=$chk_count-1; $i>=0; $i--)
         else
             continue;
     }
-    else if ($member['mb_id'] && $member['mb_id'] == $write['mb_id']) // 자신의 글이라면
+    else if ($member['mb_id'] && $member['mb_id'] === $write['mb_id']) // 자신의 글이라면
     {
         ;
     }
@@ -98,7 +98,7 @@ for ($i=$chk_count-1; $i>=0; $i--)
             $result2 = sql_query($sql2);
             while ($row2 = sql_fetch_array($result2)) {
                 // 파일삭제
-                @unlink(G5_DATA_PATH.'/file/'.$bo_table.'/'.$row2['bf_file']);
+                @unlink(G5_DATA_PATH.'/file/'.$bo_table.'/'.str_replace('../', '',$row2['bf_file']));
 
                 // 썸네일삭제
                 if(preg_match("/\.({$config['cf_image_extension']})$/i", $row2['bf_file'])) {

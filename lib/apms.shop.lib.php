@@ -355,9 +355,8 @@ function apms_order($od_id, $od_status, $od_mk='') {
 	$mk_brate = 0;
 	if(USE_PARTNER) {
 		$apms = sql_fetch(" select * from {$g5['apms']} ", false);
-		if($is_guest && defined('APMS_MKT')) { //비회원주문 처리
-			$od_mk = APMS_MKT;
-		}
+		$od_mk =($is_guest && defined('APMS_MKT') && APMS_MKT) ? APMS_MKT : ''; //비회원주문 처리
+
 		if($od_mk) { // 추천인 아이디가 있으면
 			$mk = apms_marketer($od_mk);
 			if($mk['pt_id']) {

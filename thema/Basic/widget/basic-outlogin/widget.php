@@ -120,13 +120,13 @@ add_stylesheet('<link rel="stylesheet" href="'.$widget_url.'/widget.css">', 0);
 			<div class="form-group">	
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-user gray"></i></span>
-					<input type="text" name="mb_id" id="mb_id" class="form-control input-sm" placeholder="아이디" tabindex="21">
+					<input type="text" name="mb_id" id="outlogin_mb_id" class="form-control input-sm" placeholder="아이디" tabindex="21">
 				</div>
 			</div>
 			<div class="form-group">	
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-lock gray"></i></span>
-					<input type="password" name="mb_password" id="mb_password" class="form-control input-sm" placeholder="비밀번호" tabindex="22">
+					<input type="password" name="mb_password" id="outlogin_mb_password" class="form-control input-sm" placeholder="비밀번호" tabindex="22">
 				</div>
 			</div>
 			<div class="form-group">
@@ -137,7 +137,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$widget_url.'/widget.css">', 0);
 
 			<div style="letter-spacing:-1px;">
 				<div class="pull-left text-muted hidden-xs">
-					<label><input type="checkbox" name="auto_login" value="1" id="remember_me" class="remember-me"> 자동로그인</label>
+					<label><input type="checkbox" name="auto_login" value="1" id="outlogin_remember_me" class="remember-me"> 자동로그인</label>
 				</div>
 				<div class="pull-right text-muted">
 					<a href="<?php echo $at_href['reg'];?>"><span class="text-muted">회원가입</span></a>

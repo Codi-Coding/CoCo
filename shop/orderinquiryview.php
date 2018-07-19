@@ -6,6 +6,8 @@ if(USE_G5_THEME && defined('G5_THEME_PATH')) {
     return;
 }
 
+$od_id = isset($od_id) ? preg_replace('/[^A-Za-z0-9\-_]/', '', strip_tags($od_id)) : 0;
+
 if( isset($_GET['ini_noti']) && !isset($_GET['uid']) ){
     goto_url(G5_SHOP_URL.'/orderinquiry.php');
 }
@@ -237,12 +239,12 @@ if ($misu_price == 0 && ($od['od_cart_price'] > $od['od_cancel_price'])) {
 if($od['od_receipt_price'] > 0)
 	$od_receipt_price = display_price($od['od_receipt_price']);
 else
-	$od_receipt_price = '아직 입금되지 않았거나 입금정보를 입력하지 못하였습니다.';
+	$od_receipt_price = '아직 <b>'.number_format($misu_price).'원</b>이 입금되지 않았거나 입금정보를 입력하지 못하였습니다.';
 
 $app_no_subj = '';
 $disp_bank = true;
 $disp_receipt = false;
-if($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == 'KAKAOPAY' || $od['od_settle_case'] == '삼성페이') {
+if($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == 'KAKAOPAY' || is_inicis_order_pay($od['od_settle_case']) ) {
 	$app_no_subj = '승인번호';
 	$app_no = $od['od_app_no'];
 	$disp_bank = false;
@@ -295,7 +297,7 @@ if($disp_receipt) {
 		$disp_receipt_href = 'href="javascript:;" onclick="'.$hp_receipt_script.'"';
 	}
 
-	if($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == '삼성페이')
+	if($od['od_settle_case'] == '신용카드' || is_inicis_order_pay($od['od_settle_case']) )
 	{
 		if($od['od_pg'] == 'lg') {
 			require_once G5_SHOP_PATH.'/settle_lg.inc.php';

@@ -119,6 +119,8 @@ auth_check($auth[$sub_menu], 'r'); //읽기 권한
 
 include_once(G5_LIB_PATH.'/apms.widget.lib.php');
 
+$bo = array();
+
 $result2 = sql_query("select * from {$g5['board_table']} where gr_id = '{$gr_id}' ");
 for ($k=0; $row2=sql_fetch_array($result2); $k++) {
 	$bo[$k] = $row2;
@@ -128,7 +130,7 @@ for ($k=$k; $row3=sql_fetch_array($result3); $k++) {
 	$bo[$k] = $row3;
 }
 
-$bo_cnt = count($bo);
+$bo_cnt = $k;
 
 if($bo_cnt > 0) $bo = apms_sort($bo, 'as_order');
 

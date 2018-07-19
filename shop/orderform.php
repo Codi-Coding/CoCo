@@ -45,7 +45,7 @@ if($is_mobile_order) {
 $od_id = get_uniqid();
 set_session('ss_order_id', $od_id);
 $s_cart_id = $tmp_cart_id;
-if($default['de_pg_service'] == 'inicis')
+if($default['de_pg_service'] == 'inicis' || $default['de_inicis_lpay_use'])
     set_session('ss_order_inicis_id', $od_id);
 
 $order_action_url = $action_url = G5_HTTPS_SHOP_URL.'/orderformupdate.php';
@@ -63,12 +63,11 @@ require_once(G5_SHOP_PATH.'/settle_kakaopay.inc.php');
 
 if($is_mobile_order) {
 
-	if( $default['de_samsung_pay_use'] ){   //삼성페이 사용시
+	if( is_inicis_simple_pay() ){   //이니시스 삼성페이 또는 Lpay 사용시
 		require_once(G5_MSHOP_PATH.'/samsungpay/incSamsungpayCommon.php');
 	}
 
 	// 결제등록 요청시 사용할 입금마감일
-	$ipgm_date = date("Ymd", (G5_SERVER_TIME + 86400 * 5));
 	$tablet_size = "1.0"; // 화면 사이즈 조정 - 기기화면에 맞게 수정(갤럭시탭,아이패드 - 1.85, 스마트폰 - 1.0)
 
 	// 개인결제번호제거
@@ -338,7 +337,7 @@ if($is_mobile_order) {
 
 	require_once(G5_MSHOP_PATH.'/'.$default['de_pg_service'].'/orderform.1.php');
 
-	if( $default['de_samsung_pay_use'] ){   //삼성페이 사용시
+	if( is_inicis_simple_pay() ){   //이니시스 삼성페이 또는 lpay 사용시
 		require_once(G5_MSHOP_PATH.'/samsungpay/orderform.1.php');
 	}
 
@@ -526,11 +525,18 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		$is_easy_pay = true;
 	}
 
-	// 삼성페이
+	// 이니시스 삼성페이
 	$is_samsung_pay = false;
 	if($is_mobile_order && $default['de_samsung_pay_use']) {
 		$multi_settle++;
 		$is_samsung_pay = true;
+	}
+
+	//이니시스 Lpay
+	$is_inicis_lpay = false;
+	if($is_mobile_order && $default['de_inicis_lpay_use']) {
+		$multi_settle++;
+		$is_inicis_lpay = true;
 	}
 
 	$temp_point = 0;
@@ -584,7 +590,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 	if($is_mobile_order) {
 	    require_once(G5_MSHOP_PATH.'/'.$default['de_pg_service'].'/orderform.2.php');
 
-		if( $default['de_samsung_pay_use'] ){   //삼성페이 사용시
+	    if( is_inicis_simple_pay() ){   //삼성페이 또는 L.pay 사용시
 			require_once(G5_MSHOP_PATH.'/samsungpay/orderform.2.php');
 		}
 
@@ -616,7 +622,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 		if($is_mobile_order) {
 			include_once(G5_MSHOP_PATH.'/'.$default['de_pg_service'].'/orderform.3.php');
 
-			if($default['de_samsung_pay_use']){   //삼성페이 사용시
+		    if( is_inicis_simple_pay() ){   //삼성페이 또는 L.pay 사용시
 				require_once(G5_MSHOP_PATH.'/samsungpay/orderform.3.php');
 			}
 
@@ -710,7 +716,7 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 
 		var form_order_method = '';
 
-		if( settle_method == "삼성페이" ){
+	    if( settle_method == "삼성페이" || settle_method == "lpay" ){
 			form_order_method = 'samsungpay';
 		}
 
@@ -792,6 +798,12 @@ if(!$is_mobile_order) include_once($skin_path.'/orderform.item.skin.php');
 				case "삼성페이":
 					paymethod = "wcard";
 					f.P_RESERVED.value = f.P_RESERVED.value.replace("&useescrow=Y", "")+"&d_samsungpay=Y";
+					//f.DEF_RESERVED.value = f.DEF_RESERVED.value.replace("&useescrow=Y", "");
+					f.P_SKIP_TERMS.value = "Y"; //약관을 skip 해야 제대로 실행됨
+					break;
+				case "lpay":
+					paymethod = "wcard";
+					f.P_RESERVED.value = f.P_RESERVED.value.replace("&useescrow=Y", "")+"&d_lpay=Y";
 					//f.DEF_RESERVED.value = f.DEF_RESERVED.value.replace("&useescrow=Y", "");
 					f.P_SKIP_TERMS.value = "Y"; //약관을 skip 해야 제대로 실행됨
 					break;

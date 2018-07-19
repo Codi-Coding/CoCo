@@ -11,29 +11,29 @@ check_admin_token();
 $error_msg = '';
 
 if( $qa_include_head ){
-    $purl = parse_url($qa_include_head);
-    $file = $purl['path'];
-    if (!preg_match("/\.(php|htm['l']?)$/i", $file)) {
-        alert('»ó´Ü ÆÄÀÏ °æ·ÎÀÇ È®ÀåÀÚ´Â php, html ¸¸ Çã¿ëÇÕ´Ï´Ù.');
+    $file_ext = pathinfo($qa_include_head, PATHINFO_EXTENSION);
+
+    if( ! $file_ext || ! in_array($file_ext, array('php', 'htm', 'html')) ) {
+        alert('ìƒë‹¨ íŒŒì¼ ê²½ë¡œì˜ í™•ì¥ìëŠ” php, html ë§Œ í—ˆìš©í•©ë‹ˆë‹¤.');
     }
 }
 
 if( $qa_include_tail ){
-    $purl = parse_url($qa_include_tail);
-    $file = $purl['path'];
-    if (!preg_match("/\.(php|htm['l']?)$/i", $file)) {
-        alert('ÇÏ´Ü ÆÄÀÏ °æ·ÎÀÇ È®ÀåÀÚ´Â php, html ¸¸ Çã¿ëÇÕ´Ï´Ù.');
+    $file_ext = pathinfo($qa_include_tail, PATHINFO_EXTENSION);
+
+    if( ! $file_ext || ! in_array($file_ext, array('php', 'htm', 'html')) ) {
+        alert('í•˜ë‹¨ íŒŒì¼ ê²½ë¡œì˜ í™•ì¥ìëŠ” php, html ë§Œ í—ˆìš©í•©ë‹ˆë‹¤.');
     }
 }
 
 if( $qa_include_head && ! is_include_path_check($qa_include_head, 1) ){
     $qa_include_head = '';
-    $error_msg = '/data/file/ ¶Ç´Â /data/editor/ Æ÷ÇÔµÈ ¹®ÀÚ¸¦ »ó´Ü ÆÄÀÏ °æ·Î¿¡ Æ÷ÇÔ½ÃÅ³¼ö ¾ø½À´Ï´Ù.';
+    $error_msg = '/data/file/ ë˜ëŠ” /data/editor/ í¬í•¨ëœ ë¬¸ìë¥¼ ìƒë‹¨ íŒŒì¼ ê²½ë¡œì— í¬í•¨ì‹œí‚¬ìˆ˜ ì—†ìŠµë‹ˆë‹¤.';
 }
 
 if( $qa_include_tail && ! is_include_path_check($qa_include_tail, 1) ){
     $qa_include_tail = '';
-    $error_msg = '/data/file/ ¶Ç´Â /data/editor/ Æ÷ÇÔµÈ ¹®ÀÚ¸¦ ÇÏ´Ü ÆÄÀÏ °æ·Î¿¡ Æ÷ÇÔ½ÃÅ³¼ö ¾ø½À´Ï´Ù.';
+    $error_msg = '/data/file/ ë˜ëŠ” /data/editor/ í¬í•¨ëœ ë¬¸ìë¥¼ í•˜ë‹¨ íŒŒì¼ ê²½ë¡œì— í¬í•¨ì‹œí‚¬ìˆ˜ ì—†ìŠµë‹ˆë‹¤.';
 }
 
 $sql = " update {$g5['qa_config_table']}

@@ -44,6 +44,7 @@ $list_cnt = count($list);
 		<input type="hidden" name="stx" value="<?php echo $stx; ?>">
 		<input type="hidden" name="sca" value="<?php echo $sca; ?>">
 		<input type="hidden" name="page" value="<?php echo $page; ?>">
+		<input type="hidden" name="token" value="<?php echo $token; ?>">
 
 		<?php include_once($skin_path.'/list.rows.php'); ?>
 

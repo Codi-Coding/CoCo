@@ -66,12 +66,12 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
 	$is_content = false;
     $list[$i]['content'] = $list[$i]['content1']= '비밀댓글 입니다.';
-    if (!strstr($row['wr_option'], 'secret') || $is_admin || ($it['pt_id']==$member['mb_id'] && $it['pt_id']) || ($row['mb_id']==$member['mb_id'] && $member['mb_id'])) {
+    if (!strstr($row['wr_option'], 'secret') || $is_admin || ($it['pt_id'] === $member['mb_id'] && $it['pt_id']) || ($row['mb_id'] === $member['mb_id'] && $member['mb_id'])) {
         $list[$i]['content1'] = $row['wr_content'];
         $list[$i]['content'] = conv_content($row['wr_content'], 0, 'wr_content');
 
 		if($is_shingo && $row['wr_shingo'] < 0) {
-			if($is_admin || ($row['mb_id'] && $row['mb_id'] == $member['mb_id'])) {
+			if($is_admin || ($row['mb_id'] && $row['mb_id'] === $member['mb_id'])) {
 				$list[$i]['content'] = '<p><b>블라인더 처리된 댓글입니다.</b></p>'.$list[$i]['content'];
 			} else {
 				$list[$i]['content'] = '<p><b>블라인더 처리된 댓글입니다.</b></p>';
@@ -85,12 +85,12 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 		$is_pre_commenter = false;
 		if($row['wr_comment_reply']) {
 			if($row['wr_re_mb']) {
-				if($member['mb_id'] && $row['wr_re_mb'] == $member['mb_id']) {
+				if($member['mb_id'] && $row['wr_re_mb'] === $member['mb_id']) {
 					$is_pre_commenter = true;
 				}
 			} else {
 				$pre_comment = sql_fetch(" select mb_id from {$g5['apms_comment']} where wr_id = '{$row['wr_comment']}' and wr_comment_reply = '".substr($row['wr_comment_reply'],0,-1)."' "); 
-				if($member['mb_id'] && $pre_comment['mb_id'] == $member['mb_id']) {
+				if($member['mb_id'] && $pre_comment['mb_id'] === $member['mb_id']) {
 					$is_pre_commenter = true;
 				}
 			}
@@ -100,7 +100,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
             $list[$i]['content'] = conv_content($row['wr_content'], 0, 'wr_content');
 
 			if($is_shingo && $row['wr_shingo'] < 0) {
-				if($is_admin || ($row['mb_id'] && $row['mb_id'] == $member['mb_id'])) {
+				if($is_admin || ($row['mb_id'] && $row['mb_id'] === $member['mb_id'])) {
 					$list[$i]['content'] = '<p><b>블라인더 처리된 댓글입니다.</b></p>'.$list[$i]['content'];
 				} else {
 					$list[$i]['content'] = '<p><b>블라인더 처리된 댓글입니다.</b></p>';
@@ -112,8 +112,10 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     }
 
 	if($is_content) { // 변환
-		$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" onclick=\"apms_image(this.href); return false;\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $list[$i]['content']);
-		$list[$i]['content'] = apms_content($list[$i]['content']);
+		//$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" onclick=\"apms_image(this.href); return false;\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $list[$i]['content']);
+		$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<img src=\"$1://$2.$3\" alt=\"\">", $list[$i]['content']);
+
+		$list[$i]['content'] = apms_content(get_view_thumbnail($list[$i]['content']));
 	}
 
 	//럭키포인트

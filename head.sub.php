@@ -15,14 +15,18 @@ if(defined('_THEME_PREVIEW_') && _THEME_PREVIEW_ === true) {
 	}
 }
 
+// 관리자쪽 체크...
+if(!defined('_RESPONSIVE_')) {
+	define('_RESPONSIVE_', true);
+}
+
 $begin_time = get_microtime();
 
-if (!isset($g5['title'])) {
-    $g5['title'] = $config['cf_title'];
-    $g5_head_title = $g5['title'];
-}
-else { // 상태바에 표시될 제목
+if (isset($g5['title']) && $g5['title']) {
     $g5_head_title = $g5['title'].' > '.$config['cf_title'];
+} else { // 상태바에 표시될 제목
+	$g5['title'] = $config['cf_title'];
+    $g5_head_title = $g5['title'];
 }
 
 $g5_head_title = apms_get_text($g5_head_title);

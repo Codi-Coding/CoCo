@@ -216,7 +216,7 @@ if($header_skin)
 		</tr>
 		<tr>
 			<th scope="row">결제방식</th>
-			<td><?php echo ($easy_pay_name ? $easy_pay_name.'('.$od['od_settle_case'].')' : $od['od_settle_case']); ?></td>
+			<td><?php echo ($easy_pay_name ? $easy_pay_name.'('.$od['od_settle_case'].')' : check_pay_name_replace($od['od_settle_case']) ); ?></td>
 		</tr>
 		<tr class="active">
 			<th scope="row">결제금액</th>

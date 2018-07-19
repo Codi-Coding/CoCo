@@ -4,6 +4,8 @@ include_once('./_common.php');
 if ($is_guest)
     alert_close('회원만 이용하실 수 있습니다.');
 
+set_session('ss_memo_delete_token', $token = uniqid(time()));
+
 $kind = $kind ? clean_xss_tags(strip_tags($kind)) : 'recv';
 
 if ($kind == 'recv')
@@ -15,7 +17,12 @@ else
 
 $sql = " select count(*) as cnt from {$g5['memo_table']} where me_{$kind}_mb_id = '{$member['mb_id']}' ";
 $row = sql_fetch($sql);
-$total_count = number_format($row['cnt']);
+$total_count = $row['cnt'];
+
+$total_page  = ceil($total_count / $config['cf_page_rows']);  // 전체 페이지 계산
+$page = (int)$page;
+if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
+$from_record = ($page - 1) * $config['cf_page_rows']; // 시작 열을 구함
 
 if ($kind == 'recv')
 {
@@ -30,18 +37,7 @@ else
     $send_img = 'on';
 }
 
-//Paging
-$sql = " select count(*) as cnt from {$g5['memo_table']} where me_{$kind}_mb_id = '{$member['mb_id']}'";
-$row = sql_fetch($sql);
-$total_count = $row['cnt'];
-
-if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
-
-$page_rows = $config['cf_page_rows'];
-$total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
-$from_record = ($page - 1) * $page_rows; // 시작 열을 구함
-
-$num = $total_count - ($page - 1) * $page_rows;
+$num = $total_count - ($page - 1) * $config['cf_page_rows'];
 
 $list = array();
 
@@ -49,7 +45,7 @@ $sql = " select a.*, b.mb_id, b.mb_nick, b.mb_email, b.mb_homepage
             from {$g5['memo_table']} a
             left join {$g5['member_table']} b on (a.me_{$unkind}_mb_id = b.mb_id)
             where a.me_{$kind}_mb_id = '{$member['mb_id']}'
-            order by a.me_id desc limit {$from_record}, {$page_rows}";
+            order by a.me_id desc limit {$from_record}, {$config['cf_page_rows']} ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
@@ -75,11 +71,12 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     $list[$i]['name'] = $name;
     $list[$i]['send_datetime'] = $send_datetime;
     $list[$i]['read_datetime'] = $read_datetime;
-    $list[$i]['view_href'] = './memo_view.php?me_id='.$row['me_id'].'&amp;kind='.$kind.$qstr;
-    $list[$i]['del_href'] = './memo_delete.php?me_id='.$row['me_id'].'&amp;kind='.$kind.$qstr;
+    $list[$i]['view_href'] = './memo_view.php?me_id='.$row['me_id'].'&amp;kind='.$kind.'&amp;page='.$page;
+    $list[$i]['del_href'] = './memo_delete.php?me_id='.$row['me_id'].'&amp;token='.$token.'&amp;kind='.$kind;
 }
 
 $write_page_rows = (G5_IS_MOBILE) ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
+$write_pages = get_paging($write_page_rows, $page, $total_page, "./memo.php?kind=$kind".$qstr."&amp;page=");
 $list_page = "./memo.php?kind=".$kind."&amp;page=";
 
 // Page ID

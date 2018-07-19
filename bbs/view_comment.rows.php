@@ -24,7 +24,7 @@ if (isset($group['gr_use_access']) && $group['gr_use_access']) {
 	}
 
 	// 그룹관리자 이상이라면 통과
-	if ($is_admin == "super" || $is_admin == "group") {
+	if ($is_admin === "super" || $is_admin === "group") {
 		;
 	} else {
 		// 그룹접근
@@ -73,7 +73,7 @@ if ($config['cf_cert_use'] && !$is_admin) {
 }
 
 // 자신의 글이거나 관리자라면 통과
-if (($write['mb_id'] && $write['mb_id'] == $member['mb_id']) || $is_admin) {
+if (($write['mb_id'] && $write['mb_id'] === $member['mb_id']) || $is_admin) {
 	;
 } else {
 	// 비밀글이라면
@@ -87,7 +87,7 @@ if (($write['mb_id'] && $write['mb_id'] == $member['mb_id']) || $is_admin) {
 						and wr_reply = ''
 						and wr_is_comment = 0 ";
 			$row = sql_fetch($sql);
-			if ($row['mb_id'] == $member['mb_id'])
+			if ($row['mb_id'] === $member['mb_id'])
 				$is_owner = true;
 		}
 
@@ -150,8 +150,10 @@ if(isset($board['as_best_cmt']) && $board['as_best_cmt'] > 0) {
 			$chtml = 2;
 
 		$cbest[$i]['content'] = conv_content($row['wr_content'], $chtml, 'wr_content');
-		$cbest[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" onclick=\"apms_image(this.href); return false;\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $cbest[$i]['content']);
-		$cbest[$i]['content'] = apms_content($cbest[$i]['content']);
+		//$cbest[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" onclick=\"apms_image(this.href); return false;\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $cbest[$i]['content']);
+		$cbest[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<img src=\"$1://$2.$3\" alt=\"\">", $cbest[$i]['content']);
+
+		$cbest[$i]['content'] = apms_content(get_view_thumbnail($cbest[$i]['content']));
 
 		//럭키포인트
 		if($row['as_lucky']) {
@@ -219,7 +221,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     $list[$i]['content'] = $list[$i]['content1']= '비밀댓글 입니다.';
 	if($row['as_shingo'] < 0) {
 		$shingo_txt = '<p><b>블라인더 처리된 댓글입니다.</b></p>';
-		if($is_admin || ($row['mb_id'] && $row['mb_id'] == $member['mb_id'])) {
+		if($is_admin || ($row['mb_id'] && $row['mb_id'] === $member['mb_id'])) {
 			; // 관리자 또는 글쓴이는 통과
 		} else {
 			$is_cmt_shingo = true;
@@ -235,8 +237,8 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
     if (!strstr($row['wr_option'], 'secret') ||
         $is_admin ||
-        ($write['mb_id'] && $write['mb_id'] == $member['mb_id']) ||
-        ($row['mb_id'] && $row['mb_id'] == $member['mb_id'])) {
+        ($write['mb_id'] && $write['mb_id'] === $member['mb_id']) ||
+        ($row['mb_id'] && $row['mb_id'] === $member['mb_id'])) {
 
 		if($is_cmt_shingo) {
 			$list[$i]['content1'] = '블라인더 처리된 댓글입니다'; 
@@ -253,7 +255,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 		$is_pre_commenter = false;
 		if($row['wr_comment_reply'] && $member['mb_id']) {
 			$pre_comment = sql_fetch(" select mb_id from {$write_table} where wr_parent = '$wr_id' and wr_is_comment = 1 and wr_comment = '{$row['wr_comment']}' and wr_comment_reply = '".substr($row['wr_comment_reply'],0,-1)."' "); 
-			if($pre_comment['mb_id'] && $pre_comment['mb_id'] == $member['mb_id']) 
+			if($pre_comment['mb_id'] && $pre_comment['mb_id'] === $member['mb_id']) 
 				$is_pre_commenter = true;
 		}		
 
@@ -271,8 +273,10 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     }
 
 	if($is_content) {
-		$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" class=\"item_image\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $list[$i]['content']);
-		$list[$i]['content'] = apms_content($list[$i]['content']);
+		//$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<a href=\"".G5_BBS_URL."/view_img.php?img=$1://$2.$3\" target=\"_blank\" class=\"item_image\"><img src=\"$1://$2.$3\" alt=\"\" style=\"max-width:100%;border:0;\"></a>", $list[$i]['content']);
+		$list[$i]['content'] = preg_replace("/\[\<a\s*href\=\"(http|https|ftp)\:\/\/([^[:space:]]+)\.(gif|png|jpg|jpeg|bmp)\"\s*[^\>]*\>[^\s]*\<\/a\>\]/i", "<img src=\"$1://$2.$3\" alt=\"\">", $list[$i]['content']);
+
+		$list[$i]['content'] = apms_content(get_view_thumbnail($list[$i]['content']));
 
 		//럭키포인트
 		if($row['as_lucky']) {

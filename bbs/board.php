@@ -96,7 +96,7 @@ if (isset($wr_id) && $wr_id) {
     }
 
     // 자신의 글이거나 관리자라면 통과
-    if (($write['mb_id'] && $write['mb_id'] == $member['mb_id']) || $is_admin) {
+    if (($write['mb_id'] && $write['mb_id'] === $member['mb_id']) || $is_admin) {
         ;
     } else {
         // 비밀글이라면
@@ -112,7 +112,7 @@ if (isset($wr_id) && $wr_id) {
                             and wr_reply = ''
                             and wr_is_comment = 0 ";
                 $row = sql_fetch($sql);
-                if ($row['mb_id'] == $member['mb_id'])
+                if ($row['mb_id'] === $member['mb_id'])
                     $is_owner = true;
             }
 
@@ -139,7 +139,7 @@ if (isset($wr_id) && $wr_id) {
         sql_query(" update {$write_table} set wr_hit = wr_hit + 1 where wr_id = '{$wr_id}' ");
 
         // 자신의 글이면 통과
-        if ($write['mb_id'] && $write['mb_id'] == $member['mb_id']) {
+        if ($write['mb_id'] && $write['mb_id'] === $member['mb_id']) {
             ;
         } else if ($is_guest && $board['bo_read_level'] == 1 && $write['wr_ip'] == $_SERVER['REMOTE_ADDR']) {
             // 비회원이면서 읽기레벨이 1이고 등록된 아이피가 같다면 자신의 글이므로 통과
@@ -306,8 +306,8 @@ if ($board['bo_use_nogood'])
     $is_nogood = true;
 
 // 최고관리자 또는 그룹관리자라면
-$admin_href = ($is_designer || $is_admin == 'group') ? G5_ADMIN_URL.'/board_form.php?w=u&amp;bo_table='.$bo_table : ''; 
-$setup_href = ($is_demo || $is_designer || $is_admin == 'group') ? G5_BBS_URL.'/board.setup.php?bo_table='.$bo_table : '';
+$admin_href = ($is_designer || $is_admin === 'group') ? G5_ADMIN_URL.'/board_form.php?w=u&amp;bo_table='.$bo_table : ''; 
+$setup_href = ($is_demo || $is_designer || $is_admin === 'group') ? G5_BBS_URL.'/board.setup.php?bo_table='.$bo_table : '';
 
 include_once(G5_BBS_PATH.'/board_head.php');
 @include_once($board_skin_path.'/board.skin.php');

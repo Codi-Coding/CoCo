@@ -79,15 +79,23 @@ if(apms_admin($xp['xp_manager']) || ($is_member && $member['mb_id'] == $it['pt_i
     sql_query(" update {$g5['apms_file']} set pf_download = pf_download + 1 where pf_id = '$pf_id' and pf_dir = '1' and pf_no = '$no' ");
 }
 
-//다운로드시 첨부파일명
-//$original = urlencode($file['pf_source']);
-$original = iconv('utf-8', 'euc-kr', $file['pf_source']); // SIR 잉끼님 제안코드
+//파일명에 한글이 있는 경우
+if(preg_match("/[\xA1-\xFE][\xA1-\xFE]/", $file['pf_source'])){
+    $original = iconv('utf-8', 'euc-kr', $file['pf_source']); // SIR 잉끼님 제안코드
+} else {
+    $original = urlencode($file['pf_source']);
+}
 
 if(preg_match("/msie/i", $_SERVER['HTTP_USER_AGENT']) && preg_match("/5\.5/", $_SERVER['HTTP_USER_AGENT'])) {
     header("content-type: doesn/matter");
     header("content-length: ".filesize("$filepath"));
     header("content-disposition: attachment; filename=\"$original\"");
     header("content-transfer-encoding: binary");
+} else if (preg_match("/Firefox/i", $_SERVER['HTTP_USER_AGENT'])){
+    header("content-type: file/unknown");
+    header("content-length: ".filesize("$filepath"));
+    header("content-disposition: attachment; filename=\"".basename($file['bf_source'])."\"");
+    header("content-description: php generated data");
 } else {
     header("content-type: file/unknown");
     header("content-length: ".filesize("$filepath"));

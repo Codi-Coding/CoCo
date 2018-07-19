@@ -176,7 +176,7 @@ function get_theme_config_value($dir, $key='*')
     $tconfig = array();
 
     $theme_config_file = G5_PATH.'/'.G5_THEME_DIR.'/'.$dir.'/theme.config.php';
-    if(is_file) {
+    if(is_file($theme_config_file)) {
         include($theme_config_file);
 
         if($key == '*') {
@@ -360,6 +360,17 @@ function get_admin_token()
     return $token;
 }
 
+//input value 에서 xss 공격 filter 역할을 함 ( 반드시 input value='' 타입에만 사용할것 )
+function get_sanitize_input($s, $is_html=false){
+
+    if(!$is_html){
+        $s = strip_tags($s);
+    }
+
+    $s = htmlspecialchars($s, ENT_QUOTES, 'utf-8');
+
+    return $s;
+}
 
 // POST로 넘어온 토큰과 세션에 저장된 토큰 비교
 function check_admin_token()
