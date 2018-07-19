@@ -5,10 +5,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 add_stylesheet('<link rel="stylesheet" href="'.$member_skin_url.'/style.css">', 0);
 ?>
 
-<div id="profile" class="new_win">
+<div id="profile" class="new_win mbskin">
     <h1 id="win_title"><?php echo $mb_nick ?>님의 프로필</h1>
 
-    <div class="new_win_con">
+    <div class="tbl_frm01 tbl_wrap">
         <table>
         <tbody>
         <tr>
@@ -43,6 +43,6 @@ add_stylesheet('<link rel="stylesheet" href="'.$member_skin_url.'/style.css">', 
     </section>
 
     <div class="win_btn">
-        <button type="button" onclick="window.close();" class="btn_close">창닫기</button>
+        <button type="button" onclick="window.close();">창닫기</button>
     </div>
 </div>

@@ -11,7 +11,6 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 if (!$to_date) $to_date = date("Ymd", time());
 
 if ($sort1 == "") $sort1 = "ct_status_sum";
-if (!in_array($sort1, array('ct_status_1', 'ct_status_2', 'ct_status_3', 'ct_status_4', 'ct_status_5', 'ct_status_6', 'ct_status_7', 'ct_status_8', 'ct_status_9', 'ct_status_sum'))) $sort1 = "ct_status_sum";
 if ($sort2 == "" || $sort2 != "asc") $sort2 = "desc";
 
 $doc = strip_tags($doc);
@@ -67,7 +66,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
-    <span class="btn_ov01"><span class="ov_txt">등록상품 </span><span class="ov_num"> <?php echo $total_count; ?>건 </span></span> 
+    등록상품 <?php echo $total_count; ?>건
 </div>
 
 <form name="flist" class="local_sch01 local_sch">
@@ -104,9 +103,9 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <p>판매량을 합산하여 상품판매순위를 집계합니다.</p>
 </div>
 
-<div class="btn_fixed_top">
-    <a href="./itemstocklist.php" class="btn_02 btn">상품재고관리</a>
-    <a href="./itemlist.php" class="btn_01 btn">상품등록</a>
+<div class="btn_add01 btn_add">
+    <a href="./itemlist.php" class="btn_add01 btn_add_optional">상품등록</a>
+    <a href="./itemstocklist.php" class="btn_add01 btn_add_optional">상품재고관리</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -140,7 +139,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         ?>
         <tr class="<?php echo $bg; ?>">
             <td class="td_num"><?php echo $num; ?></td>
-            <td class="td_left"><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a></td>
+            <td><a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a></td>
             <td class="td_num"><?php echo $row['ct_status_1']; ?></td>
             <td class="td_num"><?php echo $row['ct_status_2']; ?></td>
             <td class="td_num"><?php echo $row['ct_status_3']; ?></td>

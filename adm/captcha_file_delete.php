@@ -23,7 +23,7 @@ if (!$dir=@opendir(G5_DATA_PATH.'/cache')) {
 }
 
 $cnt=0;
-echo '<ul class="session_del">'.PHP_EOL;
+echo '<ul>'.PHP_EOL;
 
 $files = glob(G5_DATA_PATH.'/cache/?captcha-*');
 if (is_array($files)) {

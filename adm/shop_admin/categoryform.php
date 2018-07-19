@@ -84,6 +84,11 @@ $pg_anchor ='<ul class="anchor">
 if ($w == 'u') $pg_anchor .= '<li><a href="#frm_etc">기타설정</a></li>';
 $pg_anchor .= '</ul>';
 
+$frm_submit = '<div class="btn_confirm01 btn_confirm">
+    <input type="submit" value="확인" class="btn_submit" accesskey="s">
+    <a href="./categorylist.php?'.$qstr.'">목록</a>
+</div>';
+
 // 쿠폰 적용 불가 설정 필드 추가
 if(!sql_query(" select ca_nocoupon from {$g5['g5_shop_category_table']} limit 1 ", false)) {
     sql_query(" ALTER TABLE `{$g5['g5_shop_category_table']}`
@@ -193,13 +198,13 @@ else {
         </tr>
         <tr>
             <th scope="row"><label for="ca_skin_dir">PC용 스킨명</label></th>
-            <td>
+            <td colspan="3">
                 <?php echo get_skin_select('shop', 'ca_skin_dir', 'ca_skin_dir', $ca['ca_skin_dir']); ?>
             </td>
         </tr>
         <tr>
             <th scope="row"><label for="ca_mobile_skin_dir">모바일용 스킨명</label></th>
-            <td>
+            <td colspan="3">
                 <?php echo get_mobile_skin_select('shop', 'ca_mobile_skin_dir', 'ca_mobile_skin_dir', $ca['ca_mobile_skin_dir']); ?>
             </td>
         </tr>
@@ -328,9 +333,9 @@ else {
         </tbody>
         </table>
     </div>
-    <button type="button" class="shop_category btn_02 btn">테마설정 가져오기</button>
 </section>
 
+<?php echo preg_replace('#</div>$#i', '<button type="button" class="shop_category">테마설정 가져오기</button></div>', $frm_submit); ?>
 
 <section id="anc_scatefrm_optional">
     <h2 class="h2_frm">선택 입력</h2>
@@ -356,22 +361,6 @@ else {
             <td>
                 <?php echo help("입력하지 않으면 기본 하단 파일을 사용합니다.<br>하단 내용과 달리 PHP 코드를 사용할 수 있습니다."); ?>
                 <input type="text" name="ca_include_tail" value="<?php echo $ca['ca_include_tail']; ?>" id="ca_include_tail" class="frm_input" size="60">
-            </td>
-        </tr>
-        <tr id="admin_captcha_box" style="display:none;">
-            <th scope="row">자동등록방지</th>
-            <td>
-                <?php
-                echo help("파일 경로를 입력 또는 수정시 캡챠를 반드시 입력해야 합니다.");
-
-                include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
-                $captcha_html = captcha_html();
-                $captcha_js   = chk_captcha_js();
-                echo $captcha_html;
-                ?>
-                <script>
-                jQuery("#captcha_key").removeAttr("required").removeClass("required");
-                </script>
             </td>
         </tr>
         <tr>
@@ -407,6 +396,7 @@ else {
     </div>
 </section>
 
+<?php echo $frm_submit; ?>
 
 <section id="anc_scatefrm_extra">
     <h2>여분필드 설정</h2>
@@ -435,6 +425,7 @@ else {
     </div>
 </section>
 
+<?php echo $frm_submit; ?>
 
 <?php if ($w == "u") { ?>
 <section id="frm_etc">
@@ -461,12 +452,9 @@ else {
         </table>
     </div>
 </section>
-
+<?php echo $frm_submit; ?>
 <?php } ?>
-<div class="btn_fixed_top">
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
-    <a href="./categorylist.php?'.$qstr.'" class="btn_02 btn">목록</a>
-</div>
+
 </form>
 
 <script>
@@ -537,51 +525,7 @@ function fcategoryformcheck(f)
     return true;
 }
 
-var captcha_chk = false;
-
-function use_captcha_check(){
-    $.ajax({
-        type: "POST",
-        url: g5_admin_url+"/ajax.use_captcha.php",
-        data: { admin_use_captcha: "1" },
-        cache: false,
-        async: false,
-        dataType: "json",
-        success: function(data) {
-        }
-    });
-}
-
-function frm_check_file(){
-    var ca_include_head = "<?php echo $ca['ca_include_head']; ?>";
-    var ca_include_tail = "<?php echo $ca['ca_include_tail']; ?>";
-    var head = jQuery.trim(jQuery("#ca_include_head").val());
-    var tail = jQuery.trim(jQuery("#ca_include_tail").val());
-
-    if(ca_include_head !== head || ca_include_tail !== tail){
-        // 캡챠를 사용합니다.
-        jQuery("#admin_captcha_box").show();
-        captcha_chk = true;
-
-        use_captcha_check();
-
-        return false;
-    } else {
-        jQuery("#admin_captcha_box").hide();
-    }
-
-    return true;
-}
-
-jQuery(function($){
-    if( window.self !== window.top ){   // frame 또는 iframe을 사용할 경우 체크
-        $("#ca_include_head, #ca_include_tail").on("change paste keyup", function(e) {
-            frm_check_file();
-        });
-
-        use_captcha_check();
-    }
-
+$(function() {
     $(".shop_category").on("click", function() {
         if(!confirm("현재 테마의 스킨, 이미지 사이즈 등의 설정을 적용하시겠습니까?"))
             return false;

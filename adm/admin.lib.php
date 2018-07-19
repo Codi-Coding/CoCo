@@ -355,18 +355,6 @@ function get_admin_token()
     return $token;
 }
 
-// 관리자가 자동등록방지를 사용해야 할 경우
-function get_admin_captcha_by($type='get'){
-    
-    $captcha_name = 'ss_admin_use_captcha';
-
-    if($type === 'remove'){
-        set_session($captcha_name, '');
-    }
-
-    return get_session($captcha_name);
-}
-
 //input value 에서 xss 공격 filter 역할을 함 ( 반드시 input value='' 타입에만 사용할것 )
 function get_sanitize_input($s, $is_html=false){
 
@@ -448,7 +436,7 @@ else if ($is_admin != 'super')
 }
 
 // 관리자의 아이피, 브라우저와 다르다면 세션을 끊고 관리자에게 메일을 보낸다.
-$admin_key = md5($member['mb_datetime'] . get_real_client_ip() . $_SERVER['HTTP_USER_AGENT']);
+$admin_key = md5($member['mb_datetime'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']);
 if (get_session('ss_mb_key') !== $admin_key) {
 
     session_destroy();
@@ -467,17 +455,12 @@ unset($auth_menu);
 unset($menu);
 unset($amenu);
 $tmp = dir(G5_ADMIN_PATH);
-$menu_files = array();
 while ($entry = $tmp->read()) {
     if (!preg_match('/^admin.menu([0-9]{3}).*\.php$/', $entry, $m))
         continue;  // 파일명이 menu 으로 시작하지 않으면 무시한다.
 
     $amenu[$m[1]] = $entry;
-    $menu_files[] = G5_ADMIN_PATH.'/'.$entry;
-}
-@asort($menu_files);
-foreach($menu_files as $file){
-    include_once($file);
+    include_once(G5_ADMIN_PATH.'/'.$entry);
 }
 @ksort($amenu);
 

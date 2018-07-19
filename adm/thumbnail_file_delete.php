@@ -19,10 +19,6 @@ include_once('./admin.head.php');
 $directory = array();
 $dl = array('file', 'editor');
 
-if( defined('G5_YOUNGCART_VER') ){
-    $dl[] = 'item';
-}
-
 foreach($dl as $val) {
     if($handle = opendir(G5_DATA_PATH.'/'.$val)) {
         while(false !== ($entry = readdir($handle))) {

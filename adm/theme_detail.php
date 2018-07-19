@@ -35,10 +35,9 @@ if($info['license_uri']) {
 ?>
 
 <div id="theme_detail">
-    <h2><?php echo $name; ?></h2>
-    <div class="theme_dt_img"><?php echo $screenshot; ?></div>
-    <div class="theme_dt_if">
-        <p><?php echo get_text($info['detail']); ?></p>
+    <div class="thdt_img"><?php echo $screenshot; ?></div>
+    <div class="thdt_if">
+        <h2><?php echo $name; ?></h2>
         <table>
             <tr>
                 <th scope="row">Version</th>
@@ -53,10 +52,8 @@ if($info['license_uri']) {
                 <td><?php echo $license; ?></td>
             </tr>
         </table>
-        <div class="theme_dt_btn">
-        <a href="./theme_preview.php?theme=<?php echo $theme; ?>" class="theme_pr btn_03" target="theme_preview">미리보기</a>
+        <p><?php echo get_text($info['detail']); ?></p>
         <button type="button" class="close_btn">닫기</button>
-        </div>
     </div>
 </div>
 

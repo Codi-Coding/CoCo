@@ -5,13 +5,7 @@ include_once('./_common.php');
 auth_check($auth[$sub_menu], "r");
 
 $g5['title'] = 'FAQ 상세관리';
-if ($fm_subject){
-    $fm_subject = clean_xss_tags(strip_tags($fm_subject));
-    $g5['title'] .= ' : '.$fm_subject;
-}
-
-$fm_id = (int) $fm_id;
-
+if ($fm_subject) $g5['title'] .= ' : '.$fm_subject;
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $sql = " select * from {$g5['faq_master_table']} where fm_id = '$fm_id' ";
@@ -29,7 +23,7 @@ $result = sql_query($sql);
 ?>
 
 <div class="local_ov01 local_ov">
-   <span class="btn_ov01"><span class="ov_txt"> 등록된 FAQ 상세내용</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
+    등록된 FAQ 상세내용 <?php echo $total_count; ?>건
 </div>
 
 <div class="local_desc01 local_desc">
@@ -39,9 +33,8 @@ $result = sql_query($sql);
     </ol>
 </div>
 
-<div class="btn_fixed_top">
-    <a href="./faqmasterlist.php" class="btn btn_02">FAQ 관리</a>
-    <a href="./faqform.php?fm_id=<?php echo $fm['fm_id']; ?>" class="btn btn_01">FAQ 상세내용 추가</a>
+<div class="btn_add01 btn_add">
+    <a href="./faqform.php?fm_id=<?php echo $fm['fm_id']; ?>">FAQ 상세내용 추가</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -72,11 +65,11 @@ $result = sql_query($sql);
 
     <tr class="<?php echo $bg; ?>">
         <td class="td_num"><?php echo $num; ?></td>
-        <td class="td_left"><?php echo stripslashes($row['fa_subject']); ?></td>
+        <td><?php echo stripslashes($row['fa_subject']); ?></td>
         <td class="td_num"><?php echo $row['fa_order']; ?></td>
-        <td class="td_mng td_mng_m">
-            <a href="./faqform.php?w=u&amp;fm_id=<?php echo $row['fm_id']; ?>&amp;fa_id=<?php echo $row['fa_id']; ?>" class="btn btn_03"><span class="sound_only"><?php echo stripslashes($row['fa_subject']); ?> </span>수정</a>
-            <a href="./faqformupdate.php?w=d&amp;fm_id=<?php echo $row['fm_id']; ?>&amp;fa_id=<?php echo $row['fa_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only"><?php echo stripslashes($row['fa_subject']); ?> </span>삭제</a>
+        <td class="td_mngsmall">
+            <a href="./faqform.php?w=u&amp;fm_id=<?php echo $row['fm_id']; ?>&amp;fa_id=<?php echo $row['fa_id']; ?>"><span class="sound_only"><?php echo stripslashes($row['fa_subject']); ?> </span>수정</a>
+            <a href="./faqformupdate.php?w=d&amp;fm_id=<?php echo $row['fm_id']; ?>&amp;fa_id=<?php echo $row['fa_id']; ?>" onclick="return delete_confirm(this);"><span class="sound_only"><?php echo stripslashes($row['fa_subject']); ?> </span>삭제</a>
         </td>
     </tr>
 
@@ -90,6 +83,10 @@ $result = sql_query($sql);
     </tbody>
     </table>
 
+</div>
+
+<div class="btn_confirm01 btn_confirm">
+    <a href="./faqmasterlist.php">FAQ 관리</a>
 </div>
 
 

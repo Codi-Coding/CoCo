@@ -18,7 +18,6 @@ if( preg_match("/[^0-9]/", $fr_date) ) $fr_date = '';
 if( preg_match("/[^0-9]/", $to_date) ) $to_date = '';
 
 if ($sort1 == "") $sort1 = "it_id_cnt";
-if (!in_array($sort1, array('mb_id', 'it_id', 'wi_time', 'wi_ip'))) $sort1 = "it_id_cnt";
 if ($sort2 == "" || $sort2 != "asc") $sort2 = "desc";
 
 $sql  = " select a.it_id,
@@ -58,7 +57,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
-    <span class="btn_ov01"><span class="ov_txt">전체 </span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
+    <?php echo $total_count; ?>건
 </div>
 
 <form name="flist" class="local_sch01 local_sch">
@@ -113,7 +112,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     ?>
     <tr class="<?php echo $bg; ?>">
         <td class="td_num"><?php echo $num; ?></td>
-        <td class="td_left">
+        <td>
             <a href="<?php echo $href; ?>"><?php echo get_it_image($row['it_id'], 50, 50); ?> <?php echo cut_str($row['it_name'],30); ?></a>
         </td>
         <td class="td_num"><?php echo $row['it_id_cnt']; ?></td>
