@@ -2,6 +2,8 @@
 /*******************************************************************************
 ** 공통 변수, 상수, 코드
 *******************************************************************************/
+include_once('./lib/common.lib.php');
+
 error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING );
 
 // 보안설정이나 프레임이 달라도 쿠키가 통하도록 설정
