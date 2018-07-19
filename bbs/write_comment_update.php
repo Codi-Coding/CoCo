@@ -3,6 +3,10 @@ define('G5_CAPTCHA', true);
 include_once('./_common.php');
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 
+if(!$board['bo_table']) {
+	exit; //존재하지 않는 게시판은 작동안함
+}
+
 // 토큰체크
 $comment_token = trim(get_session('ss_comment_token'));
 set_session('ss_comment_token', '');
@@ -12,16 +16,13 @@ if(!trim($_POST['token']) || !$comment_token || $comment_token != $_POST['token'
 // 090710
 if (substr_count($wr_content, "&#") > 50) {
     alert('내용에 올바르지 않은 코드가 다수 포함되어 있습니다.');
-    exit;
 }
-
-@include_once($board_skin_path.'/write_comment_update.head.skin.php');
 
 $w = $_POST["w"];
 $wr_name  = trim($_POST['wr_name']);
 $wr_email = '';
 if (!empty($_POST['wr_email']))
-    $wr_email = get_email_address(trim($_POST['wr_email']));
+	$wr_email = get_email_address(trim($_POST['wr_email']));
 
 // 비회원의 경우 이름이 누락되는 경우가 있음
 if ($is_guest) {
@@ -54,19 +55,31 @@ if (empty($wr['wr_id']))
 // 이 옵션을 사용 안 함으로 설정할 경우 어떤 스크립트도 실행 되지 않습니다.
 //if (!trim($_POST["wr_content"])) die ("내용을 입력하여 주십시오.");
 
+$is_new = (isset($board['as_new']) && $board['as_new']) ? false : true;
+$is_ajax = false;
+$is_response = true;
+@include_once($board_skin_path.'/write_comment_update.head.skin.php');
+
 if ($is_member)
 {
     $mb_id = $member['mb_id'];
     // 4.00.13 - 실명 사용일때 댓글에 닉네임으로 입력되던 오류를 수정
-    $wr_name = addslashes(clean_xss_tags($board['bo_use_name'] ? $member['mb_name'] : $member['mb_nick']));
+	$wr_name = addslashes(clean_xss_tags($board['bo_use_name'] ? $member['mb_name'] : $member['mb_nick']));
     $wr_password = $member['mb_password'];
-    $wr_email = addslashes($member['mb_email']);
-    $wr_homepage = addslashes(clean_xss_tags($member['mb_homepage']));
+	if($member['mb_open']) {
+	    $wr_email = addslashes($member['mb_email']);
+	    $wr_homepage = addslashes(clean_xss_tags($member['mb_homepage']));
+	} else {
+	    $wr_email = '';
+	    $wr_homepage = '';
+	}
+    $as_level = (int)$member['as_level'];
 }
 else
 {
     $mb_id = '';
     $wr_password = get_encrypt_string($wr_password);
+    $as_level = 1;
 }
 
 if ($w == 'c') // 댓글 입력
@@ -75,15 +88,25 @@ if ($w == 'c') // 댓글 입력
     if ($member[mb_point] + $board[bo_comment_point] < 0 && !$is_admin)
         alert('보유하신 포인트('.number_format($member[mb_point]).')가 없거나 모자라서 댓글쓰기('.number_format($board[bo_comment_point]).')가 불가합니다.\\n\\n포인트를 적립하신 후 다시 댓글을 써 주십시오.');
     */
+
+	// 댓글포인트 적립
+	$is_cmt_point = true;
+	if(isset($xp['comment_limit']) && $xp['comment_limit'] > 0) {
+		if ($wr['wr_datetime'] < date("Y-m-d H:i:s", G5_SERVER_TIME - ($xp['comment_limit'] * 86400))) {
+			$is_cmt_point = false;
+		}
+	}
+
     // 댓글쓰기 포인트설정시 회원의 포인트가 음수인 경우 댓글을 쓰지 못하던 버그를 수정 (곱슬최씨님)
     $tmp_point = ($member['mb_point'] > 0) ? $member['mb_point'] : 0;
     if ($tmp_point + $board['bo_comment_point'] < 0 && !$is_admin)
         alert('보유하신 포인트('.number_format($member['mb_point']).')가 없거나 모자라서 댓글쓰기('.number_format($board['bo_comment_point']).')가 불가합니다.\\n\\n포인트를 적립하신 후 다시 댓글을 써 주십시오.');
 
     // 댓글 답변
-    if ($comment_id)
-    {
-        $sql = " select wr_id, wr_parent, wr_comment, wr_comment_reply from $write_table
+	$as_re_mb = '';
+	$as_re_name = '';
+    if ($comment_id) {
+		$sql = " select wr_id, mb_id, wr_parent, wr_comment, wr_comment_reply, wr_name from $write_table
                     where wr_id = '$comment_id' ";
         $reply_array = sql_fetch($sql);
         if (!$reply_array['wr_id'])
@@ -93,11 +116,16 @@ if ($w == 'c') // 댓글 입력
             alert('댓글을 등록할 수 없습니다.');
 
         $tmp_comment = $reply_array['wr_comment'];
+		
+		//대댓글 내글반응
+		$as_re_mb = $reply_array['mb_id'];
+		$as_re_name = $reply_array['wr_name'];
+		$as_re_cnt = strlen($reply_array['wr_comment_reply']);
 
-        if (strlen($reply_array['wr_comment_reply']) == 5)
+        if ($as_re_cnt == 5)
             alert('더 이상 답변하실 수 없습니다.\\n\\n답변은 5단계 까지만 가능합니다.');
 
-        $reply_len = strlen($reply_array['wr_comment_reply']) + 1;
+        $reply_len = $as_re_cnt + 1;
         if ($board['bo_reply_order']) {
             $begin_reply_char = 'A';
             $end_reply_char = 'Z';
@@ -131,7 +159,8 @@ if ($w == 'c') // 댓글 입력
             $reply_char = chr(ord($row['reply']) + $reply_number);
 
         $tmp_comment_reply = $reply_array['wr_comment_reply'] . $reply_char;
-    }
+
+	}
     else
     {
         $sql = " select max(wr_comment) as max_comment from $write_table
@@ -143,10 +172,13 @@ if ($w == 'c') // 댓글 입력
         $tmp_comment_reply = '';
     }
 
+	//럭키포인트
+	$as_lucky = ($board['as_lucky'] && $is_cmt_point) ? apms_lucky('', $bo_table, $wr_id) : 0;
+
     $wr_subject = get_text(stripslashes($wr['wr_subject']));
 
     $sql = " insert into $write_table
-                set ca_name = '{$wr['ca_name']}',
+                set ca_name = '".addslashes($wr['ca_name'])."',
                      wr_option = '$wr_secret',
                      wr_num = '{$wr['wr_num']}',
                      wr_reply = '',
@@ -164,7 +196,12 @@ if ($w == 'c') // 댓글 입력
                      wr_datetime = '".G5_TIME_YMDHIS."',
                      wr_last = '',
                      wr_ip = '{$_SERVER['REMOTE_ADDR']}',
-                     wr_1 = '$wr_1',
+                     as_level = '$as_level',
+					 as_lucky = '$as_lucky',
+                     as_re_mb = '$as_re_mb',
+					 as_re_name = '$as_re_name',
+					 as_icon = '$as_icon',
+					 wr_1 = '$wr_1',
                      wr_2 = '$wr_2',
                      wr_3 = '$wr_3',
                      wr_4 = '$wr_4',
@@ -182,13 +219,37 @@ if ($w == 'c') // 댓글 입력
     sql_query(" update $write_table set wr_comment = wr_comment + 1, wr_last = '".G5_TIME_YMDHIS."' where wr_id = '$wr_id' ");
 
     // 새글 INSERT
-    sql_query(" insert into {$g5['board_new_table']} ( bo_table, wr_id, wr_parent, bn_datetime, mb_id ) values ( '$bo_table', '$comment_id', '$wr_id', '".G5_TIME_YMDHIS."', '{$member['mb_id']}' ) ");
+    if($is_new) sql_query(" insert into {$g5['board_new_table']} ( bo_table, wr_id, wr_parent, bn_datetime, mb_id, as_lucky, as_re_mb ) values ( '$bo_table', '$comment_id', '$wr_id', '".G5_TIME_YMDHIS."', '{$member['mb_id']}', '{$as_lucky}', '{$as_re_mb}' ) ");
 
     // 댓글 1 증가
     sql_query(" update {$g5['board_table']} set bo_count_comment = bo_count_comment + 1 where bo_table = '$bo_table' ");
 
+	// APMS : 내글반응 등록
+	if($is_response) {
+		apms_response('wr', 'comment', '', $bo_table, $wr_id, $wr_subject, $wr['mb_id'], $member['mb_id'], $wr_name, $comment_id);
+
+		if($as_re_mb) { //대댓글일 때
+			apms_response('wr', 'comment_reply', '', $bo_table, $wr_id, $wr_subject, $as_re_mb, $member['mb_id'], $wr_name, $comment_id);
+		}
+	}
+
     // 포인트 부여
-    insert_point($member['mb_id'], $board['bo_comment_point'], "{$board['bo_subject']} {$wr_id}-{$comment_id} 댓글쓰기", $bo_table, $comment_id, '댓글');
+	if($is_cmt_point) {
+	    insert_point($member['mb_id'], $board['bo_comment_point'], "{$board['bo_subject']} {$wr_id}-{$comment_id} 댓글쓰기", $bo_table, $comment_id, '댓글');
+	}
+
+	// 새글DB 업데이트
+	apms_board_new('as_comment', $bo_table, $wr_id);
+
+    // SNS 등록
+    include_once("./write_comment_update.sns.php");
+    if($wr_facebook_user || $wr_twitter_user) {
+        $sql = " update $write_table
+                    set wr_facebook_user = '$wr_facebook_user',
+                        wr_twitter_user  = '$wr_twitter_user'
+                    where wr_id = '$comment_id' ";
+        sql_query($sql);
+    }
 
     // 메일발송 사용
     if ($config['cf_email_use'] && $board['bo_use_email'])
@@ -242,16 +303,6 @@ if ($w == 'c') // 댓글 입력
             mailer($wr_name, $wr_email, $unique_email[$i], $subject, $content, 1);
         }
     }
-
-    // SNS 등록
-    include_once("./write_comment_update.sns.php");
-    if($wr_facebook_user || $wr_twitter_user) {
-        $sql = " update $write_table
-                    set wr_facebook_user = '$wr_facebook_user',
-                        wr_twitter_user  = '$wr_twitter_user'
-                    where wr_id = '$comment_id' ";
-        sql_query($sql);
-    }
 }
 else if ($w == 'cu') // 댓글 수정
 {
@@ -265,20 +316,20 @@ else if ($w == 'cu') // 댓글 수정
     $comment_reply = substr($reply_array['wr_comment_reply'], 0, $len);
     //print_r2($GLOBALS); exit;
 
-    if ($is_admin == 'super') // 최고관리자 통과
+    if ($is_admin === 'super') // 최고관리자 통과
         ;
-    else if ($is_admin == 'group') { // 그룹관리자
+    else if ($is_admin === 'group') { // 그룹관리자
         $mb = get_member($comment['mb_id']);
-        if ($member['mb_id'] === $group['gr_admin']) { // 자신이 관리하는 그룹인가?
+        if (chk_multiple_admin($member['mb_id'], $group['gr_admin'])) { // 자신이 관리하는 그룹인가?
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
                 ;
             else
                 alert('그룹관리자의 권한보다 높은 회원의 댓글이므로 수정할 수 없습니다.');
         } else
             alert('자신이 관리하는 그룹의 게시판이 아니므로 댓글을 수정할 수 없습니다.');
-    } else if ($is_admin == 'board') { // 게시판관리자이면
+    } else if ($is_admin === 'board') { // 게시판관리자이면
         $mb = get_member($comment['mb_id']);
-        if ($member['mb_id'] === $board['bo_admin']) { // 자신이 관리하는 게시판인가?
+        if (chk_multiple_admin($member['mb_id'], $board['bo_admin'])) { // 자신이 관리하는 게시판인가?
             if ($member['mb_level'] >= $mb['mb_level']) // 자신의 레벨이 크거나 같다면 통과
                 ;
             else
@@ -314,12 +365,13 @@ else if ($w == 'cu') // 댓글 수정
     $sql = " update $write_table
                 set wr_subject = '$wr_subject',
                      wr_content = '$wr_content',
+					 as_icon = '$as_icon',
                      wr_1 = '$wr_1',
                      wr_2 = '$wr_2',
                      wr_3 = '$wr_3',
                      wr_4 = '$wr_4',
                      wr_5 = '$wr_5',
-                     wr_6 = '$wr_6',
+					 wr_6 = '$wr_6',
                      wr_7 = '$wr_7',
                      wr_8 = '$wr_8',
                      wr_9 = '$wr_9',
@@ -331,11 +383,28 @@ else if ($w == 'cu') // 댓글 수정
     sql_query($sql);
 }
 
+// 자동 글추천 또는 비추천 기능
+if ($board['as_good'] && isset($wr_good)) {
+	if (($board['bo_use_good'] && $wr_good == 'good') || ($board['bo_use_nogood'] && $wr_good == 'nogood')) {
+		if($is_member && $w != 'cu' && $wr['mb_id'] !== $member['mb_id']) {
+			// 내역확인
+			$row = sql_fetch(" select bg_flag from {$g5['board_good_table']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and mb_id = '{$member['mb_id']}' and bg_flag in ('good', 'nogood') ");
+			if (!$row['bg_flag']) {
+				sql_query(" update {$write_table} set wr_{$wr_good} = wr_{$wr_good} + 1 where wr_id = '{$wr_id}' ");
+				sql_query(" update {$g5['board_new_table']} set as_{$wr_good} = as_{$wr_good} + 1 where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' ", false);
+				sql_query(" insert {$g5['board_good_table']} set bo_table = '{$bo_table}', wr_id = '{$wr_id}', mb_id = '{$member['mb_id']}', bg_flag = '{$wr_good}', bg_datetime = '".G5_TIME_YMDHIS."' ");
+			}
+		}
+	}
+}
+
 // 사용자 코드 실행
 @include_once($board_skin_path.'/write_comment_update.skin.php');
 @include_once($board_skin_path.'/write_comment_update.tail.skin.php');
 
 delete_cache_latest($bo_table);
+
+if($pim) $qstr .= '&amp;pim='.$pim;
 
 goto_url(G5_HTTP_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr['wr_parent'].'&amp;'.$qstr.'&amp;#c_'.$comment_id);
 ?>

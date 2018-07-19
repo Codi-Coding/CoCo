@@ -29,10 +29,14 @@ if ($w == "u")
 else
 {
     $html_title .= " 입력";
-    $ev['ev_skin'] = 'list.10.skin.php';
-    $ev['ev_mobile_skin'] = 'list.10.skin.php';
-    $ev['ev_use'] = 1;
+	if(USE_G5_THEME) {
+		$ev['ev_skin'] = 'list.10.skin.php';
+		$ev['ev_mobile_skin'] = 'list.10.skin.php';
+	}
+	$ev['ev_use'] = 1;
 
+    // 1.03.00
+    // 입력일 경우 기본값으로 대체
     $ev['ev_img_width']  = 230;
     $ev['ev_img_height'] = 230;
     $ev['ev_list_mod'] = 3;
@@ -89,28 +93,60 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
         <td>
             <span class="frm_ev_id"><?php echo $ev_id; ?></span>
             <a href="<?php echo G5_SHOP_URL; ?>/event.php?ev_id=<?php echo $ev['ev_id']; ?>" class="btn_frmline">이벤트바로가기</a>
-            <button type="button" class="btn_frmline shop_event">테마설정 가져오기</button>
+			<?php if(USE_G5_THEME) { ?>
+	            <button type="button" class="btn_frmline shop_event">테마설정 가져오기</button>
+			<?php } ?>
         </td>
     </tr>
     <?php } ?>
-    <tr>
-        <th scope="row"><label for="ev_skin">출력스킨</label></th>
-        <td>
-            <?php echo help('기본으로 제공하는 스킨은 '.str_replace(G5_PATH.'/', '', G5_SHOP_SKIN_PATH).'/list.*.skin.php 입니다.'.PHP_EOL.G5_SHOP_DIR.'/event.php?ev_id=1234567890&amp;skin=userskin.php 처럼 직접 만든 스킨을 사용할 수도 있습니다.'); ?>
-            <select name="ev_skin" id="ev_skin">
-                <?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_SHOP_SKIN_PATH, $ev['ev_skin']); ?>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="ev_mobile_skin">모바일 출력스킨</label></th>
-        <td>
-            <?php echo help('기본으로 제공하는 스킨은 '.str_replace(G5_PATH.'/', '', G5_MSHOP_SKIN_PATH).'/list.*.skin.php 입니다.'.PHP_EOL.G5_SHOP_DIR.'/event.php?ev_id=1234567890&amp;skin=userskin.php 처럼 직접 만든 스킨을 사용할 수도 있습니다.'); ?>
-            <select name="ev_mobile_skin" id="ev_mobile_skin">
-                <?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_MSHOP_SKIN_PATH, $ev['ev_mobile_skin']); ?>
-            </select>
-        </td>
-    </tr>
+	<?php if(USE_G5_THEME) { ?>
+		<tr>
+			<th scope="row"><label for="ev_skin">출력스킨</label></th>
+			<td>
+				<?php echo help('기본으로 제공하는 스킨은 '.str_replace(G5_PATH.'/', '', G5_SHOP_SKIN_PATH).'/list.*.skin.php 입니다.'.PHP_EOL.G5_SHOP_DIR.'/event.php?ev_id=1234567890&amp;skin=userskin.php 처럼 직접 만든 스킨을 사용할 수도 있습니다.'); ?>
+				<select name="ev_skin" id="ev_skin">
+					<?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_SHOP_SKIN_PATH, $ev['ev_skin']); ?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="ev_mobile_skin">모바일 출력스킨</label></th>
+			<td>
+				<?php echo help('기본으로 제공하는 스킨은 '.str_replace(G5_PATH.'/', '', G5_MSHOP_SKIN_PATH).'/list.*.skin.php 입니다.'.PHP_EOL.G5_SHOP_DIR.'/event.php?ev_id=1234567890&amp;skin=userskin.php 처럼 직접 만든 스킨을 사용할 수도 있습니다.'); ?>
+				<select name="ev_mobile_skin" id="ev_mobile_skin">
+					<?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_MSHOP_SKIN_PATH, $ev['ev_mobile_skin']); ?>
+				</select>
+			</td>
+		</tr>
+	<?php } else {
+		// APMS - 2014.07.25
+		$listskin = get_skin_dir('list', G5_SKIN_PATH.'/apms');
+	?>
+		<tr>
+			<th scope="row"><label for="ev_skin">출력스킨</label></th>
+			<td>
+				<select id="ev_skin" name="ev_skin">
+					<?php
+						for ($k=0; $k<count($listskin); $k++) {
+							echo "<option value=\"".$listskin[$k]."\"".get_selected($ev['ev_skin'], $listskin[$k]).">".$listskin[$k]."</option>\n";
+						}
+					?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="ev_mobile_skin">모바일 출력스킨</label></th>
+			<td>
+				<select id="ev_mobile_skin" name="ev_mobile_skin">
+					<?php
+						for ($k=0; $k<count($listskin); $k++) {
+							echo "<option value=\"".$listskin[$k]."\"".get_selected($ev['ev_mobile_skin'], $listskin[$k]).">".$listskin[$k]."</option>\n";
+						}
+					?>
+				</select>
+			</td>
+		</tr>
+	<?php } ?>
     <tr>
         <th scope="row"><label for="ev_img_width">출력이미지 폭</label></th>
         <td>
@@ -163,7 +199,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
             <input type="text" name="ev_mobile_list_row" value="<?php echo $ev['ev_mobile_list_row']; ?>" id="ev_mobile_list_row" required class="required frm_input" size="3"> 개
         </td>
     </tr>
-    <tr>
+	<tr>
         <th scope="row"><label for="ev_use">사용</label></th>
         <td>
             <?php echo help("사용하지 않으면 레이아웃의 이벤트 메뉴 및 이벤트 관련 페이지에 접근할 수 없습니다."); ?>
@@ -181,33 +217,26 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
             <label for="ev_subject_strong">제목 강조</label>
         </td>
     </tr>
+	<?php include_once(G5_ADMIN_PATH.'/apms_admin/config/ev_type.php'); // APMS 불러오기 ?>
     <tr>
-        <th scope="row"><label for="ev_mimg">배너이미지</label></th>
+        <th scope="row"><label for="ev_type">이벤트타입</label></th>
         <td>
-            <?php echo help("쇼핑몰 레이아웃에서 글자 대신 이미지로 출력할 경우 사용합니다."); ?>
-            <input type="file" name="ev_mimg" id="ev_mimg">
-            <?php
-            $mimg_str = "";
-            $mimg = G5_DATA_PATH.'/event/'.$ev['ev_id'].'_m';
-            if (file_exists($mimg)) {
-                $size = @getimagesize($mimg);
-                if($size[0] && $size[0] > 750)
-                    $width = 750;
-                else
-                    $width = $size[0];
-
-                echo '<input type="checkbox" name="ev_mimg_del" value="1" id="ev_mimg_del"> <label for="ev_mimg_del">삭제</label>';
-                $mimg_str = '<img src="'.G5_DATA_URL.'/event/'.$ev['ev_id'].'_m" width="'.$width.'" alt="">';
-            }
-            if ($mimg_str) {
-                echo '<div class="banner_or_img">';
-                echo $mimg_str;
-                echo '</div>';
-            }
-            ?>
+            <?php echo help("이벤트 타입은 /adm/apms_admin/config/ev_type.php 파일에서 설정하실 수 있습니다."); ?>
+            <select name="ev_type" id="ev_type">
+				<?php for($i=0; $i < count($ev_type); $i++) { ?>
+	                <option value="<?php echo $i;?>" <?php echo get_selected($ev['ev_type'], $i); ?>><?php echo $ev_type[$i];?></option>
+				<?php } ?>
+            </select>
         </td>
     </tr>
     <tr>
+        <th scope="row"><label for="ev_type">이벤트링크</label></th>
+        <td>
+            <?php echo help("상품이벤트가 아닌 일반이벤트, 회원혜택 등 별도 이벤트로 연결시 해당 페이지 주소를 등록할 수 있습니다."); ?>
+            <input type="text" name="ev_href" value="<?php echo $ev['ev_href']; ?>" id="ev_href" class="frm_input"  size="60" placeholder="http://...">
+        </td>
+    </tr>
+	<tr>
         <th scope="row">관련상품</th>
         <td id="sev_it_rel" class="compare_wrap srel">
 
@@ -253,6 +282,58 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                     ?>
                 </div>
             </section>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row"><label for="ev_mimg">가로 배너</label></th>
+        <td>
+            <?php echo help("쇼핑몰 레이아웃에서 글자 대신 이미지로 출력할 경우 사용합니다."); ?>
+            <input type="file" name="ev_mimg" id="ev_mimg">
+            <?php
+            $mimg_str = "";
+            $mimg = G5_DATA_PATH.'/event/'.$ev['ev_id'].'_m';
+            if (file_exists($mimg)) {
+                $size = @getimagesize($mimg);
+                if($size[0] && $size[0] > 750)
+                    $width = 750;
+                else
+                    $width = $size[0];
+
+                echo '<input type="checkbox" name="ev_mimg_del" value="1" id="ev_mimg_del"> <label for="ev_mimg_del">삭제</label>';
+                $mimg_str = '<img src="'.G5_DATA_URL.'/event/'.$ev['ev_id'].'_m" width="'.$width.'" alt="">';
+            }
+            if ($mimg_str) {
+                echo '<div class="banner_or_img">';
+                echo $mimg_str;
+                echo '</div>';
+            }
+            ?>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row"><label for="ev_mimg">세로 배너</label></th>
+        <td>
+            <?php echo help("세로형 배너이미지입니다."); ?>
+            <input type="file" name="ev_simg" id="ev_simg">
+            <?php
+            $simg_str = "";
+            $simg = G5_DATA_PATH.'/event/'.$ev['ev_id'].'_s';
+            if (file_exists($simg)) {
+                $size = @getimagesize($simg);
+                if($size[0] && $size[0] > 750)
+                    $width = 750;
+                else
+                    $width = $size[0];
+
+                echo '<input type="checkbox" name="ev_simg_del" value="1" id="ev_simg_del"> <label for="ev_simg_del">삭제</label>';
+                $simg_str = '<img src="'.G5_DATA_URL.'/event/'.$ev['ev_id'].'_s" width="'.$width.'" alt="">';
+            }
+            if ($simg_str) {
+                echo '<div class="banner_or_img">';
+                echo $simg_str;
+                echo '</div>';
+            }
+            ?>
         </td>
     </tr>
     <tr>
@@ -322,9 +403,9 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
     </table>
 </div>
 
-<div class="btn_fixed_top">
-    <a href="./itemevent.php" class="btn btn_02">목록</a>
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+<div class="btn_confirm01 btn_confirm">
+    <input type="submit" value="확인" class="btn_submit" accesskey="s">
+    <a href="./itemevent.php">목록</a>
 </div>
 </form>
 
@@ -373,7 +454,7 @@ $(function() {
     });
 
     $(document).on("click", "#sch_item_list .add_item", function() {
-        // 이미 등록된 상품인지 체크
+		// 이미 등록된 상품인지 체크
         var $li = $(this).closest("li");
         var it_id = $li.find("input:hidden").val();
         var it_id2;
@@ -404,7 +485,7 @@ $(function() {
     });
 
     $(document).on("click", "#reg_item_list .del_item", function() {
-        if(!confirm("상품을 삭제하시겠습니까?"))
+		if(!confirm("상품을 삭제하시겠습니까?"))
             return false;
 
         $(this).closest("li").remove();

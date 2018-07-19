@@ -29,5 +29,9 @@ $sql = " delete from {$g5['memo_table']}
             and (me_recv_mb_id = '{$member['mb_id']}' or me_send_mb_id = '{$member['mb_id']}') ";
 sql_query($sql);
 
+// 읽지 않은 쪽지체크
+$row = sql_fetch(" select count(*) as cnt from {$g5['memo_table']} where me_recv_mb_id = '{$member['mb_id']}' and me_read_datetime = '0000-00-00 00:00:00' ");
+sql_query(" update {$g5['member_table']} set as_memo = '{$row['cnt']}' where mb_id = '{$member['mb_id']}' ", false);
+
 goto_url('./memo.php?kind='.$kind);
 ?>

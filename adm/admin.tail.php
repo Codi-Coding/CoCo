@@ -2,8 +2,14 @@
 if (!defined('_GNUBOARD_')) exit;
 
 $print_version = defined('G5_YOUNGCART_VER') ? 'YoungCart Version '.G5_YOUNGCART_VER : 'Version '.G5_GNUBOARD_VER;
-?>
 
+if($is_admin_skin) {
+	include_once(ADMIN_SKIN_PATH.'/admin.tail.php');
+} else {
+
+// 어드민스킨 미사용시 기본스킨 출력
+
+?>
         <noscript>
             <p>
                 귀하께서 사용하시는 브라우저는 현재 <strong>자바스크립트를 사용하지 않음</strong>으로 설정되어 있습니다.<br>
@@ -11,43 +17,23 @@ $print_version = defined('G5_YOUNGCART_VER') ? 'YoungCart Version '.G5_YOUNGCART
             </p>
         </noscript>
 
-        </div>    
-        <footer id="ft">
-            <p>
-                Copyright &copy; <?php echo $_SERVER['HTTP_HOST']; ?>. All rights reserved. <?php echo $print_version; ?><br>
-               <button type="button" class="scroll_top"><span class="top_img"></span><span class="top_txt">TOP</span></button>
-           </p>
-        </footer>
     </div>
-
 </div>
 
-<script>
-$(".scroll_top").click(function(){
-     $("body,html").animate({scrollTop:0},400);
-})
-</script>
+<footer id="ft">
+    <p>
+        Copyright &copy; <?php echo $_SERVER['HTTP_HOST']; ?>. All rights reserved. <?php echo $print_version; ?><br>
+        <a href="#">상단으로</a>
+    </p>
+</footer>
+
+<?php } ?>
 
 <!-- <p>실행시간 : <?php echo get_microtime() - $begin_time; ?> -->
 
 <script src="<?php echo G5_ADMIN_URL ?>/admin.js?ver=<?php echo G5_JS_VER; ?>"></script>
-<script src="<?php echo G5_JS_URL ?>/jquery.anchorScroll.js?ver=<?php echo G5_JS_VER; ?>"></script>
 <script>
 $(function(){
-
-    var admin_head_height = $("#hd_top").height() + $("#container_title").height() + 5;
-
-    $("a[href^='#']").anchorScroll({
-        scrollSpeed: 0, // scroll speed
-        offsetTop: admin_head_height, // offset for fixed top bars (defaults to 0)
-        onScroll: function () { 
-          // callback on scroll start
-        },
-        scrollEnd: function () { 
-          // callback on scroll end
-        }
-    });
-
     var hide_menu = false;
     var mouse_event = false;
     var oldX = oldY = 0;

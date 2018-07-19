@@ -1,0 +1,28 @@
+@charset "utf-8";
+
+/* Common */
+.opt-tbl { width:100%; border-collapse:collapse; padding:0px; margin:0 0 15px; border:0px; border:1px solid #ddd; border-bottom:0px; background:#fff;} 
+.opt-tbl th { width:120px; text-align:center; padding:8px 10px; border-bottom:1px solid #ddd; background:#fafafa; white-space:nowrap;}
+.opt-tbl td { padding:8px 10px; border-bottom:1px solid #ddd;}
+.bsk-tbl th { text-align:center; }
+.bsk-tbl .well { margin:6px 0px !important; }
+.bsk-tbl .well ul  { padding:0; padding-left:15px; margin:0; }
+.bsk-tbl .well li  { font-size:12px; }
+.item-img { display:inline-block; position:relative; overflow:hidden; text-align:center; }
+.item-type { position:absolute; left:0; bottom:0; background: rgba(0, 0, 0, 0.7); width:100%; color: rgb(255,255,255); padding:3px; font-size:11px; letter-spacing:-1px; }
+.addr-line { margin-bottom:7px; }
+.radio-line label { margin-right:20px; line-height:24px; cursor:pointer; }
+.radio-line label span { vertical-align:middle; }
+
+#sod_frm_escrow { margin:0px; }
+#sod_frm_escrow h2 { display:none; }
+#sod_frm_escrow img { margin:0 auto 15px }
+
+/* Personal List */
+.ppay-container { overflow:hidden; margin-right:-15px; margin-bottom:15px; }
+.ppay-box { background:#fff; text-align:center; margin-right:15px; margin-bottom:15px; border: 1px solid rgb(231, 231, 231); transition:0.3s linear; border-image: none; overflow: hidden; position: relative; cursor: default; }
+.ppay-box h2 { margin: 0px; padding: 12px 15px 0px; color: rgb(51, 51, 51); font-size: 16px; font-weight: 500; text-align:center; }
+.ppay-box p { margin:0px 0px 10px; padding:10px; }
+.ppay-box .ppay-fa { padding: 20px 0px 10px; }
+.ppay-box .ppay-fa i { color: rgb(97, 97, 97); font-size: 80px; 
+

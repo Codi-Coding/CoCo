@@ -28,7 +28,7 @@ function get_list_thumbnail($bo_table, $wr_id, $thumb_width, $thumb_height, $is_
         for($i=0; $i<count($matches[1]); $i++)
         {
             // 이미지 path 구함
-            $p = parse_url($matches[1][$i]);
+            $p = @parse_url($matches[1][$i]);
             if(strpos($p['path'], '/'.G5_DATA_DIR.'/') != 0)
                 $data_path = preg_replace('/^\/.*\/'.G5_DATA_DIR.'/', '/'.G5_DATA_DIR, $p['path']);
             else
@@ -76,6 +76,185 @@ function get_list_thumbnail($bo_table, $wr_id, $thumb_width, $thumb_height, $is_
     return $thumb;
 }
 
+// Exif 출력정보 생성
+function apms_get_view_exif($exif, $srcfile, $txt) {
+
+	if(empty($exif)) return;
+
+	$list = array();
+
+	if(isset($exif['Model']) && $exif['Model']) {
+		$list[] = astxt($txt['model'], array($exif['Model'])); //카메라모델명
+	}
+
+	if(isset($exif['LensModel']) && $exif['LensModel']) {
+		$list[] = astxt($txt['lensmodel'], array($exif['LensModel'])); //렌즈모델
+	} else if(isset($exif['UndefinedTag:0xA434']) && $exif['UndefinedTag:0xA434']) {
+		$list[] = astxt($txt['lensmodel'], array($exif['UndefinedTag:0xA434'])); //렌즈모델
+	} else if(isset($exif['LensInfo']) && $exif['LensInfo']) {
+		$list[] = astxt($txt['lensinfo'], array($exif['LensInfo'])); //렌즈정보
+	}
+
+	if(isset($exif['DateTimeOriginal']) && $exif['DateTimeOriginal']) {
+		$list[] = astxt($txt['datetime'], array($exif['DateTimeOriginal'])); //촬영일시
+	}
+
+	if(isset($exif['ExposureProgram'])) {
+		switch($exif['ExposureProgram']) {
+			case '0'	: $expomode = $txt['exposure1']; break; //자동모드
+			case '1'	: $expomode = $txt['exposure2']; break; //수동모드
+			case '2'	: $expomode = $txt['exposure3']; break; //프로그램모드
+			case '3'	: $expomode = $txt['exposure4']; break; //조리개모드
+			case '4'	: $expomode = $txt['exposure5']; break; //셔터스피드모드
+			default		: $expomode = ''; break; //Unknown
+		}
+		if($expomode) {
+			$list[] = astxt($txt['exposure'], array($expomode)); //촬영모드
+		}
+	}
+
+	if(isset($exif['ExposureTime']) && $exif['ExposureTime']) {
+		$list[] = astxt($txt['expostime'], array($exif['ExposureTime'])); //셔터속도
+	}
+
+	if(isset($exif['COMPUTED']['ApertureFNumber']) && $exif['COMPUTED']['ApertureFNumber']) {
+		$list[] = astxt($txt['aperture'], array($exif['COMPUTED']['ApertureFNumber'])); //조리개
+	}
+
+	if(isset($exif['ISOSpeedRatings']) && $exif['ISOSpeedRatings']) {
+		$list[] = astxt($txt['iso'], array($exif['ISOSpeedRatings'])); //ISO
+	}
+
+	if(isset($exif['WhiteBalance'])) {
+		switch($exif['WhiteBalance']) {
+			case '0'	: $whitebal = $txt['whitebal1']; break; //Auto
+			case '1'	: $whitebal = $txt['whitebal2']; break; //Manual
+			default		: $whitebal = ''; break; //Unknown
+		}
+		if($whitebal) {
+			$list[] = astxt($txt['whitebal'], array($whitebal)); //화이트밸런스
+		}
+	}
+
+	if(isset($exif['MeteringMode'])) {
+		switch($exif['MeteringMode']) {
+			case '0'	: $metering = ''; break; //Unknown
+			case '1'	: $metering = $txt['metering1']; break; //Average
+			case '2'	: $metering = $txt['metering2']; break; //Center weighted averaget
+			case '3'	: $metering = $txt['metering3']; break; //Spot
+			case '4'	: $metering = ''; break; //Unknown
+			case '5'	: $metering = $txt['metering4']; break; //Multi Segment
+			case '6'	: $metering = $txt['metering5']; break; //Partial
+			default		: $metering = ''; break; //Unknown
+		}
+		if($metering) {
+			$list[] = astxt($txt['metering'], array($metering)); //측광모드
+		}
+	}
+
+	if(isset($exif['ExposureBiasValue']) && $exif['ExposureBiasValue']) {
+		list($expobias1, $expobias2) = explode("/", $exif['ExposureBiasValue']);
+		if($expobias2 > 0) {
+			$expobias = ($expobias1 / $expobias2);
+			$list[] = astxt($txt['ev'], array(sprintf("%2.2f" , $expobias))); //노출보정
+		}
+	}
+
+	if(isset($exif['FocalLength']) && $exif['FocalLength']) {
+		list($focal1, $focal2) = explode("/", $exif['FocalLength']);
+		if($focal2 > 0) {
+			$list[] = astxt($txt['focal'], array(round($focal1 / $focal2))); //초점거리
+		}
+	}
+
+	if(isset($exif['FocalLengthIn35mmFilm']) && $exif['FocalLengthIn35mmFilm']) {
+		$list[] = astxt($txt['35mm'], array($exif['FocalLengthIn35mmFilm'])); //35mm풀프레임환산 초점거리
+	}
+
+	if(isset($exif['Flash'])) {
+		switch($exif['Flash']) {
+			case '16'	: $flash = $txt['flash1']; break; //Off Compulsory
+			case '73'	: $flash = $txt['flash2']; break; //On Compulsory Red-eye reduction
+			case '9'	: $flash = $txt['flash3']; break; //On Compulsory
+			case '7'	: $flash = $txt['flash4']; break; //On
+			default		: $flash = ''; break;
+		}
+		if($flash) {
+			$list[] = astxt($txt['flash'], array($flash)); //플래시
+		}
+	}
+
+	// Exif
+	$exif_item = '';
+	$list_cnt = count($list);
+	for($i=0; $i < $list_cnt; $i++) {
+		
+		if(!$list[$i]) continue;
+
+		$exif_item .= '<li>'.$list[$i].'</li>'.PHP_EOL;
+	}
+
+	//출력
+	$exif_list = '';
+	if($exif_item) {
+
+		// IPTC
+		$picinfo = array();
+		@getimagesize($srcfile, $picinfo); 
+
+		$iptc_item = '';
+		if(isset($picinfo['APP13'])) {
+			$iptc = iptcparse($picinfo['APP13']);
+			if (is_array($iptc)) { 
+				$title = $iptc['2#005'][0];
+				$description = $iptc['2#120'][0];
+				$date = $iptc['2#055'][0];
+				if($date) {
+					$year = substr($date, 0, 4);
+					$month = substr($date, 4, 2);
+					$day = substr($date, -2);
+					//$datetaken = date('l F jS Y', mktime(0, 0, 0, $month, $day, $year));
+					$date = date($txt['datetype'], mktime(0, 0, 0, $month, $day, $year));
+					$date = astxt($txt['date'], array($date));
+				}
+				$city = $iptc["2#090"][0];
+				$country = $iptc["2#101"][0];
+				$creator = $iptc["2#080"][0];
+				$tag = (isset($iptc["2#025"]) && !empty($iptc["2#025"])) ? implode(', ', $iptc["2#025"]) : '';
+
+				if($title) { //타이틀
+					$iptc_item .= '<li>'.astxt($txt['title'], array($title)).'</li>'.PHP_EOL;
+				}
+
+				if($description) { //설명
+					$iptc_item .= '<li>'.astxt($txt['desc'], array($description)).'</li>'.PHP_EOL;
+				}
+
+				if($creator) { //크리에이터
+					$iptc_item .= '<li>'.astxt($txt['creator'], array($creator, $date)).'</li>'.PHP_EOL;
+				}
+
+				if($tag) { //태그
+					$iptc_item .= '<li>'.astxt($txt['tag'], array($tag)).'</li>';
+				}
+			}
+		}
+
+		$exif_list .= '<div class="exif-data">'.PHP_EOL;
+		if($iptc_item) { //IPTC INFO
+			$exif_list .= '<ul class="iptc-list">'.PHP_EOL;
+			$exif_list .= $iptc_item;
+			$exif_list .= '</ul>'.PHP_EOL;
+		}
+		$exif_list .= '<ul class="exif-list">'.PHP_EOL;
+		$exif_list .= $exif_item;
+		$exif_list .= '</ul>'.PHP_EOL;
+		$exif_list .= '</div>'.PHP_EOL;
+	}
+
+	return $exif_list;
+}
+
 // 게시글보기 썸네일 생성
 function get_view_thumbnail($contents, $thumb_width=0)
 {
@@ -90,28 +269,72 @@ function get_view_thumbnail($contents, $thumb_width=0)
     if(empty($matches))
         return $contents;
 
+	// Exif
+	$exif = array();
+
+	$is_exif = false;
+	if(isset($board['as_exif']) && $board['as_exif']) {
+		$extxt = load_aslang('exif');
+		$is_exif = true;
+	}
+
+	// View Original
+	$is_view = (isset($board['as_lightbox']) && $board['as_lightbox']) ? $board['as_lightbox'] : 0;
+	
+	// Lightbox
+	if($is_view == "1" || $is_view == "3") {
+		apms_script('lightbox');
+	}
+
     for($i=0; $i<count($matches[1]); $i++) {
 
+		$img_tag = $matches[0][$i];
         $img = $matches[1][$i];
+
         preg_match("/src=[\'\"]?([^>\'\"]+[^>\'\"]+)/i", $img, $m);
         $src = $m[1];
         preg_match("/style=[\"\']?([^\"\'>]+)/i", $img, $m);
         $style = $m[1];
-        preg_match("/width:\s*(\d+)px/", $style, $m);
+
+		//높이는 체크안함
+		preg_match("/width:\s*(\d+)px/", $style, $m);
         $width = $m[1];
-        preg_match("/height:\s*(\d+)px/", $style, $m);
-        $height = $m[1];
-        preg_match("/alt=[\"\']?([^\"\']*)[\"\']?/", $img, $m);
+		if(!$width) {
+			preg_match("/width=[\"\']?([^\"\'>]+)/i", $img, $m);
+			$width = $m[1];
+		}
+		preg_match("/alt=[\"\']?([^\"\']*)[\"\']?/", $img, $m);
         $alt = get_text($m[1]);
+		if($is_view == "4") { //사용안함
+		    $link = 1;
+		} else {
+			preg_match("/link=[\"\']?([^\"\']*)[\"\']?/", $img, $m); // APMS 추가
+		    $link = get_text($m[1]);
+		}
+		preg_match("/align=[\"\']?([^\"\']*)[\"\']?/", $img, $m); // APMS 추가
+        $align = get_text($m[1]);
+        preg_match("/class=[\"\']?([^\"\']*)[\"\']?/", $img, $m); // APMS 추가
+        $class = get_text($m[1]);
+
+		// 이미지 속성정리
+		$img_attr = '';
+		if($align) $img_attr .= ' align="'.$align.'"';
+		if($width) $img_attr .= ' style="width:'.$width.'px;"';
 
         // 이미지 path 구함
-        $p = parse_url($src);
+        $p = @parse_url($src);
         if(strpos($p['path'], '/'.G5_DATA_DIR.'/') != 0)
             $data_path = preg_replace('/^\/.*\/'.G5_DATA_DIR.'/', '/'.G5_DATA_DIR, $p['path']);
         else
             $data_path = $p['path'];
 
         $srcfile = G5_PATH.$data_path;
+
+		$itemprop = ($i == 0) ? ' itemprop="image" content="'.$src.'"' : '';
+
+		// Exif
+		unset($exif);
+		$exif_info = '';
 
         if(is_file($srcfile)) {
             $size = @getimagesize($srcfile);
@@ -142,11 +365,39 @@ function get_view_thumbnail($contents, $thumb_width=0)
                         $size[1] = $tmp[0];
                     }
                 }
-            }
 
-            // 원본 width가 thumb_width보다 작다면
-            if($size[0] <= $thumb_width)
-                continue;
+				// Exif 정보 체크
+				if($is_exif) {
+					$exif_info = apms_get_view_exif($exif, $srcfile, $extxt);
+				}
+			}
+
+            // 원본 width가 thumb_width보다 작다면 썸네일생성 안함
+            if($size[0] <= $thumb_width) {
+
+				$thumb_tag = '<img'.$itemprop.' src="'.$src.'" alt="'.$alt.'" class="img-tag '.$class.'"'.$img_attr.'/>';
+
+				// 원본이 600보다 클 경우 $img_tag에 editor 경로가 있으면 원본보기 링크 추가
+				if(!$link && $size[0] > 600 && preg_match("/\.({$config['cf_image_extension']})$/i", basename($srcfile))) {
+					if($is_view == "1" || $is_view == "3") {
+						$caption = ($alt) ? ' data-title="'.$alt.'"' : '';
+						$thumb_tag = '<a href="'.$src.'" data-lightbox="view-lightbox"'.$caption.' target="_blank">'.$thumb_tag.'</a>';
+					} else if (strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) || strpos($img_tag, G5_DATA_DIR.'/file')) {
+						$thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode(str_replace(G5_URL, "", $src)).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+					} else {
+						$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+					}
+				}
+
+				// Exif 정보출력
+				if($exif_info) {
+					$thumb_tag = '<div class="img-exif">'.$thumb_tag.''.$exif_info.'</div>'.PHP_EOL;
+				}
+
+				$contents = str_replace($img_tag, $thumb_tag, $contents);
+
+				continue;
+			}
 
             // Animated GIF 체크
             $is_animated = false;
@@ -166,23 +417,47 @@ function get_view_thumbnail($contents, $thumb_width=0)
                 $thumb_file = $filename;
 
             if(!$thumb_file)
-                continue;
+                $thumb_file = $filename;
 
-            if ($width) {
-                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'" width="'.$width.'" height="'.$height.'"/>';
-            } else {
-                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'"/>';
-            }
+			// 이미지
+			$thumb_tag = '<img'.$itemprop.' src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'" class="img-tag '.$class.'"'.$img_attr.'/>';
 
-            // $img_tag에 editor 경로가 있으면 원본보기 링크 추가
-            $img_tag = $matches[0][$i];
-            if(strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) && preg_match("/\.({$config['cf_image_extension']})$/i", $filename)) {
-                $imgurl = str_replace(G5_URL, "", $src);
-                $thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode($imgurl).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
-            }
+            // 원본이 600보다 클 경우 $img_tag에 editor 경로가 있으면 원본보기 링크 추가
+			if(!$link && $size[0] > 600 && preg_match("/\.({$config['cf_image_extension']})$/i", $filename)) {
+				if($is_view == "1" || $is_view == "3") {
+					$caption = ($alt) ? ' data-title="'.$alt.'"' : '';
+					$thumb_tag = '<a href="'.$src.'" data-lightbox="view-lightbox"'.$caption.' target="_blank">'.$thumb_tag.'</a>';
+				} else if (strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) || strpos($img_tag, G5_DATA_DIR.'/file')) {
+					$thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode(str_replace(G5_URL, "", $src)).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+				} else {
+					$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+				}
+			}
+
+			// Exif 정보출력
+			if($exif_info) {
+				$thumb_tag = '<div class="img-exif">'.$thumb_tag.''.$exif_info.'</div>'.PHP_EOL;
+			}
 
             $contents = str_replace($img_tag, $thumb_tag, $contents);
-        }
+
+		} else {
+
+			$thumb_tag = '<img'.$itemprop.' src="'.$src.'" alt="'.$alt.'" class="img-tag '.$class.'"'.$img_attr.'/>';
+
+			if($link || $is_view > 1) {
+				;
+			} else {
+				if($is_view == "1") {
+					$caption = ($alt) ? ' data-title="'.$alt.'"' : '';
+					$thumb_tag = '<a href="'.$src.'" data-lightbox="view-lightbox"'.$caption.' target="_blank">'.$thumb_tag.'</a>';
+				} else {
+					$thumb_tag = '<a href="'.G5_BBS_URL.'/view_img.php?img='.urlencode($src).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+				}
+			}
+
+			$contents = str_replace($img_tag, $thumb_tag, $contents);
+		}
     }
 
     return $contents;
@@ -227,7 +502,7 @@ function thumbnail($filename, $source_path, $target_path, $thumb_width, $thumb_h
     $thumb_time = @filemtime($thumb_file);
     $source_time = @filemtime($source_file);
 
-    if (file_exists($thumb_file)) {
+    if (is_file($thumb_file)) {
         if ($is_create == false && $source_time < $thumb_time) {
             return basename($thumb_file);
         }
@@ -261,7 +536,7 @@ function thumbnail($filename, $source_path, $target_path, $thumb_width, $thumb_h
 
                 // 회전각도 있으면 이미지 회전
                 if($degree) {
-                    $src = imagerotate($src, $degree, 0);
+                    $src = @imagerotate($src, $degree, 0);
 
                     // 세로사진의 경우 가로, 세로 값 바꿈
                     if($degree == 90 || $degree == -90) {
@@ -284,7 +559,6 @@ function thumbnail($filename, $source_path, $target_path, $thumb_width, $thumb_h
 
     $is_large = true;
     // width, height 설정
-
     if($thumb_width) {
         if(!$thumb_height) {
             $thumb_height = round(($thumb_width * $size[1]) / $size[0]);
@@ -349,17 +623,14 @@ function thumbnail($filename, $source_path, $target_path, $thumb_width, $thumb_h
         } else { // 비율에 맞게 생성
             $dst = imagecreatetruecolor($dst_w, $dst_h);
             $bgcolor = imagecolorallocate($dst, 255, 255, 255); // 배경색
-
-            if ( !((defined('G5_USE_THUMB_RATIO') && false === G5_USE_THUMB_RATIO) || (defined('G5_THEME_USE_THUMB_RATIO') && false === G5_THEME_USE_THUMB_RATIO)) ){
-                if($src_w > $src_h) {
-                    $tmp_h = round(($dst_w * $src_h) / $src_w);
-                    $dst_y = round(($dst_h - $tmp_h) / 2);
-                    $dst_h = $tmp_h;
-                } else {
-                    $tmp_w = round(($dst_h * $src_w) / $src_h);
-                    $dst_x = round(($dst_w - $tmp_w) / 2);
-                    $dst_w = $tmp_w;
-                }
+            if($src_w > $src_h) {
+                $tmp_h = round(($dst_w * $src_h) / $src_w);
+                $dst_y = round(($dst_h - $tmp_h) / 2);
+                $dst_h = $tmp_h;
+            } else {
+                $tmp_w = round(($dst_h * $src_w) / $src_h);
+                $dst_x = round(($dst_w - $tmp_w) / 2);
+                $dst_w = $tmp_w;
             }
 
             if($size[2] == 3) {
@@ -385,62 +656,32 @@ function thumbnail($filename, $source_path, $target_path, $thumb_width, $thumb_h
         $dst = imagecreatetruecolor($dst_w, $dst_h);
         $bgcolor = imagecolorallocate($dst, 255, 255, 255); // 배경색
 
-        if ( ((defined('G5_USE_THUMB_RATIO') && false === G5_USE_THUMB_RATIO) || (defined('G5_THEME_USE_THUMB_RATIO') && false === G5_THEME_USE_THUMB_RATIO)) ){
-            //이미지 썸네일을 비율 유지하지 않습니다.  (5.2.6 버전 이하에서 처리된 부분과 같음)
-
-            if($src_w < $dst_w) {
-                if($src_h >= $dst_h) {
-                    $dst_x = round(($dst_w - $src_w) / 2);
-                    $src_h = $dst_h;
-                    if( $dst_w > $src_w ){
-                        $dst_w = $src_w;
-                    }
+        if($src_w < $dst_w) {
+            if($src_h >= $dst_h) {
+                if( $src_h > $src_w ){
+                    $tmp_w = round(($dst_h * $src_w) / $src_h);
+                    $dst_x = round(($dst_w - $tmp_w) / 2);
+                    $dst_w = $tmp_w;
                 } else {
                     $dst_x = round(($dst_w - $src_w) / 2);
-                    $dst_y = round(($dst_h - $src_h) / 2);
-                    $dst_w = $src_w;
-                    $dst_h = $src_h;
+                    $src_h = $dst_h;
                 }
             } else {
-                if($src_h < $dst_h) {
+                $dst_x = round(($dst_w - $src_w) / 2);
+                $dst_y = round(($dst_h - $src_h) / 2);
+                $dst_w = $src_w;
+                $dst_h = $src_h;
+            }
+        } else {
+            if($src_h < $dst_h) {
+                if( $src_w > $dst_w ){
+                    $tmp_h = round(($dst_w * $src_h) / $src_w);
+                    $dst_y = round(($dst_h - $tmp_h) / 2);
+                    $dst_h = $tmp_h;
+                } else {
                     $dst_y = round(($dst_h - $src_h) / 2);
                     $dst_h = $src_h;
                     $src_w = $dst_w;
-                }
-            }
-
-        } else {
-            //이미지 썸네일을 비율 유지하며 썸네일 생성합니다.
-            if($src_w < $dst_w) {
-                if($src_h >= $dst_h) {
-                    if( $src_h > $src_w ){
-                        $tmp_w = round(($dst_h * $src_w) / $src_h);
-                        $dst_x = round(($dst_w - $tmp_w) / 2);
-                        $dst_w = $tmp_w;
-                    } else {
-                        $dst_x = round(($dst_w - $src_w) / 2);
-                        $src_h = $dst_h;
-                        if( $dst_w > $src_w ){
-                            $dst_w = $src_w;
-                        }
-                    }
-                } else {
-                    $dst_x = round(($dst_w - $src_w) / 2);
-                    $dst_y = round(($dst_h - $src_h) / 2);
-                    $dst_w = $src_w;
-                    $dst_h = $src_h;
-                }
-            } else {
-                if($src_h < $dst_h) {
-                    if( $src_w > $dst_w ){
-                        $tmp_h = round(($dst_w * $src_h) / $src_w);
-                        $dst_y = round(($dst_h - $tmp_h) / 2);
-                        $dst_h = $tmp_h;
-                    } else {
-                        $dst_y = round(($dst_h - $src_h) / 2);
-                        $dst_h = $src_h;
-                        $src_w = $dst_w;
-                    }
                 }
             }
         }

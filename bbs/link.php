@@ -14,6 +14,8 @@ if (!$row['cnt'])
 if (!$write['wr_link'.$no])
     alert_close('링크가 없습니다.');
 
+@include_once($board_skin_path.'/link.head.skin.php');
+
 $ss_name = 'ss_link_'.$bo_table.'_'.$wr_id.'_'.$no;
 if (empty($_SESSION[$ss_name]))
 {
@@ -21,7 +23,13 @@ if (empty($_SESSION[$ss_name]))
     sql_query($sql);
 
     set_session($ss_name, true);
+
+	// 새글 업데이트
+	$as_link = (int)$write['wr_link1_hit'] + (int)$write['wr_link2_hit'] + 1;
+	sql_query(" update {$g5['board_new_table']} set as_link = '{$as_link}' where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' ", false);
 }
+
+@include_once($board_skin_path.'/link.tail.skin.php');
 
 goto_url(set_http($write['wr_link'.$no]));
 ?>

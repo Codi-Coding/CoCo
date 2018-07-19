@@ -1,299 +1,258 @@
 <?php
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
-include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+
+$attach_list = '';
+if ($view['link']) {
+	// 링크
+	for ($i=1; $i<=count($view['link']); $i++) {
+		if ($view['link'][$i]) {
+			$attach_list .= '<a class="list-group-item break-word" href="'.$view['link_href'][$i].'" target="_blank">';
+			$attach_list .= '<span class="label label-warning pull-right view-cnt">'.number_format($view['link_hit'][$i]).'</span>';
+			$attach_list .= '<i class="fa fa-link"></i> '.cut_str($view['link'][$i], 70).'</a>'.PHP_EOL;
+		}
+	}
+}
+
+// 가변 파일
+$j = 0;
+for ($i=0; $i<count($view['file']); $i++) {
+	if (isset($view['file'][$i]['source']) && $view['file'][$i]['source'] && !$view['file'][$i]['view']) {
+		if ($board['bo_download_point'] < 0 && $j == 0) {
+			$attach_list .= '<a class="list-group-item"><i class="fa fa-bell red"></i> 다운로드시 <b>'.number_format(abs($board['bo_download_point'])).'</b>'.AS_MP.' 차감 (최초 1회 / 재다운로드시 차감없음)</a>'.PHP_EOL;
+		}
+		$file_tooltip = '';
+		if($view['file'][$i]['content']) {
+			$file_tooltip = ' data-original-title="'.strip_tags($view['file'][$i]['content']).'" data-toggle="tooltip"';
+		}
+		$attach_list .= '<a class="list-group-item break-word view_file_download at-tip" href="'.$view['file'][$i]['href'].'"'.$file_tooltip.'>';
+		$attach_list .= '<span class="label label-primary pull-right view-cnt">'.number_format($view['file'][$i]['download']).'</span>';
+		$attach_list .= '<i class="fa fa-download"></i> '.$view['file'][$i]['source'].' ('.$view['file'][$i]['size'].') &nbsp;';
+		$attach_list .= '<span class="en font-11 text-muted"><i class="fa fa-clock-o"></i> '.apms_datetime(strtotime($view['file'][$i]['datetime']), "Y.m.d").'</span></a>'.PHP_EOL;
+		$j++;
+	}
+}
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 0);
-?>
+add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css" media="screen">', 0);
 
+?>
+<?php if($boset['video']) { ?>
+	<style>.view-wrap .apms-autowrap { max-width:<?php echo (G5_IS_MOBILE) ? '100%' : $boset['video'];?> !important;}</style>
+<?php } ?>
 <script src="<?php echo G5_JS_URL; ?>/viewimageresize.js"></script>
 
-<!-- 게시물 읽기 시작 { -->
+<div class="view-wrap<?php echo (G5_IS_MOBILE) ? ' view-mobile font-14' : '';?>">
+	<h1><?php if($view['photo']) { ?><img src="<?php echo $view['photo'];?>" class="photo" alt=""><?php } ?><?php echo cut_str(get_text($view['wr_subject']), 70); ?></h1>
+	<div class="panel panel-default view-head<?php echo ($attach_list) ? '' : ' no-attach';?>">
+		<div class="panel-heading">
+			<div class="font-12 text-muted">
+				<i class="fa fa-user"></i>
+				<?php echo $view['name']; //등록자 ?><?php echo ($is_ip_view) ? '<span class="print-hide hidden-xs">&nbsp;('.$ip.')</span>' : ''; ?>
+				<?php if($view['ca_name']) { ?>
+					<span class="hidden-xs">
+						<span class="sp"></span>
+						<i class="fa fa-tag"></i>
+						<?php echo $view['ca_name']; //분류 ?>
+					</span>
+				<?php } ?>
 
-<article id="bo_v" style="width:<?php echo $width; ?>">
-    <header>
-        <h2 id="bo_v_title">
-            <?php if ($category_name) { ?>
-            <span class="bo_v_cate"><?php echo $view['ca_name']; // 분류 출력 끝 ?></span> 
-            <?php } ?>
-            <span class="bo_v_tit">
-            <?php
-            echo cut_str(get_text($view['wr_subject']), 70); // 글제목 출력
-            ?></span>
-        </h2>
-    </header>
+				<span class="sp"></span>
+				<i class="fa fa-comment"></i>
+				<?php echo ($view['wr_comment']) ? '<b class="red">'.number_format($view['wr_comment']).'</b>' : 0; //댓글수 ?>
 
-    <section id="bo_v_info">
-        <h2>페이지 정보</h2>
-        <span class="sound_only">작성자</span> <strong><?php echo $view['name'] ?><?php if ($is_ip_view) { echo "&nbsp;($ip)"; } ?></strong>
-        <span class="sound_only">댓글</span><strong><a href="#bo_vc"> <i class="fa fa-commenting-o" aria-hidden="true"></i> <?php echo number_format($view['wr_comment']) ?>건</a></strong>
-        <span class="sound_only">조회</span><strong><i class="fa fa-eye" aria-hidden="true"></i> <?php echo number_format($view['wr_hit']) ?>회</strong>
-        <strong class="if_date"><span class="sound_only">작성일</span><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo date("y-m-d H:i", strtotime($view['wr_datetime'])) ?></strong>
+				<span class="sp"></span>
+				<i class="fa fa-eye"></i>
+				<?php echo number_format($view['wr_hit']); //조회수 ?>
 
-    </section>
+				<span class="pull-right">
+					<i class="fa fa-clock-o"></i>
+					<?php echo apms_date($view['date'], 'orangered'); //시간 ?>
+				</span>
+			</div>
+		</div>
+	   <?php
+			if($attach_list) {
+				echo '<div class="list-group font-12">'.$attach_list.'</div>'.PHP_EOL;
+			}
+		?>
+	</div>
 
-    <section id="bo_v_atc">
-        <h2 id="bo_v_atc_title">본문</h2>
+	<?php if ($is_torrent) echo apms_addon('torrent-basic'); // 토렌트 파일정보 ?>
 
-        <?php
-        // 파일 출력
-        $v_img_count = count($view['file']);
-        if($v_img_count) {
-            echo "<div id=\"bo_v_img\">\n";
+	<?php
+		// 이미지 상단 출력
+		$v_img_count = count($view['file']);
+		if($v_img_count && $is_img_head) {
+			echo '<div class="view-img">'.PHP_EOL;
+			for ($i=0; $i<=count($view['file']); $i++) {
+				if ($view['file'][$i]['view']) {
+					echo get_view_thumbnail($view['file'][$i]['view']);
+				}
+			}
+			echo '</div>'.PHP_EOL;
+		}
+	 ?>
 
-            for ($i=0; $i<=count($view['file']); $i++) {
-                if ($view['file'][$i]['view']) {
-                    //echo $view['file'][$i]['view'];
-                    echo get_view_thumbnail($view['file'][$i]['view']);
-                }
-            }
+	<div class="view-content">
+		<?php echo get_view_thumbnail($view['content']); ?>
+	</div>
 
-            echo "</div>\n";
-        }
-         ?>
+	<?php
+		// 이미지 하단 출력
+		if($v_img_count && $is_img_tail) {
+			echo '<div class="view-img">'.PHP_EOL;
+			for ($i=0; $i<=count($view['file']); $i++) {
+				if ($view['file'][$i]['view']) {
+					echo get_view_thumbnail($view['file'][$i]['view']);
+				}
+			}
+			echo '</div>'.PHP_EOL;
+		}
+	?>
 
-        <!-- 본문 내용 시작 { -->
-        <div id="bo_v_con"><?php echo get_view_thumbnail($view['content']); ?></div>
-        <?php //echo $view['rich_content']; // {이미지:0} 과 같은 코드를 사용할 경우 ?>
-        <!-- } 본문 내용 끝 -->
+	<?php if ($good_href || $nogood_href) { ?>
+		<div class="print-hide view-good-box">
+			<?php if ($good_href) { ?>
+				<span class="view-good">
+					<a href="#" onclick="apms_good('<?php echo $bo_table;?>', '<?php echo $wr_id;?>', 'good', 'wr_good'); return false;">
+						<b id="wr_good"><?php echo number_format($view['wr_good']) ?></b>
+						<br>
+						<i class="fa fa-thumbs-up"></i>
+					</a>
+				</span>
+			<?php } ?>
+			<?php if ($nogood_href) { ?>
+				<span class="view-nogood">
+					<a href="#" onclick="apms_good('<?php echo $bo_table;?>', '<?php echo $wr_id;?>', 'nogood', 'wr_nogood'); return false;">
+						<b id="wr_nogood"><?php echo number_format($view['wr_nogood']) ?></b>
+						<br>
+						<i class="fa fa-thumbs-down"></i>
+					</a>
+				</span>
+			<?php } ?>
+		</div>
+		<p></p>
+	<?php } ?>
 
-        <?php if ($is_signature) { ?><p><?php echo $signature ?></p><?php } ?>
+	<?php if ($is_tag) { // 태그 ?>
+		<p class="view-tag font-12"><i class="fa fa-tags"></i> <?php echo $tag_list;?></p>
+	<?php } ?>
 
+	<div class="print-hide view-icon">
+		<div class="pull-right">
+			<div class="form-group">
+				<button onclick="apms_print();" class="btn btn-black btn-xs"><i class="fa fa-print"></i> <span class="hidden-xs">프린트</span></button>
+				<?php if ($scrap_href) { ?>
+					<a href="<?php echo $scrap_href;  ?>" target="_blank" class="btn btn-black btn-xs" onclick="win_scrap(this.href); return false;"><i class="fa fa-tags"></i> <span class="hidden-xs">스크랩</span></a>
+				<?php } ?>
+				<?php if ($is_shingo) { ?>
+					<button onclick="apms_shingo('<?php echo $bo_table;?>', '<?php echo $wr_id;?>');" class="btn btn-black btn-xs"><i class="fa fa-bell"></i> <span class="hidden-xs">신고</span></button>
+				<?php } ?>
+				<?php if ($is_admin) { ?>
+					<?php if ($view['is_lock']) { // 글이 잠긴상태이면 ?>
+						<button onclick="apms_shingo('<?php echo $bo_table;?>', '<?php echo $wr_id;?>', 'unlock');" class="btn btn-black btn-xs"><i class="fa fa-unlock"></i> <span class="hidden-xs">해제</span></button>
+					<?php } else { ?>
+						<button onclick="apms_shingo('<?php echo $bo_table;?>', '<?php echo $wr_id;?>', 'lock');" class="btn btn-black btn-xs"><i class="fa fa-lock"></i> <span class="hidden-xs">잠금</span></button>
+					<?php } ?>
+				<?php } ?>
+			</div>
+		</div>
+		<div class="pull-left">
+			<div class="form-group">
+				<?php include_once(G5_SNS_PATH."/view.sns.skin.php"); // SNS ?>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
 
-        <!--  추천 비추천 시작 { -->
-        <?php if ( $good_href || $nogood_href) { ?>
-        <div id="bo_v_act">
-            <?php if ($good_href) { ?>
-            <span class="bo_v_act_gng">
-                <a href="<?php echo $good_href.'&amp;'.$qstr ?>" id="good_button" class="bo_v_good"><span class="sound_only">추천</span><strong><?php echo number_format($view['wr_good']) ?></strong></a>
-                <b id="bo_v_act_good"></b>
-            </span>
-            <?php } ?>
-            <?php if ($nogood_href) { ?>
-            <span class="bo_v_act_gng">
-                <a href="<?php echo $nogood_href.'&amp;'.$qstr ?>" id="nogood_button" class="bo_v_nogood"><span class="sound_only">비추천</span><strong><?php echo number_format($view['wr_nogood']) ?></strong></a>
-                <b id="bo_v_act_nogood"></b>
-            </span>
-            <?php } ?>
-        </div>
-        <?php } else {
-            if($board['bo_use_good'] || $board['bo_use_nogood']) {
-        ?>
-        <div id="bo_v_act">
-            <?php if($board['bo_use_good']) { ?><span class="bo_v_good"><span class="sound_only">추천</span><strong><?php echo number_format($view['wr_good']) ?></strong></span><?php } ?>
-            <?php if($board['bo_use_nogood']) { ?><span class="bo_v_nogood"><span class="sound_only">비추천</span><strong><?php echo number_format($view['wr_nogood']) ?></strong></span><?php } ?>
-        </div>
-        <?php
-            }
-        }
-        ?>
-        <!-- }  추천 비추천 끝 -->
-    </section>
+	<?php if($is_signature) echo apms_addon('sign-basic'); // 회원서명 ?>
 
-    <div id="bo_v_share">
-        <?php if ($scrap_href) { ?><a href="<?php echo $scrap_href;  ?>" target="_blank" class="btn btn_b03" onclick="win_scrap(this.href); return false;"><i class="fa fa-thumb-tack" aria-hidden="true"></i> 스크랩</a><?php } ?>
+	<h3 class="view-comment">Comments</h3>
+	<?php include_once('./view_comment.php'); ?>
 
-        <?php
-        include_once(G5_SNS_PATH."/view.sns.skin.php");
-        ?>
-    </div>
+	<div class="clearfix"></div>
 
-    <?php
-    $cnt = 0;
-    if ($view['file']['count']) {
-        for ($i=0; $i<count($view['file']); $i++) {
-            if (isset($view['file'][$i]['source']) && $view['file'][$i]['source'] && !$view['file'][$i]['view'])
-                $cnt++;
-        }
-    }
-     ?>
-
-    <?php if($cnt) { ?>
-    <!-- 첨부파일 시작 { -->
-    <section id="bo_v_file">
-        <h2>첨부파일</h2>
-        <ul>
-        <?php
-        // 가변 파일
-        for ($i=0; $i<count($view['file']); $i++) {
-            if (isset($view['file'][$i]['source']) && $view['file'][$i]['source'] && !$view['file'][$i]['view']) {
-         ?>
-            <li>
-                <i class="fa fa-download" aria-hidden="true"></i>
-                <a href="<?php echo $view['file'][$i]['href'];  ?>" class="view_file_download">
-                    <strong><?php echo $view['file'][$i]['source'] ?></strong>
-                </a>
-                <?php echo $view['file'][$i]['content'] ?> (<?php echo $view['file'][$i]['size'] ?>)
-                <span class="bo_v_file_cnt"><?php echo $view['file'][$i]['download'] ?>회 다운로드 | DATE : <?php echo $view['file'][$i]['datetime'] ?></span>
-            </li>
-        <?php
-            }
-        }
-         ?>
-        </ul>
-    </section>
-    <!-- } 첨부파일 끝 -->
-    <?php } ?>
-
-    <?php if(isset($view['link'][1]) && $view['link'][1]) { ?>
-    <!-- 관련링크 시작 { -->
-    <section id="bo_v_link">
-        <h2>관련링크</h2>
-        <ul>
-        <?php
-        // 링크
-        $cnt = 0;
-        for ($i=1; $i<=count($view['link']); $i++) {
-            if ($view['link'][$i]) {
-                $cnt++;
-                $link = cut_str($view['link'][$i], 70);
-            ?>
-            <li>
-                <i class="fa fa-link" aria-hidden="true"></i> <a href="<?php echo $view['link_href'][$i] ?>" target="_blank">
-                    
-                    <strong><?php echo $link ?></strong>
-                </a>
-                <span class="bo_v_link_cnt"><?php echo $view['link_hit'][$i] ?>회 연결</span>
-            </li>
-            <?php
-            }
-        }
-        ?>
-        </ul>
-    </section>
-    <!-- } 관련링크 끝 -->
-    <?php } ?>
-
-    <!-- 게시물 상단 버튼 시작 { -->
-    <div id="bo_v_top">
-        <?php
-        ob_start();
-        ?>
-
-        <ul class="bo_v_left">
-            <?php if ($update_href) { ?><li><a href="<?php echo $update_href ?>" class="btn_b01 btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> 수정</a></li><?php } ?>
-            <?php if ($delete_href) { ?><li><a href="<?php echo $delete_href ?>" class="btn_b01 btn" onclick="del(this.href); return false;"><i class="fa fa-trash-o" aria-hidden="true"></i> 삭제</a></li><?php } ?>
-            <?php if ($copy_href) { ?><li><a href="<?php echo $copy_href ?>" class="btn_admin btn" onclick="board_move(this.href); return false;"><i class="fa fa-files-o" aria-hidden="true"></i> 복사</a></li><?php } ?>
-            <?php if ($move_href) { ?><li><a href="<?php echo $move_href ?>" class="btn_admin btn" onclick="board_move(this.href); return false;"><i class="fa fa-arrows" aria-hidden="true"></i> 이동</a></li><?php } ?>
-            <?php if ($search_href) { ?><li><a href="<?php echo $search_href ?>" class="btn_b01 btn"><i class="fa fa-search" aria-hidden="true"></i> 검색</a></li><?php } ?>
-        </ul>
-
-        <ul class="bo_v_com">
-           <li><a href="<?php echo $list_href ?>" class="btn_b01 btn"><i class="fa fa-list" aria-hidden="true"></i> 목록</a></li>
-            <?php if ($reply_href) { ?><li><a href="<?php echo $reply_href ?>" class="btn_b01 btn"><i class="fa fa-reply" aria-hidden="true"></i> 답변</a></li><?php } ?>
-            <?php if ($write_href) { ?><li><a href="<?php echo $write_href ?>" class="btn_b02 btn"><i class="fa fa-pencil" aria-hidden="true"></i> 글쓰기</a></li><?php } ?>
-        </ul>
-
-        <?php if ($prev_href || $next_href) { ?>
-        <ul class="bo_v_nb">
-            <?php if ($prev_href) { ?><li class="btn_prv"><span class="nb_tit"><i class="fa fa-caret-up" aria-hidden="true"></i> 이전글</span><a href="<?php echo $prev_href ?>"><?php echo $prev_wr_subject;?></a> <span class="nb_date"><?php echo str_replace('-', '.', substr($prev_wr_date, '2', '8')); ?></span></li><?php } ?>
-            <?php if ($next_href) { ?><li class="btn_next"><span class="nb_tit"><i class="fa fa-caret-down" aria-hidden="true"></i> 다음글</span><a href="<?php echo $next_href ?>"><?php echo $next_wr_subject;?></a>  <span class="nb_date"><?php echo str_replace('-', '.', substr($next_wr_date, '2', '8')); ?></span></li><?php } ?>
-        </ul>
-        <?php } ?>
-        <?php
-        $link_buttons = ob_get_contents();
-        ob_end_flush();
-         ?>
-    </div>
-    <!-- } 게시물 상단 버튼 끝 -->
-
-    <?php
-    // 코멘트 입출력
-    include_once(G5_BBS_PATH.'/view_comment.php');
-     ?>
-
-
-</article>
-<!-- } 게시판 읽기 끝 -->
-
+	<div class="print-hide view-btn text-right">
+		<div class="btn-group">
+			<?php if ($prev_href) { ?>
+				<a href="<?php echo $prev_href ?>" class="btn btn-black btn-sm" title="이전글">
+					<i class="fa fa-chevron-circle-left"></i><span class="hidden-xs"> 이전</span>
+				</a>
+			<?php } ?>
+			<?php if ($next_href) { ?>
+				<a href="<?php echo $next_href ?>" class="btn btn-black btn-sm" title="다음글">
+					<i class="fa fa-chevron-circle-right"></i><span class="hidden-xs"> 다음</span>
+				</a>
+			<?php } ?>
+			<?php if ($copy_href) { ?>
+				<a href="<?php echo $copy_href ?>" class="btn btn-black btn-sm" onclick="board_move(this.href); return false;" title="복사">
+					<i class="fa fa-clipboard"></i><span class="hidden-xs"> 복사</span>
+				</a>
+			<?php } ?>
+			<?php if ($move_href) { ?>
+				<a href="<?php echo $move_href ?>" class="btn btn-black btn-sm" onclick="board_move(this.href); return false;" title="이동">
+					<i class="fa fa-share"></i><span class="hidden-xs"> 이동</span>
+				</a>
+			<?php } ?>
+			<?php if ($delete_href) { ?>
+				<a href="<?php echo $delete_href ?>" class="btn btn-black btn-sm" title="삭제" onclick="del(this.href); return false;">
+					<i class="fa fa-times"></i><span class="hidden-xs"> 삭제</span>
+				</a>
+			<?php } ?>
+			<?php if ($update_href) { ?>
+				<a href="<?php echo $update_href ?>" class="btn btn-black btn-sm" title="수정">
+					<i class="fa fa-plus"></i><span class="hidden-xs"> 수정</span>
+				</a>
+			<?php } ?>
+			<?php if ($search_href) { ?>
+				<a href="<?php echo $search_href ?>" class="btn btn-black btn-sm">
+					<i class="fa fa-search"></i><span class="hidden-xs"> 검색</span>
+				</a>
+			<?php } ?>
+			<a href="<?php echo $list_href ?>" class="btn btn-black btn-sm">
+				<i class="fa fa-bars"></i><span class="hidden-xs"> 목록</span>
+			</a>
+			<?php if ($reply_href) { ?>
+				<a href="<?php echo $reply_href ?>" class="btn btn-black btn-sm">
+					<i class="fa fa-comments"></i><span class="hidden-xs"> 답변</span>
+				</a>
+			<?php } ?>
+			<?php if ($write_href) { ?>
+				<a href="<?php echo $write_href ?>" class="btn btn-color btn-sm">
+					<i class="fa fa-pencil"></i><span class="hidden-xs"> 글쓰기</span>
+				</a>
+			<?php } ?>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
 <script>
-<?php if ($board['bo_download_point'] < 0) { ?>
-$(function() {
-    $("a.view_file_download").click(function() {
-        if(!g5_is_member) {
-            alert("다운로드 권한이 없습니다.\n회원이시라면 로그인 후 이용해 보십시오.");
-            return false;
-        }
-
-        var msg = "파일을 다운로드 하시면 포인트가 차감(<?php echo number_format($board['bo_download_point']) ?>점)됩니다.\n\n포인트는 게시물당 한번만 차감되며 다음에 다시 다운로드 하셔도 중복하여 차감하지 않습니다.\n\n그래도 다운로드 하시겠습니까?";
-
-        if(confirm(msg)) {
-            var href = $(this).attr("href")+"&js=on";
-            $(this).attr("href", href);
-
-            return true;
-        } else {
-            return false;
-        }
-    });
-});
-<?php } ?>
-
-function board_move(href)
-{
-    window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
+function board_move(href){
+	window.open(href, "boardmove", "left=50, top=50, width=500, height=550, scrollbars=1");
 }
-</script>
-
-<script>
 $(function() {
-    $("a.view_image").click(function() {
-        window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
-        return false;
-    });
+	$("a.view_image").click(function() {
+		window.open(this.href, "large_image", "location=yes,links=no,toolbar=no,top=10,left=10,width=10,height=10,resizable=yes,scrollbars=no,status=no");
+		return false;
+	});
+	<?php if ($board['bo_download_point'] < 0) { ?>
+	$("a.view_file_download").click(function() {
+		if(!g5_is_member) {
+			alert("다운로드 권한이 없습니다.\n회원이시라면 로그인 후 이용해 보십시오.");
+			return false;
+		}
 
-    // 추천, 비추천
-    $("#good_button, #nogood_button").click(function() {
-        var $tx;
-        if(this.id == "good_button")
-            $tx = $("#bo_v_act_good");
-        else
-            $tx = $("#bo_v_act_nogood");
+		var msg = "파일을 다운로드 하시면 포인트가 차감(<?php echo number_format($board['bo_download_point']) ?>점)됩니다.\n\n포인트는 게시물당 한번만 차감되며 다음에 다시 다운로드 하셔도 중복하여 차감하지 않습니다.\n\n그래도 다운로드 하시겠습니까?";
 
-        excute_good(this.href, $(this), $tx);
-        return false;
-    });
+		if(confirm(msg)) {
+			var href = $(this).attr("href")+"&js=on";
+			$(this).attr("href", href);
 
-    // 이미지 리사이즈
-    $("#bo_v_atc").viewimageresize();
-
-    //sns공유
-    $(".btn_share").click(function(){
-        $("#bo_v_sns").fadeIn();
-   
-    });
-
-    $(document).mouseup(function (e) {
-        var container = $("#bo_v_sns");
-        if (!container.is(e.target) && container.has(e.target).length === 0){
-        container.css("display","none");
-        }	
-    });
+			return true;
+		} else {
+			return false;
+		}
+	});
+	<?php } ?>
 });
-
-function excute_good(href, $el, $tx)
-{
-    $.post(
-        href,
-        { js: "on" },
-        function(data) {
-            if(data.error) {
-                alert(data.error);
-                return false;
-            }
-
-            if(data.count) {
-                $el.find("strong").text(number_format(String(data.count)));
-                if($tx.attr("id").search("nogood") > -1) {
-                    $tx.text("이 글을 비추천하셨습니다.");
-                    $tx.fadeIn(200).delay(2500).fadeOut(200);
-                } else {
-                    $tx.text("이 글을 추천하셨습니다.");
-                    $tx.fadeIn(200).delay(2500).fadeOut(200);
-                }
-            }
-        }, "json"
-    );
-}
 </script>
-<!-- } 게시글 읽기 끝 -->

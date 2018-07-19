@@ -40,7 +40,7 @@ if ($sca || $stx || $stx === '0') {     //검색이면
     $is_search_bbs = true;      //검색구분변수 true 지정
     $sql_search = get_sql_search($sca, $sfl, $stx, $sop);
 
-    // 가장 작은 번호를 얻어서 변수에 저장 (하단의 페이징에서 사용)
+	// 가장 작은 번호를 얻어서 변수에 저장 (하단의 페이징에서 사용)
     $sql = " select MIN(wr_num) as min_wr_num from {$write_table} ";
     $row = sql_fetch($sql);
     $min_spt = (int)$row['min_wr_num'];
@@ -48,6 +48,8 @@ if ($sca || $stx || $stx === '0') {     //검색이면
     if (!$spt) $spt = $min_spt;
 
     $sql_search .= " and (wr_num between {$spt} and ({$spt} + {$config['cf_search_part']})) ";
+
+	if($sql_apms_where) $sql_search .= $sql_apms_where;
 
     // 원글만 얻는다. (코멘트의 내용도 검색하기 위함)
     // 라엘님 제안 코드로 대체 http://sir.kr/g5_bug/2922
@@ -61,7 +63,6 @@ if ($sca || $stx || $stx === '0') {     //검색이면
     */
 } else {
     $sql_search = "";
-
     $total_count = $board['bo_count_write'];
 }
 
@@ -84,8 +85,8 @@ $notice_count = 0;
 $notice_array = array();
 
 // 공지 처리
-if (!$is_search_bbs) {
-    $arr_notice = explode(',', trim($board['bo_notice']));
+$arr_notice = explode(',', trim($board['bo_notice']));
+if (!$stx) {
     $from_notice_idx = ($page - 1) * $page_rows;
     if($from_notice_idx < 0)
         $from_notice_idx = 0;
@@ -98,7 +99,12 @@ if (!$is_search_bbs) {
 
         if (!$row['wr_id']) continue;
 
-        $notice_array[] = $row['wr_id'];
+		// 분류일 때
+		if($sca) {
+			if($row['ca_name'] != '공지' && $sca != $row['ca_name']) continue;
+		}
+
+		$notice_array[] = $row['wr_id'];
 
         if($k < $from_notice_idx) continue;
 
@@ -118,13 +124,13 @@ $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
 // 공지글이 있으면 변수에 반영
 if(!empty($notice_array)) {
-    $from_record -= count($notice_array);
+    //$from_record -= count($notice_array);
 
     if($from_record < 0)
         $from_record = 0;
 
-    if($notice_count > 0)
-        $page_rows -= $notice_count;
+    //if($notice_count > 0)
+        //$page_rows -= $notice_count;
 
     if($page_rows < 0)
         $page_rows = $list_page_rows;
@@ -132,11 +138,12 @@ if(!empty($notice_array)) {
 
 // 관리자라면 CheckBox 보임
 $is_checkbox = false;
-if ($is_member && ($is_admin == 'super' || $group['gr_admin'] == $member['mb_id'] || $board['bo_admin'] == $member['mb_id']))
+if ($is_admin)
     $is_checkbox = true;
 
 // 정렬에 사용하는 QUERY_STRING
 $qstr2 = 'bo_table='.$bo_table.'&amp;sop='.$sop;
+if($sca) $qstr2 .= '&amp;sca='.urlencode($sca);
 
 // 0 으로 나눌시 오류를 방지하기 위하여 값이 없으면 1 로 설정
 $bo_gallery_cols = $board['bo_gallery_cols'] ? $board['bo_gallery_cols'] : 1;
@@ -156,35 +163,34 @@ if (!$sst) {
     // 게시물 리스트의 정렬 대상 필드가 아니라면 공백으로 (nasca 님 09.06.16)
     // 리스트에서 다른 필드로 정렬을 하려면 아래의 코드에 해당 필드를 추가하세요.
     // $sst = preg_match("/^(wr_subject|wr_datetime|wr_hit|wr_good|wr_nogood)$/i", $sst) ? $sst : "";
-    $sst = preg_match("/^(wr_datetime|wr_hit|wr_good|wr_nogood)$/i", $sst) ? $sst : "";
+    $sst = preg_match("/^(wr_datetime|wr_hit|wr_good|wr_nogood|wr_comment|as_view|as_down|as_download|as_poll|as_update|wr_link1_hit|wr_link2_hit)$/i", $sst) ? $sst : "";
 }
 
 if(!$sst)
     $sst  = "wr_num, wr_reply";
 
 if ($sst) {
-    $sql_order = " order by {$sst} {$sod} ";
+    $sql_order = " order by {$sql_apms_orderby} {$sst} {$sod} ";
 }
 
 if ($is_search_bbs) {
     $sql = " select distinct wr_parent from {$write_table} where {$sql_search} {$sql_order} limit {$from_record}, $page_rows ";
 } else {
-    $sql = " select * from {$write_table} where wr_is_comment = 0 ";
-    if(!empty($notice_array))
-        $sql .= " and wr_id not in (".implode(', ', $notice_array).") ";
+    $sql = " select * from {$write_table} where wr_is_comment = 0 {$sql_apms_where} ";
+    if(!$is_notice_list && $notice_count)
+        $sql .= " and wr_id not in (".implode(', ', $arr_notice).") ";
     $sql .= " {$sql_order} limit {$from_record}, $page_rows ";
 }
 
 // 페이지의 공지개수가 목록수 보다 작을 때만 실행
+$k = 0;
 if($page_rows > 0) {
     $result = sql_query($sql);
-
-    $k = 0;
 
     while ($row = sql_fetch_array($result))
     {
         // 검색일 경우 wr_id만 얻었으므로 다시 한행을 얻는다
-        if ($is_search_bbs)
+        if ($sca || $stx)
             $row = sql_fetch(" select * from {$write_table} where wr_id = '{$row['wr_parent']}' ");
 
         $list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
@@ -192,13 +198,15 @@ if($page_rows > 0) {
             $list[$i]['subject'] = search_font($stx, $list[$i]['subject']);
         }
         $list[$i]['is_notice'] = false;
-        $list_num = $total_count - ($page - 1) * $list_page_rows - $notice_count;
+        $list_num = $total_count - ($page - 1) * $list_page_rows;
         $list[$i]['num'] = $list_num - $k;
 
         $i++;
         $k++;
     }
 }
+
+$is_list = ($k) ? true : false;
 
 $write_pages = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, './board.php?bo_table='.$bo_table.$qstr.'&amp;page=');
 
@@ -225,7 +233,6 @@ if ($is_search_bbs) {
         $write_pages = page_insertafter($write_pages, '<a href="'.$next_part_href.'" class="pg_page pg_end">다음검색</a>');
     }
 }
-
 
 $write_href = '';
 if ($member['mb_level'] >= $board['bo_write_level']) {

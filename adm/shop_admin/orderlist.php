@@ -138,7 +138,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 
 <div class="local_ov01 local_ov">
     <?php echo $listall; ?>
-    <span class="btn_ov01"><span class="ov_txt">전체 주문내역</span><span class="ov_num"> <?php echo number_format($total_count); ?>건</span></span>
+    전체 주문내역 <?php echo number_format($total_count); ?>건
     <?php if($od_status == '준비' && $total_count > 0) { ?>
     <a href="./orderdelivery.php" id="order_delivery" class="ov_a">엑셀배송처리</a>
     <?php } ?>
@@ -171,7 +171,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 
 </form>
 
-<form class="local_sch03 local_sch">
+<form class="local_sch02 local_sch">
 <div>
     <strong>주문상태</strong>
     <input type="radio" name="od_status" value="" id="od_status_all"    <?php echo get_checked($od_status, '');     ?>>
@@ -196,7 +196,9 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
     <strong>결제수단</strong>
     <input type="radio" name="od_settle_case" value="" id="od_settle_case01"        <?php echo get_checked($od_settle_case, '');          ?>>
     <label for="od_settle_case01">전체</label>
-    <input type="radio" name="od_settle_case" value="무통장" id="od_settle_case02"   <?php echo get_checked($od_settle_case, '무통장');    ?>>
+    <input type="radio" name="od_settle_case" value="포인트" id="od_settle_case07"   <?php echo get_checked($od_settle_case, '포인트');    ?>>
+    <label for="od_settle_case07">포인트</label>
+	<input type="radio" name="od_settle_case" value="무통장" id="od_settle_case02"   <?php echo get_checked($od_settle_case, '무통장');    ?>>
     <label for="od_settle_case02">무통장</label>
     <input type="radio" name="od_settle_case" value="가상계좌" id="od_settle_case03" <?php echo get_checked($od_settle_case, '가상계좌');  ?>>
     <label for="od_settle_case03">가상계좌</label>
@@ -248,7 +250,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
 <form name="forderlist" id="forderlist" onsubmit="return forderlist_submit(this);" method="post" autocomplete="off">
 <input type="hidden" name="search_od_status" value="<?php echo $od_status; ?>">
 
-<div class="tbl_head01 tbl_wrap">
+<div class="tbl_head02 tbl_wrap">
     <table id="sodr_list">
     <caption>주문 내역 목록</caption>
     <thead>
@@ -257,7 +259,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
             <label for="chkall" class="sound_only">주문 전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
-        <th scope="col" id="th_ordnum" rowspan="2" colspan="2"><a href="<?php echo title_sort("od_id", 1)."&amp;$qstr1"; ?>">주문번호</a></th>
+        <th scope="col" id="th_odrnum" rowspan="2" colspan="2"><a href="<?php echo title_sort("od_id", 1)."&amp;$qstr1"; ?>">주문번호</a></th>
         <th scope="col" id="th_odrer">주문자</th>
         <th scope="col" id="th_odrertel">주문자전화</th>
         <th scope="col" id="th_recvr">받는분</th>
@@ -289,7 +291,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
         $s_receipt_way = $s_br = "";
         if ($row['od_settle_case'])
         {
-            $s_receipt_way = $row['od_settle_case'];
+            $s_receipt_way = ($row['pt_case']) ? $row['pt_case'] : $row['od_settle_case']; // 페이팔 등 반영
             $s_br = '<br />';
 
             // 간편결제
@@ -378,13 +380,18 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
         <td headers="th_odrer" class="td_name"><?php echo $mb_nick; ?></td>
         <td headers="th_odrertel" class="td_tel"><?php echo get_text($row['od_tel']); ?></td>
         <td headers="th_recvr" class="td_name"><a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?sort1=<?php echo $sort1; ?>&amp;sort2=<?php echo $sort2; ?>&amp;sel_field=od_b_name&amp;search=<?php echo get_text($row['od_b_name']); ?>"><?php echo get_text($row['od_b_name']); ?></a></td>
-        <td rowspan="3" class="td_num td_numsum"><?php echo number_format($row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2']); ?></td>
-        <td rowspan="3" class="td_num_right"><?php echo number_format($row['od_receipt_price']); ?></td>
-        <td rowspan="3" class="td_numcancel<?php echo $td_color; ?> td_num"><?php echo number_format($row['od_cancel_price']); ?></td>
-        <td rowspan="3" class="td_num_right"><?php echo number_format($row['couponprice']); ?></td>
-        <td rowspan="3" class="td_num_right"><?php echo number_format($row['od_misu']); ?></td>
-        <td rowspan="3" class="td_mng td_mng_s">
-            <a href="./orderform.php?od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" class="mng_mod btn btn_02"><span class="sound_only"><?php echo $row['od_id']; ?> </span>보기</a>
+        <td rowspan="3" class="td_numsum"><?php echo number_format($row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2']); ?></td>
+        <td rowspan="3" class="td_numincome">
+			<?php echo number_format($row['od_receipt_price']); ?>
+			<?php if($row['pt_price']) { //페이팔 등 결제금액 ?>
+				<br />(<?php echo $row['pt_price'];?>)
+			<?php } ?>
+		</td>
+        <td rowspan="3" class="td_numcancel<?php echo $td_color; ?>"><?php echo number_format($row['od_cancel_price']); ?></td>
+        <td rowspan="3" class="td_numcoupon"><?php echo number_format($row['couponprice']); ?></td>
+        <td rowspan="3" class="td_numrdy"><?php echo number_format($row['od_misu']); ?></td>
+        <td rowspan="3" class="td_mngsmall">
+            <a href="./orderform.php?od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" class="mng_mod"><span class="sound_only"><?php echo $row['od_id']; ?> </span>보기</a>
         </td>
     </tr>
     <tr class="<?php echo $bg; ?>">
@@ -399,22 +406,22 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
         <td headers="th_odrall"><?php echo $od_cnt; ?>건</td>
     </tr>
     <tr class="<?php echo $bg; ?>">
-        <td headers="odrstat" class="odrstat">
+        <td headers="th_odrstat" class="td_odrstatus">
             <input type="hidden" name="current_status[<?php echo $i ?>]" value="<?php echo $row['od_status'] ?>">
             <?php echo $row['od_status']; ?>
         </td>
-        <td headers="odrpay" class="odrpay">
+        <td headers="th_odrpay" class="td_payby">
             <input type="hidden" name="current_settle_case[<?php echo $i ?>]" value="<?php echo $row['od_settle_case'] ?>">
             <?php echo $s_receipt_way; ?>
         </td>
-        <td headers="delino" class="delino">
+        <td headers="th_delino" class="td_delino">
             <?php if ($od_status == '준비') { ?>
                 <input type="text" name="od_invoice[<?php echo $i; ?>]" value="<?php echo $row['od_invoice']; ?>" class="frm_input" size="10">
             <?php } else {
                 echo ($row['od_invoice'] ? $row['od_invoice'] : '-');
             } ?>
         </td>
-        <td headers="delicom">
+        <td headers="th_delicom">
             <?php if ($od_status == '준비') { ?>
                 <select name="od_delivery_company[<?php echo $i; ?>]">
                     <?php echo get_delivery_company($delivery_company); ?>
@@ -423,7 +430,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
                 echo ($row['od_delivery_company'] ? $row['od_delivery_company'] : '-');
             } ?>
         </td>
-        <td headers="delidate">
+        <td headers="th_delidate">
             <?php if ($od_status == '준비') { ?>
                 <input type="text" name="od_invoice_time[<?php echo $i; ?>]" value="<?php echo $invoice_time; ?>" class="frm_input" size="10" maxlength="19">
             <?php } else {
@@ -486,7 +493,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
     <?php } ?>
     <input type="submit" value="선택수정" class="btn_submit" onclick="document.pressed=this.value">
 <?php } ?>
-    <?php if ($od_status == '주문') { ?> <span>주문상태에서만 삭제가 가능합니다.</span> <input type="submit" value="선택삭제" class="btn_submit" onclick="document.pressed=this.value"><?php } ?>
+    <?php if ($od_status == '주문' || $od_status == '전체취소') { ?> <span>주문 또는 전체취소 상태에서만 삭제가 가능하며, 전체취소는 입금액이 없는 주문만 삭제됩니다.</span> <input type="submit" value="선택삭제" class="btn_submit" onclick="document.pressed=this.value"><?php } ?>
 </div>
 
 <div class="local_desc02 local_desc">

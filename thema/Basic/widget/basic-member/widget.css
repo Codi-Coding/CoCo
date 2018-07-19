@@ -1,0 +1,10 @@
+@charset "utf-8";
+
+/* widget-basic-member-list */
+.widget-basic-member-list { }
+.widget-basic-member-list ul { padding:0px; margin:0px; line-height:22px; list-style:none; }
+.widget-basic-member-list li { margin:0; padding:0px; }
+.widget-basic-member-list li .icon { color:#ddd; }
+.widget-basic-member-list li .count { margin-left:8px; margin-right:4px; }
+.widget-basic-member-list li.item-none { padding:50px 10px; }
+.widget-basic-member-list li.btn-wset { display:none; }

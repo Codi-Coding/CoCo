@@ -63,9 +63,12 @@ for ($i=0; $i<count($member_list['id']); $i++) {
     $sql = " insert into {$g5['memo_table']} ( me_id, me_recv_mb_id, me_send_mb_id, me_send_datetime, me_memo ) values ( '$me_id', '$recv_mb_id', '{$member['mb_id']}', '".G5_TIME_YMDHIS."', '{$_POST['me_memo']}' ) ";
     sql_query($sql);
 
+	// 읽지 않은 쪽지체크
+	$row = sql_fetch(" select count(*) as cnt from {$g5['memo_table']} where me_recv_mb_id = '{$recv_mb_id}' and me_read_datetime = '0000-00-00 00:00:00' ");
+
     // 실시간 쪽지 알림 기능
-    $sql = " update {$g5['member_table']} set mb_memo_call = '{$member['mb_id']}' where mb_id = '$recv_mb_id' ";
-    sql_query($sql);
+    $sql = " update {$g5['member_table']} set mb_memo_call = '{$member['mb_id']}', as_memo = '{$row['cnt']}' where mb_id = '$recv_mb_id' ";
+    sql_query($sql, false);
 
     if (!$is_admin) {
         insert_point($member['mb_id'], (int)$config['cf_memo_send_point'] * (-1), $recv_mb_nick.'('.$recv_mb_id.')님께 쪽지 발송', '@memo', $recv_mb_id, $me_id);
@@ -73,7 +76,11 @@ for ($i=0; $i<count($member_list['id']); $i++) {
 }
 
 if ($member_list) {
-    $str_nick_list = implode(',', $member_list['nick']);
+	// Push -----------------------------------------------------------------
+		$mb_list = implode(',', $member_list['id']);
+		apms_push($mb_list, $member['mb_nick'], $_POST['me_memo'], G5_URL, array('use'=>'memo', 'flag'=>'send', 'me_id'=>$me_id));
+	// ------------------------------------------------------------------
+	$str_nick_list = implode(',', $member_list['nick']);
     alert($str_nick_list." 님께 쪽지를 전달하였습니다.", G5_HTTP_BBS_URL."/memo.php?kind=send", false);
 } else {
     alert("회원아이디 오류 같습니다.", G5_HTTP_BBS_URL."/memo_form.php", false);

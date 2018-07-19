@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+.basic-group-list ul { padding:0px; margin:0px; line-height:22px; list-style:none; }
+.basic-group-list li { margin:0; padding:0px; }
+.basic-group-list li .icon { color:#ddd; }
+.basic-group-list li .count { margin-left:8px; margin-right:4px; }
+.basic-group-list li .name { font-size:11px; letter-spacing:-1px; color:#999; padding-left:4px; padding-right:4px;}
+.basic-group-list li.item-none { padding:50px 10px; }
+.basic-group-list li.btn-wset { display:none; }

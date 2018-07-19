@@ -1,0 +1,5 @@
+@charset "utf-8";
+
+.basic-shop-event-slider { overflow:hidden; position:relative; width:100%; line-height:20px; }
+.basic-shop-event-slider .item-none { padding:50px 10px; text-align:center; color:#888; }
+.basic-shop-event-slider .item-image { position:relative; overflow:hidden; }

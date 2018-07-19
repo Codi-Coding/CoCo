@@ -7,8 +7,8 @@ if( $od_settle_case == 'lpay' ){
     $default['de_pg_service'] = 'inicis';
 }
 
-if(($od_settle_case != '무통장' && $od_settle_case != 'KAKAOPAY') && $default['de_pg_service'] == 'lg' && !$_POST['LGD_PAYKEY'])
-    alert('결제등록 요청 후 주문해 주십시오.');
+if(($od_settle_case != '무통장' && $od_settle_case != '포인트' && $od_settle_case != 'KAKAOPAY') && $default['de_pg_service'] == 'lg' && !$_POST['LGD_PAYKEY'])
+	alert('결제등록 요청 후 주문해 주십시오.');
 
 // 장바구니가 비어있는가?
 if (get_session("ss_direct"))
@@ -50,7 +50,7 @@ if($i == 0)
 if ($error != "")
 {
     $error .= "다른 고객님께서 {$od_name}님 보다 먼저 주문하신 경우입니다. 불편을 끼쳐 죄송합니다.";
-    alert($error);
+    alert($error, $page_return_url);
 }
 
 $i_price     = (int)$_POST['od_price'];
@@ -257,13 +257,21 @@ if ($is_member && $config['cf_use_point'])
     }
 }
 
-if (($i_temp_point > (int)$temp_point || $i_temp_point < 0) && $config['cf_use_point'])
-    die("Error....");
+if ($od_settle_case == "포인트") 
+{
+	$temp_order_point = $i_price + $i_send_cost + $i_send_cost2 - $i_send_coupon;
+	if($temp_order_point != $i_temp_point) 
+        alert('결제하실 금액과 포인트가 일치하지 않습니다.', $page_return_url);
+
+} else {
+	if (($i_temp_point > (int)$temp_point || $i_temp_point < 0) && $config['cf_use_point'])
+		die("Error....");
+}
 
 if ($od_temp_point)
 {
     if ($member['mb_point'] < $od_temp_point)
-        alert('회원님의 포인트가 부족하여 포인트로 결제 할 수 없습니다.');
+        alert('회원님의 포인트가 부족하여 포인트로 결제 할 수 없습니다.', $page_return_url);
 }
 
 $i_price = $i_price + $i_send_cost + $i_send_cost2 - $i_temp_point - $i_send_coupon;
@@ -271,7 +279,7 @@ $order_price = $tot_od_price + $send_cost + $send_cost2 - $tot_sc_cp_price - $od
 
 $od_status = '주문';
 $od_tno    = '';
-if ($od_settle_case == "무통장")
+if ($od_settle_case == "무통장" || $od_settle_case == "포인트")
 {
     $od_receipt_point   = $i_temp_point;
     $od_receipt_price   = 0;
@@ -290,7 +298,7 @@ else if ($od_settle_case == "계좌이체")
         case 'inicis':
             include G5_SHOP_PATH.'/inicis/inistdpay_result.php';
             break;
-        default:
+		default:
             include G5_SHOP_PATH.'/kcp/pp_ax_hub.php';
             $bank_name  = iconv("cp949", "utf-8", $bank_name);
             break;
@@ -316,9 +324,9 @@ else if ($od_settle_case == "가상계좌")
             break;
         case 'inicis':
             include G5_SHOP_PATH.'/inicis/inistdpay_result.php';
-            $od_app_no = $app_no;
+			$od_app_no = $app_no;
             break;
-        default:
+		default:
             include G5_SHOP_PATH.'/kcp/pp_ax_hub.php';
             $bankname   = iconv("cp949", "utf-8", $bankname);
             $depositor  = iconv("cp949", "utf-8", $depositor);
@@ -327,7 +335,7 @@ else if ($od_settle_case == "가상계좌")
 
     $od_receipt_point   = $i_temp_point;
     $od_tno             = $tno;
-    $od_receipt_price   = 0;
+	$od_receipt_price   = 0;
     $od_bank_account    = $bankname.' '.$account;
     $od_deposit_name    = $depositor;
     $pg_price           = $amount;
@@ -342,7 +350,7 @@ else if ($od_settle_case == "휴대폰")
         case 'inicis':
             include G5_SHOP_PATH.'/inicis/inistdpay_result.php';
             break;
-        default:
+		default:
             include G5_SHOP_PATH.'/kcp/pp_ax_hub.php';
             break;
     }
@@ -366,7 +374,7 @@ else if ($od_settle_case == "신용카드")
         case 'inicis':
             include G5_SHOP_PATH.'/inicis/inistdpay_result.php';
             break;
-        default:
+		default:
             include G5_SHOP_PATH.'/kcp/pp_ax_hub.php';
             $card_name  = iconv("cp949", "utf-8", $card_name);
             break;
@@ -392,7 +400,7 @@ else if ($od_settle_case == "간편결제" || ($od_settle_case == "lpay" && $def
         case 'inicis':
             include G5_SHOP_PATH.'/inicis/inistdpay_result.php';
             break;
-        default:
+		default:
             include G5_SHOP_PATH.'/kcp/pp_ax_hub.php';
             $card_name  = iconv("cp949", "utf-8", $card_name);
             break;
@@ -451,7 +459,7 @@ if($tno) {
                 $_REQUEST['PartialCancelCode'] = 0;
                 include G5_SHOP_PATH.'/kakaopay/kakaopay_cancel.php';
                 break;
-            default:
+			default:
                 include G5_SHOP_PATH.'/kcp/pp_ax_hub_cancel.php';
                 break;
         }
@@ -578,7 +586,7 @@ if(!$result) {
                 $_REQUEST['PartialCancelCode'] = 0;
                 include G5_SHOP_PATH.'/kakaopay/kakaopay_cancel.php';
                 break;
-            default:
+			default:
                 include G5_SHOP_PATH.'/kcp/pp_ax_hub_cancel.php';
                 break;
         }
@@ -624,7 +632,7 @@ if(!$result) {
                 $_REQUEST['PartialCancelCode'] = 0;
                 include G5_SHOP_PATH.'/kakaopay/kakaopay_cancel.php';
                 break;
-            default:
+			default:
                 include G5_SHOP_PATH.'/kcp/pp_ax_hub_cancel.php';
                 break;
         }
@@ -645,7 +653,6 @@ if ($is_member && $od_receipt_point)
     insert_point($member['mb_id'], (-1) * $od_receipt_point, "주문번호 $od_id 결제");
 
 $od_memo = nl2br(htmlspecialchars2(stripslashes($od_memo))) . "&nbsp;";
-
 
 // 쿠폰사용내역기록
 if($is_member) {
@@ -698,6 +705,11 @@ if($is_member) {
     }
 }
 
+// APMS : 주문처리 - 2014.07.21
+apms_order($od_id, $od_status, $member['mb_recommend']);
+
+// 쿠폰업데이트
+apms_coupon_update($member['mb_id']);
 
 include_once(G5_SHOP_PATH.'/ordermail1.inc.php');
 include_once(G5_SHOP_PATH.'/ordermail2.inc.php');
@@ -816,7 +828,6 @@ if($config['cf_sms_use'] && ($default['de_sms_use2'] || $default['de_sms_use3'])
 }
 // SMS END   --------------------------------------------------------
 
-
 // orderview 에서 사용하기 위해 session에 넣고
 $uid = md5($od_id.G5_TIME_YMDHIS.$REMOTE_ADDR);
 set_session('ss_orderview_uid', $uid);
@@ -834,8 +845,8 @@ set_session('ss_order_id', '');
 if (get_session('ss_direct'))
     set_session('ss_cart_direct', '');
 
-// 배송지처리
-if($is_member) {
+// 배송지처리 - 받는사람이 있으면 처리
+if($is_member && $od_b_name) {
     $sql = " select * from {$g5['g5_shop_order_address_table']}
                 where mb_id = '{$member['mb_id']}'
                   and ad_name = '$od_b_name'
@@ -883,6 +894,19 @@ if($is_member) {
 
     sql_query($sql);
 }
+
+// Push - 최고관리자에게 보냄 ---------------------------------------
+	$mb_list = $config['cf_admin'].','.$config['as_admin'];
+	$push = array(
+		'use'=>'od',
+		'flag'=>'new',
+		'od_name'=>$od_name,
+		'od_id'=>$od_id,
+		'od_amount'=>($tot_ct_price + $od_send_cost + $od_send_cost2),
+		'od_status'=>$od_status,
+		'od_memo'=>$od_memo);
+	apms_push($mb_list, $od_id, $od_id, G5_URL, $push);
+// ------------------------------------------------------------------
 
 goto_url(G5_SHOP_URL.'/orderinquiryview.php?od_id='.$od_id.'&amp;uid='.$uid);
 ?>

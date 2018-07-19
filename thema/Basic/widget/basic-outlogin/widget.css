@@ -1,0 +1,8 @@
+@charset "utf-8";
+
+.basic-outlogin label { line-height:12px; font-weight: normal; cursor: pointer; }
+.basic-outlogin .profile .photo { margin-right:12px; }
+.basic-outlogin .profile .photo img { width:60px; height:60px; border-radius: 50%; border:0; }
+.basic-outlogin .profile h3 { font-size:18px; line-height:32px; padding:0px; margin:0px; letter-spacing:-1px; display:block; text-overflow:ellipsis; white-space:nowrap; word-wrap:normal; overflow:hidden; }
+.basic-outlogin .login-line { border-top:1px solid #eee; margin:5px 0px 7px; padding-top:6px; }
+.basic-outlogin .form-group { margin-bottom:10px; }

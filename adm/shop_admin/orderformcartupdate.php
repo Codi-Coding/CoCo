@@ -36,6 +36,11 @@ for ($i=0; $i<$cnt; $i++)
     if(!$ct['ct_id'])
         continue;
 
+	// 구매회원 아이디 체크
+	if($mb_id && $mb_id != $ct['mb_id']) {
+		sql_query(" update {$g5['g5_shop_cart_table']} set mb_id = '{$mb_id}' where od_id = '{$od_id}' and ct_id = '{$ct_id}' ", false);
+	}
+
     // 수량이 변경됐다면
     $ct_qty = $_POST['ct_qty'][$k];
     if($ct['ct_qty'] != $ct_qty) {
@@ -143,6 +148,9 @@ for ($i=0; $i<$cnt; $i++)
                 where od_id = '$od_id'
                 and ct_id  = '$ct_id' ";
     sql_query($sql);
+
+	// APMS : 가정산 자동반영 - 2014.07.20
+	apms_account_auto($od_id, $ct_id, $ct_status);
 
     // it_id를 배열에 저장
     if($ct_status == '주문' || $ct_status == '취소' || $ct_status == '반품' || $ct_status == '품절' || $ct_status == '완료')
@@ -263,7 +271,7 @@ if (in_array($_POST['ct_status'], $status_cancel)) {
                         $_REQUEST['PartialCancelCode'] = 0;
                         include G5_SHOP_PATH.'/kakaopay/kakaopay_cancel.php';
                         break;
-                    default:
+					default:
                         include_once(G5_SHOP_PATH.'/settle_kcp.inc.php');
                         require_once(G5_SHOP_PATH.'/kcp/pp_ax_hub_lib.php');
 
