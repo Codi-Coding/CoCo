@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+/* List */
+.list-item h2 { display:block; font-size:16px; line-height:22px; margin:15px 0px; padding:0px; }
+.list-item .list-img { position:relative; overflow:hidden; }
+.list-item .list-img img { width:100%; height:auto; }
+.list-item .list-date { position:absolute; bottom:10px; padding:0px 10px; font-size:12px; line-height:23px; }
+.list-item .list-date.left { left:0px; }
+.list-item .list-date.right { right:0px; }
+.list-item .list-content { padding:10px 5px 0px; }
+.list-item .list-details { padding-bottom:5px; border-bottom:1px dotted #ccc; }
+.list-item .list-details .member, .list-item .list-details .guest { color:#787878 !important; }
+.list-item .list-cont { margin:0px; padding:0; line-height:20px; }
+.list-item .list-sp { margin:0 7px; color:#ddd; font-size:11px; }
+.list-item .list-read { margin-top:15px; padding-top:5px; border-top:1px dotted #ccc;}
+.list-item .read-more i { margin-left:4px; }
+.list-row.clearfix { float:none !important; padding:0 !important; margin:0 !important; width:100% !important }
+
+/* Responsive */
+@media all and (max-width:767px) {
+	.responsive .list-row { width:50% !important }
+}
+@media all and (max-width:420px) {
+	.responsive .list-row { width:100% !important }
+}

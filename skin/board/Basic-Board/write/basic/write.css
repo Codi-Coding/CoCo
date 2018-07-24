@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+/* Write */
+.write-wrap h2 { padding:0px; margin:0px; font-size:14px; font-weight:bold; }
+.write-wrap label { font-weight:bold; margin-top:4px; }
+.write-wrap .control-label { padding-top:0px; }
+.write-wrap .write-content { height: 300px; }
+.write-wrap .write-file { border:0;box-shadow:none; }
+.write-wrap .write-btn { margin:15px 0px 25px; text-align:center; }
+.write-wrap .delete-file { margin:0px; padding:0px 10px; font-weight:normal; }
+.write-wrap .delete-file label { font-weight: normal; }
+.write-wrap .sp-label { font-weight:normal; margin-right:10px; }
+.write-wrap .sp-label input[type="checkbox"], .write-wrap .sp-label input[type="radio"] { margin-top:0px; }
+
+#autosave_pop div { text-align:right; }
+#autosave_pop button { margin:0; margin-left:10px; padding:0; border:0; background:transparent; color:#888; }
+#autosave_pop ul { margin:0; padding:0; padding-left:15px; list-style:disc; }
+#autosave_pop li { padding:2px 5px;  }
+#autosave_pop li:after { display:block; visibility:hidden; clear:both; content:""; }
+#autosave_pop a { display:block; float:left; }
+#autosave_pop span { display:block;; float:right; }
+
+#variableFiles { width:100%; margin:0; border:0; }
+#variableFiles td { padding:0px 0px 7px; border:0; }
+#variableFiles input[type=file] { box-shadow : none; border: 1px solid #ccc !important; outline:none; }
+#variableFiles .form-group { margin-left:0; margin-right:0; margin-bottom:7px; }
+#variableFiles .checkbox-inline { padding-top:0px; font-weight:normal; }

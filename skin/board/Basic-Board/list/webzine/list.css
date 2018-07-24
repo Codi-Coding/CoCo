@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+/* List */
+.list-media { margin:0; }
+.list-item { padding-bottom:15px; border-bottom:1px solid #eee; margin-bottom:15px; }
+.list-item .img-left { margin-right:15px; }
+.list-item .img-right { margin-left:15px; }
+.list-item h2.media-heading { display:block; font-size:16px; line-height:22px; margin:0px; padding:0px 0px 4px; }
+.list-item .list-details { margin-top:6px; padding:6px 0px; border-top:1px dotted #ccc; border-bottom:1px dotted #ccc; }
+.list-item .list-details .member, .list-item .list-details .guest { color:#787878 !important; }
+.list-item .list-cont { margin-top:8px; padding:0; line-height:20px; }
+.list-item .list-sp { margin:0 7px; color:#ddd; font-size:11px; }

@@ -1,0 +1,33 @@
+@charset "utf-8";
+
+/* Top Search */
+.list-tsearch { border:1px solid #ddd; background:#fafafa; padding:20px 15px 3px; margin-bottom:15px; }
+
+/* Category */
+.list-category .tabs { margin-bottom:20px; }
+.list-category .dropdown { margin-bottom:20px; }
+.list-category .active a, .list-category .selected a { color:crimson; font-weight:bold !important; }
+
+/* List */
+.list-wrap { width:100%; }
+.list-admin { text-align:center; margin:15px 0px; }
+.list-btn .sort-drop { min-width:120px !important; left:auto !important; right:0px !important; }
+.list-btn .sort-drop .sort a { color:crimson !important; font-weight:bold !important; }
+.is-pc .ko .list-btn .sort-drop { font-size: 12px; }
+
+/* Page */
+.list-wrap .pagination a, .view-wrap .pagination a { color:#333 !important; }
+.list-wrap .pagination .active a, .view-wrap .pagination .active a { color:#fff !important; background:#444 !important; border-color:#444 !important; }
+
+/* View */
+.view-wrap { width:100%; overflow:hidden; }
+.view-wrap.view-modal { padding:5px; margin:0px; }
+.view-btn { margin:0px 0px 30px; }
+.view-btn i { margin-right:2px; }
+
+/* Write */
+.write-wrap { width:100%; overflow:hidden; }
+
+@media all and (max-width:460px) {
+	.responsive .view-btn i { margin-right:0px; }
+}

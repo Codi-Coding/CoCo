@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+/* List */
+.talk-form .anc-write { display:none; }
+.list-item .talk-bubble { padding:0; }
+.list-item .list-content { position:relative; overflow:hidden; padding:3%; }
+.list-item .list-img { position:relative; margin-bottom:12px; }
+.list-item .list-img img { width:100%; height:auto; }
+.list-item .list-details .talker-photo { margin-right:12px; }
+.list-item .list-details .member, .list-item .list-details .guest { color:#333 !important; }
+.list-item .list-sp { margin:0 5px; color:#ddd; font-size:10px; }
+.list-row.clearfix { float:none !important; padding:0 !important; margin:0 !important; width:100% !important }
+
+/* Responsive */
+@media all and (max-width:767px) {
+	.responsive .list-row { width:50% !important }
+}
+@media all and (max-width:420px) {
+	.responsive .list-row { width:100% !important }
+}

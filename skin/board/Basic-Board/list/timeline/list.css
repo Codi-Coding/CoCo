@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+/* List */
+.list-item .list-content { position:relative; overflow:hidden; }
+.list-item .list-media { overflow:hidden; }
+.list-item .list-media .timeline-img { width:100%; height:auto; display:block; }
+.list-item h2.timeline-heading { display:block; font-size:16px; line-height:22px; margin:0px; padding:0px 0px 6px; }
+.list-item h2.timeline-heading a { font-weight:normal; }
+.list-item .list-sp { margin:0 5px; color:#ddd; font-size:10px; }
+.list-item .timeline-info { margin-top:12px; }
+.list-item .timeline-icon img, .list-item .timeline-icon i { border-color: transparent !important;}
