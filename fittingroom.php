@@ -1,0 +1,1 @@
+<?php echo $member[mb_nick] ?>
