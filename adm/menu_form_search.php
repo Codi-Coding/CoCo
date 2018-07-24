@@ -11,9 +11,14 @@ switch($type) {
                     order by gr_order, gr_id ";
         break;
     case 'board':
-        $sql = " select bo_table as id, bo_subject as subject, gr_id
+        $sql = " select bo_table as id, bo_subject as subject
                     from {$g5['board_table']}
                     order by bo_order, bo_table ";
+        break;
+    case 'opage':
+        $sql = " select op_id as id, subject as subject
+                    from {$g5['opage_table']}
+                    order by op_id ";
         break;
     case 'content':
         $sql = " select co_id as id, co_subject as subject
@@ -32,18 +37,13 @@ if($sql) {
 
     for($i=0; $row=sql_fetch_array($result); $i++) {
         if($i == 0) {
-
-    $bbs_subject_title = ($type == 'board') ? '게시판제목' : '제목';
 ?>
 
 <div class="tbl_head01 tbl_wrap">
     <table>
     <thead>
     <tr>
-        <th scope="col"><?php echo $bbs_subject_title; ?></th>
-        <?php if($type == 'board'){ ?>
-            <th scope="col">게시판 그룹</th>
-        <?php } ?>
+        <th scope="col">제목</th>
         <th scope="col">선택</th>
     </tr>
     </thead>
@@ -57,6 +57,9 @@ if($sql) {
             case 'board':
                 $link = G5_BBS_URL.'/board.php?bo_table='.$row['id'];
                 break;
+            case 'opage':
+                $link = G5_BBS_URL.'/opage.php?op_id='.$row['id'];
+                break;
             case 'content':
                 $link = G5_BBS_URL.'/content.php?co_id='.$row['id'];
                 break;
@@ -68,12 +71,6 @@ if($sql) {
 
     <tr>
         <td><?php echo $row['subject']; ?></td>
-        <?php
-        if($type == 'board'){
-        $group = get_call_func_cache('get_group', array($row['gr_id']));
-        ?>
-        <td><?php echo $group['gr_subject']; ?></td>
-        <?php } ?>
         <td class="td_mngsmall">
             <input type="hidden" name="subject[]" value="<?php echo preg_replace('/[\'\"]/', '', $row['subject']); ?>">
             <input type="hidden" name="link[]" value="<?php echo $link; ?>">
@@ -85,10 +82,6 @@ if($sql) {
 
     </tbody>
     </table>
-</div>
-
-<div class="local_desc01 menu_exists_tip" style="display:none">
-    <p>* <strong>빨간색</strong>의 제목은 이미 메뉴에 연결되어 경우 표시됩니다.</p>
 </div>
 
 <div class="btn_win02 btn_win">
