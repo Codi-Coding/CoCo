@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+/* List */
+.list-media { margin:0; }
+.list-item { padding-bottom:20px; border-bottom:1px solid #eee; margin-bottom:30px; }
+.list-item .media-box { position:relative; margin-bottom:20px; }
+.list-item .media-box.shadow { margin-bottom:10px; }
+.list-item .media-box img { width:100%; height:auto; }
+.list-item .media-box .apms-autowrap { width:100%; max-width:100%; margin:0; }
+.list-item .date-box { margin-right:15px; }
+.list-item h2.media-heading { display:block; font-size:20px; line-height:24px; margin:0px; padding:0px 0px 4px; }
+.list-item .list-details { margin-top:8px; padding:5px 0px; border-top:1px dotted #ccc; border-bottom:1px dotted #ccc; }
+.list-item .list-details .member, .list-item .list-details .guest { color:#787878 !important; }
+.list-item .list-cont { margin-top:8px; padding:0; line-height:20px; }
+.list-item .list-sp { margin:0 7px; color:#ddd; font-size:11px; }
+.list-item .list-tag { margin-top:10px; padding:0; line-height:20px; }
+.list-item .list-tag a { color:#999 !important; }
+.list-item .read-more { margin-top:10px; }
+.list-item .read-more i { margin-left:4px; }

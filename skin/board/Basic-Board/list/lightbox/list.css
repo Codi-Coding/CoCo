@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+/* List */
+.list-item .tack-check { right: 10px; bottom: 10px; z-index: 1; position: absolute;	font-weight:normal; }
+.list-item .tack-check-left { left: 10px; bottom: 10px; z-index: 1; position: absolute;	font-weight:normal; }
+.list-item .list-img { position:relative; overflow:hidden; }
+.list-item .list-img img { width:100%; height:auto; }
+.list-item .list-date { position:absolute; bottom:10px; padding:0px 10px; font-size:12px; line-height:23px; }
+.list-item .list-date.left { left:0px; }
+.list-item .list-date.right { right:0px; }
+.list-row.clearfix { float:none !important; padding:0 !important; margin:0 !important; width:100% !important }
+
+/* Responsive */
+@media all and (max-width:767px) {
+	.responsive .list-row { width:50% !important }
+}
+@media all and (max-width:420px) {
+	.responsive .list-row { width:100% !important }
+}
