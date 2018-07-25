@@ -46,7 +46,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 								</a>
 							</li>
 						<?php } ?>
-						<li><a href="<?php echo $at_href['change'];?>"><?php echo (IS_SHOP) ? '커뮤니티' : '쇼핑몰';?></a></li>
 					<?php } ?>
 					<li><a href="<?php echo $at_href['connect'];?>">접속 <?php echo number_format($stats['now_total']); ?><?php echo ($stats['now_mb']) ? ' (<b class="orangered">'.number_format($stats['now_mb']).'</b>)' : ''; ?></a></li>
 					<?php if($is_member) { ?>
