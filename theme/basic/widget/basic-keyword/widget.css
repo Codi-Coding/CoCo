@@ -1,0 +1,5 @@
+@charset "utf-8";
+
+.basic-keyword { line-height:22px; height:22px; overflow:hidden; text-align:center; }
+.basic-keyword .stx { display:inline-block; letter-spacing:-1px; }
+.basic-keyword .sp { font-size:12px; vertical-align:middle; color:#ccc; margin:0px 4px; }

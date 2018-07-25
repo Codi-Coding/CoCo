@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+#style-switcher { position:fixed; left: -206px; top: 0px; width: 205px; z-index: 3333; box-shadow: 3px 3px 6px rgba(0,0,0,0.08); background-color: rgb(255, 255, 255); }
+#style-switcher label { cursor:pointer; }
+#style-switcher .switcher-title { color: rgb(255, 255, 255); background-color: rgb(55, 55, 55); margin: 0px; margin-left:-1px; padding: 0px 0px 0px 15px; line-height: 45px; font-family: "Roboto",Helvetica,Arial,sans-serif; font-size: 16px; font-weight: bold; }
+#style-switcher .switcher-wrap { background:#fff; }
+#style-switcher .switcher-content { padding:15px; padding-right:20px; }
+#style-switcher .switcher-icon { color:#fff; width: 40px; height: 35px; text-align: center; right:-40px; line-height:35px; font-size: 17px; text-decoration: none; display: block; position: absolute; }
+#style-switcher .switcher-item { cursor:pointer; margin-bottom:8px; }
+
+#style-switcher .layout-setup { top: 45px; z-index:1; background:#222; }
+#style-switcher .widget-setup { top: 80px; z-index:1; background:#333;  border-radius:0px 0px 3px 0px; }
+
+#style-switcher .input-line { margin-bottom:4px; }
+#style-switcher .input-bottom { margin-bottom:8px; }
+#style-switcher .panel-group { margin:0px 0px 5px; }
+#style-switcher .panel { padding:0px; margin:0px; }
+#style-switcher .panel-heading { font-weight:bold; padding:0px 0px 5px; letter-spacing:-1px; }
+#style-switcher .panel-body { padding:10px 0px 4px; border-bottom:1px solid #ddd; margin-bottom:10px; }
+
+#style-switcher .ko-12 { font-family:dotum, sans-serif; font-size:12px; }
+#style-switcher .ko-11 { font-family:dotum, sans-serif; font-size:11px; letter-spacing:-1px; }
+#style-switcher .normal { font-weight:normal; letter-spacing:0px; }
+
+.body-background-top { background-repeat: no-repeat; background-size:cover; background-position: center top; }
+.body-background-center { background-repeat: no-repeat; background-size:cover; background-position: center center; }
+.body-background-bottom { background-repeat: no-repeat; background-size:cover; background-position: center bottom; }
+.body-background-fixed { background-repeat: no-repeat; background-size:100%; background-position: center top; background-attachment:scroll; }
+.body-background-pattern { background-repeat: repeat; background-size:auto; background-attachment:scroll; }
+
+@media only screen and (max-width:767px) {
+	#style-switcher {
+		display: none;
+	}
+}

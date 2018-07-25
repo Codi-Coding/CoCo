@@ -60,6 +60,7 @@ if($shadow_out && isset($wset['inshadow']) && $wset['inshadow']) {
 $list_cnt = count($list);
 ?>
 
+
 <aside>
 	<div class="div-tab tabs tabs-<?php echo (isset($wset['tab']) && $wset['tab']) ? $wset['tab'] : 'red';?>-top" style="margin-bottom:20px;">
 		<ul class="nav nav-tabs nav-justified">

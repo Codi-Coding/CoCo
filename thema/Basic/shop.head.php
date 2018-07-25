@@ -11,8 +11,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 			<!-- LNB Left -->
 			<div class="pull-left">
 				<ul>
-					<li><a href="javascript:;" id="favorite">즐겨찾기</a></li>
-					<li><a href="<?php echo $at_href['rss'];?>" target="_blank">RSS 구독</a></li>
 					<?php
 					  $tweek = array("일", "월", "화", "수", "목", "금", "토");
 					?>	
@@ -66,10 +64,10 @@ include_once(THEMA_PATH.'/assets/thema.php');
 			<!-- PC Logo -->
 			<div class="header-logo">
 				<a href="<?php echo $at_href['home'];?>">
-					AMINA
+					CoCo
 				</a>
 				<span class="header-desc">
-					세상을 바꾸는 작은힘 - 아미나
+					세상을 바꾸는 작은힘 - CoCo
 				</span>
 			</div>
 			<!-- PC Search -->

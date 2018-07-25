@@ -1,0 +1,14 @@
+@charset "utf-8";
+
+.basic-category { padding:0px; }
+.basic-category a { display:block; }
+.basic-category .ca-head { border:0; padding:8px 15px; font-size:15px; font-weight:bold; letter-spacing:-1px; padding-right:1px; }
+.basic-category .ca-sub1 { padding: 5px 10px; border-bottom:1px solid #eee; }
+.basic-category .ca-sub1.on > a { font-weight:bold !important; color: crimson !important; }
+.basic-category .ca-sub1 > a.no-sub::after { top: 0px; font-family: "FontAwesome"; float: right; position: relative; content: "\f105"; }
+.basic-category .ca-sub1 > a.is-sub::after { top: 0px; font-family: "FontAwesome"; float: right; position: relative; content: "+"; }
+.basic-category .ca-sub2 { padding:0; margin:0; list-style:none; background: #fafafa; padding:4px 0px; margin:0px; border-bottom:1px solid #eee }
+.basic-category .ca-sub2 li { padding:2px 20px; padding-right:15px; }
+.basic-category .ca-sub2 li.on a { font-weight:bold !important; color: crimson !important; }
+.basic-category .ca-line { padding:8px 15px; background:#fafafa; border-bottom:1px solid #eee; }
+.basic-category .new { color:crimson; }

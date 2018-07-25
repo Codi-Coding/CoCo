@@ -55,6 +55,7 @@ if($shadow_out && isset($wset['inshadow']) && $wset['inshadow']) {
 
 $list_cnt = count($list);
 
+
 include_once($list_skin_path.'/category.skin.php');
 ?>
 

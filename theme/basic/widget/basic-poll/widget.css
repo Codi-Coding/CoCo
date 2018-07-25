@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+.basic-poll .panel { border:0px; }
+.basic-poll .panel-group { margin:0px; }
+.basic-poll .panel-heading { line-height:22px; padding:0px; background:none; border:0px !important; font-weight:bold; letter-spacing:-1px; padding-right:1px; }
+.basic-poll .panel-heading a i { color: #ddd; margin:0; font-size:14px; }
+.basic-poll .panel-body { border:0px !important; padding:10px; }
+.basic-poll .poll-list { margin:0px; padding:0px 0px 15px; list-style:none; line-height:20px;}
+.basic-poll .poll-list li { padding:2px 0px; }
+.basic-poll .poll-list label,
+.basic-poll .poll-list input { vertical-align:middle; margin:0; }
+.basic-poll .poll-list .poll-item { text-align:left; padding:3px 8px; }
+.basic-poll .poll-none { padding:50px 0px; text-align:center; color:#888; }
+
+/* Poll Result Skin */
+.poll-result-skin .poll-title { padding:10px 12px; border-top:4px solid #444; }
+.poll-result-skin .poll-title h4 { padding:0; margin:0; line-height:50px; font-size:18px; }
+.poll-result-skin .poll-title i { background: rgb(245, 245, 245); padding-top: 12px; border-radius: 50%; width: 50px; height: 50px; text-align: center; color: rgb(143, 143, 143); font-size: 25px; display: inline-block; }
+.poll-result-skin .poll-title img { border-radius: 50%; width: 50px !important; height: 50px !important; display:inline-block; }
+
+.poll-result-skin i.poll-icon { background: rgb(52, 152, 219); color:#fff; }
+.poll-result-skin .poll-head { margin:0px; padding: 10px 20px; line-height:22px; background:#333; color:#fff; font-size:16px; text-align:center; }
+.poll-result-skin .poll-form { padding: 10px 20px 20px; }
+
+.poll-result-skin .poll-media { }
+.poll-result-skin .poll-media .photo i { background: rgb(245, 245, 245); padding: 15px; border-radius: 50%; width: 64px; height: 64px; text-align: center; color: rgb(143, 143, 143); font-size: 30px; display: inline-block; }
+.poll-result-skin .poll-media .photo img { border-radius: 50%; width: 64px !important; height: 64px !important; display:inline-block; }
+.poll-result-skin .poll-mobile .poll-media .photo i { padding: 10px; width: 54px; height: 54px; }
+.poll-result-skin .poll-mobile .poll-media .photo img { width: 54px !important; height: 54px !important; }
+
+.poll-result-skin .poll-media .media { border-top:1px solid #eee; margin:7px 0px; padding:7px 0px 0px; }
+.poll-result-skin .poll-media :first-child.media { border-top:0px; margin-top:0px; padding-top:0px; }
+.poll-result-skin .poll-media h5 { margin:2px 0px; line-height: 22px; }
+.poll-result-skin .poll-media .media .media-body { padding-left:0px; }
+.poll-result-skin .poll-media .media .media-info { margin-left:10px; }
+.poll-result-skin .poll-media .media .media-content { margin-top:8px; }

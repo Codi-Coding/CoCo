@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+.basic-post-gallery { overflow:hidden; line-height:20px; }
+.basic-post-gallery .txt-normal { letter-spacing:0; }
+.basic-post-gallery .txt-short { letter-spacing:-1px; padding-right:1px; }
+.basic-post-gallery .post-vicon { position:absolute; left:6px; top:6px; color: #fff; font-size:20px; z-index:1; text-shadow: 1px 1px 1px #000; }
+.basic-post-gallery .post-none { padding:50px 10px; text-align:center; color:#888; }
+.basic-post-gallery .post-row { float:left; overflow:hidden; }
+.basic-post-gallery .post-list { overflow:hidden; }
+.basic-post-gallery .post-image { position:relative; overflow:hidden; }
+.basic-post-gallery .post-content { padding-top:10px; margin:-2px 0px; overflow:hidden; }
+.basic-post-gallery .post-subject { overflow:hidden; letter-spacing:-1px; padding-right:1px; }
+.basic-post-gallery .post-sp { color:#ccc; margin:0px 4px; }
+.basic-post-gallery .post-text { font-size:12px; color:#888; margin-top:4px; }
+.is-pc .ko .basic-post-gallery .post-ko { font-size:11px; }

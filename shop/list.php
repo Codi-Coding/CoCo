@@ -184,6 +184,7 @@ if (!$ev_id && is_file($list_skin_path.'/setup.skin.php') && ($is_demo || $is_de
 // 스킨
 $list_skin_file = $list_skin_path.'/list.skin.php';
 
+
 if(file_exists($list_skin_file)) {
 	include_once($list_skin_file);
 } else {

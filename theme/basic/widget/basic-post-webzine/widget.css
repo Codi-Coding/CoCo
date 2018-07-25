@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+.basic-post-webzine { overflow:hidden; line-height:20px; }
+.basic-post-webzine .txt-normal { letter-spacing:0; }
+.basic-post-webzine .txt-short { letter-spacing:-1px; padding-right:1px; }
+.basic-post-webzine .post-vicon { position:absolute; left:6px; top:6px; color: #fff; font-size:20px; z-index:1; text-shadow: 1px 1px 1px #000; }
+.basic-post-webzine .post-none { padding:50px 10px; text-align:center; color:#888; }
+.basic-post-webzine .post-row { float:left; overflow:hidden; }
+.basic-post-webzine .post-list { overflow:hidden; }
+.basic-post-webzine .post-image { position:relative; overflow:hidden; }
+.basic-post-webzine .post-content { margin:0px 0px -2px; overflow:hidden; }
+.basic-post-webzine .post-subject { overflow:hidden; letter-spacing:-1px; padding-right:1px; }
+.basic-post-webzine .post-text { font-size:12px; color:#888; margin-top:4px; }
+.basic-post-webzine .post-sp { color:#ccc; margin:0px 4px; }
+.is-pc .ko .basic-post-webzine .post-ko { font-size:11px; }
