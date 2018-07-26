@@ -306,9 +306,9 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 				<div style="text-align:center; padding:12px 0;">
 					<ul class="item-buy-btn">
 					<li><input type="submit" onclick="document.pressed=this.value;" value="바로구매" class="btn btn-<?php echo $btn2;?> btn-block"></li>
+					<li><input type="submit" onclick="" value="피팅룸에 추가" class="btn btn-<?php echo $btn2;?> btn-block"></li>
 					<li><input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block"></li>
 					<li><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_wishlist('<?php echo $it['it_id']; ?>'); return false;">위시리스트</a></li>
-					<li><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_recommend('<?php echo $it['it_id']; ?>', '<?php echo $ca_id; ?>'); return false;">추천하기</a></li>
 					</ul>
 				</div>
 				<?php if ($naverpay_button_js) { ?>
