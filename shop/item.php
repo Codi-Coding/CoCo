@@ -74,7 +74,7 @@ $ca_id = ($ca_id) ? $ca_id : $it['ca_id'];
 $it_sql_common = " it_use = '1' and (ca_id like '{$ca_id}%' or ca_id2 like '{$ca_id}%' or ca_id3 like '{$ca_id}%') $type_where ";
 
 // 분류 테이블에서 분류 상단, 하단 코드를 얻음
-//$sql = " select ca_{$mobile}skin_dir, ca_include_head, ca_include_tail, ca_cert_use, ca_adult_use from {$g5['g5_shop_category_table']} where ca_id = '{$ca_id}' ";
+//$sql = " select ca_{$mobile}skin_dir, ca_ihead, ca_include_tail, ca_cert_use, ca_adult_use from {$g5['g5_shop_category_table']} where ca_id = '{$ca_id}' ";
 $sql = " select * from {$g5['g5_shop_category_table']} where ca_id = '{$ca_id}' ";
 $ca = sql_fetch($sql);
 
