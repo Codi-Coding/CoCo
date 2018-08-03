@@ -306,7 +306,7 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 				<div style="text-align:center; padding:12px 0;">
 					<ul class="item-buy-btn">
 					<li><input type="submit" onclick="document.pressed=this.value;" value="바로구매" class="btn btn-<?php echo $btn2;?> btn-block"></li>
-					<li><input type="submit" onclick="" value="피팅룸에 추가" class="btn btn-<?php echo $btn2;?> btn-block"></li>
+					<li><a href="#" class="btn btn-<?php echo $btn2;?> btn-block" onclick="coco_fittingroom('<?php echo $it['it_id']; ?>'); return false;">피팅카트에 추가</a></li>
 					<li><input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block"></li>
 					<li><a href="#" class="btn btn-<?php echo $btn1;?> btn-block" onclick="apms_wishlist('<?php echo $it['it_id']; ?>'); return false;">위시리스트</a></li>
 					</ul>
@@ -344,7 +344,8 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 
 					if (document.pressed == "장바구니") {
 						f.sw_direct.value = 0;
-					} else { // 바로구매
+					} 
+					else { // 바로구매
 						f.sw_direct.value = 1;
 					}
 
@@ -436,6 +437,27 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 						} else {
 							if(confirm("위시리스트에 담겼습니다.\n\n바로 확인하시겠습니까?")) {
 								document.location.href = "./wishlist.php";
+							}
+						}
+					});
+
+					return false;
+				}
+
+				// Wishlist
+				function coco_fittingroom(it_id) {
+					if(!it_id) {
+						alert("코드가 올바르지 않습니다.");
+						return false;
+					}
+
+					$.post("./fitting_cart.php", { it_id: it_id },	function(error) {
+						if(error != "OK") {
+							alert(error.replace(/\\n/g, "\n"));
+							return false;
+						} else {
+							if(confirm("피팅 카트에 담겼습니다.\n\n바로 확인하시겠습니까?")) {
+								document.location.href = "./fittingroom.php";
 							}
 						}
 					});

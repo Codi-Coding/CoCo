@@ -100,7 +100,7 @@ include_once(THEMA_PATH.'/assets/thema.php');
 				<div class="header-logo en">
 					<!-- Mobile Logo -->
 					<a href="<?php echo $at_href['home'];?>">
-						<b>아미나</b>
+						<b>CoCo</b>
 					</a>
 				</div>
 				<div class="header-icon">

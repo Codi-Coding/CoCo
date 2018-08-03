@@ -18,7 +18,6 @@ if($header_skin)
 
 ?>
 
-<script src="<?php echo $skin_url;?>/shop.js"></script>
 
 
 <div class="row">

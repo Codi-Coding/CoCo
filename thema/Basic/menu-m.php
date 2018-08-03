@@ -7,19 +7,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			<div class="m-icon">
 				<a href="javascript:;" onclick="sidebar_open('sidebar-menu');"><i class="fa fa-bars"></i></a>
 			</div>
-			<?php if(IS_YC) { // 영카트 이용시 ?>
-				<div class="m-icon">
-					<a href="<?php echo $at_href['change'];?>">
-						<?php if(IS_SHOP) { // 쇼핑몰일 때 ?>
-							<i class="fa fa-commenting"></i>
-							<span class="label bg-blue">BBS</span>
-						<?php } else { ?>
-							<i class="fa fa-shopping-cart"></i>
-							<span class="label bg-blue">SHOP</span>
-						<?php } ?>
-					</a>
-				</div>
-			<?php } ?>
+			
 			<div class="m-list">
 				<div class="m-nav" id="mobile_nav">
 					<ul class="clearfix">

@@ -64,6 +64,7 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 
 include_once($skin_path.'/wishlist.skin.php');
 
+
 if($is_wishlist_sub) {
 	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
 	include_once(G5_PATH.'/tail.sub.php');
