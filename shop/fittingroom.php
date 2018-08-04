@@ -4,14 +4,10 @@ include_once('./_common.php');
 if (!$is_member)
     goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL.'/wishlist.php'));
 
-if(USE_G5_THEME && defined('G5_THEME_PATH')) {
-    require_once(G5_SHOP_PATH.'/yc/wishlist.php');
-    return;
-}
 
 $list = array();
-$sql  = " select a.wi_id, a.wi_time, b.* from {$g5['g5_shop_wish_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
-$sql .= " where a.mb_id = '{$member['mb_id']}' order by a.wi_id desc ";
+$sql  = " select a.fitting_cart_id, a.cart_time, b.* from CoCo_fitting_cart a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
+$sql .= " where a.mb_id = '{$member['mb_id']}' order by a.fitting_cart_id desc ";
 $result = sql_query($sql);
 for ($i=0; $row = sql_fetch_array($result); $i++) {
 
@@ -31,8 +27,8 @@ for ($i=0; $row = sql_fetch_array($result); $i++) {
 }
 
 // Page ID
-$pid = ($pid) ? $pid : 'fittingroom';
-// $at = apms_page_thema($pid);
+// $pid = ($pid) ? $pid : 'cart';
+$at = apms_page_thema($pid);
 include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 
 // 스킨 체크
