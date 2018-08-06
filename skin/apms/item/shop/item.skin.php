@@ -429,7 +429,7 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 						alert("코드가 올바르지 않습니다.");
 						return false;
 					}
-
+					
 					$.post("./itemwishlist.php", { it_id: it_id },	function(error) {
 						if(error != "OK") {
 							alert(error.replace(/\\n/g, "\n"));

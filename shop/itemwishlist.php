@@ -7,6 +7,7 @@ if (!$is_member)
 if(!$it_id)
     die('상품 코드가 올바르지 않습니다.');
 
+
 // 상품정보 체크
 $sql = " select it_id from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
 $row = sql_fetch($sql);
