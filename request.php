@@ -1,12 +1,4 @@
 <?php
-include_once('./_common.php');
-
-if (!$is_member)
-    die('회원 전용 서비스 입니다.');
-
-if(!$it_id)
-    die('상품 코드가 올바르지 않습니다.');
-
 
 $ch = curl_init();
 
@@ -25,6 +17,5 @@ curl_setopt_array($ch, array(
 
 
 $output = curl_exec($ch);
-echo ($output);
-
+echo ("<img src='".$output."'/>");
 ?>
