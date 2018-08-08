@@ -7,6 +7,10 @@ include_once('lib/aes_encrypt.php');
 $key = $_GET['key'];
 
 
+if(!$key){
+    echo("invalid url");
+    exit;
+}
 // 이미지 처리 과정
 // $enc = aes_encrypt($path, IMAGE_KEY);
 
@@ -30,8 +34,6 @@ $path = aes_decrypt($key, IMAGE_KEY);
 $im = imagecreatefrompng($path);
 
 header('Content-Type: image/png');
-
-
 
 imagepng($im);
 imagedestroy($im);

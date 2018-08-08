@@ -7,6 +7,7 @@ if($is_guest) {
 
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 
+
 // Upload Member Photo
 function apms_photo_upload($mb_id, $del_photo, $file) {
 	global $g5, $xp;
@@ -33,7 +34,9 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 	//Delete Photo
 	if ($del_photo == "1") {
 		@unlink($photo_dir.'/'.$mb_id.'.jpg');
-		sql_query(" update {$g5['member_table']} set as_photo = '0' where mb_id = '$mb_id' ", false);
+		@unlink($photo_dir.'/'.$mb_id.'_large.jpg');
+		$member['large_photo'] = NULL;
+						sql_query(" update {$g5['member_table']} set as_photo = '0' where mb_id = '$mb_id' ", false);
 	}
     
 	//Upload Photo
@@ -51,6 +54,8 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 	        $filename = abs(ip2long($_SERVER['REMOTE_ADDR'])).'_'.substr($shuffle,0,8).'_'.replace_filename($filename);
 
 			$org_photo = $photo_dir.'/'.$mb_id.'.jpg';
+			$big_photo = $photo_dir.'/'.$mb_id.'_large.jpg';
+
 			$temp_photo = $temp_dir.'/'.$filename;
 
 			move_uploaded_file($file['mb_icon2']['tmp_name'], $temp_photo) or die($file['mb_icon2']['error']);
@@ -75,12 +80,18 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 					alert(aslang('alert', 'is_photo_gif')); //움직이는 GIF 파일은 회원사진으로 등록할 수 없습니다.
 				} else {
 					$thumb = thumbnail($filename, $temp_dir, $temp_dir, $photo_w, $photo_h, true, true);
+					$big_picture = thumbnail($filename, $temp_dir, $temp_dir, 762, 1100, true, true);
 					if($thumb) {
 						copy($temp_dir.'/'.$thumb, $org_photo);
 						chmod($org_photo, G5_FILE_PERMISSION);
+
+						copy($temp_dir.'/'.$big_picture, $big_photo);
+						chmod($org_photo, G5_FILE_PERMISSION);
+
 						@unlink($temp_dir.'/'.$thumb);
 						@unlink($temp_photo);
 						sql_query(" update {$g5['member_table']} set as_photo = '1' where mb_id = '$mb_id' ", false);
+						$member['large_photo'] = $big_photo;
 					} else {
 						@unlink($temp_photo);
 						//회원사진 등록에 실패했습니다. 이미지 파일이 정상적으로 업로드 되지 않았거나, 이미지 파일이 아닙니다.

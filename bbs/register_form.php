@@ -15,7 +15,7 @@ if ($w == "") {
     // 회원 로그인을 한 경우 회원가입 할 수 없다
     // 경고창이 뜨는것을 막기위해 아래의 코드로 대체
     // alert("이미 로그인중이므로 회원 가입 하실 수 없습니다.", "./");
-    if ($is_member) {
+        if ($is_member) {
         goto_url(G5_URL);
     }
 
@@ -154,6 +154,8 @@ $agree2 = preg_replace('#[^0-9]#', '', $agree2);
 // add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 if ($config['cf_use_addr'])
     add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
+
+
 
 include_once($skin_path.'/register_form.skin.php');
 

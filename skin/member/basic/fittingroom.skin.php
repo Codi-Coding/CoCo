@@ -22,7 +22,12 @@ if($header_skin)
 
 <div class="row">
 	<div class="col-sm-6">
-		<img id="me" src="sadf.jpg" width="400" height="600"/>
+		<?php if($member['photo']) { ?>
+			<img id="me" src="<?php echo ("data\apms\photo\te\\".$member['mb_id']."_large.jpg");?>" width="400" height="600"/>
+			<img id="me" src="<?php echo ($member['photo']);?>" width="400" height="600"/>
+		<?php } else { ?>
+			<i class="fa fa-user"></i>
+		<?php } ?>
 	</div>
 	<div class="col-sm-6">
         <div>
