@@ -57,7 +57,7 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 ■ PC Header : PC 헤더 
 ********************************************************/
 .pc-header { padding:10px 0px 0px; text-align:center; }
-.pc-header .at-container { padding:0px 20px 15px; background: url('./header.jpg') no-repeat right top; }
+.pc-header .at-container { padding:0px 20px 15px;}
 .pc-header .header-logo { display:inline-block; vertical-align:middle; padding:0px 15px; }
 .pc-header .header-logo a { font-size:44px; line-height:44px; font-family:'Georgia', sans-serif; font-weight:bold; color:#000; }
 .pc-header .header-logo a:hover { color:#000; }

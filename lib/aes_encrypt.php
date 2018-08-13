@@ -3,6 +3,10 @@
 // 비밀번호는 서버만 알고 있어야 한다. 절대 클라이언트에게 전송해서는 안된다.
 // PHP 5.2 이상, mcrypt 모듈이 필요하다.
 // 문자열을 암호화한다.
+
+
+
+
 function aes_encrypt($plaintext, $password)
 {
     // 보안을 최대화하기 위해 비밀번호를 해싱한다.
@@ -66,4 +70,8 @@ function aes_decrypt($ciphertext, $password)
     // 이상이 없는 경우 평문을 반환한다.
     
     return $plaintext;
+}
+
+function getEncPath($path, $key){
+    return "/image.php?key=".urlencode(aes_encrypt($path, $key));
 }

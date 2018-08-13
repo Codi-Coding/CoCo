@@ -127,6 +127,8 @@ $photo_size = $xp['xp_photo'];
 
 $myphoto = apms_photo_url($member['mb_id']);
 
+$coco_url = coco_photo_url($member['mb_id']);
+
 //$g5['title'] = '내사진 등록/수정';
 
 if($is_myphoto_sub) {

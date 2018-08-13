@@ -1,7 +1,7 @@
 <?php
 
-include_once('data/CoCo_config.php');
 include_once('lib/aes_encrypt.php');
+include_once('data/CoCo_config.php');
 
 
 $key = $_GET['key'];
@@ -20,22 +20,23 @@ if(!$key){
 
 // echo("<br/>=====================================<br/>");
 
-
 $path = aes_decrypt($key, IMAGE_KEY);
 
 // echo("key:".$key."<br/>");
 // echo("dec:".$path."<br/>");
 
-// echo($dec);
 
 
 // echo($path);
 
-$im = imagecreatefrompng($path);
+$im = imagecreatefromjpeg($path);
+// $im = imagecreatefrompng($path);
 
-header('Content-Type: image/png');
+header('Content-Type: image/jpeg');
+// header('Content-Type: image/png');
 
-imagepng($im);
-imagedestroy($im);
+imagejpeg($im);
+// imagepng($im);
+// imagedestroy($im);
 
 ?>

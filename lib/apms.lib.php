@@ -231,6 +231,7 @@ function apms_member($mb_id, $lvl='yes', $realname='') {
 		$info['exp_min'] = 0;
 		$info['mp'] = 0;
 		$info['photo'] = apms_photo_url();
+		$info['coco_photo'] = coco_photo_url($mb_id);
 		$info['like'] = 0;
 		$info['liked'] = 0;
 		$info['follow'] = 0;
@@ -241,6 +242,7 @@ function apms_member($mb_id, $lvl='yes', $realname='') {
 	} else {
 		$info = ($member['mb_id'] == $mb_id) ? $member : sql_fetch(" select * from {$g5['member_table']} where mb_id = TRIM('$mb_id') ", false);
 		$info['photo'] = apms_photo_url($mb_id);
+		$info['coco_photo'] = coco_photo_url($mb_id);
 		$ml = 'xp_grade'.$info['mb_level'];
 		$info['grade'] = $xp[$ml];
 		$name = ($realname) ? $info['mb_name'] : $info['mb_nick'];
@@ -1784,6 +1786,15 @@ function apms_photo_url($mb_id='') {
 	return $photo_url;
 }
 
+function coco_photo_url($mb_id='') {
+	$mb_dir = substr($mb_id,0,2);
+
+	$photo_url = G5_DATA_URL.'/apms/photo/'.$mb_dir.'/'.$mb_id.'_large.jpg';
+
+
+	return $photo_url;
+}
+
 // Check XP 
 function check_xp($mb_id) {
 	global $g5, $xp;
@@ -2265,6 +2276,7 @@ function apms_response_row($row, $win='', $page='', $read='') {
 	$row['name'] = $row['my_name'];
 	$row['date'] = strtotime($row['regdate']);
 	$row['photo'] = apms_photo_url($row['my_id']);
+	$row['coco_photo'] = coco_photo_url($row['my_id']);
 
     return $row;
 }
@@ -2997,6 +3009,7 @@ function thema_widget_write_list($type, $bo_table, $row, $new=24, $thumb_width=0
 		$list['name'] = $list['my_name'];
 		$list['href'] = G5_BBS_URL.'/response.php?id='.$list['id'];
 		$list['photo'] = apms_photo_url($list['my_id']); //회원사진
+		$list['coco_photo'] = coco_photo_url($list['my_id']); //회원사진
 		$list['comment'] = $list['reply_cnt'] + $list['comment_cnt'] + $list['comment_reply_cnt'] + $list['use_cnt'] + $list['qa_cnt'] + $list['good_cnt'] + $list['nogood_cnt'];
 	} else if($type == 'qa') {
 		$list['subject'] = get_text($list['qa_subject']);
@@ -3005,6 +3018,7 @@ function thema_widget_write_list($type, $bo_table, $row, $new=24, $thumb_width=0
 		$list['name'] = $list['qa_name'];
 		$list['href'] = G5_BBS_URL.'/qaview.php?qa_id='.$list['qa_id'];
 		$list['photo'] = apms_photo_url($list['mb_id']); //회원사진
+		$list['coco_photo'] = coco_photo_url($list['mb_id']); //회원사진
         $list['category'] = $list['qa_category'];
 		$list['comment'] = ($list['qa_status']) ? 1 : 0;
 	} else {
@@ -3012,6 +3026,7 @@ function thema_widget_write_list($type, $bo_table, $row, $new=24, $thumb_width=0
 		$list['secret'] = (strstr($list['wr_option'], "secret")) ? true : false;
 		$list['date'] = strtotime($list['wr_datetime']);
 		$list['photo'] = apms_photo_url($list['mb_id']); //회원사진
+		$list['coco_photo'] = coco_photo_url($list['mb_id']); //회원사진
 		$list['name'] = $list['wr_name'];
         $list['category'] = $list['ca_name'];
         $list['hit'] = $list['wr_hit'];
@@ -4867,6 +4882,7 @@ function apms_member_rows($arr) {
 		$list[$i] = ($row['mb_id'] && $row['mb_nick']) ? $row : get_member($row['mb_id']);
 		$list[$i]['cnt'] = $row['cnt'];
 		$list[$i]['photo'] = apms_photo_url($list[$i]['mb_id']);
+		$list[$i]['coco_photo'] = coco_photo_url($list[$i]['mb_id']); //회원사진
 		if(!$list[$i]['photo'] && $no_photo) {
 			$list[$i]['photo'] = $no_photo; // no-photo
 		}
@@ -4920,6 +4936,7 @@ function apms_memo_rows($sort='') {
 		for($i=0; $row = sql_fetch_array($result); $i++) {
 			$list[$i] = $row;
 			$list[$i]['photo'] = apms_photo_url($row['mb_id']);
+			$list[$i]['coco_photo'] = coco_photo_url($row['mb_id']);
 			$list[$i]['href'] = G5_BBS_URL.'/memo_view.php?me_id='.$row['me_id'].'&amp;kind=recv';
 			$list[$i]['date'] = strtotime($row['me_send_datetime']);
 		}
