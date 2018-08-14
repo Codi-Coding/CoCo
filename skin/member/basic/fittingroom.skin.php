@@ -34,6 +34,7 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 				</div>
 			<?php } else { ?>
 				<i class="fa fa-user"></i>
+				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 			<?php } ?>
 		</div>
 		<div class="col-xs-6">
@@ -110,7 +111,8 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 		$.post("./fitting_request.php", { it_id: it_id }, function(res) {
 			$('#coco').attr('src', res);
 			my_codi[ca_id] = it_id;
-			console.log(my_codi);
+			// console.log(res);
+			// console.log(my_codi);
 		});
 
 		return false;

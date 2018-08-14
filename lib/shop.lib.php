@@ -2,6 +2,7 @@
 //==============================================================================
 // 쇼핑몰 라이브러리 모음 시작
 //==============================================================================
+include_once('./coco.lib.php');
 
 /*
 간편 사용법 : 상품유형을 1~5 사이로 지정합니다.
@@ -657,6 +658,11 @@ function it_img_upload($srcfile, $filename, $dir)
     upload_file($srcfile, $filename, $dir);
 
     $file = str_replace(G5_DATA_PATH.'/item/', '', $dir.'/'.$filename);
+
+    $output = explode("/",$dir);
+    $it_id = $output[count($output)-1]
+
+    // notification_item_Deep($it_id);
 
     return $file;
 }
