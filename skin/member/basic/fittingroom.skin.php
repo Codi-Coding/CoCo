@@ -30,7 +30,7 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			<?php if($member['photo']) { ?>
 				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 				<div class="text-center">
-					<button class="btn btn-default btn-block" width="100%" height="100%">코디 저장</button>
+					<button class="btn btn-default btn-block" width="100%" height="100%" onclick="request_save_cody();">코디 저장</button>
 				</div>
 			<?php } else { ?>
 				<i class="fa fa-user"></i>
@@ -38,8 +38,8 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			<?php } ?>
 		</div>
 		<div class="col-xs-6">
-			<button class="btn btn-default" type="submit">List</button>
-			<button class="btn btn-default" type="submit">검색</button>
+			<a class="btn btn-default" role="button">List</a>
+			<a class="btn btn-default" role="button">검색</a>
 			<div class="wishlist-skin">
 				<table class="div-table table bg-white">
 					<tbody>
@@ -102,6 +102,16 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 <script>
 	var my_codi = {};
 
+	function isEmpty(obj) {
+		for(var prop in obj) {
+			if(obj.hasOwnProperty(prop))
+				return false;
+		}
+
+		return JSON.stringify(obj) === JSON.stringify({});
+	}
+
+
 	function request_fitting(it_id, ca_id){
 		if(!it_id) {
 			alert("코드가 올바르지 않습니다.");
@@ -109,9 +119,11 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 		}
 
 		$.post("./fitting_request.php", { it_id: it_id }, function(res) {
-			$('#coco').attr('src', res);
 			my_codi[ca_id] = it_id;
-			// console.log(res);
+			var result = JSON.parse(res);
+			if(result['result'])
+				$('#coco').attr('src', result['src']);
+			// console.log(result);
 			// console.log(my_codi);
 		});
 
@@ -132,10 +144,24 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 		f.submit();
 
 		return true;
-	} 
+	}
 
+	function request_save_cody(){
+		if(isEmpty(my_codi)){
+			alert("코디가 없습니다.");
+			return false;
+		}
 
+		// $.post("./fitting_request.php", { it_id: it_id }, function(res) {
+		// 	my_codi[ca_id] = it_id;
+		// 	var result = JSON.parse(res);
+		// 	if(result['result'])
+		// 		$('#coco').attr('src', result['src']);
+		// 	// console.log(result);
+		// 	// console.log(my_codi);
+		// });
 
+	}
 	
 
 

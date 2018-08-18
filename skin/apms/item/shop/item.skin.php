@@ -451,6 +451,11 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 						return false;
 					}
 
+					if($(".it_opt_list").size() < 1) {
+						alert("선택옵션을 선택해 주십시오.");
+						return false;
+					}
+
 					$.post("./fitting_cart.php", { it_id: it_id },	function(error) {
 						if(error != "OK") {
 							alert(error.replace(/\\n/g, "\n"));

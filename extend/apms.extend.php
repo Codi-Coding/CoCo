@@ -7,9 +7,7 @@ $as_href = array();
 $at = array();
 $xp = array();
 
-// APMS Version
-$yc5_ver = (defined('G5_USE_SHOP')) ? ' / 영카트 5.2.9.8.4' : '';
-define('APMS_VERSION', '아미나빌더 1.7.26 / 그누보드 5.2.9.8.4'.$yc5_ver);
+define('APMS_VERSION', 'CoCo Web');
 define('APMS_SVER', '171013');
 
 // USE YC5

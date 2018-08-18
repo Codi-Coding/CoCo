@@ -660,9 +660,9 @@ function it_img_upload($srcfile, $filename, $dir)
     $file = str_replace(G5_DATA_PATH.'/item/', '', $dir.'/'.$filename);
 
     $output = explode("/",$dir);
-    $it_id = $output[count($output)-1]
+    $it_id = $output[count($output)-1];
 
-    // notification_item_Deep($it_id);
+    notification_item_Deep($it_id);
 
     return $file;
 }

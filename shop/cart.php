@@ -23,6 +23,7 @@ $pid = ($pid) ? $pid : 'cart';
 $at = apms_page_thema($pid);
 include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 
+
 $skin_row = array();
 $skin_row = apms_rows('order_'.MOBILE_.'skin, order_'.MOBILE_.'set');
 $order_skin_path = G5_SKIN_PATH.'/apms/order/'.$skin_row['order_'.MOBILE_.'skin'];

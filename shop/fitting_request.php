@@ -11,5 +11,5 @@ if(!$it_id)
 
 $re = request_img_Deep($it_id, $member['mb_id']);
 
-echo($re);
+echo(json_encode($re));
 ?>

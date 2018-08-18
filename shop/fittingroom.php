@@ -28,15 +28,11 @@ for ($i=0; $row = sql_fetch_array($result); $i++) {
 
 // Page ID
 // $pid = ($pid) ? $pid : 'cart';
-$at = apms_page_thema($pid);
-include_once(G5_LIB_PATH.'/apms.thema.lib.php');
+$pid = ($pid) ? $pid : 'cart';
+
 
 // 스킨 체크
-list($member_skin_path, $member_skin_url) = apms_skin_thema('member', $member_skin_path, $member_skin_url); 
 
-// 설정값 불러오기
-$is_wishlist_sub = false;
-@include_once($member_skin_path.'/config.skin.php');
 
 $g5['title'] = $member['mb_nick'].'님의 피팅카트';
 
