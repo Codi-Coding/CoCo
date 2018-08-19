@@ -1,0 +1,23 @@
+#float-div {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width:auto;
+}
+
+#fitting-button{
+    display:block;
+    width: 75px;
+    height: 75px;
+    background-image: url("https://uploads-ssl.webflow.com/5716591d5f7225ad2b599e17/59254de04bdbd42c25949d8f_icon-changing-dark.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-bottom-width: 0px;
+    border-right-width: 0px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+}

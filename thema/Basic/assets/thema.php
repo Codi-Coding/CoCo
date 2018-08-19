@@ -181,6 +181,7 @@ if(!$page_background) {
 	}
 }
 ?>
+<link rel="stylesheet" href="" type="text/css">
 <style>
 	<?php if($page_background) { ?>	
 	body { <?php echo $page_background;?> }

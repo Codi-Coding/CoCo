@@ -81,6 +81,7 @@ if (defined('G5_IS_ADMIN')) {
     echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/'.(G5_IS_MOBILE?'mobile':'default').$shop_css.'.css?ver='.APMS_SVER.'">'.PHP_EOL;
 }
 echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/apms.css?ver='.APMS_SVER.'">'.PHP_EOL;
+echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/coco.css">'.PHP_EOL;
 echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/font-awesome/css/font-awesome.min.css?ver='.APMS_SVER.'">'.PHP_EOL;
 if($xp['xp_icon'] == 'txt') {
 	echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/level/'.$xp['xp_icon_css'].'.css?ver='.APMS_SVER.'">'.PHP_EOL;

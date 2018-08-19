@@ -15,7 +15,9 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			</div><!-- .at-container -->
 		<?php } ?>
 	</div><!-- .at-body -->
-
+	<div id="float-div">
+		<a id="fitting-button" href="/shop/fittingroom.php"></a>
+	</div>
 	<?php if(!$is_main_footer) { ?>
 		<footer class="at-footer">
 			<nav class="at-links">
@@ -83,12 +85,12 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 	<?php } ?>
 </div><!-- .wrapper -->
 
-<div class="at-go">
+<!-- <div class="at-go">
 	<div id="go-btn" class="go-btn">
 		<span class="go-top cursor"><i class="fa fa-chevron-up"></i></span>
 		<span class="go-bottom cursor"><i class="fa fa-chevron-down"></i></span>
 	</div>
-</div>
+</div> -->
 
 <!--[if lt IE 9]>
 <script type="text/javascript" src="<?php echo THEMA_URL;?>/assets/js/respond.js"></script>
