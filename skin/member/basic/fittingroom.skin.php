@@ -30,12 +30,12 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			<?php if($member['photo']) { ?>
 				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 				<div class="text-center">
-					<button class="btn btn-default btn-block" width="100%" height="100%" onclick="request_save_cody();">코디 저장</button>
 				</div>
 			<?php } else { ?>
 				<i class="fa fa-user"></i>
 				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 			<?php } ?>
+				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
 		</div>
 		<div class="col-xs-6">
 			<a class="btn btn-default" role="button">List</a>
@@ -123,8 +123,8 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			var result = JSON.parse(res);
 			if(result['result'])
 				$('#coco').attr('src', result['src']);
-			// console.log(result);
-			// console.log(my_codi);
+			console.log(result);
+			console.log(my_codi);
 		});
 
 		return false;
@@ -152,14 +152,10 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			return false;
 		}
 
-		// $.post("./fitting_request.php", { it_id: it_id }, function(res) {
-		// 	my_codi[ca_id] = it_id;
-		// 	var result = JSON.parse(res);
-		// 	if(result['result'])
-		// 		$('#coco').attr('src', result['src']);
-		// 	// console.log(result);
-		// 	// console.log(my_codi);
-		// });
+		$.post("./fitting_save_codi.php", { codi: JSON.stringify(my_codi)}, function(res) {
+			// var result = JSON.parse(res);
+			console.log(res);
+		});
 
 	}
 	

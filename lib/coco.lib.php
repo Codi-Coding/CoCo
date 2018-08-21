@@ -1,6 +1,6 @@
 <?php
 
-include_once("../data/CoCo_config.php");
+include_once(dirname(__DIR__)."/data/CoCo_config.php");
 
 
 $ch = curl_init();
