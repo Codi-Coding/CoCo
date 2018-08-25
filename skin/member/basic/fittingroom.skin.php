@@ -29,12 +29,11 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 		<div class="col-xs-6">
 			<?php if($member['photo']) { ?>
 				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
-				<div class="text-center">
-				</div>
 			<?php } else { ?>
 				<i class="fa fa-user"></i>
 				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 			<?php } ?>
+				<div class="loader" id="loader"></div>
 		</div>
 		<div class="col-xs-6">
 			<a class="btn btn-default" role="button">List</a>
@@ -59,7 +58,6 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 									<a class="btn btn-default" onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)" role="button">착용</a>
 								</td>
 								<td class="text-center">
-								<!-- <h4><?php echo(G5_DATA_DIR."/item/".($list[$i]['it_img1']))?></h4> -->
 									<a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)">
 									<?php if($list[$i]['img']['src']) {?>
 										<img width="75" height="75" src="<?php echo($list[$i]['img']['src']);?>" alt="<?php echo $list[$i]['img']['alt'];?>">
@@ -125,6 +123,9 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			return false;
 		}
 
+
+		$('#loader').show();
+
 		$.post("./fitting_request.php", { it_id: it_id }, function(res) {
 			my_codi[ca_id] = it_id;
 			var result = JSON.parse(res);
@@ -134,7 +135,9 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			console.log(my_codi);
 		});
 
-		return false;
+		// $('#myModal').modal('hide');
+
+		return true;
 	}
 
 	function request_buy() {
@@ -158,6 +161,7 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			alert("코디가 없습니다.");
 			return false;
 		}
+
 
 		$.post("./fitting_save_codi.php", { codi: JSON.stringify(my_codi)}, function(res) {
 			// var result = JSON.parse(res);
