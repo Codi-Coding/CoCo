@@ -111,6 +111,10 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 <script>
 	var my_codi = {};
 
+	function sleep(ms) {
+	  return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	function isEmpty(obj) {
 		for(var prop in obj) {
 			if(obj.hasOwnProperty(prop))
@@ -121,7 +125,7 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 	}
 
 
-	function request_fitting(it_id, ca_id){
+	async function request_fitting(it_id, ca_id){
 		if(!it_id) {
 			alert("코드가 올바르지 않습니다.");
 			return false;
@@ -140,7 +144,8 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			console.log(my_codi);
 		});
 
-		// $('#myModal').modal('hide');
+		await sleep(1000);
+		$('#loader').hide();  
 
 		return true;
 	}
