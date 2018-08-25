@@ -35,11 +35,10 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 				<i class="fa fa-user"></i>
 				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 			<?php } ?>
-				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
 		</div>
 		<div class="col-xs-6">
 			<a class="btn btn-default" role="button">List</a>
-			<a class="btn btn-default" role="button">검색</a>
+			<!-- <a class="btn btn-default" role="button">검색</a> -->
 			<div class="wishlist-skin">
 				<table class="div-table table bg-white">
 					<tbody>
@@ -84,16 +83,21 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 	<input type="hidden" name="records" value="<?php echo $i; ?>"/>
 	<input type="hidden" name="act" value="">
 </form>
-
+<br/>
 <div class="row">
 	<div class="col-xs-6">
 		<div class="text-center">
-			<a class="btn btn-default" role="button">장바구니</a>
+			<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
 		</div>
 	</div>
 	<div class="col-xs-6">
 		<div class="text-center">
-			<a class="btn btn-default" role="button" onclick="request_buy()">바로구매</a>
+			<div class="col-xs-6">
+				<a class="btn btn-default fitting-button" role="button" onclick="request_buy()">바로구매</a>
+			</div>
+			<div class="col-xs-6">
+				<a class="btn btn-default fitting-button" role="button">장바구니</a>
+			</div>
 		</div>
 	</div>
 </div>

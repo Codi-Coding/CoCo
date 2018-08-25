@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 if (!$is_member)
-    goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL.'/wishlist.php'));
+    goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL.'/fittingroom.php'));
 
 
 $list = array();

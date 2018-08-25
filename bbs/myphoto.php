@@ -6,6 +6,7 @@ if($is_guest) {
 }
 
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+include_once(G5_LIB_PATH.'/coco.lib.php');
 
 
 // Upload Member Photo
@@ -80,13 +81,14 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 					alert(aslang('alert', 'is_photo_gif')); //움직이는 GIF 파일은 회원사진으로 등록할 수 없습니다.
 				} else {
 					$thumb = thumbnail($filename, $temp_dir, $temp_dir, $photo_w, $photo_h, true, true);
-					$big_picture = thumbnail($filename, $temp_dir, $temp_dir, 762, 1100, true, true);
+					resize_image_save($temp_photo, $big_photo, 762, 1100);
+					// $big_picture = thumbnail($filename, $temp_dir, $temp_dir, 762, 1100, true, true);
 					if($thumb) {
 						copy($temp_dir.'/'.$thumb, $org_photo);
 						chmod($org_photo, G5_FILE_PERMISSION);
 
 						copy($temp_dir.'/'.$big_picture, $big_photo);
-						chmod($org_photo, G5_FILE_PERMISSION);
+						chmod($big_photo, G5_FILE_PERMISSION);
 
 						@unlink($temp_dir.'/'.$thumb);
 						@unlink($temp_photo);

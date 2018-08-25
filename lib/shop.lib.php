@@ -662,7 +662,7 @@ function it_img_upload($srcfile, $filename, $dir)
     $output = explode("/",$dir);
     $it_id = $output[count($output)-1];
 
-    notification_item_Deep($it_id);
+    // notification_item_Deep($it_id);
 
     return $file;
 }

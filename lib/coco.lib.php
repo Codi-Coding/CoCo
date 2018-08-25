@@ -70,5 +70,36 @@ function notification_item_Deep($it_id){
 
 }
 
+function resize_image_save($file, $dest, $w, $h) {
+	list($width, $height) = getimagesize($file);
+	$extension = end(explode(".", $file));
+	// $src="";
+	// $func="";
+	switch($extension){
+		case 'jpeg':
+			$src = imagecreatefromjpeg($file);
+			$func = 'imagejpeg';
+			break;
+		case 'png':
+			$src = imagecreatefrompng($file);
+			$func = 'imagepng';
+			break;
+		case 'gif':
+			$src = imagecreatefromgif($file);
+			$func = 'imagegif';
+			break;
+		default:
+			$src = imagecreatefromjpeg($file);
+			$func = 'imagejpeg';
+			break;
+	}
+	$dst = imagecreatetruecolor($w, $h);
+	imagecopyresampled($dst, $src, 0, 0, 0, 0, $w, $h, $width, $height);
+	$func($dst, $dest);
+	imagedestroy($dst);
+	imagedestroy($src);
+	return true;
+ }
+ 
 
 ?>
