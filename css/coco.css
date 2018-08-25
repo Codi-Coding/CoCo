@@ -36,6 +36,7 @@
     height: 100%;
     background-color: black;
     opacity: 0.5;
+    padding: 0 0 0 0;
 }
 .loader {
     border: 16px solid #f3f3f3;
@@ -46,6 +47,7 @@
     z-index: 9999;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
+    position:absolute;
     left:30%;
     top:30%;
 }
