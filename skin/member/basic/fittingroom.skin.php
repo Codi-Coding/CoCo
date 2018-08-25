@@ -27,14 +27,16 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 	
 	<div class="row">
 		<div class="col-xs-6">
-			<?php if($member['photo']) { ?>
-				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
-			<?php } else { ?>
-				<i class="fa fa-user"></i>
-				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
-			<?php } ?>
-			<div class="back_modal" id="loader">
-				<div class="loader"></div>
+			<div class="fit_wrapper">
+				<?php if($member['photo']) { ?>
+					<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
+				<?php } else { ?>
+					<i class="fa fa-user"></i>
+					<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
+				<?php } ?>
+				<div class="back_modal" id="loader">
+					<div class="loader"></div>
+				</div>
 			</div>
 		</div>
 		<div class="col-xs-6">
@@ -126,7 +128,8 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 		}
 
 
-		$('#loader').show();
+		$('#loader').css("display", "block");  
+
 
 		$.post("./fitting_request.php", { it_id: it_id }, function(res) {
 			my_codi[ca_id] = it_id;

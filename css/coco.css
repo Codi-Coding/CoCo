@@ -27,8 +27,10 @@
     height: 100%;
 }
 
-.back_modal{
-    position:absolute;
+    .back_modal{
+    float: left;
+    position: absolute;
+    z-index: 1000;
     display: none;
     top:0px;
     left:0px;
@@ -50,6 +52,15 @@
     position:absolute;
     left:30%;
     top:30%;
+}
+
+#coco{
+    float:left;
+    display: block;
+}
+
+.fit_wrapper{
+    position: relative;
 }
 
 /* Safari */
