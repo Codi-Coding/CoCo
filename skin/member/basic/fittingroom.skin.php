@@ -33,7 +33,9 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 				<i class="fa fa-user"></i>
 				<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 			<?php } ?>
-				<div class="loader" id="loader"></div>
+			<div class="back_modal" id="loader">
+				<div class="loader"></div>
+			</div>
 		</div>
 		<div class="col-xs-6">
 			<a class="btn btn-default" role="button">List</a>
