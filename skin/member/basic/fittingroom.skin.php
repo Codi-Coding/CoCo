@@ -56,6 +56,9 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 									<input type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked"/>
 								</td>
 								<td class="text-center">
+									<a class="btn btn-default" onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)" role="button">착용</a>
+								</td>
+								<td class="text-center">
 								<!-- <h4><?php echo(G5_DATA_DIR."/item/".($list[$i]['it_img1']))?></h4> -->
 									<a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)">
 									<?php if($list[$i]['img']['src']) {?>
