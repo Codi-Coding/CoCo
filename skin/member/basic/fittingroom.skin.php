@@ -109,7 +109,7 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 
 
 <script>
-	var my_codi = {};
+	var my_codi = JSON.parse('<?php echo($codi); ?>');
 
 	function sleep(ms) {
 	  return new Promise(resolve => setTimeout(resolve, ms));
@@ -145,6 +145,9 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 		});
 
 		await sleep(1000);
+		
+		
+		// $('#coco').attr('src', img);
 		$('#loader').hide();  
 
 		return true;
@@ -159,7 +162,7 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			return false;
 		}
 
-		f.act.value = "buy";
+		// f.act.value = "buy";
 		console.log(f);
 		f.submit();
 
@@ -175,7 +178,7 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 
 		$.post("./fitting_save_codi.php", { codi: JSON.stringify(my_codi)}, function(res) {
 			// var result = JSON.parse(res);
-			console.log(res);
+			// console.log(res);
 		});
 
 	}

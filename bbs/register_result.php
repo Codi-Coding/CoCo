@@ -42,6 +42,11 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=member&amp;ts='.urlencode(THEMA);
 }
 
+// 코디 레코드 생성
+$sql = "insert into CoCo_cody(mb_id, cody) values(`{$mb['mb_id']}`, '');"
+sql_query($sql);
+
+
 include_once($skin_path.'/register_result.skin.php');
 
 if($is_regresult_sub) {

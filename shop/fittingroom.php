@@ -9,6 +9,8 @@ $list = array();
 $sql  = " select a.fitting_cart_id, a.cart_time, b.* from CoCo_fitting_cart a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
 $sql .= " where a.mb_id = '{$member['mb_id']}' order by a.fitting_cart_id desc ";
 $result = sql_query($sql);
+
+
 for ($i=0; $row = sql_fetch_array($result); $i++) {
 
 	$list[$i] = $row;
@@ -31,6 +33,10 @@ for ($i=0; $row = sql_fetch_array($result); $i++) {
 $pid = ($pid) ? $pid : 'cart';
 
 
+$codi_sql = "select cody from CoCo_cody where mb_id='{$member['mb_id']}'";
+$codi_result = sql_query($codi_sql);
+$codi_row = sql_fetch_array($codi_result);
+$codi = $codi_row['cody'];
 // 스킨 체크
 
 
