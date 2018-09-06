@@ -88,31 +88,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 		</div>
 	</header>
 
-	<!-- Mobile Header -->
-	<header class="m-header">
-		<div class="at-container">
-			<div class="header-wrap">
-				<div class="header-icon">
-					<a href="javascript:;" onclick="sidebar_open('sidebar-user');">
-						<i class="fa fa-user"></i>
-					</a>
-				</div>
-				<div class="header-logo en">
-					<!-- Mobile Logo -->
-					<a href="<?php echo $at_href['home'];?>">
-						<b>CoCo</b>
-					</a>
-				</div>
-				<div class="header-icon">
-					<a href="javascript:;" onclick="sidebar_open('sidebar-search');">
-						<i class="fa fa-search"></i>
-					</a>
-				</div>
-			</div>
-			<div class="clearfix"></div>
-		</div>
-	</header>
-
 	<!-- Menu -->
 	<nav class="at-menu">
 		<!-- PC Menu -->

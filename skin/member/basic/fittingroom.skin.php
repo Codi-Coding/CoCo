@@ -53,6 +53,12 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 								<td class="text-center">
 									<input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $list[$i]['it_id']; ?>">
 									<input type="hidden" name="it_name[<?php echo $i; ?>]" value="<?php echo get_text($list[$i]['it_name']); ?>">
+
+									<input type="hidden" name="io_type[<?php echo $list[$i]['it_id']; ?>][]" value="0">
+									<input type="hidden" name="io_id[<?php echo $list[$i]['it_id']; ?>][]" value="">
+									<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][]" value="<?php get_text($list[$i]['it_name']); ?>">
+									<input type="hidden" name="ct_qty[<?php echo  $list[$i]['it_id']; ?>][]" value="1" id="ct_qty_<?php echo $i; ?>">
+									
 								</td>
 								<td class="text-center"
 									<label for="ct_chk_<?php echo $i; ?>" class="sound_only"></label>
@@ -87,6 +93,8 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 	<input type="hidden" name="url" value="./orderform.php"/>
 	<input type="hidden" name="records" value="<?php echo $i; ?>"/>
 	<input type="hidden" name="act" value="">
+	<input type="hidden" name="sw_direct" value="1">
+	
 </form>
 <br/>
 <div class="row">
@@ -109,7 +117,15 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 
 
 <script>
-	var my_codi = JSON.parse('<?php echo($codi); ?>');
+	var my_codi = '<?php echo($codi);?>';
+	var t_codi = {};
+
+	if(my_codi.length == 0){
+		my_codi = [];
+	}
+	else{
+		my_codi = JSON.parse(my_codi);
+	}
 
 	function sleep(ms) {
 	  return new Promise(resolve => setTimeout(resolve, ms));
@@ -136,12 +152,12 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 
 
 		$.post("./fitting_request.php", { it_id: it_id }, function(res) {
-			my_codi[ca_id] = it_id;
+			t_codi[ca_id] = it_id;
 			var result = JSON.parse(res);
 			if(result['result'])
 				$('#coco').attr('src', result['src']);
 			console.log(result);
-			console.log(my_codi);
+			console.log(t_codi);
 		});
 
 		await sleep(1000);
@@ -170,15 +186,19 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 	}
 
 	function request_save_cody(){
-		if(isEmpty(my_codi)){
+		if(isEmpty(t_codi)){
 			alert("코디가 없습니다.");
 			return false;
 		}
+
+		my_codi.push($.extend({}, t_codi));
 
 
 		$.post("./fitting_save_codi.php", { codi: JSON.stringify(my_codi)}, function(res) {
 			// var result = JSON.parse(res);
 			// console.log(res);
+			alert("코디 저장 완료");
+			t_codi = {};
 		});
 
 	}

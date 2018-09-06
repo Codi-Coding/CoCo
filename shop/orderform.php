@@ -19,14 +19,14 @@ set_session("ss_direct", $sw_direct);
 
 // 장바구니가 비어있는가?
 if ($sw_direct) {
-    $tmp_cart_id = get_session('ss_cart_direct');
+	$tmp_cart_id = get_session('ss_cart_direct');
 }
 else {
     $tmp_cart_id = get_session('ss_cart_id');
 }
 
-// if (get_cart_count($tmp_cart_id) == 0)
-//     alert('장바구니가 비어 있습니다.', G5_SHOP_URL.'/cart.php');
+if (get_cart_count($tmp_cart_id) == 0)
+    alert('장바구니가 비어 있습니다.', G5_SHOP_URL.'/cart.php');
 
 // Page ID
 $pid = 'orderform';
