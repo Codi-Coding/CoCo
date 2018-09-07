@@ -40,30 +40,53 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 			</div>
 		</div>
 		<div class="col-xs-6">
-
-
 			<a class="btn btn-default" role="button" onclick="show_item_list()">아이템 목록</a>
 			<a class="btn btn-default" role="button" onclick="show_codi_list()">코디</a>
-			<div class="row" id="item_list">
-				<?php 
+			<div class="wishlist-skin" id="item_list">
+				<table class="div-table table bg-white">
+					<tbody>
+						<?php 
+						for($i=0; $i < count($list);$i++) { 
+							$list[$i]['img'] = apms_it_thumbnail($list[$i], 40, 40, false, true);	
+						?>
+							<tr>
+								<td class="text-center">
+									<input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $list[$i]['it_id']; ?>">
+									<input type="hidden" name="it_name[<?php echo $i; ?>]" value="<?php echo get_text($list[$i]['it_name']); ?>">
 
-				for($i=0; $i < count($list);$i++) { 
-
-					$list[$i]['img'] = apms_it_thumbnail($list[$i], 40, 40, false, true);	
-				?>
-				<div class="col-xs-6">
-					<a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)">
-					<img width="75" height="75" src="<?php echo($list[$i]['img']['src']);?>" alt="<?php echo $list[$i]['img']['alt'];?>">
-					</a>
-					<input type="hidden" name="it_name[<?php echo $i; ?>]" value="<?php echo get_text($list[$i]['it_name']); ?>">
-					<input type="hidden" name="io_type[<?php echo $list[$i]['it_id']; ?>][]" value="0">
-					<input type="hidden" name="io_id[<?php echo $list[$i]['it_id']; ?>][]" value="">
-					<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][]" value="<?php get_text($list[$i]['it_name']); ?>">
-					<input type="hidden" name="ct_qty[<?php echo  $list[$i]['it_id']; ?>][]" value="1" id="ct_qty_<?php echo $i; ?>">
-					<input type="hidden" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked"/>
-				</div>
-
-				<?php } ?>
+									<input type="hidden" name="io_type[<?php echo $list[$i]['it_id']; ?>][]" value="0">
+									<input type="hidden" name="io_id[<?php echo $list[$i]['it_id']; ?>][]" value="">
+									<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][]" value="<?php get_text($list[$i]['it_name']); ?>">
+									<input type="hidden" name="ct_qty[<?php echo  $list[$i]['it_id']; ?>][]" value="1" id="ct_qty_<?php echo $i; ?>">
+									
+								</td>
+								<td class="text-center"
+									<label for="ct_chk_<?php echo $i; ?>" class="sound_only"></label>
+									<input type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked"/>
+								</td>
+								<td class="text-center">
+									<a class="btn btn-default" onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)" role="button">착용</a>
+								</td>
+								<td class="text-center">
+									<a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)">
+									<?php if($list[$i]['img']['src']) {?>
+										<img width="75" height="75" src="<?php echo($list[$i]['img']['src']);?>" alt="<?php echo $list[$i]['img']['alt'];?>">
+									<?php } else { ?>
+										<i class="fa fa-camera img-fa"></i>
+									<?php } ?>
+									</a>
+								</td>
+								<td><?php echo stripslashes($list[$i]['it_name']); ?></td>
+								<td class="text-center"><?php echo $list[$i]['wi_time']; ?></td>
+								<td class="text-center"><a href="./fitting_update.php?w=d&amp;fitting_cart_id=<?php echo $list[$i]['fitting_cart_id']; ?>">삭제</a></td>
+							</tr>
+							<?php } ?>
+							<?php if ($i == 0) { ?>
+								<tr><td colspan="5" class="text-center text-muted" height="150">보관함이 비었습니다.</td></tr>
+							<?php } ?>
+								</tr>
+					</tbody>
+				</table>
 			</div>
 			<!-- Codi List -->
 			<div class="wishlist-skin" id="codi_list" style="display:none;">
