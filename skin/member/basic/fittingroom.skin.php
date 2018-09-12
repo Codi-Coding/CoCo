@@ -11,15 +11,13 @@ if(isset($wset['chead']) && $wset['chead']) {
 } else {
 	$head_class = (isset($wset['ccolor']) && $wset['ccolor']) ? 'tr-head border-'.$wset['ccolor'] : 'tr-head border-black';
 }
+include_once(G5_LIB_PATH.'/coco.lib.php');
 
 // 헤더 출력
 if($header_skin)
 	include_once('./header.php');
 
-include_once(G5_LIB_PATH.'/aes_encrypt.php');
-include_once(G5_DATA_PATH.'/CoCo_config.php');
-
-$coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
+$coco_photo = getEncPath($member['coco_photo']);
 ?>
 
 
@@ -28,8 +26,8 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 	<div class="row">
 		<div class="col-xs-6">
 			<div class="fit_wrapper">
-				<?php if($member['photo']) { ?>
-					<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
+				<?php if($pre_codi_url != NULL) { ?>
+					<img id="coco" src="<?php echo ($pre_codi_url);?>" width="100%" height="100%"/>
 				<?php } else { ?>
 					<i class="fa fa-user"></i>
 					<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>

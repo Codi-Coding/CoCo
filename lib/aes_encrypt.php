@@ -72,6 +72,3 @@ function aes_decrypt($ciphertext, $password)
     return $plaintext;
 }
 
-function getEncPath($path, $key){
-    return "/image.php?key=".urlencode(aes_encrypt($path, $key));
-}

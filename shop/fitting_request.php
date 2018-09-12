@@ -9,7 +9,7 @@ if (!$is_member)
 if(!$it_id)
     die('상품 코드가 올바르지 않습니다.');
 
-$re = request_img_Deep($it_id, $member['mb_id']);
+$re = request_virtual_fitting($it_id, $member['mb_id']);
 
 echo(json_encode($re));
 ?>

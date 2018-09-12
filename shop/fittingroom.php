@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+include_once(G5_LIB_PATH.'/coco.lib.php');
 
 if (!$is_member)
     goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL.'/fittingroom.php'));
@@ -33,10 +34,14 @@ for ($i=0; $row = sql_fetch_array($result); $i++) {
 $pid = ($pid) ? $pid : 'cart';
 
 
-$codi_sql = "select cody from CoCo_cody where mb_id='{$member['mb_id']}'";
-$codi_result = sql_query($codi_sql);
-$codi_row = sql_fetch_array($codi_result);
+// $codi_sql = "select cody from CoCo_cody where mb_id='{$member['mb_id']}'";
+// $codi_result = sql_query($codi_sql);
+// $codi_row = sql_fetch_array($codi_result);
+
+$codi_row = getCodiRow($member['mb_id']);
 $codi = $codi_row['cody'];
+$pre_codi_url = $codi_row['image_url'];
+
 // 스킨 체크
 
 

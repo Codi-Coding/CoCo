@@ -1,6 +1,8 @@
 <?php
 
 include_once(dirname(__DIR__)."/data/CoCo_config.php");
+include_once('../_common.php');
+include_once(G5_LIB_PATH.'/aes_encrypt.php');
 
 
 $ch = curl_init();
@@ -9,7 +11,7 @@ curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
 
-function request_img_Deep($it_id, $mb_id){
+function request_virtual_fitting($it_id, $mb_id){
 	global $ch;
 
 	$postData = array(
@@ -36,6 +38,9 @@ function request_img_Deep($it_id, $mb_id){
 		$output['result'] = 0;
 		$output['src'] = NULL;
 	}
+
+	$codi_url_sql = "UPDATE CoCo_cody SET image_url='https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' where mb_id='{$mb_id}'";
+	sql_query($codi_url_sql);
 
 	return $output;
 }
@@ -101,5 +106,16 @@ function resize_image_save($file, $dest, $w, $h) {
 	return true;
  }
  
+function getCodiRow($mb_id){
+	$codi_sql = "select * from CoCo_cody where mb_id='{$mb_id}'";
+	$codi_result = sql_query($codi_sql);
+	$codi_row = sql_fetch_array($codi_result);
+
+	return $codi_row;
+}
+
+function getEncPath($path){
+    return "/image.php?key=".urlencode(aes_encrypt($path, IMAGE_KEY));
+}
 
 ?>

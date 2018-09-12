@@ -1,6 +1,43 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+include_once(G5_LIB_PATH.'/coco.lib.php');
+
+// Item 정보 가져오는 부분
+$list = array();
+$sql  = " select a.fitting_cart_id, a.cart_time, b.* from CoCo_fitting_cart a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id ) ";
+$sql .= " where a.mb_id = '{$member['mb_id']}' order by a.fitting_cart_id desc ";
+$result = sql_query($sql);
+
+
+for ($i=0; $row = sql_fetch_array($result); $i++) {
+
+	$list[$i] = $row;
+
+	$list[$i]['out_cd'] = '';
+	$sql = " select count(*) as cnt from {$g5['g5_shop_item_option_table']} where it_id = '{$row['it_id']}' and io_type = '0' ";
+	$tmp = sql_fetch($sql);
+	if($tmp['cnt'])
+		$list[$i]['out_cd'] = 'no';
+
+	$list[$i]['price'] = get_price($row);
+
+	if ($row['it_tel_inq']) $list[$i]['out_cd'] = 'tel';
+
+	$list[$i]['is_soldout'] = is_soldout($row['it_id']);
+	
+	$list[$i]['img'] = apms_it_thumbnail($list[$i], 40, 40, false, true);	
+
+}
+
+
+// 사용자 피팅룸 정보 가져오는 부분
+$codi_row = getCodiRow($member['mb_id']);
+$pre_codi_url = $codi_row['image_url'];
+
+if($pre_codi_url == NULL)
+	$pre_codi_url = $coco_photo = getEncPath($member['coco_photo']);
+
 ?>
 		<?php if($col_name) { ?>
 			<?php if($col_name == "two") { ?>
@@ -15,9 +52,25 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			</div><!-- .at-container -->
 		<?php } ?>
 	</div><!-- .at-body -->
-	<div id="float-div">
-		<a id="fitting-button" href="/shop/fittingroom.php"></a>
+
+
+	<div id="bottom-nav">
+		<div class="bottom-box">
+				<img id="bottom-user-image" class="img-thumbnail" src="<?php echo ($pre_codi_url);?>" 
+				width="15%" height="80%"/>
+		</div>
+		<div id="bottom-user-fc" class="bottom-box">
+			<?php 
+				for($i=0; $i < count($list);$i++) { 
+				?>
+					<img width="75" height="75" src="<?php echo($list[$i]['img']['src']);?>" 
+					alt="<?php echo $list[$i]['img']['alt'];?>"
+					class="bottom-user-fci"/>
+			<?php } ?>
+		</div>
 	</div>
+
+
 	<?php if(!$is_main_footer) { ?>
 		<footer class="at-footer">
 			<nav class="at-links">
