@@ -54,6 +54,8 @@ if($pre_codi_url == NULL)
 	</div><!-- .at-body -->
 
 
+
+
 	<div id="bottom-nav">
 		<div class="bottom-box">
 				<img id="bottom-user-image" class="img-thumbnail" src="<?php echo ($pre_codi_url);?>" 
@@ -70,6 +72,20 @@ if($pre_codi_url == NULL)
 		</div>
 	</div>
 
+
+<script>
+	function addFC(it_id){
+		$.post("shop/fitting_update.php", { it_id: it_id }, function(res) {
+			console.log(res);
+			var re = JSON.parse(res);
+			if(re['re'] == 1){
+				console.log(re);
+				$('#bottom-user-fc').prepend('<img id="theImg" src="'+re["src"]+'" />')
+			}
+		});
+	}
+	addFC('1535094199');
+</script>
 
 	<?php if(!$is_main_footer) { ?>
 		<footer class="at-footer">

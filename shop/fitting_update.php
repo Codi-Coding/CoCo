@@ -4,6 +4,8 @@ include_once('./_common.php');
 if (!$is_member)
     alert('회원 전용 서비스 입니다.', G5_BBS_URL.'/login.php?url='.urlencode($url));
 
+
+// 피팅카트 아이템 삭제
 if ($w == "d")
 {
     $fc_id = trim($_GET['fitting_cart_id']);
@@ -19,35 +21,39 @@ if ($w == "d")
                 and mb_id = '{$member['mb_id']}' ";
 
     sql_query($sql);
+    goto_url('./fittingroom.php');
 }
+// 피팅카트 추가
 else
 {
+    $re = Array('re' => 0);
     if(is_array($it_id))
-        $it_id = $_POST['it_id'][0];
+        $it_id = $_POST['it_id'];
 
     if(!$it_id)
         alert('상품코드가 올바르지 않습니다.', G5_SHOP_URL);
 
     // 상품정보 체크
-    $sql = " select it_id from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
-    $row = sql_fetch($sql);
+    $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
+    $item_row = sql_fetch($sql);
 
-    if(!$row['it_id'])
+    if(!$item_row['it_id'])
         alert('상품정보가 존재하지 않습니다.', G5_SHOP_URL);
 
-    $sql = " select fc_id from CoCo_fitting_cart
+    $sql = " select fitting_cart_id from CoCo_fitting_cart
               where mb_id = '{$member['mb_id']}' and it_id = '$it_id' ";
     $row = sql_fetch($sql);
 
-    if (!$row['fc_id']) { // 없다면 등록
+    if (!$row['fitting_cart_id']) { // 없다면 등록
         $sql = " insert CoCo_fitting_cart
-                    set mb_id = '{$member['mb_id']}',
-                        it_id = '$it_id',
-                        wi_time = '".G5_TIME_YMDHIS."',
-                        wi_ip = '$REMOTE_ADDR' ";
+        set mb_id = '{$member['mb_id']}',
+            it_id = '$it_id',
+            cart_time = '".G5_TIME_YMDHIS."'";
         sql_query($sql);
+        $re['src'] = apms_it_thumbnail($item_row, 40, 40, false, true)['src'];
+        $re['re'] = 1;
     }
+    echo(json_encode($re));
 }
 
-goto_url('./fittingroom.php');
 ?>

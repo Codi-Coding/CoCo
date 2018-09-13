@@ -41,7 +41,7 @@ $side = ($at_set['side']) ? 'left' : 'right';
 				<a href="<?php echo $at_href['itype'];?>?type=1">
 					<span class="pull-right lightgray">+</span>
 					<span class="div-title-underbar-bold border-<?php echo $line;?>">
-						Hit & Best
+						Hit & Best123
 					</span>
 				</a>
 			</h2>
