@@ -75,16 +75,15 @@ if($pre_codi_url == NULL)
 
 <script>
 	function addFC(it_id){
-		$.post("shop/fitting_update.php", { it_id: it_id }, function(res) {
+		$.post("/shop/fitting_update.php", { it_id: it_id }, function(res) {
 			console.log(res);
 			var re = JSON.parse(res);
 			if(re['re'] == 1){
 				console.log(re);
-				$('#bottom-user-fc').prepend('<img id="theImg" src="'+re["src"]+'" />')
+				$('#bottom-user-fc').prepend('<img class="theImg" src="'+re["src"]+'" />')
 			}
 		});
 	}
-	addFC('1535094199');
 </script>
 
 	<?php if(!$is_main_footer) { ?>

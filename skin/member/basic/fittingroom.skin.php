@@ -18,6 +18,9 @@ if($header_skin)
 	include_once('./header.php');
 
 $coco_photo = getEncPath($member['coco_photo']);
+
+$item_url = Array();
+
 ?>
 
 
@@ -47,7 +50,8 @@ $coco_photo = getEncPath($member['coco_photo']);
 
 				for($i=0; $i < count($list);$i++) { 
 
-					$list[$i]['img'] = apms_it_thumbnail($list[$i], 40, 40, false, true);	
+					$list[$i]['img'] = apms_it_thumbnail($list[$i], 40, 40, false, true);
+					$item_url[$list[$i]['it_id']] = $list[$i]['img']['src'];
 				?>
 				<div class="col-xs-6">
 					<a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)">
@@ -65,9 +69,9 @@ $coco_photo = getEncPath($member['coco_photo']);
 			</div>
 			<!-- Codi List -->
 			<div class="wishlist-skin" id="codi_list" style="display:none;">
-				<h1>test</h1>
 			</div>
-		</div>
+			
+					</div>
 	</div>
 	<input type="hidden" name="url" value="./orderform.php"/>
 	<input type="hidden" name="records" value="<?php echo $i; ?>"/>
@@ -98,13 +102,16 @@ $coco_photo = getEncPath($member['coco_photo']);
 <script>
 	var my_codi = '<?php echo($codi);?>';
 	var t_codi = {};
+	var image = '<?php echo(json_encode($item_url)); ?>';
 
 	if(my_codi.length == 0){
 		my_codi = [];
 	}
 	else{
 		my_codi = JSON.parse(my_codi);
+		image = JSON.parse(image);
 	}
+
 
 	function sleep(ms) {
 	  return new Promise(resolve => setTimeout(resolve, ms));
@@ -133,8 +140,10 @@ $coco_photo = getEncPath($member['coco_photo']);
 		$.post("./fitting_request.php", { it_id: it_id }, function(res) {
 			t_codi[ca_id] = it_id;
 			var result = JSON.parse(res);
-			if(result['result'])
+			if(result['result']){
 				$('#coco').attr('src', result['src']);
+				t_codi['codi_url'] = result['src'];
+			}
 			console.log(result);
 			console.log(t_codi);
 		});
@@ -179,21 +188,40 @@ $coco_photo = getEncPath($member['coco_photo']);
 			alert("코디 저장 완료");
 			t_codi = {};
 		});
-
 	}
 
 	function show_codi_list(){
-		console.log('here');
 		$('#item_list').hide();
 		$('#codi_list').show();
+
+		for(var i in my_codi){
+			var wrapper_div = $('<div class="fitting-wrapper"/>');
+			for(var j in my_codi[i]){
+				var item_id = my_codi[i][j];
+				wrapper_div.prepend('<img class="theImg" src="'+image[item_id]+'" />');
+			}
+			var index = Number(i) + 1;
+			wrapper_div.prepend('<h1>'+ index +'번째 코디</h1>');
+			wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + i +')"></a>"').parent();
+			$('#codi_list').append(wrapper_div);
+		}
 	}
 
 	function show_item_list(){
 		$('#item_list').show();
 		$('#codi_list').hide();
+		$('#codi_list').empty();
+	}
+
+	function select_codi(index){
+		console.log(index);
+		$('#coco').attr('src', my_codi[index]['codi_url']);
+	}
+
+	function delete_codi(index){
+		my_codi.splice(index, 1);
+		request_buy();
 	}
 	
-
-
 
 </script>
