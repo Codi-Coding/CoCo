@@ -144,14 +144,11 @@ $item_url = Array();
 				$('#coco').attr('src', result['src']);
 				t_codi['codi_url'] = result['src'];
 			}
-			console.log(result);
-			console.log(t_codi);
 		});
 
 		await sleep(1000);
 		
 		
-		// $('#coco').attr('src', img);
 		$('#loader').hide();  
 
 		return true;
@@ -174,19 +171,30 @@ $item_url = Array();
 	}
 
 	function request_save_cody(){
+		var flag = true;
+
 		if(isEmpty(t_codi)){
 			alert("코디가 없습니다.");
 			return false;
 		}
 
-		my_codi.push($.extend({}, t_codi));
+		for(var i in my_codi){
+			if(JSON.stringify(my_codi[i]) == JSON.stringify(t_codi)){
+				flag = false;
+			}
+		}
 
+		if(!flag){
+			alert("중복된 코디입니다.");
+			return;
+		}
+			
+		my_codi.push($.extend({}, t_codi));
 
 		$.post("./fitting_save_codi.php", { codi: JSON.stringify(my_codi)}, function(res) {
 			// var result = JSON.parse(res);
 			// console.log(res);
 			alert("코디 저장 완료");
-			t_codi = {};
 		});
 	}
 

@@ -69,7 +69,6 @@
 }
 
 
-
 @media (max-width: 900px){
     #bottom-nav {
         position: fixed;
@@ -93,6 +92,14 @@
 
 }
 
+.navbar {
+    text-align: center;
+}
+
+.nav {
+    display: inline-block;
+}
+
 
 /* Safari */
 @-webkit-keyframes spin {
@@ -103,4 +110,10 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    width: initial !important;
 }
