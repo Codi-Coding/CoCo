@@ -73,18 +73,7 @@ if($pre_codi_url == NULL)
 	</div>
 
 
-<script>
-	function addFC(it_id){
-		$.post("/shop/fitting_update.php", { it_id: it_id }, function(res) {
-			console.log(res);
-			var re = JSON.parse(res);
-			if(re['re'] == 1){
-				console.log(re);
-				$('#bottom-user-fc').prepend('<img class="theImg" src="'+re["src"]+'" />')
-			}
-		});
-	}
-</script>
+
 
 	<?php if(!$is_main_footer) { ?>
 		<footer class="at-footer">
@@ -178,7 +167,24 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 <?php if($is_sticky_nav) { ?>
 <script src="<?php echo THEMA_URL;?>/assets/js/sticky.js"></script>
 <?php } ?>
+<script>
+	function addFC(it_id){
+		$.post("/shop/fitting_update.php", { it_id: it_id }, function(res) {
+			console.log(res);
+			var re = JSON.parse(res);
+			if(re['re'] == 1){
+				console.log(re);
+				$('#bottom-user-fc').prepend('<img class="theImg" src="'+re["src"]+'" />')
+			}
+		});
+	}
 
+	function removeActi(){
+		$('#m-nav li').first().removeClass("active");
+		console.log("here");
+	}
+	removeActi();
+</script>
 <?php echo apms_widget('basic-sidebar'); //사이드바 및 모바일 메뉴(UI) ?>
 
 <?php if($is_designer || $is_demo) include_once(THEMA_PATH.'/assets/switcher.php'); //Style Switcher ?>

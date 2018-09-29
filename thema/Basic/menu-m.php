@@ -6,15 +6,15 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 		<div class="m-table en">
 			<div class="m-list">
 				<div class="m-nav" id="mobile_nav">
-					<ul class="clearfix flex">
+					<ul class="clearfix flex" id="m-nav">
 						<li>
-							<a href="/shop/list.php?ca_id=10">검색</a>
+							<a href="/search.php">검색</a>
 						</li>
 						<li>
-							<a href="<?php echo $at_href['main'];?>">추천/컨셉</a>
+							<a href="/recommend.php">추천/컨셉</a>
 						</li>
 						<li>
-							<a href="/shop/list.php?ca_id=20">모아보기</a>
+							<a href="/shop/listtype.php">모아보기</a>
 						</li>
 						<li>
 							<a href="/shop/fittingroom.php">피팅룸</a>
