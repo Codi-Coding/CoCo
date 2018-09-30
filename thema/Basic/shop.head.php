@@ -196,7 +196,10 @@ include_once(THEMA_PATH.'/assets/thema.php');
 
 		<!-- Mobile Menu -->
 		<div class="m-menu">
-			<?php include_once(THEMA_PATH.'/menu-m.php');	// 메뉴 불러오기 ?>
+			<?php
+			if(!$app)
+				include_once(THEMA_PATH.'/menu-m.php');	// 메뉴 불러오기 
+			 ?>
 		</div><!-- .m-menu -->
 	</nav><!-- .at-menu -->
 

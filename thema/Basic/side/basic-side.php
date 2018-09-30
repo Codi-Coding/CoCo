@@ -89,7 +89,7 @@ $line = 'navy';
 	<!-- 광고 시작 -->
 	<div class="widget-box">
 		<div style="width:100%; min-height:280px; line-height:280px; text-align:center; background:#f5f5f5;">
-			반응형 구글광고 등
+			반응형 구글광고 등123
 		</div>
 	</div>
 	<!-- 광고 끝 -->

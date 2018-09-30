@@ -17,7 +17,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 							<a href="/shop/listtype.php">모아보기</a>
 						</li>
 						<li>
-							<a href="/shop/fittingroom.php">피팅룸</a>
+							<a href="/fittingroom.php">피팅룸</a>
 						</li>
 						<li>
 							<a href="javascript:;" onclick="sidebar_open('sidebar-menu');"><i class="fa fa-bars"></i></a>

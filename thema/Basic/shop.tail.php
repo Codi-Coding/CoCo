@@ -107,7 +107,7 @@ if($pre_codi_url == NULL)
 							</div>
 							<div class="media-body">
 						
-								<ul class="at-about hidden-xs">
+								<!-- <ul class="at-about hidden-xs">
 									<li><b><?php echo $default['de_admin_company_name']; ?></b></li>
 									<li>대표 : <?php echo $default['de_admin_company_owner']; ?></li>
 									<li><?php echo $default['de_admin_company_addr']; ?></li>
@@ -117,7 +117,7 @@ if($pre_codi_url == NULL)
 									<li>통신판매업신고 : <span><?php echo $default['de_admin_tongsin_no']; ?></span></li>
 									<li>개인정보관리책임자 : <?php echo $default['de_admin_info_name']; ?></li>
 									<li>이메일 : <span><?php echo $default['de_admin_info_email']; ?></span></li>
-								</ul>
+								</ul> -->
 								
 								<div class="clearfix"></div>
 
@@ -185,6 +185,5 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 	}
 	removeActi();
 </script>
-<?php echo apms_widget('basic-sidebar'); //사이드바 및 모바일 메뉴(UI) ?>
 
 <?php if($is_designer || $is_demo) include_once(THEMA_PATH.'/assets/switcher.php'); //Style Switcher ?>

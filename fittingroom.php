@@ -30,13 +30,8 @@ for ($i=0; $row = sql_fetch_array($result); $i++) {
 }
 
 // Page ID
-// $pid = ($pid) ? $pid : 'cart';
 $pid = ($pid) ? $pid : 'cart';
 
-
-// $codi_sql = "select cody from CoCo_cody where mb_id='{$member['mb_id']}'";
-// $codi_result = sql_query($codi_sql);
-// $codi_row = sql_fetch_array($codi_result);
 
 $codi_row = getCodiRow($member['mb_id']);
 $codi = $codi_row['cody'];
@@ -45,33 +40,12 @@ $pre_codi_url = $codi_row['image_url'];
 // 스킨 체크
 
 
-$g5['title'] = $member['mb_nick'].'님의 피팅카트';
-
-if($is_wishlist_sub) {
-	include_once(G5_PATH.'/head.sub.php');
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/head.sub.php');
-} else {
-	include_once('./_head.php');
-}
-
-$skin_path = $member_skin_path;
-$skin_url = $member_skin_url;
-
-// 스킨설정
-$wset = (G5_IS_MOBILE) ? apms_skin_set('member_mobile') : apms_skin_set('member');
-
-$setup_href = '';
-if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
-	$setup_href = './skin.setup.php?skin=member&amp;ts='.urlencode(THEMA);
-}
-
-include_once($skin_path.'/fittingroom.skin.php');
+include_once('./_head.php');
 
 
-if($is_wishlist_sub) {
-	if(!USE_G5_THEME) @include_once(THEMA_PATH.'/tail.sub.php');
-	include_once(G5_PATH.'/tail.sub.php');
-} else {
-	include_once('./_tail.php');
-}
+include_once('skin/fittingroom/fittingroom.skin.php');
+
+
+include_once('./_tail.php');
+
 ?>
