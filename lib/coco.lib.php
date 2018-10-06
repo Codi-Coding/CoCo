@@ -7,20 +7,37 @@ include_once(G5_LIB_PATH.'/aes_encrypt.php');
 
 $ch = curl_init();
 
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+// curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+// curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+// curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5);
 
-function request_virtual_fitting($it_id, $mb_id){
+function request_virtual_fitting($item, $mb_id){
 	global $ch;
+	$items = json_decode($item);
+	$cate = 0;
+	$item_id = 0;
+	$sql = "";
 
-	$postData = array(
-	    'userid' => $mb_id,
-	    'productid' => $it_id,
+
+
+	foreach($items as $ca => $it_id){
+		$sql = "SELECT it_img1 FROM `CoCo_item` where it_id='{$it_id}'";
+		$row = sql_query($sql);
+		$row = sql_fetch_array($row);
+		$cate_id = $ca;
+		$item_id = $row['it_img1'];
+	}
+
+
+    $postData = array(
+	    'userid' => "{$mb_id}",
+		'productid' => "{$row['it_img1']}",
+		'category' => "{$cate_id}",
 	);
 
+	
 	curl_setopt_array($ch, array(
-	    CURLOPT_URL => DeepLearning_Server.'/submit',
+	    CURLOPT_URL => 'http://121.140.133.98'.'/submit',
 	    CURLOPT_RETURNTRANSFER => true,
 	    CURLOPT_POST => true,
 	    CURLOPT_POSTFIELDS => $postData,
@@ -39,11 +56,11 @@ function request_virtual_fitting($it_id, $mb_id){
 		$output['src'] = NULL;
 	}
 
-	$codi_url_sql = "UPDATE CoCo_cody SET image_url='https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' where mb_id='{$mb_id}'";
+//	$codi_url_sql = "UPDATE CoCo_cody SET image_url='https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' where mb_id='{$mb_id}'";
 	// $codi_url_sql = "UPDATE CoCo_cody SET image_url='{resopnse_url}' where mb_id='{$mb_id}'";
-	sql_query($codi_url_sql);
+//	sql_query($codi_url_sql);
 
-	return $output;
+	return json_encode($output);
 }
 
 function notification_item_Deep($it_id){

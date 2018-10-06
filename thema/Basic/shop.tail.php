@@ -79,7 +79,7 @@ if($pre_codi_url == NULL)
 		<footer class="at-footer">
 			<nav class="at-links">
 				<div class="at-container">
-					<ul class="pull-left">
+					<!--<ul class="pull-left">
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=intro">사이트 소개</a></li> 
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=provision">이용약관</a></li> 
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=privacy">개인정보처리방침</a></li>
@@ -90,7 +90,7 @@ if($pre_codi_url == NULL)
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=guide">이용안내</a></li>
 						<li><a href="<?php echo $at_href['secret'];?>">문의하기</a></li>
 						<li><a href="<?php echo $as_href['pc_mobile'];?>"><?php echo (G5_IS_MOBILE) ? 'PC' : '모바일';?>버전</a></li>
-					</ul>
+					</ul> -->
 					<div class="clearfix"></div>
 				</div>
 			</nav>

@@ -74,12 +74,12 @@
         position: fixed;
         bottom: 0px;
         width:100%;
-        display: inline-block;
+        display: flex;
         height: 15%;
         background-color: #95a4df;
     }
     .bottom-box{
-        display: inline-block;
+        display: flex;
         width: 200px;
         height: 100px;
         margin: 1em;

@@ -137,9 +137,9 @@ $item_url = Array();
 
 		$('#loader').css("display", "block");  
 
-		t_codi[ca_id] = it_id;
+		t_codi[ca_id] = it_id.toString();
 
-
+		// console.log(JSON.stringify(t_codi));
 		$.post("/shop/fitting_request.php", { it_id : JSON.stringify(t_codi)}, function(res) {
 			console.log(res);
 			var result = JSON.parse(res);

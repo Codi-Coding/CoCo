@@ -16,7 +16,7 @@
     var cssstring = `background : url(/img/coco/search_main.jpg);
     background-color: #95a4df;
     margin-top:5px;
-    background-position: center;
+    background-position: center top;
     background-repeat: no-repeat;
 	background-size: cover;
 	overflow: hidden;

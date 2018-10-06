@@ -462,7 +462,7 @@ $is_seller = ($it['pt_id'] && $it['pt_id'] != $config['cf_admin']) ? true : fals
 							return false;
 						} else {
 							if(confirm("피팅 카트에 담겼습니다.\n\n바로 확인하시겠습니까?")) {
-								document.location.href = "./fittingroom.php";
+								document.location.href = "/fittingroom.php";
 							}
 						}
 					});
