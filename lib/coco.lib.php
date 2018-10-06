@@ -1,7 +1,7 @@
 <?php
 
+include_once(dirname(__DIR__).'/_common.php');
 include_once(dirname(__DIR__)."/data/CoCo_config.php");
-include_once('../_common.php');
 include_once(G5_LIB_PATH.'/aes_encrypt.php');
 
 
@@ -40,6 +40,7 @@ function request_virtual_fitting($it_id, $mb_id){
 	}
 
 	$codi_url_sql = "UPDATE CoCo_cody SET image_url='https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' where mb_id='{$mb_id}'";
+	// $codi_url_sql = "UPDATE CoCo_cody SET image_url='{resopnse_url}' where mb_id='{$mb_id}'";
 	sql_query($codi_url_sql);
 
 	return $output;

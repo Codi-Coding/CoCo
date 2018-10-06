@@ -553,7 +553,7 @@ $(function(){
 	});
 
 	// Toggles
-	$('.at-toggle .panel-heading a').on('click', function () {
+	$('#m-nav a').on('click', function () {
 		var clicked_toggle = $(this);
 
 		if(clicked_toggle.hasClass('active')) {

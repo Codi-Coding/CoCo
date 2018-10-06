@@ -337,7 +337,6 @@ else // 장바구니에 담기
         }
         if($ct_count > 0){
             sql_query($sql);
-            // echo("here");
         }
     }
 }

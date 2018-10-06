@@ -84,6 +84,7 @@ $item_url = Array();
 	<div class="col-xs-6">
 		<div class="text-center">
 			<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
+			<a class="btn btn-default btn-block" role="button" width="100%" height="100%" href="/bbs/myphoto.php"  target="_blank">사진 수정</a>
 		</div>
 	</div>
 	<div class="col-xs-6">
@@ -136,9 +137,11 @@ $item_url = Array();
 
 		$('#loader').css("display", "block");  
 
+		t_codi[ca_id] = it_id;
 
-		$.post("./fitting_request.php", { it_id: it_id }, function(res) {
-			t_codi[ca_id] = it_id;
+
+		$.post("/shop/fitting_request.php", { it_id : JSON.stringify(t_codi)}, function(res) {
+			console.log(res);
 			var result = JSON.parse(res);
 			if(result['result']){
 				$('#coco').attr('src', result['src']);
@@ -191,7 +194,7 @@ $item_url = Array();
 			
 		my_codi.push($.extend({}, t_codi));
 
-		$.post("./fitting_save_codi.php", { codi: JSON.stringify(my_codi)}, function(res) {
+		$.post("/shop/fitting_save_codi.php", { codi: JSON.stringify(my_codi)}, function(res) {
 			// var result = JSON.parse(res);
 			// console.log(res);
 			alert("코디 저장 완료");

@@ -3,7 +3,7 @@ include_once('./_common.php');
 include_once(G5_LIB_PATH.'/coco.lib.php');
 
 if (!$is_member)
-    goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL.'/fittingroom.php'));
+    goto_url(G5_BBS_URL."/login.php?url=".urlencode('/fittingroom.php'));
 
 
 $list = array();

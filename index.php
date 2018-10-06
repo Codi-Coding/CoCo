@@ -2,6 +2,9 @@
 include_once('./_common.php');
 define('_INDEX_', true);
 
+goto_url("/search.php");
+
+
 if(!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 $is_index = true;

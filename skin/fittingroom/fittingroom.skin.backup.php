@@ -208,7 +208,6 @@ $coco_photo = getEncPath($member['coco_photo'], IMAGE_KEY);
 	}
 
 	function show_codi_list(){
-		console.log('here');
 		$('#item_list').hide();
 		$('#codi_list').show();
 	}

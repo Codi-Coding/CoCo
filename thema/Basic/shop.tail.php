@@ -181,9 +181,49 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 
 	function removeActi(){
 		$('#m-nav li').first().removeClass("active");
-		console.log("here");
 	}
-	removeActi();
+	
+		
+	$(function() {
+		removeActi();
+		let img_src = "";
+		
+		var index = undefined;
+		switch(window.location.pathname){
+			case "/search.php":
+			img_src = "/img/coco/navbar_search.jpg";
+			index = 0;
+			break;
+			case "/recommend.php":
+			img_src = "/img/coco/navbar_recommend.jpg";
+			index = 1;
+			break;
+			case "/collect.php":
+			img_src = "/img/coco/navbar_collect.jpg";
+			index = 2;
+			break;
+			case "/fittingroom.php":
+			img_src = "/img/coco/navbar_more.jpg";
+			index = 3;
+			break;
+		}
+
+		var cssstring = `background : url(` + img_src + `);
+    background-position: center;
+    background-repeat: no-repeat;
+	background-size: cover;
+	overflow: hidden;
+	height: 60px;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  `;
+
+		$('#m-nav li').eq(index).addClass("active");
+		// $('div .m-menu div').eq(0).attr("style", "cssstring");
+	})
+
 </script>
 
 <?php if($is_designer || $is_demo) include_once(THEMA_PATH.'/assets/switcher.php'); //Style Switcher ?>

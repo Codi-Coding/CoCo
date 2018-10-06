@@ -2,6 +2,9 @@
 define("_INDEX_", TRUE);
 include_once('./_common.php');
 
+goto_url("/search.php");
+
+
 if(!$page_id) {
 	$page_id = 'index';
 }
