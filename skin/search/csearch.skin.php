@@ -13,7 +13,7 @@
 </div>
 
 <script>
-    var cssstring = `background : url(/img/coco/search_main.jpg);
+    var cssstring = `background : url(/img/coco/search_main1.jpg);
     background-color: #95a4df;
     margin-top:5px;
     background-position: center top;
@@ -21,6 +21,7 @@
 	background-size: cover;
 	overflow: hidden;
 	height: 550px;
+	height: 594px;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

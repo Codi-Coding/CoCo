@@ -11,6 +11,23 @@ $ch = curl_init();
 // curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 // curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5);
 
+function getHashPath($user_id, $it_id){
+	$ext = '.png';
+
+	$target_name = md5($user_id.$it_id);
+
+	// $root = dirname(__DIR__);
+	$upddr = "./res/{$user_id}/";
+
+	if (!is_dir($upddr ))
+        mkdir($upddr, 0777, true);
+	
+	$target_file = $upddr . basename($target_name.$ext);
+
+	return $target_file;
+}
+
+
 function request_virtual_fitting($item, $mb_id){
 	global $ch;
 	$items = json_decode($item);
@@ -19,23 +36,35 @@ function request_virtual_fitting($item, $mb_id){
 	$sql = "";
 
 
+	$get_num_sql = "SELECT mb_no FROM `CoCo_member` where mb_id = '{$mb_id}'";
+	$row = sql_fetch_array(sql_query($get_num_sql));
+	$mb_no = $row['mb_no'];
+	$data = Array();
+
 
 	foreach($items as $ca => $it_id){
 		$sql = "SELECT it_img1 FROM `CoCo_item` where it_id='{$it_id}'";
 		$row = sql_query($sql);
 		$row = sql_fetch_array($row);
-		$cate_id = $ca;
+		$cate = $ca;
 		$item_id = $row['it_img1'];
+		$data[$ca] = [];
+		array_push($data[$ca], $item_id);
 	}
 
+	$ff = explode ("/", $row['it_img1'])[0];
+
+
+	// $mb_no = "000005";
+	// $ff = "000010";
 
     $postData = array(
-	    'userid' => "{$mb_id}",
-		'productid' => "{$row['it_img1']}",
-		'category' => "{$cate_id}",
+	    'userid' => "{$mb_no}",
+		'productid' => "{$ff}",
+		'category' => "{$cate}",
 	);
 
-	
+
 	curl_setopt_array($ch, array(
 	    CURLOPT_URL => 'http://121.140.133.98'.'/submit',
 	    CURLOPT_RETURNTRANSFER => true,
@@ -48,17 +77,26 @@ function request_virtual_fitting($item, $mb_id){
 
 	$output = array(
 		"result" => 1,
-		"src" => $re,
+		"src" => getHashPath($mb_id, $ff),
 	);
 
 	if(curl_errno($ch)){
 		$output['result'] = 0;
 		$output['src'] = NULL;
+
+		return json_encode($output);
 	}
 
 //	$codi_url_sql = "UPDATE CoCo_cody SET image_url='https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' where mb_id='{$mb_id}'";
 	// $codi_url_sql = "UPDATE CoCo_cody SET image_url='{resopnse_url}' where mb_id='{$mb_id}'";
 //	sql_query($codi_url_sql);
+
+
+
+	$codi_url_sql = "UPDATE CoCo_cody SET image_url='{$output['src']}' where mb_id='{$mb_id}'";
+	sql_query($codi_url_sql);
+
+
 
 	return json_encode($output);
 }

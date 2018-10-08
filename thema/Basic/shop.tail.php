@@ -56,7 +56,7 @@ if($pre_codi_url == NULL)
 
 
 
-	<div id="bottom-nav">
+	<!-- <div id="bottom-nav">
 		<div class="bottom-box">
 				<img id="bottom-user-image" class="img-thumbnail" src="<?php echo ($pre_codi_url);?>" 
 				width="15%" height="80%"/>
@@ -70,16 +70,15 @@ if($pre_codi_url == NULL)
 					class="bottom-user-fci"/>
 			<?php } ?>
 		</div>
-	</div>
+	</div> -->
 
 
 
 
 	<?php if(!$is_main_footer) { ?>
 		<footer class="at-footer">
-			<nav class="at-links">
-				<div class="at-container">
-					<!--<ul class="pull-left">
+			<!-- <nav class="at-links">
+				<div c	<ul class="pull-left">
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=intro">사이트 소개</a></li> 
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=provision">이용약관</a></li> 
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=privacy">개인정보처리방침</a></li>
@@ -90,54 +89,12 @@ if($pre_codi_url == NULL)
 						<li><a href="<?php echo G5_BBS_URL;?>/page.php?hid=guide">이용안내</a></li>
 						<li><a href="<?php echo $at_href['secret'];?>">문의하기</a></li>
 						<li><a href="<?php echo $as_href['pc_mobile'];?>"><?php echo (G5_IS_MOBILE) ? 'PC' : '모바일';?>버전</a></li>
-					</ul> -->
+					</ul>lass="at-container">
+				
 					<div class="clearfix"></div>
 				</div>
-			</nav>
-			<div class="at-infos">
-				<div class="at-container">
-					<?php if(IS_YC) { // YC5 ?>
-						<div class="media">
-							<div class="pull-right hidden-xs">
-								<!-- 하단 우측 아이콘 -->
-							</div>
-							<div class="pull-left hidden-xs">
-								<!-- 하단 좌측 로고 -->
-								<i class="fa fa-leaf"></i>
-							</div>
-							<div class="media-body">
-						
-								<!-- <ul class="at-about hidden-xs">
-									<li><b><?php echo $default['de_admin_company_name']; ?></b></li>
-									<li>대표 : <?php echo $default['de_admin_company_owner']; ?></li>
-									<li><?php echo $default['de_admin_company_addr']; ?></li>
-									<li>전화 : <span><?php echo $default['de_admin_company_tel']; ?></span></li>
-									<li>사업자등록번호 : <span><?php echo $default['de_admin_company_saupja_no']; ?></span></li>
-									<li><a href="http://www.ftc.go.kr/info/bizinfo/communicationList.jsp" target="_blank">사업자정보확인</a></li>
-									<li>통신판매업신고 : <span><?php echo $default['de_admin_tongsin_no']; ?></span></li>
-									<li>개인정보관리책임자 : <?php echo $default['de_admin_info_name']; ?></li>
-									<li>이메일 : <span><?php echo $default['de_admin_info_email']; ?></span></li>
-								</ul> -->
-								
-								<div class="clearfix"></div>
-
-								<div class="copyright">
-									<strong><?php echo $config['cf_title'];?> <i class="fa fa-copyright"></i></strong>
-									<span>All rights reserved.</span>
-								</div>
-
-								<div class="clearfix"></div>
-							</div>
-						</div>
-					<?php } else { // G5 ?>
-						<div class="at-copyright">
-							<i class="fa fa-leaf"></i>
-							<strong><?php echo $config['cf_title'];?> <i class="fa fa-copyright"></i></strong>
-							All rights reserved.
-						</div>
-					<?php } ?>
-				</div>
-			</div>
+			</nav> -->
+			
 		</footer>
 	<?php } ?>
 </div><!-- .wrapper -->

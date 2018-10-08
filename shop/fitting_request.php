@@ -13,10 +13,8 @@ if(!$it_id)
 $it_id = str_replace("\\", "", $it_id);
 
 
-
 $re = request_virtual_fitting($it_id, $member['mb_id']);
 
 
-echo(($re));
-// echo(json_encode($re));
+echo($re);
 ?>
