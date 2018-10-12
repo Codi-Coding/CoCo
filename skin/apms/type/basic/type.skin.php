@@ -63,23 +63,8 @@ $list_cnt = count($list);
 
 <aside>
 	<div class="div-tab tabs tabs-<?php echo (isset($wset['tab']) && $wset['tab']) ? $wset['tab'] : 'red';?>-top" style="margin-bottom:20px;">
-		<ul class="nav nav-tabs nav-justified">
-			<li<?php echo ($type == "1") ? ' class="active"' : '';?>>
-				<a href="./listtype.php?type=1"><b>히트아이템</b></a>
-			</li>
-			<li<?php echo ($type == "2") ? ' class="active"' : '';?>>
-				<a href="./listtype.php?type=2"><b>추천아이템</b></a>
-			</li>
-			<li<?php echo ($type == "3") ? ' class="active"' : '';?>>
-				<a href="./listtype.php?type=3"><b>신상아이템</b></a>
-			</li>
-			<li<?php echo ($type == "4") ? ' class="active"' : '';?>>
-				<a href="./listtype.php?type=4"><b>인기아이템</b></a>
-			</li>
-			<li<?php echo ($type == "5") ? ' class="active"' : '';?>>
-				<a href="./listtype.php?type=5"><b>할인아이템</b></a>
-			</li>
-		</ul>
+		<h3> <?php echo ($kind);?> </h3>
+		<hr/>
 	</div>
 </aside>
 

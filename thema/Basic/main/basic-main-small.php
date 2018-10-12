@@ -296,7 +296,7 @@ $side = ($at_set['side']) ? 'left' : 'right';
 				</span>
 			</div>
 			<div class="widget-box">
-				<ul style="padding:0; margin:0; list-style:none;">
+				<!-- <ul style="padding:0; margin:0; list-style:none;">
 					<li><i class="fa fa-bug red"></i>  <a href="<?php echo $at_href['connect'];?>">
 						현재 접속자 <span class="pull-right"><?php echo number_format($stats['now_total']); ?><?php echo ($stats['now_mb'] > 0) ? '(<b>'.number_format($stats['now_mb']).'</b>)' : ''; ?> 명</span></a>
 					</li>
@@ -307,7 +307,7 @@ $side = ($at_set['side']) ? 'left' : 'right';
 					<li><i class="fa fa-bug"></i> 전체 게시물	<span class="pull-right"><?php echo number_format($menu[0]['count_write']); ?> 개</span></li>
 					<li><i class="fa fa-bug"></i> 전체 댓글수	<span class="pull-right"><?php echo number_format($menu[0]['count_comment']); ?> 개</span></li>
 					<li><i class="fa fa-bug"></i> 전체 회원수	<span class="pull-right at-tip" data-original-title="<nobr>오늘 <?php echo $stats['join_today'];?> 명 / 어제 <?php echo $stats['join_yesterday'];?> 명</nobr>" data-toggle="tooltip" data-placement="top" data-html="true"><?php echo number_format($stats['join_total']); ?> 명</span>
-					</li>
+					</li> -->
 				</ul>
 			</div>
 			<!-- 통계 끝 -->

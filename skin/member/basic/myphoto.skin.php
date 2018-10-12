@@ -23,7 +23,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 				</div>
 				<div class="col-lg-10 col-sm-9">
 					<p>
-						회원사진은 이미지(gif/jpg/png) 파일만 가능하며, 등록시 <?php echo $photo_size;?>x<?php echo $photo_size;?> 사이즈로 자동 리사이즈됩니다.
+						회원사진은 이미지(gif/jpg/png) 파일만 가능하며, 등록시 자동 리사이즈됩니다.
 					</p>
 					<p><input type=file name="mb_icon2"></p>
 
@@ -42,7 +42,16 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 </form>
 
 <script>
+
+function refreshParent(){
+    	window.opener.location.reload(true);
+}
+
 $(function() {
 	window.resizeTo(320, 440);
+
+	
+
+	$("body").attr("onunload", "javascript:refreshParent()");
 });
 </script>

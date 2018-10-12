@@ -17,7 +17,8 @@ include_once(G5_LIB_PATH.'/coco.lib.php');
 if($header_skin)
 	include_once('./header.php');
 
-$coco_photo = getEncPath($member['coco_photo']);
+$coco_photo = $member['coco_photo'];
+// $coco_photo = getEncPath($member['coco_photo']);
 
 $item_url = Array();
 
@@ -32,7 +33,6 @@ $item_url = Array();
 				<?php if($pre_codi_url != NULL) { ?>
 					<img id="coco" src="<?php echo ($pre_codi_url);?>" width="100%" height="100%"/>
 				<?php } else { ?>
-					<i class="fa fa-user"></i>
 					<img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
 				<?php } ?>
 				<div class="back_modal" id="loader">
@@ -89,10 +89,16 @@ $item_url = Array();
 	</div>
 	<div class="col-xs-6">
 		<div class="text-center">
-			<div class="col-xs-6">
+			<div class="col-xs-6" style="
+    padding-right: 1px;
+    padding-left: 1px;
+">
 				<a class="btn btn-default fitting-button" role="button" onclick="request_buy()">바로구매</a>
 			</div>
-			<div class="col-xs-6">
+			<div class="col-xs-6" style="
+    padding-right: 1px;
+    padding-left: 1px;
+">
 				<a class="btn btn-default fitting-button" role="button">장바구니</a>
 			</div>
 		</div>
@@ -224,7 +230,7 @@ $item_url = Array();
 				wrapper_div.prepend('<img class="theImg" src="'+image[item_id]+'" />');
 			}
 			var index = Number(i) + 1;
-			wrapper_div.prepend('<h1>'+ index +'번째 코디</h1>');
+			wrapper_div.prepend('<h3>'+ index +'번째 코디</h3>');
 			wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + i +')"></a>"').parent();
 			$('#codi_list').append(wrapper_div);
 		}

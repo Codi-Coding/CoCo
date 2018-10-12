@@ -94,6 +94,9 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 						@unlink($temp_photo);
 						sql_query(" update {$g5['member_table']} set as_photo = '1' where mb_id = '$mb_id' ", false);
 						$member['large_photo'] = $big_photo;
+						$sql = "UPDATE CoCo_cody set image_url = NULL where mb_id = '$mb_id'";
+						// var_dump(sql);
+						sql_query($sql);
 					} else {
 						@unlink($temp_photo);
 						//회원사진 등록에 실패했습니다. 이미지 파일이 정상적으로 업로드 되지 않았거나, 이미지 파일이 아닙니다.

@@ -66,7 +66,7 @@ function request_virtual_fitting($item, $mb_id){
 
 
 	curl_setopt_array($ch, array(
-	    CURLOPT_URL => 'http://121.140.133.98'.'/submit',
+	    CURLOPT_URL => DeepLearning_Server.'/submit',
 	    CURLOPT_RETURNTRANSFER => true,
 	    CURLOPT_POST => true,
 	    CURLOPT_POSTFIELDS => $postData,

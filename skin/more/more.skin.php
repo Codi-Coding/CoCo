@@ -4,10 +4,10 @@
     </div>
 </div> -->
 
-<div style="
-    position:relative;
-    top:180px;
-">
+<a href="/bbs/register.php">
+    <div style="width:368px;height: 68px;top: 2px;position: absolute;">
+    </div>
+</a>
 
 </div>
 

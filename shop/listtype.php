@@ -10,11 +10,11 @@ $type = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\s]/", "", $_REQUEST['type']);
 
 if(!$type) $type = 1;
 
-if ($type == 1)      $g5['title'] = '히트상품';
-else if ($type == 2) $g5['title'] = '추천상품';
-else if ($type == 3) $g5['title'] = '최신상품';
-else if ($type == 4) $g5['title'] = '인기상품';
-else if ($type == 5) $g5['title'] = '할인상품';
+if ($type == 1)      $kind = '컨셉'.$type;
+else if ($type == 2) $kind = '컨셉'.$type;
+else if ($type == 3) $kind = '컨셉'.$type;
+else if ($type == 4) $kind = '컨셉'.$type;
+else if ($type == 5) $kind = '컨셉'.$type;
 else
     alert('상품유형이 아닙니다.');
 
