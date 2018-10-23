@@ -18,7 +18,7 @@ function getHashPath($user_id, $it_id){
 	$target_name = md5($user_id.$it_id);
 
 	// $root = dirname(__DIR__);
-	$upddr = "./res/{$user_id}/";
+	$upddr = "/res/{$user_id}/";
 
 	if (!is_dir($upddr ))
         mkdir($upddr, 0777, true);
