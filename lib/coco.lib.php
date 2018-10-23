@@ -9,6 +9,7 @@ $ch = curl_init();
 
 // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 // curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 // curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5);
 
 function getHashPath($user_id, $it_id){
@@ -30,40 +31,48 @@ function getHashPath($user_id, $it_id){
 
 function request_virtual_fitting($item, $mb_id){
 	global $ch;
-	$items = json_decode($item);
 	$cate = 0;
 	$item_id = 0;
 	$sql = "";
 
 
-	$get_num_sql = "SELECT mb_no FROM `CoCo_member` where mb_id = '{$mb_id}'";
-	$row = sql_fetch_array(sql_query($get_num_sql));
-	$mb_no = $row['mb_no'];
-	$data = Array();
+	// $get_num_sql = "SELECT mb_no FROM `CoCo_member` where mb_id = '{$mb_id}'";
+	// $row = sql_fetch_array(sql_query($get_num_sql));
+	// $mb_no = $row['mb_no'];
+	// $data = Array();
 
 
-	foreach($items as $ca => $it_id){
-		$sql = "SELECT it_img1 FROM `CoCo_item` where it_id='{$it_id}'";
-		$row = sql_query($sql);
-		$row = sql_fetch_array($row);
-		$cate = $ca;
-		$item_id = $row['it_img1'];
-		$data[$ca] = [];
-		array_push($data[$ca], $item_id);
-	}
+	// foreach($items as $ca => $it_id){
+	// 	$sql = "SELECT it_img1 FROM `CoCo_item` where it_id='{$it_id}'";
+	// 	$row = sql_query($sql);
+	// 	$row = sql_fetch_array($row);
+	// 	$cate = $ca;
+	// 	$item_id = $row['it_img1'];
+	// 	$data[$ca] = [];
+	// 	array_push($data[$ca], $item_id);
+	// }
 
-	$ff = explode ("/", $row['it_img1'])[0];
+	// $ff = explode ("/", $row['it_img1'])[0];
 
 
 	// $mb_no = "000005";
 	// $ff = "000010";
 
-    $postData = array(
-	    'userid' => "{$mb_no}",
-		'productid' => "{$ff}",
-		'category' => "{$cate}",
-	);
+    // $postData = array(
+	//     'userid' => "{$mb_no}",
+	// 	'productid' => "{$ff}",
+	// 	'category' => "{$cate}",
+	// );
 
+	$upperid = $item['upperid'];
+	$lowerid = $item['lowerid'];
+
+	$postData = array(
+	    'userid' => "{$mb_id}",
+		'upperid' => "{$upperid}",
+		'lowerid' => "{$lowerid}",
+		'category' => '0000',
+	);
 
 	curl_setopt_array($ch, array(
 	    CURLOPT_URL => DeepLearning_Server.'/submit',
@@ -77,7 +86,7 @@ function request_virtual_fitting($item, $mb_id){
 
 	$output = array(
 		"result" => 1,
-		"src" => getHashPath($mb_id, $ff),
+		"src" => getHashPath($mb_id, $upperid.$lowerid),
 	);
 
 	if(curl_errno($ch)){

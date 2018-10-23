@@ -26,7 +26,7 @@ for ($i=0; $row = sql_fetch_array($result); $i++) {
 
 	$list[$i]['is_soldout'] = is_soldout($row['it_id']);
 	
-	$list[$i]['img'] = apms_it_thumbnail($list[$i], 40, 40, false, true);	
+	$list[$i]['img'] = apms_it_thumbnail($list[$i], 70, 70, false, true);	
 
 }
 
@@ -56,12 +56,17 @@ if($pre_codi_url == NULL)
 
 
 
-	<!-- <div id="bottom-nav">
-		<div class="bottom-box">
+	<div id="coco-bottom-nav">
+		<div>
+			<a id="coco-button" onclick="slideHideBar()">
+				My Fitting
+			</a>
+		</div>
+		<div id="bottom-user">
 				<img id="bottom-user-image" class="img-thumbnail" src="<?php echo ($pre_codi_url);?>" 
 				width="15%" height="80%"/>
 		</div>
-		<div id="bottom-user-fc" class="bottom-box">
+		<div id="bottom-fc">
 			<?php 
 				for($i=0; $i < count($list);$i++) { 
 				?>
@@ -70,7 +75,7 @@ if($pre_codi_url == NULL)
 					class="bottom-user-fci"/>
 			<?php } ?>
 		</div>
-	</div> -->
+	</div>
 
 
 
@@ -139,10 +144,40 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 	function removeActi(){
 		$('#m-nav li').first().removeClass("active");
 	}
+
+	function slideHideBar(){
+		$("#bottom-user").slideUp();
+		$("#bottom-fc").slideUp();
+		$("#coco-button").attr("onclick", "slideShowBar()");
+		localStorage.setItem("cocoBottomStatus", "false");
+	}
+
+	function slideShowBar(){
+		$("#bottom-user").slideDown();
+		$("#bottom-fc").slideDown();
+		$("#coco-button").attr("onclick", "slideHideBar()");
+		localStorage.setItem("cocoBottomStatus", "true");
+	}
 	
 		
 	$(function() {
 		removeActi();
+
+		var status = localStorage.getItem("cocoBottomStatus");
+
+		if(status == "false"){
+			$("#bottom-user").hide();
+			$("#bottom-fc").hide();
+			$("#coco-button").attr("onclick", "slideShowBar()");
+		}
+
+		else{
+			$("#bottom-user").slideDown();
+			$("#bottom-fc").slideDown();
+			$("#coco-button").attr("onclick", "slideHideBar()");
+		}
+			
+
 		let img_src = "";
 		
 		var index = undefined;

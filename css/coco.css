@@ -52,8 +52,8 @@
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
     position:absolute;
-    left:30%;
-    top:35%;
+    left: 13%;
+    top: 21%;
 }
 
 #coco{
@@ -112,6 +112,37 @@
     .img-nav{
         width: 20%;
     }
+
+    
+    #coco-bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        z-index: 3;
+      }
+  
+    #bottom-user {
+        position: relative;
+        width: 183px;
+        height: 266px;
+        background-color: #333333;
+        z-index: 2;
+      }
+  
+    #bottom-fc {
+        position: absolute;
+        bottom: 0;
+        height: 100px;
+        width: calc(100% - 183px);
+        background-color: #865cd6;
+        margin-left: 183px;
+        z-index: 1;
+    }
+
+    #coco-button{
+        text-decoration: none;
+    }
+    
 
 }
 

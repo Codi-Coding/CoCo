@@ -11,7 +11,7 @@ if(!$it_id)
     die('상품 코드가 올바르지 않습니다.');
 
 $it_id = str_replace("\\", "", $it_id);
-
+$it_id = json_decode($it_id, true);
 
 $re = request_virtual_fitting($it_id, $member['mb_id']);
 
