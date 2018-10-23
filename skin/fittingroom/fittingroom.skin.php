@@ -110,6 +110,7 @@ $item_url = Array();
 </div>
 
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="/js/jquery.ui.touch-punch.js"></script>
 <script>
 	var my_codi = '<?php echo($codi);?>';
 	var t_codi = {'lowerid' : '0000', 'upperid': '0000'};
