@@ -223,13 +223,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 		</div>
 	<?php } ?>
 
-	<div class="at-body">
-		<?php if($col_name) { ?>
-			<div class="at-container">
-			<?php if($col_name == "two") { ?>
-				<div class="row at-row">
-					<div class="col-md-<?php echo $col_content;?><?php echo ($at_set['side']) ? ' pull-right' : '';?> at-col at-main">		
-			<?php } else { ?>
-				<div class="at-content">
-			<?php } ?>
-		<?php } ?>
+	<div  id="coco-main" class="at-body">
+		<div class="at-container">
+			<div class="at-content">

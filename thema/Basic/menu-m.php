@@ -1,72 +1,68 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
 ?>
-<div style="background : url(/img/coco/navbar.jpg);
-    background-position: center;
-    background-repeat: no-repeat;
-	background-size: cover;
-	overflow: hidden;
-	height: 60px;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  ">
-<div  style="float: left; width: 20%;">
-							<a href="/search.php">
-								<button style="display: block;
-	width: 100%;
-    border: none;
-    padding: 88px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;background-color: transparent;"></button>
-							</a>
-</div>
-						<div  style="float: left; width: 20%;">
-							<a href="/recommend.php">
-								<button style="display: block;
-	width: 100%;
-    border: none;
-    padding: 88px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;background-color: transparent;"></button>
-								
-							</a>
-</div>
-						<div  style="float: left; width: 20%;">
-							<a href="/collect.php">
-								<button style="display: block;
-	width: 100%;
-    border: none;
-    padding: 88px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;background-color: transparent;"></button>
-							</a>
-</div>
-						<div  style="float: left; width: 20%;">
-							<a href="/fittingroom.php">
-								<button style="display: block;
-	width: 100%;
-    border: none;
-    padding: 88px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;background-color: transparent;"></button>
-							</a>
-</div>
-						<div  style="float: left; width: 20%;">
-							<a href="/more.php">
-								<button style="display: block;
-	width: 100%;
-    border: none;
-    padding: 88px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;background-color: transparent;"></button>
-							</a>
-</div>
+<ul id="coco-top-nav" style="display:flex; justify-content: space-between;">
+    <li class="nav-button">
+        <a href="/search.php">
+            <div>
+                <img src="/img/coco/1.png" alt="search page"/>
+                <span class="caption">검색</span>
+            </div>
+        </a>
+    </li>
+    <li class="nav-button">
+        <a href="/recommend.php">
+            <div>
+                <img src="/img/coco/2.png" alt="search page"/>
+                <span class="caption">컨셉/추천</span>
+            </div>
+        </a>
+        
+    </li>
+    <li class="nav-button">
+        <a href="/collect.php">
+            <div>
+                <img src="/img/coco/3.png" alt="search page"/>
+                <span class="caption">모아보기</span>
+            </div>
+        </a>
+        
+    </li>
+    <li class="nav-button">
+        <a href="/fittingroom.php">
+            <div>
+                <img src="/img/coco/4.png" alt="search page"/>
+                <span class="caption">피팅룸</span>
+            </div>
+        </a>
+
+    </li>
+    <li class="nav-button">
+        <a href="/more.php">
+            <div>
+                <img src="/img/coco/5.png" alt="search page"/>
+                <span class="caption">더보기</span>
+            </div>
+        </a>
+
+    </li>
+</ul>
+
+<div style="width: 100%; height: 3px; background-color: #6875b0;">
 </div>
 
+<script>
+    $(function(){
+        var index = localStorage.getItem("cocoActiveNav") || 0;
+
+        $('.nav-button').click(function(){
+            index = $(".nav-button" ).index( this );
+		    localStorage.setItem("cocoActiveNav", index);
+        })
+
+        $('#coco-top-nav li').eq(index).addClass("coco-active");
+    });
+
+
+    
+</script>

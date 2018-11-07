@@ -18,95 +18,110 @@ if($header_skin)
 	include_once('./header.php');
 
 $coco_photo = $member['coco_photo'];
-// $coco_photo = getEncPath($member['coco_photo']);
 $pre_codi_url = null;
 if($pre_codi_url != null)
 	$coco_photo = $pre_codi_url;
 $item_url = Array();
-
 ?>
 
+<div style="padding-top: 10px; width: 100%; height: 100%; display:flex; flex-direction: column; margin: 0 auto;">
+	<!-- <div style="height: 75px;">
+			<span>폴더</span>
+		<div class="coco-codi-scroll">
+			<div class="coco-codi">test</div>
+			<div class="coco-codi">test</div>
+			<div class="coco-codi">test</div>
+			<div class="coco-codi">test</div>
+			<div class="coco-codi">test</div>
+			<div class="coco-codi">test</div>
+		</div>
+	</div> -->
 
-<form name="frmcartlist" id="sod_bsk_list" method="post" action="/shop/cartupdate.php" class="form" role="form">
+	<div style="margin-top: 10px;">
+	</div>
 	
+	<form name="frmcartlist" id="sod_bsk_list" method="post" action="/shop/cartupdate.php" class="form" role="form">
+		<div class="fitting-row">
+			<div class="fitting-row-flex">
+				<div class="fit_wrapper">
+					<?php if($coco_photo) { ?>
+						<img id="coco-fitting" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
+					<?php } else { ?>
+						<!-- <img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/> -->
+						<h1>사진 등록이 필요합니다</h1>
+					<?php } ?>
+					<div class="back_modal" id="loader">
+						<div class="loader"></div>
+					</div>
+				</div>
+			</div>
+			<div class="fitting-row-flex">
+
+
+				<a class="btn btn-default" role="button" onclick="show_item_list()">아이템 목록</a>
+				<a class="btn btn-default" role="button" onclick="show_codi_list()">코디</a>
+				<div id="item_list">
+					<?php 
+
+					for($i=0; $i < count($list);$i++) { 
+
+						$list[$i]['img'] = apms_it_thumbnail($list[$i], 70, 70, false, true);
+						$item_url[$list[$i]['it_id']] = $list[$i]['img']['src'];
+					?>
+					<div class="coco-fitting-item">
+						<!-- <a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)"> -->
+						<a class="coco-fitting-wrap">
+						<img class="coco-item-image" item-id="<?php echo($list[$i]['it_id']);?>" cate-id="<?php echo($list[$i]['ca_id2']);?>" src="<?php echo($list[$i]['img']['src']);?>">
+						<span class="item-name"><?php echo($list[$i]['it_name']);?></span>
+						<span class="item-price"><?php echo($list[$i]['it_price']);?>원</span>
+						</a>
+						<input type="hidden" name="io_type[<?php echo $list[$i]['it_id']; ?>][]" value="0">
+						<input type="hidden" name="io_id[<?php echo $list[$i]['it_id']; ?>][]" value="">
+						<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][]" value="<?php get_text($list[$i]['it_name']); ?>">
+						<input type="hidden" name="ct_qty[<?php echo  $list[$i]['it_id']; ?>][]" value="1" id="ct_qty_<?php echo $i; ?>">
+						<input type="hidden" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked"/>
+					</div>
+
+					<?php } ?>
+				</div>
+				<!-- Codi List -->
+				<div class="wishlist-skin" id="codi_list" style="display:none;">
+				</div>
+				
+						</div>
+		</div>
+		<input type="hidden" name="url" value="./orderform.php"/>
+		<input type="hidden" name="records" value="<?php echo $i; ?>"/>
+		<input type="hidden" name="act" value="">
+		<input type="hidden" name="sw_direct" value="1">
+		
+	</form>
+	<br/>
 	<div class="row">
 		<div class="col-xs-6">
-			<div class="fit_wrapper">
-				<?php if($coco_photo) { ?>
-					<img id="coco-fitting" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
-				<?php } else { ?>
-					<!-- <img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/> -->
-					<h1>사진 등록이 필요합니다!</h1>
-				<?php } ?>
-				<div class="back_modal" id="loader">
-					<div class="loader"></div>
-				</div>
+			<div class="text-center">
+				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
+				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" href="/bbs/myphoto.php"  target="_blank">사진 수정</a>
 			</div>
 		</div>
 		<div class="col-xs-6">
-
-
-			<a class="btn btn-default" role="button" onclick="show_item_list()">아이템 목록</a>
-			<a class="btn btn-default" role="button" onclick="show_codi_list()">코디</a>
-			<div class="row" id="item_list">
-				<?php 
-
-				for($i=0; $i < count($list);$i++) { 
-
-					$list[$i]['img'] = apms_it_thumbnail($list[$i], 70, 70, false, true);
-					$item_url[$list[$i]['it_id']] = $list[$i]['img']['src'];
-				?>
-				<div class="col-xs-6">
-					<!-- <a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)"> -->
-					<a>
-					<img item-id="<?php echo($list[$i]['it_id']);?>" cate-id="<?php echo($list[$i]['ca_id2']);?>" width="75" height="75" src="<?php echo($list[$i]['img']['src']);?>" alt="<?php echo $list[$i]['img']['alt'];?>">
-					</a>
-					<input type="hidden" name="it_name[<?php echo $i; ?>]" value="<?php echo get_text($list[$i]['it_name']); ?>">
-					<input type="hidden" name="io_type[<?php echo $list[$i]['it_id']; ?>][]" value="0">
-					<input type="hidden" name="io_id[<?php echo $list[$i]['it_id']; ?>][]" value="">
-					<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][]" value="<?php get_text($list[$i]['it_name']); ?>">
-					<input type="hidden" name="ct_qty[<?php echo  $list[$i]['it_id']; ?>][]" value="1" id="ct_qty_<?php echo $i; ?>">
-					<input type="hidden" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked"/>
+			<div class="text-center">
+				<div class="col-xs-6" style="
+		padding-right: 1px;
+		padding-left: 1px;
+	">
+					<a class="btn btn-default fitting-button" role="button" onclick="request_buy()">바로구매</a>
 				</div>
+				<div class="col-xs-6" style="
+		padding-right: 1px;
+		padding-left: 1px;
+	">
+					<a class="btn btn-default fitting-button" role="button">장바구니</a>
+				</div>
+			</div>
+		</div>
+	</div>
 
-				<?php } ?>
-			</div>
-			<!-- Codi List -->
-			<div class="wishlist-skin" id="codi_list" style="display:none;">
-			</div>
-			
-					</div>
-	</div>
-	<input type="hidden" name="url" value="./orderform.php"/>
-	<input type="hidden" name="records" value="<?php echo $i; ?>"/>
-	<input type="hidden" name="act" value="">
-	<input type="hidden" name="sw_direct" value="1">
-	
-</form>
-<br/>
-<div class="row">
-	<div class="col-xs-6">
-		<div class="text-center">
-			<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
-			<a class="btn btn-default btn-block" role="button" width="100%" height="100%" href="/bbs/myphoto.php"  target="_blank">사진 수정</a>
-		</div>
-	</div>
-	<div class="col-xs-6">
-		<div class="text-center">
-			<div class="col-xs-6" style="
-    padding-right: 1px;
-    padding-left: 1px;
-">
-				<a class="btn btn-default fitting-button" role="button" onclick="request_buy()">바로구매</a>
-			</div>
-			<div class="col-xs-6" style="
-    padding-right: 1px;
-    padding-left: 1px;
-">
-				<a class="btn btn-default fitting-button" role="button">장바구니</a>
-			</div>
-		</div>
-	</div>
 </div>
 
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -127,6 +142,10 @@ $item_url = Array();
 		image = JSON.parse(image);
 	}
 
+	function click_item(e, it_id){
+		console.log(e);
+		console.log(it_id);
+	}
 
 	function sleep(ms){
   		ts1 = new Date().getTime() + ms;
@@ -233,6 +252,8 @@ $item_url = Array();
 		});
 	}
 
+	
+
 	function show_codi_list(){
 		$('#item_list').hide();
 		$('#codi_list').show();
@@ -267,6 +288,11 @@ $item_url = Array();
 	}
 	
 	$(function(){
+		$('.coco-fitting-wrap').click(function(){
+			$(this).toggleClass("item-active");
+		});
+
+
 		$("#item_list div img").draggable({
 			start: function(event, ui){
 				if(!isFitting)

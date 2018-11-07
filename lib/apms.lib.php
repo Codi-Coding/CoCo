@@ -1789,10 +1789,13 @@ function apms_photo_url($mb_id='') {
 function coco_photo_url($mb_id='') {
 	$mb_dir = substr($mb_id,0,2);
 
-	$photo_url = G5_DATA_URL.'/apms/photo/'.$mb_dir.'/'.$mb_id.'_large.jpg';
+	$url = "/apms/photo/{$mb_dir}/{$mb_id}_large.jpg";
+	
+	if(file_exists(G5_DATA_PATH.$url))
+		return "/data{$url}";
 
-
-	return $photo_url;
+	else
+		return NULL;
 }
 
 // Check XP 

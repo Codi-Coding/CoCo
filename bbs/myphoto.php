@@ -37,7 +37,9 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 		@unlink($photo_dir.'/'.$mb_id.'.jpg');
 		@unlink($photo_dir.'/'.$mb_id.'_large.jpg');
 		$member['large_photo'] = NULL;
-						sql_query(" update {$g5['member_table']} set as_photo = '0' where mb_id = '$mb_id' ", false);
+		$member['coco_photo'] = NULL;
+		sql_query("update {$g5['member_table']} set as_photo = '0' where mb_id = '$mb_id' ", false);
+		sql_query("update CoCo_cody set image_url = NULL where mb_id = '$mb_id' ", false);
 	}
     
 	//Upload Photo
@@ -131,10 +133,6 @@ $is_photo = (is_file(G5_DATA_PATH.'/apms/photo/'.$mb_dir.'/'.$member['mb_id'].'.
 $photo_size = $xp['xp_photo'];
 
 $myphoto = apms_photo_url($member['mb_id']);
-
-$coco_url = coco_photo_url($member['mb_id']);
-
-//$g5['title'] = '내사진 등록/수정';
 
 if($is_myphoto_sub) {
 	include_once(G5_PATH.'/head.sub.php');

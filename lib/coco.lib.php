@@ -96,15 +96,9 @@ function request_virtual_fitting($item, $mb_id){
 		return json_encode($output);
 	}
 
-//	$codi_url_sql = "UPDATE CoCo_cody SET image_url='https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png' where mb_id='{$mb_id}'";
-	// $codi_url_sql = "UPDATE CoCo_cody SET image_url='{resopnse_url}' where mb_id='{$mb_id}'";
-//	sql_query($codi_url_sql);
-
-
 
 	$codi_url_sql = "UPDATE CoCo_cody SET image_url='{$output['src']}' where mb_id='{$mb_id}'";
 	sql_query($codi_url_sql);
-
 
 
 	return json_encode($output);

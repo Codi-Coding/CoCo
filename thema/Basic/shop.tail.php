@@ -36,7 +36,7 @@ $codi_row = getCodiRow($member['mb_id']);
 $pre_codi_url = $codi_row['image_url'];
 
 if($pre_codi_url == NULL)
-	$pre_codi_url = $coco_photo = getEncPath($member['coco_photo']);
+	$pre_codi_url = $coco_photo = $member['coco_photo'];
 
 ?>
 		<?php if($col_name) { ?>
@@ -54,28 +54,38 @@ if($pre_codi_url == NULL)
 	</div><!-- .at-body -->
 
 
-
-
+	<?php
+	if(!$isFittingroom){
+	?>
 	<div id="coco-bottom-nav">
-		<div>
+		<div class="coco-bottom-wrapper">
 			<a id="coco-button" onclick="slideHideBar()">
-				My Fitting
+				<div class="bottom-button">
+					My Fitting
+				</div>
 			</a>
-		</div>
-		<div id="bottom-user">
-				<img id="bottom-user-image" class="img-thumbnail" src="<?php echo ($pre_codi_url);?>" 
-				width="15%" height="80%"/>
+			<div id="bottom-user">
+					<img id="bottom-user-image" class="img-thumbnail" src="<?php echo ($pre_codi_url);?>" />
+			</div>
 		</div>
 		<div id="bottom-fc">
+			<div class="bottom-fc-wrapper">
 			<?php 
 				for($i=0; $i < count($list);$i++) { 
 				?>
+				<div class="bottom-item">
 					<img width="75" height="75" src="<?php echo($list[$i]['img']['src']);?>" 
 					alt="<?php echo $list[$i]['img']['alt'];?>"
 					class="bottom-user-fci"/>
+				</div>
 			<?php } ?>
+			</div>
 		</div>
 	</div>
+	<?php
+	}
+	?>
+
 
 
 
@@ -146,15 +156,15 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 	}
 
 	function slideHideBar(){
-		$("#bottom-user").slideUp();
-		$("#bottom-fc").slideUp();
+		$("#bottom-user").hide();
+		$("#bottom-fc").hide();
 		$("#coco-button").attr("onclick", "slideShowBar()");
 		localStorage.setItem("cocoBottomStatus", "false");
 	}
 
 	function slideShowBar(){
-		$("#bottom-user").slideDown();
-		$("#bottom-fc").slideDown();
+		$("#bottom-user").css("display", "flex");
+		$("#bottom-fc").css("display", "flex");
 		$("#coco-button").attr("onclick", "slideHideBar()");
 		localStorage.setItem("cocoBottomStatus", "true");
 	}
@@ -176,44 +186,7 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 			$("#bottom-fc").slideDown();
 			$("#coco-button").attr("onclick", "slideHideBar()");
 		}
-			
 
-		let img_src = "";
-		
-		var index = undefined;
-		switch(window.location.pathname){
-			case "/search.php":
-			img_src = "/img/coco/navbar_search.jpg";
-			index = 0;
-			break;
-			case "/recommend.php":
-			img_src = "/img/coco/navbar_recommend.jpg";
-			index = 1;
-			break;
-			case "/collect.php":
-			img_src = "/img/coco/navbar_collect.jpg";
-			index = 2;
-			break;
-			case "/fittingroom.php":
-			img_src = "/img/coco/navbar_more.jpg";
-			index = 3;
-			break;
-		}
-
-		var cssstring = `background : url(` + img_src + `);
-    background-position: center;
-    background-repeat: no-repeat;
-	background-size: cover;
-	overflow: hidden;
-	height: 60px;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  `;
-
-		$('#m-nav li').eq(index).addClass("active");
-		// $('div .m-menu div').eq(0).attr("style", "cssstring");
 	})
 
 </script>
