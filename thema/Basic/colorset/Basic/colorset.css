@@ -200,7 +200,11 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 .m-menu .m-nav-sub ul li { display:table-cell; padding: 0px 10px; white-space:nowrap; }
 .m-menu .m-nav-sub ul li.active a { color: orangered; font-weight:bold; }
 @media all and (max-width:991px) {
-	.responsive .m-menu { display:block; }
+	.responsive .m-menu { 
+		display:block; 
+		position: fixed !important;
+		width: 100%;
+	}
 }
 
 /********************************************************

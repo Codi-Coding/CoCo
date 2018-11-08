@@ -61,7 +61,7 @@ if($pre_codi_url == NULL)
 		<div class="coco-bottom-wrapper">
 			<a id="coco-button" onclick="slideHideBar()">
 				<div class="bottom-button">
-					My Fitting
+					Fitting Room
 				</div>
 			</a>
 			<div id="bottom-user">
@@ -70,6 +70,9 @@ if($pre_codi_url == NULL)
 		</div>
 		<div id="bottom-fc">
 			<div class="bottom-fc-wrapper">
+				<div style="min-width: 48px;height: 48px;margin-top: 12px;">
+					<img src="/img/coco/icon1-02.png" style="width: 100%;"/>
+				</div>
 			<?php 
 				for($i=0; $i < count($list);$i++) { 
 				?>

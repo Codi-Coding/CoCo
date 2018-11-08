@@ -1,15 +1,24 @@
-<div style="position: relative;padding-top:20px;height: 293px; 
+<div style="
+        position: relative;
+        padding-top: 5px;
+        height: 359px;
         background-image:url(/img/coco/background.svg);
         background-size: cover;
-        background-position-y: -70px;
+        background-position-y: -35px;
+    
     ">
     <div style="text-align: center;">
+        <div style="z-index: 2;position: relative;top: 164px;">
+            <span style="color: #242424;font-size: 12px;font-weight: bolder;">원하는 옷을 검색해보세요!</span> <br/>
+            <span style="color: #919191;font-size: 11px;">#가을 #코트 #셔츠</span>
+        </div>
         <img src="/img/coco/search.main.png" alt="Search Bar" width="200px" height="200px"/>
+        
     </div>
     <div style="position: relative;bottom: 32px;text-align:center;">
-        <div class="input-group input-group-sm" style="background-color: white;text-align:center;width:340px;margin: 0 auto;">
+        <div class="main-searchbar">
             <form name="tsearch" method="get" action="shop/search.php" role="form" style="min-height: 30px;">
-                <img src="/img/coco/search.png" style="position: absolute;width: 18px;height: 18px;z-index: 10;top: 5px;left: 10px;">
+                <img src="/img/coco/search.png" style="position: absolute;width: 18px;height: 18px;z-index: 10;top: 5px;left: 5%;">
                     <input type="text" name="stx" class="" value="" style="position: relative; top: 3px;border: solid 2.3px white; width:96%; height: 20px;">
             </form>
         </div>

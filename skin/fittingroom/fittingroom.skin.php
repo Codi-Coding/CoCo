@@ -24,7 +24,7 @@ if($pre_codi_url != null)
 $item_url = Array();
 ?>
 
-<div style="padding-top: 10px; width: 100%; height: 100%; display:flex; flex-direction: column; margin: 0 auto;">
+<div style="padding-top: 10px; width: 95%; height: 100%; display:flex; flex-direction: column; margin: 0 auto;">
 	<!-- <div style="height: 75px;">
 			<span>폴더</span>
 		<div class="coco-codi-scroll">
@@ -41,8 +41,8 @@ $item_url = Array();
 	</div>
 	
 	<form name="frmcartlist" id="sod_bsk_list" method="post" action="/shop/cartupdate.php" class="form" role="form">
-		<div class="fitting-row">
-			<div class="fitting-row-flex">
+		<div class="row">
+			<div class="col-xs-6">
 				<div class="fit_wrapper">
 					<?php if($coco_photo) { ?>
 						<img id="coco-fitting" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
@@ -55,7 +55,7 @@ $item_url = Array();
 					</div>
 				</div>
 			</div>
-			<div class="fitting-row-flex">
+			<div class="col-xs-6">
 
 
 				<a class="btn btn-default" role="button" onclick="show_item_list()">아이템 목록</a>
@@ -69,17 +69,22 @@ $item_url = Array();
 						$item_url[$list[$i]['it_id']] = $list[$i]['img']['src'];
 					?>
 					<div class="coco-fitting-item">
-						<!-- <a onclick="request_fitting(<?php echo(strval($list[$i]['it_id']).",".strval($list[$i]['ca_id2']));?>)"> -->
 						<a class="coco-fitting-wrap">
 						<img class="coco-item-image" item-id="<?php echo($list[$i]['it_id']);?>" cate-id="<?php echo($list[$i]['ca_id2']);?>" src="<?php echo($list[$i]['img']['src']);?>">
-						<span class="item-name"><?php echo($list[$i]['it_name']);?></span>
-						<span class="item-price"><?php echo($list[$i]['it_price']);?>원</span>
+						<label for="ct_chk_<?php echo $i; ?>">
+							<span><?php echo($list[$i]['it_name']);?></span>
+						</label>
+						<div>
+							<label for="ct_chk_<?php echo $i; ?>"><?php echo($list[$i]['it_price']);?>원</label>
+							<input type="checkbox" name="chk_it_id[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>">
+						</div>
+						
 						</a>
+						<input type="hidden" name="it_id[]" value="<?php echo $list[$i]['it_id']; ?>">
 						<input type="hidden" name="io_type[<?php echo $list[$i]['it_id']; ?>][]" value="0">
 						<input type="hidden" name="io_id[<?php echo $list[$i]['it_id']; ?>][]" value="">
 						<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][]" value="<?php get_text($list[$i]['it_name']); ?>">
 						<input type="hidden" name="ct_qty[<?php echo  $list[$i]['it_id']; ?>][]" value="1" id="ct_qty_<?php echo $i; ?>">
-						<input type="hidden" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked"/>
 					</div>
 
 					<?php } ?>
@@ -92,9 +97,8 @@ $item_url = Array();
 		</div>
 		<input type="hidden" name="url" value="./orderform.php"/>
 		<input type="hidden" name="records" value="<?php echo $i; ?>"/>
-		<input type="hidden" name="act" value="">
 		<input type="hidden" name="sw_direct" value="1">
-		
+		<input type="hidden" name="act" value="multi">
 	</form>
 	<br/>
 	<div class="row">
@@ -142,10 +146,6 @@ $item_url = Array();
 		image = JSON.parse(image);
 	}
 
-	function click_item(e, it_id){
-		console.log(e);
-		console.log(it_id);
-	}
 
 	function sleep(ms){
   		ts1 = new Date().getTime() + ms;
@@ -163,44 +163,45 @@ $item_url = Array();
 
 
 	async function request_fitting(it_id, ca_id){
+		$('#loader').css("display", "block");  
+
 		if(!it_id) {
 			alert("코드가 올바르지 않습니다.");
 			return false;
 		}
 
 
-		$('#loader').css("display", "block");  
-
 		//t_codi[ca_id] = it_id.toString();
 
 
-		
 		switch(ca_id){
-			case 1010:
+			case 1001:
+			case 1002:
+			case 1003:
 				t_codi['lowerid'] = it_id.toString();
 			break;
-			case 1020:
+			case 1101:
 				t_codi['upperid'] = it_id.toString();
 		}
 
-		isFitting = true;
-		$.post("/shop/fitting_request.php", { it_id : JSON.stringify(t_codi)}, function(res) {
-			console.log(res);
-			sleep(4000);
-			var result = JSON.parse(res);
-			$('#loader').hide();  
-			if(result['result']){
-				// var src = result['result'];
-				var hash = user_id + t_codi['upperid'] + t_codi['lowerid'];
-				console.log(hash);
-				var src = "/res/" + user_id + "/" + MD5(hash) + ".png";
-				console.log(src);
-				// $('#coco').attr('src', result['src']);
-				$('#coco').attr('src', src);
-				// my_codi['codi_url'] = result['src'];
-				isFitting = false;
-			}
-		});
+		// isFitting = true;
+		// $.post("/shop/fitting_request.php", { it_id : JSON.stringify(t_codi)}, function(res) {
+		// 	console.log(res);
+		// 	sleep(4000);
+		// 	var result = JSON.parse(res);
+		// 	$('#loader').hide();  
+		// 	if(result['result']){
+		// 		// var src = result['result'];
+		// 		var hash = user_id + t_codi['upperid'] + t_codi['lowerid'];
+		// 		console.log(hash);
+		// 		var src = "/res/" + user_id + "/" + MD5(hash) + ".png";
+		// 		console.log(src);
+		// 		// $('#coco').attr('src', result['src']);
+		// 		$('#coco').attr('src', src);
+		// 		// my_codi['codi_url'] = result['src'];
+		// 		isFitting = false;
+		// 	}
+		// });
 
 		
 		
@@ -212,7 +213,7 @@ $item_url = Array();
 		var f = document.frmcartlist;
 		var cnt = f.records.value;
 
-		if($("input[name^=ct_chk]:checked").size() < 1) {
+		if($("input[name^=chk_it_id]:checked").size() < 1) {
 			alert("주문하실 상품을 하나이상 선택해 주십시오.");
 			return false;
 		}
@@ -286,13 +287,41 @@ $item_url = Array();
 		my_codi.splice(index, 1);
 		request_buy();
 	}
+
+	function take_off(ca_id){
+		$('#loader').show();  
+		$('#loader').hide();  
+		switch(ca_id){
+			case 1001:
+			case 1002:
+			case 1003:
+				t_codi['lowerid'] = "0000";
+			break;
+			case 1101:
+				t_codi['upperid'] = "0000";
+		}
+
+		console.log("here");
+
+		// isFitting = true;
+		// $.post("/shop/fitting_request.php", { it_id : JSON.stringify(t_codi)}, function(res) {
+		// 	console.log(res);
+		// 	sleep(4000);
+		// 	var result = JSON.parse(res);
+		// 	$('#loader').hide();  
+		// 	if(result['result']){
+		// 		var hash = user_id + t_codi['upperid'] + t_codi['lowerid'];
+		// 		console.log(hash);
+		// 		var src = "/res/" + user_id + "/" + MD5(hash) + ".png";
+		// 		console.log(src);
+		// 		$('#coco').attr('src', src);
+		// 		isFitting = false;
+		// 	}
+		// });
+
+	}
 	
 	$(function(){
-		$('.coco-fitting-wrap').click(function(){
-			$(this).toggleClass("item-active");
-		});
-
-
 		$("#item_list div img").draggable({
 			start: function(event, ui){
 				if(!isFitting)
@@ -302,16 +331,27 @@ $item_url = Array();
 					alert("합성중입니다!");
 				}
 			}
-
 		});
+		
 		$("#coco-fitting").droppable({
 			drop: function(event, ui){
+				var parent = ui.draggable.parent();
+				parent.addClass("item-active");
 				var cate = ui.draggable.attr("cate-id");
 				var item = ui.draggable.attr("item-id");
+				$(".coco-fitting-wrap.item-active").click(function(){
+					var pcate = $(this).first().attr("cate-id");
+					$(this).removeClass("item-active");
+					$(this).prop("onclick", null).off("click");
+					take_off(pcate);
+				});
 				request_fitting(item, cate);
 			}
-
 		});
+
+		
+
+
 
 
 	});

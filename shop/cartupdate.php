@@ -122,24 +122,20 @@ else // 장바구니에 담기
     $count = count($_POST['it_id']);
     if ($count < 1)
         alert('장바구니에 담을 상품을 선택하여 주십시오.');
-
+    
     $ct_count = 0;
     for($i=0; $i<$count; $i++) {
         // 보관함의 상품을 담을 때 체크되지 않은 상품 건너뜀
         if($act == 'multi' && !$_POST['chk_it_id'][$i])
             continue;
 
+    $ct_count = 0;
+
         $it_id = $_POST['it_id'][$i];
         $opt_count = count($_POST['io_id'][$it_id]);
-        echo($opt_count);
 
         if($opt_count && $_POST['io_type'][$it_id][0] != 0)
             alert('상품의 선택옵션을 선택해 주십시오.');
-
-        // for($k=0; $k<$opt_count; $k++) {
-        //     if ($_POST['ct_qty'][$it_id][$k] < 1)
-        //         alert('수량은 1 이상 입력해 주십시오.');
-        // }
 
         // 상품정보
         $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";

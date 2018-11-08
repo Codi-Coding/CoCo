@@ -85,7 +85,7 @@
         margin: 1em;
     }
     #bottom-user-image{
-        width:100%;
+        width:87%;
         height: 100%;
         z-index: 99;
     }
@@ -125,14 +125,16 @@
   
     #bottom-user {
         position: relative;
-        width: 187px;
-        height: 266px;
+        width: 100%;
+        height: 170px;
         z-index: 2;
+        display: flex;
+        justify-content: center;
     }
 
     #bottom-fc{
         background-color: #b4bade;
-        height: 125px;
+        height: 113px;
         flex: 1 1 50%;
         overflow-x: auto;
         display: flex;
@@ -142,7 +144,7 @@
         background-color: #7e8dd4;
         display: flex;
         flex-direction: column;
-        flex: 0 50%;
+        flex: 0 35%;
     }
   
     .bottom-item{
@@ -157,6 +159,7 @@
         display: flex;
         flex-wrap: nowrap;
         overflow-x : auto;
+        padding-top: 11px;
         background-color: #7e8dd4;
     }
 
@@ -167,10 +170,20 @@
     .bottom-button{
         color: #eef1ef;
         text-align: center;
+        margin-top: 6px;
+    }
+
+    .main-searchbar{
+        background-color: white;
+        text-align: center;
+        width: 92%;
+        margin: 0 auto;
+        box-shadow: 2px 3px 0px 0.7px rgba(111, 111, 111, 0.67), -2px 3px 0px 0.7px rgba(111, 111, 111, 0.67);
     }
 
     #coco-button{
         text-decoration: none;
+        height: 33px;
     }
     
     .main-card{
@@ -488,7 +501,14 @@
 
     .item-price{
         font-size: 11px;
+    }
 
+    .at-body{
+        margin-top: 63px !important;
+    }
+
+    .coco-fitting-wrap label{
+        margin-bottom: 0px;
     }
 }
 

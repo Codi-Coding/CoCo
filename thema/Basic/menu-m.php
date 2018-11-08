@@ -53,14 +53,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 <script>
     $(function(){
-        var index = localStorage.getItem("cocoActiveNav") || 0;
-
-        $('.nav-button').click(function(){
-            index = $(".nav-button" ).index( this );
-		    localStorage.setItem("cocoActiveNav", index);
-        })
-
-        $('#coco-top-nav li').eq(index).addClass("coco-active");
+        var pathname = window.location.pathname;
+        $('#coco-top-nav li > a[href="'+pathname+'"]').parent().addClass('coco-active');
     });
 
 

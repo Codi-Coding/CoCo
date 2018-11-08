@@ -7,7 +7,23 @@
                 <div class="img">
                     <img src="/img/coco/cate1.png">
                 </div>
-                <div class="caption">상의</div>
+                <div class="caption">반팔</div>
+                </a>
+            </span>
+            <span class="coco-cate">
+                <a href="/shop/list.php?ca_id=1020">
+                <div class="img">
+                    <img src="/img/coco/cate5.png">
+                </div>
+                <div class="caption">긴팔</div>
+                </a>
+            </span>
+            <span class="coco-cate">
+                <a href="/shop/list.php?ca_id=1010">
+                <div class="img">
+                    <img src="/img/coco/cate2.png">
+                </div>
+                <div class="caption">셔츠</div>
                 </a>
             </span>
             <span class="coco-cate">
@@ -34,14 +50,7 @@
                 <div class="caption">원피스</div>
                 </a>
             </span>
-            <span class="coco-cate">
-                <a href="/shop/list.php?ca_id=1020">
-                <div class="img">
-                    <img src="/img/coco/cate1.png">
-                </div>
-                <div class="caption">상의</div>
-                </a>
-            </span>
+            
         </div>
     </div>
 </div>
