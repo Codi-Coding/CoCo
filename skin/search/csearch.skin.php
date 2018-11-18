@@ -19,7 +19,7 @@
         <div class="main-searchbar">
             <form name="tsearch" method="get" action="shop/search.php" role="form" style="min-height: 30px;">
                 <img src="/img/coco/search.png" style="position: absolute;width: 18px;height: 18px;z-index: 10;top: 5px;left: 5%;">
-                    <input type="text" name="stx" class="" value="" style="position: relative; top: 3px;border: solid 2.3px white; width:96%; height: 20px;">
+                    <input type="text" name="stx" class="" value="" style="position: relative; top: 3px;border: solid 2.3px white; width:88%; height: 20px;">
             </form>
         </div>
     </div>
