@@ -150,10 +150,10 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 <script src="<?php echo THEMA_URL;?>/assets/js/sticky.js"></script>
 <?php } ?>
 <script>
-	var t_codi = {'lowerid' : '000000', 'upperid': '000000'};
-	var user_id = '<?php echo($member['mb_id']) ?>';
-	var imageid = "<?php echo($imageid); ?>"
-	var isFitting = false;
+	var t_codi_bottom = {'lowerid' : '000000', 'upperid': '000000'};
+	var user_id_bottom = '<?php echo($member['mb_id']) ?>';
+	var imageid_bottom = "<?php echo($imageid); ?>"
+	var isFitting_bottom = false;
 
 	function addFC(it_id){
 		$.post("/shop/fitting_update.php", { it_id: it_id }, function(res) {
@@ -184,11 +184,11 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 		localStorage.setItem("cocoBottomStatus", "true");
 	}
 
-	function request_fitting(it_id, ca_id){
+	function request_fitting_bottom(it_id, ca_id){
 		var data = {
-			"userid" : user_id ,
+			"userid" : user_id_bottom ,
 			"isupper" : 0,
-			"imageid" : imageid,
+			"imageid" : imageid_bottom,
 			"category" : ca_id,
 		};
 
@@ -200,20 +200,20 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 			data["isupper"] = 1;
 		}
 
-		t_codi[cate_code] = it_id;
+		t_codi_bottom[cate_code] = it_id;
 
-		if(t_codi["upperid"] == t_codi["lowerid"]){
-			$('#coco-fitting').attr('src', "/data/apms/photo/"+user_id+"/"+user_id+"_large.jpg");
+		if(t_codi_bottom["upperid"] == t_codi_bottom["lowerid"]){
+			$('#coco-fitting').attr('src', "/data/apms/photo/"+user_id_bottom+"/"+user_id_bottom+"_large.jpg");
 			return 0;
 		}
 
 		$('#loader').show();  
 
-		data["upperid"] = t_codi["upperid"];
-		data["lowerid"] = t_codi["lowerid"];
+		data["upperid"] = t_codi_bottom["upperid"];
+		data["lowerid"] = t_codi_bottom["lowerid"];
 		
 
-		isFitting = true;
+		isFitting_bottom = true;
 		console.log(data);
 		$.ajax({
 			url:"/shop/fitting_request.php ",
@@ -226,12 +226,12 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 						var data = JSON.parse(response);
 						if(data["result"]){
 							$('#bottom-user-image').attr('src', data["src"]);
-							t_codi["codi_url"] = data["src"];
+							t_codi_bottom["codi_url"] = data["src"];
 						}
 					}
 					catch{
 					}
-					isFitting = false;
+					isFitting_bottom = false;
 					console.log(response);
 				}, 3000);
 				},
@@ -264,7 +264,7 @@ var menu_subAt = "<?php echo ($m_subsat) ? $m_subsat : 0;?>";
 		$('div .bottom-item').click(function(){
 			var cate = $(this).attr("cate-id");
 			var item = $(this).attr("item-id");
-			request_fitting(item, cate);
+			request_fitting_bottom(item, cate);
 		});
 
 	})

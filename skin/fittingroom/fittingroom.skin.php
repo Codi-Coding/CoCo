@@ -18,7 +18,6 @@ if($header_skin)
 	include_once('./header.php');
 
 $coco_photo = $member['coco_photo'];
-$pre_codi_url = null;
 if($pre_codi_url != null)
 	$coco_photo = $pre_codi_url;
 $item_url = Array();
@@ -216,19 +215,13 @@ $imageid = $sql["mb_memo"];
 			success:function(response) {
 				setTimeout(() => {
 					$('#loader').hide();  
-					try{
-						var data = JSON.parse(response);
-						if(data["result"]){
-							$('#coco-fitting').attr('src', data["src"]);
-							t_codi["codi_url"] = data["src"];
-						}
-					}
-					catch{
-
-
+					var data = JSON.parse(response);
+					console.log(data);
+					if(data["result"] == 1){
+						$('#coco-fitting').attr('src', data["src"]);
+						t_codi["codi_url"] = data["src"];
 					}
 					isFitting = false;
-					console.log(response);
 				}, 3000);
 				},
 				error:function(){
