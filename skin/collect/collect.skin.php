@@ -65,24 +65,7 @@
         ?>  <div class="coco-shop">
                 <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
             </div>
-            <div class="coco-shop">
-                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
-            </div>
-            <div class="coco-shop">
-                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
-            </div>
-            <div class="coco-shop">
-                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
-            </div>
-            <div class="coco-shop">
-                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
-            </div>
-            <div class="coco-shop">
-                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
-            </div>
-            <div class="coco-shop">
-                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
-            </div>
+           
         <?php
             }
         ?>

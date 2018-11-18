@@ -1776,7 +1776,7 @@ function apms_photo_url($mb_id='') {
 
 	if(!$mb_id) return $xp['xp_photo_url'];
 	
-	$mb_dir = substr($mb_id,0,2);
+	$mb_dir = $mb_id;
 
 	$photo_url = G5_DATA_URL.'/apms/photo/'.$mb_dir.'/'.$mb_id.'.jpg';
 	$photo_file = G5_DATA_PATH.'/apms/photo/'.$mb_dir.'/'.$mb_id.'.jpg';
@@ -1787,7 +1787,7 @@ function apms_photo_url($mb_id='') {
 }
 
 function coco_photo_url($mb_id='') {
-	$mb_dir = substr($mb_id,0,2);
+	$mb_dir = $mb_id;
 
 	$url = "/apms/photo/{$mb_dir}/{$mb_id}_large.jpg";
 	

@@ -22,6 +22,10 @@ $pre_codi_url = null;
 if($pre_codi_url != null)
 	$coco_photo = $pre_codi_url;
 $item_url = Array();
+
+$mb_id = $member['mb_id'];
+$sql = sql_fetch_array(sql_query("select mb_memo from `CoCo_member` where mb_id = '{$mb_id}'"));
+$imageid = $sql["mb_memo"];
 ?>
 
 <div style="padding-top: 10px; width: 95%; height: 100%; display:flex; flex-direction: column; margin: 0 auto;">
@@ -39,30 +43,33 @@ $item_url = Array();
 
 	<div style="margin-top: 10px;">
 	</div>
-	
-	<form name="frmcartlist" id="sod_bsk_list" method="post" action="/shop/cartupdate.php" class="form" role="form">
-		<div class="row">
-			<div class="col-xs-6">
-				<div class="fit_wrapper">
-					<?php if($coco_photo) { ?>
-						<img id="coco-fitting" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
-					<?php } else { ?>
-						<!-- <img id="coco" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/> -->
-						<h1>사진 등록이 필요합니다</h1>
-					<?php } ?>
-					<div class="back_modal" id="loader">
-						<div class="loader"></div>
-					</div>
+	<div style="display:flex; width:100%; height:100%;">
+		<div class="" style="display:flex; flex-direction: column; flex: 0 0 50%;">
+			<div class="fit_wrapper">
+				<?php if($coco_photo) { ?>
+					<img id="coco-fitting" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
+				<?php } else { ?>
+					<h1>사진 등록이 필요합니다</h1>
+				<?php } ?>
+				<div class="back_modal" id="loader">
+					<div class="loader"></div>
 				</div>
 			</div>
-			<div class="col-xs-6">
-
-
+			<div class="fit_wrapper">
+				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
+				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" href="/bbs/myphoto.php"  target="_blank">사진 수정</a>
+				<a class="btn btn-default fitting-button" role="button" onclick="request_buy()">바로구매</a>
+			</div>
+		</div>
+		<div style="display:flex; flex-direction: column; flex: 0 0 50%;">
+			<div>
 				<a class="btn btn-default" role="button" onclick="show_item_list()">아이템 목록</a>
 				<a class="btn btn-default" role="button" onclick="show_codi_list()">코디</a>
+			</div>
+			<div class="item_wrapper">
+				<form name="frmcartlist" id="sod_bsk_list" method="post" action="/shop/cartupdate.php" class="form" role="form">
 				<div id="item_list">
 					<?php 
-
 					for($i=0; $i < count($list);$i++) { 
 
 						$list[$i]['img'] = apms_it_thumbnail($list[$i], 70, 70, false, true);
@@ -86,57 +93,32 @@ $item_url = Array();
 						<input type="hidden" name="io_value[<?php echo $list[$i]['it_id']; ?>][]" value="<?php get_text($list[$i]['it_name']); ?>">
 						<input type="hidden" name="ct_qty[<?php echo  $list[$i]['it_id']; ?>][]" value="1" id="ct_qty_<?php echo $i; ?>">
 					</div>
-
 					<?php } ?>
+					<input type="hidden" name="url" value="./orderform.php"/>
+					<input type="hidden" name="records" value="<?php echo $i; ?>"/>
+					<input type="hidden" name="sw_direct" value="1">
+					<input type="hidden" name="act" value="multi">
 				</div>
+				</form>
 				<!-- Codi List -->
 				<div class="wishlist-skin" id="codi_list" style="display:none;">
-				</div>
-				
-						</div>
-		</div>
-		<input type="hidden" name="url" value="./orderform.php"/>
-		<input type="hidden" name="records" value="<?php echo $i; ?>"/>
-		<input type="hidden" name="sw_direct" value="1">
-		<input type="hidden" name="act" value="multi">
-	</form>
-	<br/>
-	<div class="row">
-		<div class="col-xs-6">
-			<div class="text-center">
-				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
-				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" href="/bbs/myphoto.php"  target="_blank">사진 수정</a>
-			</div>
-		</div>
-		<div class="col-xs-6">
-			<div class="text-center">
-				<div class="col-xs-6" style="
-		padding-right: 1px;
-		padding-left: 1px;
-	">
-					<a class="btn btn-default fitting-button" role="button" onclick="request_buy()">바로구매</a>
-				</div>
-				<div class="col-xs-6" style="
-		padding-right: 1px;
-		padding-left: 1px;
-	">
-					<a class="btn btn-default fitting-button" role="button">장바구니</a>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </div>
 
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script src="/js/jquery.ui.touch-punch.js"></script>
+<script src="/js/coco.js"></script>
 <script>
 	var my_codi = '<?php echo($codi);?>';
-	var t_codi = {'lowerid' : '0000', 'upperid': '0000'};
+	var t_codi = {'lowerid' : '000000', 'upperid': '000000'};
 	var image = '<?php echo(json_encode($item_url)); ?>';
 	var user_id = '<?php echo($member['mb_id']) ?>';
 	var MD5 = function(d){result = M(V(Y(X(d),8*d.length)));return result.toLowerCase()};function M(d){for(var _,m="0123456789ABCDEF",f="",r=0;r<d.length;r++)_=d.charCodeAt(r),f+=m.charAt(_>>>4&15)+m.charAt(15&_);return f}function X(d){for(var _=Array(d.length>>2),m=0;m<_.length;m++)_[m]=0;for(m=0;m<8*d.length;m+=8)_[m>>5]|=(255&d.charCodeAt(m/8))<<m%32;return _}function V(d){for(var _="",m=0;m<32*d.length;m+=8)_+=String.fromCharCode(d[m>>5]>>>m%32&255);return _}function Y(d,_){d[_>>5]|=128<<_%32,d[14+(_+64>>>9<<4)]=_;for(var m=1732584193,f=-271733879,r=-1732584194,i=271733878,n=0;n<d.length;n+=16){var h=m,t=f,g=r,e=i;f=md5_ii(f=md5_ii(f=md5_ii(f=md5_ii(f=md5_hh(f=md5_hh(f=md5_hh(f=md5_hh(f=md5_gg(f=md5_gg(f=md5_gg(f=md5_gg(f=md5_ff(f=md5_ff(f=md5_ff(f=md5_ff(f,r=md5_ff(r,i=md5_ff(i,m=md5_ff(m,f,r,i,d[n+0],7,-680876936),f,r,d[n+1],12,-389564586),m,f,d[n+2],17,606105819),i,m,d[n+3],22,-1044525330),r=md5_ff(r,i=md5_ff(i,m=md5_ff(m,f,r,i,d[n+4],7,-176418897),f,r,d[n+5],12,1200080426),m,f,d[n+6],17,-1473231341),i,m,d[n+7],22,-45705983),r=md5_ff(r,i=md5_ff(i,m=md5_ff(m,f,r,i,d[n+8],7,1770035416),f,r,d[n+9],12,-1958414417),m,f,d[n+10],17,-42063),i,m,d[n+11],22,-1990404162),r=md5_ff(r,i=md5_ff(i,m=md5_ff(m,f,r,i,d[n+12],7,1804603682),f,r,d[n+13],12,-40341101),m,f,d[n+14],17,-1502002290),i,m,d[n+15],22,1236535329),r=md5_gg(r,i=md5_gg(i,m=md5_gg(m,f,r,i,d[n+1],5,-165796510),f,r,d[n+6],9,-1069501632),m,f,d[n+11],14,643717713),i,m,d[n+0],20,-373897302),r=md5_gg(r,i=md5_gg(i,m=md5_gg(m,f,r,i,d[n+5],5,-701558691),f,r,d[n+10],9,38016083),m,f,d[n+15],14,-660478335),i,m,d[n+4],20,-405537848),r=md5_gg(r,i=md5_gg(i,m=md5_gg(m,f,r,i,d[n+9],5,568446438),f,r,d[n+14],9,-1019803690),m,f,d[n+3],14,-187363961),i,m,d[n+8],20,1163531501),r=md5_gg(r,i=md5_gg(i,m=md5_gg(m,f,r,i,d[n+13],5,-1444681467),f,r,d[n+2],9,-51403784),m,f,d[n+7],14,1735328473),i,m,d[n+12],20,-1926607734),r=md5_hh(r,i=md5_hh(i,m=md5_hh(m,f,r,i,d[n+5],4,-378558),f,r,d[n+8],11,-2022574463),m,f,d[n+11],16,1839030562),i,m,d[n+14],23,-35309556),r=md5_hh(r,i=md5_hh(i,m=md5_hh(m,f,r,i,d[n+1],4,-1530992060),f,r,d[n+4],11,1272893353),m,f,d[n+7],16,-155497632),i,m,d[n+10],23,-1094730640),r=md5_hh(r,i=md5_hh(i,m=md5_hh(m,f,r,i,d[n+13],4,681279174),f,r,d[n+0],11,-358537222),m,f,d[n+3],16,-722521979),i,m,d[n+6],23,76029189),r=md5_hh(r,i=md5_hh(i,m=md5_hh(m,f,r,i,d[n+9],4,-640364487),f,r,d[n+12],11,-421815835),m,f,d[n+15],16,530742520),i,m,d[n+2],23,-995338651),r=md5_ii(r,i=md5_ii(i,m=md5_ii(m,f,r,i,d[n+0],6,-198630844),f,r,d[n+7],10,1126891415),m,f,d[n+14],15,-1416354905),i,m,d[n+5],21,-57434055),r=md5_ii(r,i=md5_ii(i,m=md5_ii(m,f,r,i,d[n+12],6,1700485571),f,r,d[n+3],10,-1894986606),m,f,d[n+10],15,-1051523),i,m,d[n+1],21,-2054922799),r=md5_ii(r,i=md5_ii(i,m=md5_ii(m,f,r,i,d[n+8],6,1873313359),f,r,d[n+15],10,-30611744),m,f,d[n+6],15,-1560198380),i,m,d[n+13],21,1309151649),r=md5_ii(r,i=md5_ii(i,m=md5_ii(m,f,r,i,d[n+4],6,-145523070),f,r,d[n+11],10,-1120210379),m,f,d[n+2],15,718787259),i,m,d[n+9],21,-343485551),m=safe_add(m,h),f=safe_add(f,t),r=safe_add(r,g),i=safe_add(i,e)}return Array(m,f,r,i)}function md5_cmn(d,_,m,f,r,i){return safe_add(bit_rol(safe_add(safe_add(_,d),safe_add(f,i)),r),m)}function md5_ff(d,_,m,f,r,i,n){return md5_cmn(_&m|~_&f,d,_,r,i,n)}function md5_gg(d,_,m,f,r,i,n){return md5_cmn(_&f|m&~f,d,_,r,i,n)}function md5_hh(d,_,m,f,r,i,n){return md5_cmn(_^m^f,d,_,r,i,n)}function md5_ii(d,_,m,f,r,i,n){return md5_cmn(m^(_|~f),d,_,r,i,n)}function safe_add(d,_){var m=(65535&d)+(65535&_);return(d>>16)+(_>>16)+(m>>16)<<16|65535&m}function bit_rol(d,_){return d<<_|d>>>32-_}
 	var isFitting = false;
+	var imageid = "<?php echo($imageid); ?>"
 
 	if(my_codi.length == 0){
 		my_codi = [];
@@ -162,51 +144,79 @@ $item_url = Array();
 	}
 
 
-	async function request_fitting(it_id, ca_id){
-		$('#loader').css("display", "block");  
+	function request_fitting(it_id, ca_id){
+		var data = {
+			"userid" : user_id ,
+			"isupper" : 0,
+			"imageid" : imageid,
+			"category" : ca_id,
+		};
 
-		if(!it_id) {
-			alert("코드가 올바르지 않습니다.");
-			return false;
+
+		var cate_code = getCateCode(ca_id);
+		console.log(cate_code);
+
+		if(cate_code == "upperid"){
+			data["isupper"] = 1;
 		}
 
+		t_codi[cate_code] = it_id;
 
-		//t_codi[ca_id] = it_id.toString();
-
-
-		switch(ca_id){
-			case 1001:
-			case 1002:
-			case 1003:
-				t_codi['lowerid'] = it_id.toString();
-			break;
-			case 1101:
-				t_codi['upperid'] = it_id.toString();
+		if(t_codi["upperid"] == t_codi["lowerid"]){
+			$('#coco-fitting').attr('src', "/data/apms/photo/"+user_id+"/"+user_id+"_large.jpg");
+			return 0;
 		}
 
-		// isFitting = true;
-		// $.post("/shop/fitting_request.php", { it_id : JSON.stringify(t_codi)}, function(res) {
-		// 	console.log(res);
-		// 	sleep(4000);
-		// 	var result = JSON.parse(res);
-		// 	$('#loader').hide();  
-		// 	if(result['result']){
-		// 		// var src = result['result'];
-		// 		var hash = user_id + t_codi['upperid'] + t_codi['lowerid'];
-		// 		console.log(hash);
-		// 		var src = "/res/" + user_id + "/" + MD5(hash) + ".png";
-		// 		console.log(src);
-		// 		// $('#coco').attr('src', result['src']);
-		// 		$('#coco').attr('src', src);
-		// 		// my_codi['codi_url'] = result['src'];
-		// 		isFitting = false;
-		// 	}
-		// });
+		$('#loader').show();  
 
-		
+		data["upperid"] = t_codi["upperid"];
+		data["lowerid"] = t_codi["lowerid"];
 		
 
+		isFitting = true;
+
+		$.ajax({
+			url:"/shop/fitting_request.php ",
+			type:"POST",
+			data: data,
+			success:function(response) {
+				setTimeout(() => {
+					$('#loader').hide();  
+					try{
+						var data = JSON.parse(response);
+						if(data["result"]){
+							$('#coco-fitting').attr('src', data["src"]);
+							t_codi["codi_url"] = data["src"];
+						}
+					}
+					catch{
+
+
+					}
+					isFitting = false;
+					console.log(response);
+				}, 3000);
+				},
+				error:function(){
+					alert("error");
+				}
+		});
+		
 		return true;
+	}
+
+	function appendCodi(upper, lower){
+		for(var i in my_codi){
+			var wrapper_div = $('<div class="fitting-wrapper"/>');
+			for(var j in my_codi[i]){
+				var item_id = my_codi[i][j];
+				wrapper_div.prepend('<img class="theImg" src="'+image[item_id]+'" />');
+			}
+			var index = Number(i) + 1;
+			wrapper_div.prepend('<h3>'+ index +'번째 코디</h3>');
+			wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + i +')"></a>"').parent();
+			$('#codi_list').append(wrapper_div);
+		}
 	}
 
 	function request_buy() {
@@ -259,17 +269,7 @@ $item_url = Array();
 		$('#item_list').hide();
 		$('#codi_list').show();
 
-		for(var i in my_codi){
-			var wrapper_div = $('<div class="fitting-wrapper"/>');
-			for(var j in my_codi[i]){
-				var item_id = my_codi[i][j];
-				wrapper_div.prepend('<img class="theImg" src="'+image[item_id]+'" />');
-			}
-			var index = Number(i) + 1;
-			wrapper_div.prepend('<h3>'+ index +'번째 코디</h3>');
-			wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + i +')"></a>"').parent();
-			$('#codi_list').append(wrapper_div);
-		}
+		
 	}
 
 	function show_item_list(){
@@ -288,39 +288,6 @@ $item_url = Array();
 		request_buy();
 	}
 
-	function take_off(ca_id){
-		$('#loader').show();  
-		$('#loader').hide();  
-		switch(ca_id){
-			case 1001:
-			case 1002:
-			case 1003:
-				t_codi['lowerid'] = "0000";
-			break;
-			case 1101:
-				t_codi['upperid'] = "0000";
-		}
-
-		console.log("here");
-
-		// isFitting = true;
-		// $.post("/shop/fitting_request.php", { it_id : JSON.stringify(t_codi)}, function(res) {
-		// 	console.log(res);
-		// 	sleep(4000);
-		// 	var result = JSON.parse(res);
-		// 	$('#loader').hide();  
-		// 	if(result['result']){
-		// 		var hash = user_id + t_codi['upperid'] + t_codi['lowerid'];
-		// 		console.log(hash);
-		// 		var src = "/res/" + user_id + "/" + MD5(hash) + ".png";
-		// 		console.log(src);
-		// 		$('#coco').attr('src', src);
-		// 		isFitting = false;
-		// 	}
-		// });
-
-	}
-	
 	$(function(){
 		$("#item_list div img").draggable({
 			start: function(event, ui){
@@ -339,20 +306,17 @@ $item_url = Array();
 				parent.addClass("item-active");
 				var cate = ui.draggable.attr("cate-id");
 				var item = ui.draggable.attr("item-id");
-				$(".coco-fitting-wrap.item-active").click(function(){
-					var pcate = $(this).first().attr("cate-id");
-					$(this).removeClass("item-active");
-					$(this).prop("onclick", null).off("click");
-					take_off(pcate);
-				});
 				request_fitting(item, cate);
 			}
 		});
 
-		
-
-
-
+		$('body').on("click", ".coco-fitting-wrap.item-active", function(){
+			var img = $(this).children().first();
+			var cate = img.attr("cate-id");
+			$(this).removeClass("item-active");
+			request_fitting("000000", cate);
+			console.log(cate);
+		});
 
 	});
 </script>

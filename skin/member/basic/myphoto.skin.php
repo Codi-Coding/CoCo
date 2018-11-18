@@ -28,7 +28,9 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 					<p><input type=file name="mb_icon2"></p>
 
 					<?php if ($is_photo) { ?>
-						<p><label><input type="checkbox" name="del_mb_icon2" value="1"> 삭제하기</label></p>
+						<!-- <p><label><input type="checkbox" name="del_mb_icon2" value="1"> 삭제하기</label></p> -->
+						<input type="hidden" name="del_mb_icon2" value="1">
+						<button type="submit" class="btn btn-color btn-sm">삭제</button>
 					<?php } ?>
 				</div>
 			</div>

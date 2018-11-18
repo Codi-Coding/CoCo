@@ -43,6 +43,16 @@ $isFittingroom = true;
 
 include_once('./_head.php');
 
+$codi_row = getCodiRow($member['mb_id']);
+$codi = $codi_row['cody'];
+$pre_codi_url = $codi_row['image_url'];
+
+
+// 스킨 체크
+$isFittingroom = true;
+
+include_once('./_head.php');
+
 
 include_once('skin/fittingroom/fittingroom.skin.php');
 

@@ -3,12 +3,9 @@
 include_once('./lib/coco.lib.php');
 
 
-$upper_id = $_POST['upperid'];
-$lower_id = $_POST['lowerid'];
+$upper_id = $_POST['upper'];
+$lower_id = $_POST['lower'];
 $user_id = $_POST['userid'];
-
-$user_id = "test";
-
 
 
 $target_file = getHashPath($user_id, $upper_id.$lower_id);

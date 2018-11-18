@@ -19,7 +19,7 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 	$photo_w = (isset($xp['xp_photo']) && $xp['xp_photo']) ? $xp['xp_photo'] : 80;
 	$photo_h = $photo_w;
 
-	$photo_dir = G5_DATA_PATH.'/apms/photo/'.substr($mb_id,0,2);
+	$photo_dir = G5_DATA_PATH.'/apms/photo/'.$mb_id;
 	$temp_dir = G5_DATA_PATH.'/apms/photo/temp';
 
 	if(!is_dir($photo_dir)) {
@@ -92,13 +92,15 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 						copy($temp_dir.'/'.$big_picture, $big_photo);
 						chmod($big_photo, G5_FILE_PERMISSION);
 
+						$hash = md5(date("D M d, Y G:i").$member["mb_id"]);
+						sql_query("update {$g5['member_table']} set as_photo = '1', mb_memo = '{$hash}' where mb_id = '$mb_id' ", false);
+						$member['large_photo'] = $big_photo;
+						$member['mb_memo'] = $hash;
+						$member['mb_id'] = $mb_id;
+						notification_user($member, $big_photo);
 						@unlink($temp_dir.'/'.$thumb);
 						@unlink($temp_photo);
-						sql_query(" update {$g5['member_table']} set as_photo = '1' where mb_id = '$mb_id' ", false);
-						$member['large_photo'] = $big_photo;
-						$sql = "UPDATE CoCo_cody set image_url = NULL where mb_id = '$mb_id'";
-						// var_dump(sql);
-						sql_query($sql);
+						
 					} else {
 						@unlink($temp_photo);
 						//회원사진 등록에 실패했습니다. 이미지 파일이 정상적으로 업로드 되지 않았거나, 이미지 파일이 아닙니다.
@@ -126,7 +128,7 @@ list($member_skin_path, $member_skin_url) = apms_skin_thema('member', $member_sk
 $is_myphoto_sub = true;
 @include_once($member_skin_path.'/config.skin.php');
 
-$mb_dir = substr($member['mb_id'],0,2);
+$mb_dir = $member['mb_id'];
 
 $is_photo = (is_file(G5_DATA_PATH.'/apms/photo/'.$mb_dir.'/'.$member['mb_id'].'.jpg')) ? true : false;
 

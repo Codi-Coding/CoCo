@@ -5,22 +5,22 @@ include_once(dirname(__DIR__)."/data/CoCo_config.php");
 include_once(G5_LIB_PATH.'/aes_encrypt.php');
 
 
-$ch = curl_init();
+// $ch = curl_init();
 
-// curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-// curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-// curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5);
+// // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+// // curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+// // curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5);
+
 
 function getHashPath($user_id, $it_id){
 	$ext = '.png';
 
 	$target_name = md5($user_id.$it_id);
-
-	// $root = dirname(__DIR__);
-	$upddr = "/res/{$user_id}/";
-
-	if (!is_dir($upddr ))
+	$mb_memo = sql_fetch_array(sql_query("select mb_memo from CoCo_member where mb_id = '{$user_id}'"));
+	
+	$upddr = dirname(__DIR__)."/res/{$user_id}/{$mb_memo["mb_memo"]}/";
+	if (!is_dir($upddr))
         mkdir($upddr, 0777, true);
 	
 	$target_file = $upddr . basename($target_name.$ext);
@@ -30,64 +30,24 @@ function getHashPath($user_id, $it_id){
 
 
 function request_virtual_fitting($item, $mb_id){
-	global $ch;
-	$cate = 0;
-	$item_id = 0;
-	$sql = "";
-
-
-	// $get_num_sql = "SELECT mb_no FROM `CoCo_member` where mb_id = '{$mb_id}'";
-	// $row = sql_fetch_array(sql_query($get_num_sql));
-	// $mb_no = $row['mb_no'];
-	// $data = Array();
-
-
-	// foreach($items as $ca => $it_id){
-	// 	$sql = "SELECT it_img1 FROM `CoCo_item` where it_id='{$it_id}'";
-	// 	$row = sql_query($sql);
-	// 	$row = sql_fetch_array($row);
-	// 	$cate = $ca;
-	// 	$item_id = $row['it_img1'];
-	// 	$data[$ca] = [];
-	// 	array_push($data[$ca], $item_id);
-	// }
-
-	// $ff = explode ("/", $row['it_img1'])[0];
-
-
-	// $mb_no = "000005";
-	// $ff = "000010";
-
-    // $postData = array(
-	//     'userid' => "{$mb_no}",
-	// 	'productid' => "{$ff}",
-	// 	'category' => "{$cate}",
-	// );
-
-	$upperid = $item['upperid'];
-	$lowerid = $item['lowerid'];
-
-	$postData = array(
-	    'userid' => "{$mb_id}",
-		'upperid' => "{$upperid}",
-		'lowerid' => "{$lowerid}",
-		'category' => '0000',
-	);
-
+	$ch = curl_init();
 	curl_setopt_array($ch, array(
 	    CURLOPT_URL => DeepLearning_Server.'/submit',
 	    CURLOPT_RETURNTRANSFER => true,
 	    CURLOPT_POST => true,
-	    CURLOPT_POSTFIELDS => $postData,
+	    CURLOPT_POSTFIELDS => $item,
 	    CURLOPT_FOLLOWLOCATION => true
 	));
+
 
 	$re = curl_exec($ch);
 
 	$output = array(
 		"result" => 1,
-		"src" => getHashPath($mb_id, $upperid.$lowerid),
+		"src" => getHashPath($mb_id, $item['upperid'].$item['lowerid']),
 	);
+
+	$output["src"] = explode("CoCo", $output["src"])[1];
 
 	if(curl_errno($ch)){
 		$output['result'] = 0;
@@ -102,6 +62,18 @@ function request_virtual_fitting($item, $mb_id){
 
 
 	return json_encode($output);
+}
+
+function notification_user($member, $filePath){
+	$curlFile = curl_file_create($filePath);
+	$post = array('userid' => "{$member['mb_id']}",'imageid' => "{$member['mb_memo']}",'userpicture'=> $curlFile );
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, DeepLearning_Server."/userupload");
+	curl_setopt($ch, CURLOPT_POST,1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+	curl_exec($ch);
+	curl_close($ch);
+	return 0;
 }
 
 function notification_item_Deep($it_id){
@@ -127,7 +99,7 @@ function notification_item_Deep($it_id){
 	);
 
 	if(curl_errno($ch)){
-		$output['result'] = 0;
+ 		$output['result'] = 0;
 		$output['src'] = NULL;
 	}
 	return $output;
@@ -175,6 +147,15 @@ function getCodiRow($mb_id){
 
 function getEncPath($path){
     return "/image.php?key=".urlencode(aes_encrypt($path, IMAGE_KEY));
+}
+
+function makeSavePath(&$item1){
+	$tmp = $item1;
+	$tmp = explode("Project\CoCo", $item1)[1];
+	if($tmp == NULL)
+		$tmp = explode("Project/CoCo", $item1)[1];
+
+	$item1 = $tmp;
 }
 
 ?>
