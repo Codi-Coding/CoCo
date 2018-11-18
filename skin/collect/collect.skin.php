@@ -3,7 +3,7 @@
         <span style="color:white;">카테고리</span>
         <div class="coco-side-scroll">
             <span class="coco-cate">
-                <a href="/shop/list.php?ca_id=1020">
+                <a href="/shop/list.php?ca_id=1001">
                 <div class="img">
                     <img src="/img/coco/cate1.png">
                 </div>
@@ -11,15 +11,15 @@
                 </a>
             </span>
             <span class="coco-cate">
-                <a href="/shop/list.php?ca_id=1020">
+                <a href="/shop/list.php?ca_id=1003">
                 <div class="img">
-                    <img src="/img/coco/cate5.png">
+                    <img src="/img/coco/cate6.png">
                 </div>
                 <div class="caption">긴팔</div>
                 </a>
             </span>
             <span class="coco-cate">
-                <a href="/shop/list.php?ca_id=1010">
+                <a href="/shop/list.php?ca_id=1002">
                 <div class="img">
                     <img src="/img/coco/cate2.png">
                 </div>
@@ -27,7 +27,7 @@
                 </a>
             </span>
             <span class="coco-cate">
-                <a href="/shop/list.php?ca_id=1010">
+                <a href="/shop/list.php?ca_id=1101">
                 <div class="img">
                     <img src="/img/coco/cate2.png">
                 </div>

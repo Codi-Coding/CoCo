@@ -39,7 +39,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 
 	<div class="text-center">
 		<button type="submit" class="btn btn-color btn-sm">등록</button>
-		<button type="button" class="btn btn-black btn-sm" onclick="window.close();">닫기</button>
+		<a type="button" class="btn btn-black btn-sm" href="/fittingroom.php">닫기</a>
 	</div>		
 </form>
 

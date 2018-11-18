@@ -455,12 +455,13 @@
 
     #coco-fitting{
         min-height: 429px;
-
+        border-radius: 13px;
     }
 
     #item_list{
       display: flex;
       flex-wrap: wrap;
+      width: 100%;
     }
 
     .coco-fitting-item{
