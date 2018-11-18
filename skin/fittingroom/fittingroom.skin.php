@@ -28,7 +28,7 @@ $sql = sql_fetch_array(sql_query("select mb_memo from `CoCo_member` where mb_id 
 $imageid = $sql["mb_memo"];
 ?>
 
-<div style="padding-top: 10px; width: 95%; height: 100%; display:flex; flex-direction: column; margin: 0 auto;">
+<div style="margin-top: 23px; width: 100%; height: 100%; display:flex; flex-direction: column; margin: 0 auto;">
 	<!-- <div style="height: 75px;">
 			<span>폴더</span>
 		<div class="coco-codi-scroll">
@@ -242,6 +242,7 @@ $imageid = $sql["mb_memo"];
 
 	function appendCodi(upper, lower){
 		console.log("here");
+		$('#codi_list').append('<h3>'+ codi_index +'번째 코디</h3>');
 		var wrapper_div = $('<div class="fitting-wrapper"/>');
 		if(upper != "000000"){
 			upper = Number(upper);
@@ -253,9 +254,9 @@ $imageid = $sql["mb_memo"];
 			wrapper_div.prepend('<img class="theImg" src="'+image[lower]+'" />');
 			console.log(image[lower]);
 		}
+		console.log(wrapper_div);
 		wrapper_div.prepend('<h3>'+ codi_index +'번째 코디</h3>');
 		wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + codi_index-1 +')"></a>"').parent();
-		console.log(wrapper_div);
 		$('#codi_list').append(wrapper_div);
 		codi_index += 1;
 	}
@@ -306,13 +307,13 @@ $imageid = $sql["mb_memo"];
 	}
 
 	function show_codi_list(){
-		$('#item_list').hide();
-		$('#codi_list').css("dispay", "flex");
+		$('#item_list').css("display", "none");
+		$('#codi_list').css("display", "flex");
 	}
 
 	function show_item_list(){
-		$('#item_list').show();
-		$('#codi_list').css("dispay", "flex");
+		$('#item_list').css("display", "flex");
+		$('#codi_list').css("display", "none");
 	}
 
 	function select_codi(index){

@@ -9,7 +9,7 @@
     ">
     <div style="text-align: center;">
         <div style="z-index: 2;position: relative;top: 164px;">
-            <span style="color: #242424;font-size: 12px;font-weight: bolder;">원하는 옷을 검색해보세요!</span> <br/>
+            <span style="color: #242424;font-size: 12px;font-family: KoPubDotumBold;">원하는 옷을 검색해보세요!</span> <br/>
             <span style="color: #919191;font-size: 11px;">#가을 #코트 #셔츠</span>
         </div>
         <img src="/img/coco/search.main.png" alt="Search Bar" width="200px" height="200px"/>
@@ -27,15 +27,18 @@
 
 <div style="position: relative;background-color: #e8e8e8;">
     <div style="text-align: center;">
-        <span style="color:#4a4a4a;">#오늘의</span> <span style="color: #7283bb">코디</span>
+        <span style="color:#4a4a4a; font-family:KoPubDotumBold;">#오늘의</span> <span style="color: #7283bb">코디</span>
     </div>
     
-    <ul style="display: flex; list-style: none; flex-direction: colum; justify-content: space-between; padding-left: 0px; align-items: flex-end;">
+    <ul style="display: flex; list-style: none; justify-content: space-evenly;; padding-left: 0px; align-items: flex-end;">
         <li class="sub-card">
+            <img src="/res/test/today/1d9d8ae528455687a0fa47e98ad1bda7.png"/>
         </li>
         <li class="main-card">
+            <img src="/res/test/today/a6a51dc8781f26e91363fbbfd87591b9.png"/>
         </li>
         <li class="sub-card">
+            <img src="/res/test/today/a6c8a780301b68bc198057fd2e9e9f9d.png"/>
         </li>
     </ul>
 

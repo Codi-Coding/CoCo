@@ -13,7 +13,7 @@
             <span class="coco-cate">
                 <a href="/shop/list.php?ca_id=1003">
                 <div class="img">
-                    <img src="/img/coco/cate6.png">
+                    <img src="/img/coco/cate5.png">
                 </div>
                 <div class="caption">긴팔</div>
                 </a>
@@ -21,7 +21,7 @@
             <span class="coco-cate">
                 <a href="/shop/list.php?ca_id=1002">
                 <div class="img">
-                    <img src="/img/coco/cate2.png">
+                    <img src="/img/coco/cate7.png">
                 </div>
                 <div class="caption">셔츠</div>
                 </a>
@@ -63,7 +63,9 @@
         <?php 
             while($row = sql_fetch_array($result)){
         ?>  <div class="coco-shop">
-                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>"><?php echo($row['pt_id']);?></a>
+                <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>">
+                    <img src=<?php echo ("/data/apms/photo/{$row['pt_id']}/{$row['pt_id']}.jpg") ?> style="width: 45px; height:45px;"/>
+                </a>
             </div>
            
         <?php
@@ -71,25 +73,6 @@
         ?>
     </div>
 </div>
-
-
-
-
-<!-- <div class="row">
-    <div class="col-xs-3">
-        <a class="circle-btn" href="/shop/list.php?ca_id=1020">남성 상의</a>
-    </div>
-    <div class="col-xs-3">
-        <a class="circle-btn" href="/shop/list.php?ca_id=1010">남성 하의</a>
-    </div>
-    <div class="col-xs-3">
-        <a class="circle-btn" href="shop/list.php?ca_id=20">여성 상의</a>
-    </div>
-    <div class="col-xs-3">
-        <a class="circle-btn" href="shop/list.php?ca_id=20">여성 하의</a>
-    </div>
-</div> -->
-
 
 
 <script>

@@ -1,11 +1,15 @@
-/* #float-div {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width:auto;
-} */
-
-
+@font-face {
+    font-family: KoPubDotumBold;
+    src: url('/css/KoPubDotumBold.ttf');
+}
+@font-face {
+    font-family: KoPubDotumLight;
+    src: url('/css/KoPubDotumLight.ttf');
+}
+@font-face {
+    font-family: KoPubDotumMedium;
+    src: url('/css/KoPubDotumMedium.ttf');
+}
 
 #fitting-button{
     display:block;
@@ -198,15 +202,25 @@
     .main-card{
         width: 99px;
         height: 153px;
-        background-color: red;
-
     }
+
     .sub-card{
         width : 93px;
         height: 129px;
-        background-color: red;
         margin-right: 17px;
         margin-left: 17px;
+    }
+
+    .sub-card img{
+        width: 90%;
+        height: 100%;
+        border-radius: 13px;
+    }
+
+    .main-card img{
+        width: 94%;
+        height: 100%;
+        border-radius: 13px;
     }
 
     .concept-card{
@@ -424,6 +438,7 @@
     html, body {
         width: 100vw;
         height: 100vh;
+        font-family: KoPubDotumLight;
      }
 
     .coco-codi{
