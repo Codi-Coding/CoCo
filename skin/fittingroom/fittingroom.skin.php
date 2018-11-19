@@ -226,6 +226,7 @@ $imageid = $sql["mb_memo"];
 
 		isFitting = true;
 
+		console.log(data);
 		$.ajax({
 			url:"/shop/fitting_request.php ",
 			type:"POST",
@@ -253,16 +254,13 @@ $imageid = $sql["mb_memo"];
 	function appendCodi(upper, lower){
 		var wrapper_div = $('<div class="fitting-wrapper"/>');
 		wrapper_div.append('<h3>'+ codi_index +'번째 코디</h3>');
-			console.log(upper);
 		if(upper != "000000"){
 			upper = Number(upper);
-			console.log(upper);
 			wrapper_div.append('<img class="theImg" src="'+image[upper]+'" />');
 		}
 		if(lower != "000000"){
 			lower = Number(lower);
 			wrapper_div.append('<img class="theImg" src="'+image[lower]+'" />');
-			console.log(image[lower]);
 		}
 		wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + (codi_index-1) +')"></a>').parent();
 		$('#codi_list').append(wrapper_div);
@@ -325,7 +323,6 @@ $imageid = $sql["mb_memo"];
 	}
 
 	function select_codi(index){
-		console.log(index);
 		$('#coco-fitting').attr('src', my_codi[index]['codi_url']);
 	}
 
@@ -366,7 +363,6 @@ $imageid = $sql["mb_memo"];
 			temp_act[getCateCode(cate)] = null;
 			$(this).removeClass("item-active");
 			request_fitting("000000", cate);
-			console.log(cate);
 		});
 		for (var i in my_codi){
 			appendCodi(my_codi[i]["upperid"], my_codi[i]["lowerid"]);
