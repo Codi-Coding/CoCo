@@ -58,7 +58,7 @@
         <li class="small-line"></li>
         <li class="small-coco-button">
             <a href="/bbs/logout.php">
-                <div>설정</div>
+                <div>로그아웃</div>
             </a>
         </li>
     </ul>

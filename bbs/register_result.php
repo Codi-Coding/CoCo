@@ -4,6 +4,8 @@ include_once('./_common.php');
 if (isset($_SESSION['ss_mb_reg']))
     $mb = get_member($_SESSION['ss_mb_reg']);
 
+$isFittingroom = true;
+
 // 회원정보가 없다면 초기 페이지로 이동
 if (!$mb['mb_id'])
     goto_url(G5_URL);
@@ -42,8 +44,9 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=member&amp;ts='.urlencode(THEMA);
 }
 
+$mb_id = $mb['mb_id'];
 // 코디 레코드 생성
-$sql = "insert into CoCo_cody(mb_id, cody) values(`{$mb['mb_id']}`, '');"
+$sql = "insert into CoCo_cody(mb_id, cody) values('{$mb_id}', '')";
 sql_query($sql);
 
 
