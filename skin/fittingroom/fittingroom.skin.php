@@ -18,6 +18,7 @@ if($header_skin)
 	include_once('./header.php');
 
 $coco_photo = $member['coco_photo'];
+$pre_codi_url = null;
 if($pre_codi_url != null)
 	$coco_photo = $pre_codi_url;
 $item_url = Array();
@@ -43,8 +44,8 @@ $imageid = $sql["mb_memo"];
 				<form name="frmcartlist" id="sod_bsk_list" method="post" action="/shop/cartupdate.php" class="form" role="form">
 	<div style="margin-top: 10px;">
 	</div>
-	<div style="display:flex; width:100%; height:100%;">
-		<div class="" style="display:flex; flex-direction: column; flex: 0 0 50%;">
+	<div style="display:flex;width:100%;height:100%;justify-content: space-evenly;">
+		<div class="" style="display:flex; flex-direction: column; flex: 0 0 48%;     margin-top: 31px;">
 			<div class="fit_wrapper">
 				<?php if($coco_photo) { ?>
 					<img id="coco-fitting" src="<?php echo ($coco_photo);?>" width="100%" height="100%"/>
@@ -67,16 +68,30 @@ $imageid = $sql["mb_memo"];
 					</div>
 				</div>
 			</div>
-			<div class="fit_wrapper">
-				<a class="btn btn-default btn-block" role="button" width="100%" height="100%" onclick="request_save_cody();">코디 저장</a>
-				<a class="btn btn-default fitting-button" role="button" onclick="request_buy()">바로구매</a>
-				<a class="btn btn-default fitting-button" role="button" onclick="reset_cart()">피팅카트 초기화</a>
+			<div class="fit_wrapper" style="margin-top: 8px;">
+				<a onclick="request_buy()">
+					<img src="/img/coco/fitting1.png" style="width: 100%; height: 30px; margin: 5px 0px;"/>
+				</a>
+				<a onclick="request_save_cody();">
+					<img src="/img/coco/fitting2.png"  style="width: 100%; height: 30px; margin: 5px 0px;"/>
+				</a>
+				<a class="btn btn-danger" onclick="reset_cart()" style="width: 100%;height: 26px;border-radius: 9px !important;margin: 5px 0px;font-size: 11px;">
+					피팅카트 초기화
+				</a>
 			</div>
 		</div>
-		<div style="display:flex; flex-direction: column; flex: 0 0 50%;">
-			<div>
-				<a class="btn btn-default" role="button" onclick="show_item_list()">아이템 목록</a>
-				<a class="btn btn-default" role="button" onclick="show_codi_list()">코디</a>
+		<div style="display:flex; flex-direction: column; flex: 0 0 48%;">
+			<div style="display:flex;">
+				<a onclick="show_item_list()">
+					<div class="coco-fitting-nav">
+					아이템 목록
+					</div>
+				</a>
+				<a onclick="show_codi_list()">
+					<div class="coco-fitting-nav">
+						코디
+					</div>
+				</a>
 			</div>
 			<div class="item_wrapper">
 				<div id="item_list">
@@ -89,11 +104,11 @@ $imageid = $sql["mb_memo"];
 					<div class="coco-fitting-item">
 						<a class="coco-fitting-wrap">
 						<img class="coco-item-image" item-id="<?php echo($list[$i]['it_id']);?>" cate-id="<?php echo($list[$i]['ca_id2']);?>" src="<?php echo($list[$i]['img']['src']);?>">
-						<label for="ct_chk_<?php echo $i; ?>">
-							<span><?php echo($list[$i]['it_name']);?></span>
+						<label class="coco-label" for="ct_chk_<?php echo $i; ?>">
+							<span style="font-size: 11px;"><?php echo($list[$i]['it_name']);?></span>
 						</label>
 						<div>
-							<label for="ct_chk_<?php echo $i; ?>"><?php echo($list[$i]['it_price']);?>원</label>
+							<label class="coco-label" for="ct_chk_<?php echo $i; ?>"  style="font-size: 8px;"><?php echo($list[$i]['it_price']);?>원</label>
 							<input type="checkbox" name="chk_it_id[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>">
 						</div>
 						
@@ -111,7 +126,7 @@ $imageid = $sql["mb_memo"];
 					<input type="hidden" name="act" value="multi">
 				</div>
 				<!-- Codi List -->
-				<div id="codi_list" style="display:none;">
+				<div id="codi_list" style="display: none;flex-direction: column;width: 100%;padding-left: 10%;/* align-items: center; */">
 				</div>
 			</div>
 		</div>
@@ -149,6 +164,9 @@ $imageid = $sql["mb_memo"];
 		temp_act["upperid"] = null;
 
 		$('#coco-fitting').attr('src', "/data/apms/photo/"+user_id+"/"+user_id+"_large.jpg");
+
+		t_codi["lowerid"] = "000000";
+		t_codi["upperid"] = "000000";
 	}
 
 	function isEmpty(obj) {
@@ -233,22 +251,20 @@ $imageid = $sql["mb_memo"];
 	}
 
 	function appendCodi(upper, lower){
-		console.log("here");
-		$('#codi_list').append('<h3>'+ codi_index +'번째 코디</h3>');
 		var wrapper_div = $('<div class="fitting-wrapper"/>');
+		wrapper_div.append('<h3>'+ codi_index +'번째 코디</h3>');
+			console.log(upper);
 		if(upper != "000000"){
 			upper = Number(upper);
-			wrapper_div.prepend('<img class="theImg" src="'+image[upper]+'" />');
-			console.log(image[upper]);
+			console.log(upper);
+			wrapper_div.append('<img class="theImg" src="'+image[upper]+'" />');
 		}
 		if(lower != "000000"){
 			lower = Number(lower);
-			wrapper_div.prepend('<img class="theImg" src="'+image[lower]+'" />');
+			wrapper_div.append('<img class="theImg" src="'+image[lower]+'" />');
 			console.log(image[lower]);
 		}
-		console.log(wrapper_div);
-		wrapper_div.prepend('<h3>'+ codi_index +'번째 코디</h3>');
-		wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + codi_index-1 +')"></a>"').parent();
+		wrapper_div = wrapper_div.wrap('<a onclick="select_codi(' + (codi_index-1) +')"></a>').parent();
 		$('#codi_list').append(wrapper_div);
 		codi_index += 1;
 	}
@@ -272,7 +288,7 @@ $imageid = $sql["mb_memo"];
 	function request_save_cody(){
 		var flag = true;
 
-		if(isEmpty(t_codi)){
+		if(t_codi["upperid"] == "000000" && t_codi["lowerid"] == "000000"){
 			alert("코디가 없습니다.");
 			return false;
 		}
@@ -310,7 +326,7 @@ $imageid = $sql["mb_memo"];
 
 	function select_codi(index){
 		console.log(index);
-		$('#coco').attr('src', my_codi[index]['codi_url']);
+		$('#coco-fitting').attr('src', my_codi[index]['codi_url']);
 	}
 
 	function delete_codi(index){

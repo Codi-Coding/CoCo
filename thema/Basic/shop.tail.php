@@ -36,6 +36,7 @@ $mb_id = $member['mb_id'];
 $codi_row = getCodiRow($mb_id);
 $pre_codi_url = $codi_row['image_url'];
 
+$pre_codi_url = NULL;
 if($pre_codi_url == NULL)
 	$pre_codi_url = $coco_photo = $member['coco_photo'];
 
@@ -78,9 +79,10 @@ $imageid = $sql["mb_memo"];
 		</div>
 		<div id="bottom-fc">
 			<div class="bottom-fc-wrapper">
-				<div style="min-width: 48px;height: 48px;margin-top: 7px;">
+				<div style="min-width: 48px;height: 48px;margin-right: 13px;">
 					<img src="/img/coco/fittingcart.png" style="width: 65px;"/>
 				</div>
+			<div style="display: flex;overflow-x: auto;flex-wrap: nowrap;min-width: 100%;margin-left: 11px;">
 			<?php 
 				for($i=0; $i < count($list);$i++) { 
 				?>

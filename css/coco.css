@@ -156,8 +156,8 @@
         background-color: #b4bade;
         height: 113px;
         flex: 1 1 50%;
-        overflow-x: auto;
         display: flex;
+        align-items: center;
     }
 
     .coco-bottom-wrapper{
@@ -165,17 +165,18 @@
         display: flex;
         flex-direction: column;
         flex: 0 28%;
+        min-width: 120px;
     }
   
     .bottom-item{
-        width: 75px;
-        height: 75px;
-        margin-right: 5px;
+        width: 60px;
+        height: 60px;
+        margin-right: 10px;
     }
 
     .bottom-fc-wrapper{
         width: 100%;
-        height: 100px;
+        height: 88px;
         display: flex;
         flex-wrap: nowrap;
         overflow-x : auto;
@@ -424,10 +425,10 @@
         justify-content: center;
         align-items: center;
         margin: 20px 5px;
-        height: 100px;
         width: 60px;
-        height: 60px;
+        height: 70px;
         text-align: center;
+        flex-direction: column;
     }
 
     .coco-shop::before {
@@ -441,13 +442,18 @@
 
     .coco-shop a{
         z-index: 2;
+        margin-top: 30px;
     }
     html, body {
         width: 100vw;
         height: 100vh;
         font-family: KoPubDotumLight;
-     }
+    }
 
+    .coco-label{
+        height: 16px;
+    }
+    
     .coco-codi{
         position: relative;
         min-width: 60px;
@@ -455,7 +461,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 15px;
+        margin-top: 27px;
         z-index: 2;
     }
 
@@ -504,8 +510,15 @@
         position: relative;
         border: 1px solid #ccc;
         border-radius: 7%;
-        width: 80px;
-        height: 80px;
+        width: 70px;
+        height: 70px;
+    }
+
+    .coco-fitting-nav{
+        color: #5665ad;
+        margin: 5px 10px;
+        font-family: KoPubDotumBold;
+        font-size: 16px;
     }
 
     .coco-fitting-wrap.item-active::before{

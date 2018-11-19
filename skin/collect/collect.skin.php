@@ -66,6 +66,9 @@
                 <a href="shop/myshop.php?id=<?php echo($row['pt_id']);?>">
                     <img src=<?php echo ("/data/apms/photo/{$row['pt_id']}/{$row['pt_id']}.jpg") ?> style="width: 45px; height:45px;"/>
                 </a>
+                <div style="margin-top: 10px;">
+                    <?php echo($row['pt_id']);?>
+                </div>
             </div>
            
         <?php

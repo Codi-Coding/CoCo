@@ -223,6 +223,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 		</div>
 	<?php } ?>
 
-	<div  id="coco-main" class="at-body">
+	<div  id="coco-main" class="at-body" <?php if($isFittingroom) echo("style='padding: 0px 0px !important;'");?>>
 		<div class="at-container">
 			<div class="at-content">
